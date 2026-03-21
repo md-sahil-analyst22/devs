@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nginx · Ngrok · Cloudflare · Networking — Complete Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f14;--bg2:#10151d;--bg3:#141c27;--bg4:#18222f;--bg5:#1c2940;
+  --bdr:#1e2d40;--bdr2:#263547;
+  --t1:#dde8f8;--t2:#7a93b4;--t3:#3d5268;
+  --A:#38bdf8;--B:#4ade80;--C:#fb923c;--D:#f472b6;--E:#a78bfa;
+  --F:#fbbf24;--G:#2dd4bf;--H:#f87171;--I:#60a5fa;
+  --sw:278px;--top:54px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;overflow-x:hidden}
+
+/* ─── TOPBAR ─── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--top);background:var(--bg2);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.tl{display:flex;align-items:center;height:100%;width:var(--sw);padding:0 20px;border-right:1px solid var(--bdr);gap:10px;flex-shrink:0}
+.tlogo{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:13px;font-weight:700;color:#000;background:linear-gradient(135deg,var(--A),var(--B));box-shadow:0 0 16px rgba(56,189,248,.3)}
+.tbrand{font-size:13px;font-weight:700;color:var(--t1)}.tbrand span{display:block;font-size:10px;font-weight:400;color:var(--t3)}
+.tr{display:flex;align-items:center;gap:12px;padding-right:20px}
+.tcnt{font-size:11px;color:var(--t3);font-family:'Fira Code',monospace}
+.tpill{font-size:10px;font-weight:600;padding:3px 10px;border-radius:4px;background:rgba(56,189,248,.12);color:var(--A);border:1px solid rgba(56,189,248,.22);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.05em}
+.hbg{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px}
+.hbg span{display:block;width:18px;height:1.5px;background:var(--t2);border-radius:1px;transition:.18s}
+
+/* ─── LAYOUT ─── */
+.layout{display:flex;padding-top:var(--top);min-height:100vh}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;top:var(--top);left:0;bottom:0;background:var(--bg2);border-right:1px solid var(--bdr);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bdr2) transparent}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--bdr2)}
+.sg{padding:16px 16px 5px;font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;font-family:'Fira Code',monospace}
+.sg:first-child{padding-top:13px}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 16px;cursor:pointer;font-size:12px;color:var(--t2);border-left:2px solid transparent;transition:all .13s;text-decoration:none;user-select:none}
+.ni:hover{background:var(--bg3);color:var(--t1)}
+.ni.on{color:var(--A);background:rgba(56,189,248,.07);border-left-color:var(--A);font-weight:600}
+.nd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nt{margin-left:auto;font-size:9px;font-family:'Fira Code',monospace;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em}
+.ta{background:rgba(56,189,248,.13);color:var(--A)}.tb{background:rgba(74,222,128,.13);color:var(--B)}.tc{background:rgba(251,146,60,.13);color:var(--C)}.td{background:rgba(244,114,182,.13);color:var(--D)}.te{background:rgba(167,139,250,.13);color:var(--E)}.tf{background:rgba(251,191,36,.13);color:var(--F)}.tg{background:rgba(45,212,191,.13);color:var(--G)}.th{background:rgba(248,113,113,.13);color:var(--H)}
+
+/* ─── MAIN ─── */
+.main{margin-left:var(--sw);flex:1;padding:36px 46px 80px;max-width:960px}
+.sec{display:none}.sec.on{display:block;animation:fi .22s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── HERO ─── */
+.hero{padding-bottom:22px;margin-bottom:26px;border-bottom:1px solid var(--bdr)}
+.htag{display:inline-flex;align-items:center;gap:6px;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-family:'Fira Code',monospace;padding:4px 10px;border-radius:4px;margin-bottom:12px}
+.htitle{font-size:26px;font-weight:700;color:var(--t1);line-height:1.2;margin-bottom:8px}
+.hsub{font-size:13.5px;color:var(--t2);line-height:1.7;max-width:700px}
+
+/* ─── STATS ─── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
+.stat{background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;padding:11px 14px}
+.sl{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.sv{font-size:13px;font-weight:700;font-family:'Fira Code',monospace}
+
+/* ─── CARDS ─── */
+.card{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:18px 20px;margin-bottom:12px}
+.card.a{border-left:3px solid var(--A);background:rgba(56,189,248,.04)}.card.b{border-left:3px solid var(--B);background:rgba(74,222,128,.04)}.card.c{border-left:3px solid var(--C);background:rgba(251,146,60,.04)}.card.d{border-left:3px solid var(--D);background:rgba(244,114,182,.04)}.card.e{border-left:3px solid var(--E);background:rgba(167,139,250,.04)}.card.f{border-left:3px solid var(--F);background:rgba(251,191,36,.04)}.card.g{border-left:3px solid var(--G);background:rgba(45,212,191,.04)}.card.h{border-left:3px solid var(--H);background:rgba(248,113,113,.04)}
+.ct{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px}.cb{font-size:12.5px;color:var(--t2);line-height:1.7}
+
+/* ─── CODE ─── */
+.code{background:#070c13;border:1px solid var(--bdr);border-radius:7px;padding:16px 18px;margin:12px 0;font-family:'Fira Code',monospace;font-size:12px;line-height:1.85;overflow-x:auto;white-space:pre}
+.code .k{color:#a78bfa}.code .s{color:#4ade80}.code .f{color:#38bdf8}.code .c{color:#3d5268}.code .o{color:#fb923c}.code .n{color:#fbbf24}.code .p{color:#f472b6}.code .t{color:#2dd4bf}.code .r{color:#f87171}
+code{font-family:'Fira Code',monospace;font-size:11.5px;background:rgba(255,255,255,.07);color:var(--C);padding:1px 5px;border-radius:3px}
+.code-label{font-size:9px;font-weight:700;font-family:'Fira Code',monospace;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;padding:6px 18px 0;background:#070c13;border:1px solid var(--bdr);border-bottom:none;border-radius:7px 7px 0 0;margin-bottom:0}
+.code-label+.code{border-top:none;border-radius:0 0 7px 7px;margin-top:0}
+
+/* ─── CALLOUT ─── */
+.callout{border-radius:6px;padding:13px 16px;margin:12px 0;font-size:13px;line-height:1.65}
+.ca{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.22);color:#93d4f8}
+.cb2{background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.22);color:#86efac}
+.cc{background:rgba(251,146,60,.07);border:1px solid rgba(251,146,60,.22);color:#fdba74}
+.cd{background:rgba(244,114,182,.07);border:1px solid rgba(244,114,182,.22);color:#f9a8d4}
+.ce{background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.22);color:#c4b5fd}
+.cf{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.22);color:#fde68a}
+.ch{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.22);color:#fca5a5}
+.callout strong{font-weight:700;color:inherit}
+
+/* ─── GRIDS ─── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mini{background:var(--bg4);border:1px solid var(--bdr);border-radius:6px;padding:14px 15px}
+.mt2{font-size:12px;font-weight:700;margin-bottom:3px;font-family:'Fira Code',monospace}.mb2{font-size:12px;color:var(--t2);line-height:1.55}
+
+/* ─── FLOW DIAGRAM ─── */
+.flow{background:#070c13;border:1px solid var(--bdr);border-radius:8px;padding:18px;margin:12px 0;overflow-x:auto}
+.flow-row{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;min-width:fit-content}
+.fbox{padding:9px 14px;border-radius:5px;font-size:11px;font-family:'Fira Code',monospace;font-weight:600;border:1px solid;text-align:center;white-space:nowrap;line-height:1.4}
+.farr{color:var(--t3);font-size:14px;padding:0 4px;flex-shrink:0}
+.fdown{display:flex;flex-direction:column;align-items:center;gap:2px;margin:8px 0}
+
+/* ─── TABLE ─── */
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{background:var(--bg4)}
+th{text-align:left;padding:9px 14px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--bdr2);font-family:'Fira Code',monospace}
+td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--t2)}
+td:first-child{color:var(--t1);font-weight:600}
+tr:hover td{background:rgba(255,255,255,.018)}tr:last-child td{border-bottom:none}
+
+/* ─── PILL ─── */
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.04em}
+.pa{background:rgba(56,189,248,.15);color:var(--A)}.pb{background:rgba(74,222,128,.15);color:var(--B)}.pc{background:rgba(251,146,60,.15);color:var(--C)}.pe{background:rgba(167,139,250,.15);color:var(--E)}.pf{background:rgba(251,191,36,.15);color:var(--F)}.pg{background:rgba(45,212,191,.15);color:var(--G)}.ph{background:rgba(248,113,113,.15);color:var(--H)}
+
+/* ─── DO DON'T ─── */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.do{background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.18);border-radius:7px;padding:14px 16px}
+.dont{background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.18);border-radius:7px;padding:14px 16px}
+.do h4{font-size:9px;font-weight:700;color:var(--B);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;font-family:'Fira Code',monospace}
+.dont h4{font-size:9px;font-weight:700;color:var(--H);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;font-family:'Fira Code',monospace}
+.do li,.dont li{font-size:12px;color:var(--t2);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do li::before{content:"✓";position:absolute;left:0;color:var(--B);font-size:10px;top:5px}.dont li::before{content:"✗";position:absolute;left:0;color:var(--H);font-size:10px;top:5px}
+
+/* ─── STEPS ─── */
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;margin-bottom:4px}
+.sl2{display:flex;flex-direction:column;align-items:center}
+.sdot{width:27px;height:27px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'Fira Code',monospace;margin-top:2px}
+.sv2{width:2px;flex:1;min-height:18px;margin:3px 0;background:var(--bdr2)}
+.sc{flex:1;padding-bottom:16px}.stitle{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px}.sbody{font-size:12px;color:var(--t2);line-height:1.6}
+
+/* ─── COMPARE ─── */
+.cmp{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin:14px 0}
+.cmpc:first-child{border-right:1px solid var(--bdr);background:rgba(56,189,248,.03)}.cmpc{padding:16px 18px;background:rgba(74,222,128,.03)}
+.cmpc h3{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.cmpc li{font-size:12px;color:var(--t2);padding:3px 0;list-style:none;display:flex;gap:7px;line-height:1.5}
+.cmpc li::before{content:"·";color:var(--t3);flex-shrink:0}
+
+/* ─── LAYERS ─── */
+.layers{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.layer{border-radius:5px;padding:10px 15px;border-left:3px solid}
+.lname{font-size:12px;font-weight:700;margin-bottom:2px;font-family:'Fira Code',monospace}
+.ldesc{font-size:11.5px;color:var(--t2)}
+
+/* ─── PORT VISUAL ─── */
+.port-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:14px 0}
+.pbox{border-radius:5px;padding:10px 6px;text-align:center;border:1px solid;font-family:'Fira Code',monospace}
+.pbox .pnum{font-size:12px;font-weight:700;margin-bottom:2px}
+.pbox .psvc{font-size:9px;color:var(--t2)}
+
+/* ─── ACCORDION ─── */
+.acc{border:1px solid var(--bdr);border-radius:7px;overflow:hidden;margin-bottom:7px}
+.acc-h{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;background:var(--bg3);font-size:12.5px;font-weight:600;color:var(--t1);transition:background .13s;user-select:none}
+.acc-h:hover{background:var(--bg4)}.acc-ico{color:var(--t3);font-size:17px;transition:transform .18s;font-style:normal}
+.acc-b{display:none;padding:14px 16px;font-size:12px;color:var(--t2);line-height:1.65;background:var(--bg4);border-top:1px solid var(--bdr)}
+.acc.open .acc-b{display:block}.acc.open .acc-ico{transform:rotate(45deg)}
+
+/* ─── DIVIDER ─── */
+.div{height:1px;background:var(--bdr);margin:24px 0}
+h2{font-size:18px;font-weight:700;color:var(--t1);margin:24px 0 10px}h2:first-child{margin-top:0}
+h3{font-size:14px;font-weight:700;color:var(--t1);margin:18px 0 8px}
+p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px}p:last-child{margin-bottom:0}
+strong{color:var(--t1);font-weight:700}
+
+/* ─── OVERLAY ─── */
+.overlay{display:none;position:fixed;inset:var(--top) 0 0 0;background:rgba(0,0,0,.65);z-index:100}
+.overlay.open{display:block}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){.main{padding:24px 22px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:265px}
+  .main{margin-left:0;padding:20px 16px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .22s;z-index:110}
+  .sidebar.open{transform:translateX(0)}
+  .hbg{display:flex}.tl{width:auto;border-right:none}.tcnt{display:none}
+  .stats,.g2,.g3,.g4,.dd,.cmp{grid-template-columns:1fr}
+  .port-grid{grid-template-columns:repeat(3,1fr)}
+  .cmpc:first-child{border-right:none;border-bottom:1px solid var(--bdr)}
+}
+@media(max-width:480px){.htitle{font-size:20px}.stats{grid-template-columns:1fr 1fr}.port-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tl">
+    <div class="tlogo">N</div>
+    <div class="tbrand">NetMaster<span>Nginx · Ngrok · Cloudflare · Networking</span></div>
+  </div>
+  <div class="tr">
+    <button class="hbg" id="hbg"><span></span><span></span><span></span></button>
+    <span class="tcnt">16 modules · 100+ concepts</span>
+    <span class="tpill">Complete Guide</span>
+  </div>
+</header>
+
+<div class="overlay" id="ov"></div>
+<div class="layout">
+
+<!-- ══════ SIDEBAR ══════ -->
+<nav class="sidebar" id="sb">
+  <div class="sg">Foundations</div>
+  <a class="ni on" onclick="go('net-basics')"><span class="nd" style="background:var(--A)"></span>How internet traffic works<span class="nt ta">Start</span></a>
+  <a class="ni" onclick="go('ip-dns')"><span class="nd" style="background:var(--B)"></span>IP addresses & DNS<span class="nt tb">Core</span></a>
+
+  <div class="sg">Ports</div>
+  <a class="ni" onclick="go('ports')"><span class="nd" style="background:var(--C)"></span>What are ports?<span class="nt tc">Beginner</span></a>
+  <a class="ni" onclick="go('port-binding')"><span class="nd" style="background:var(--C)"></span>Port binding<span class="nt tc">Beginner</span></a>
+  <a class="ni" onclick="go('port-forwarding')"><span class="nd" style="background:var(--F)"></span>Port forwarding<span class="nt tf">Mid</span></a>
+
+  <div class="sg">Nginx</div>
+  <a class="ni" onclick="go('nginx-what')"><span class="nd" style="background:var(--B)"></span>What is Nginx?<span class="nt tb">Core</span></a>
+  <a class="ni" onclick="go('nginx-config')"><span class="nd" style="background:var(--B)"></span>Nginx configuration<span class="nt tb">Mid</span></a>
+  <a class="ni" onclick="go('nginx-reverse')"><span class="nd" style="background:var(--B)"></span>Reverse proxy<span class="nt tb">Mid</span></a>
+  <a class="ni" onclick="go('nginx-ssl')"><span class="nd" style="background:var(--B)"></span>SSL / HTTPS setup<span class="nt tb">Mid</span></a>
+  <a class="ni" onclick="go('nginx-lb')"><span class="nd" style="background:var(--E)"></span>Load balancing<span class="nt te">Adv</span></a>
+  <a class="ni" onclick="go('nginx-ws')"><span class="nd" style="background:var(--E)"></span>WebSocket & streaming<span class="nt te">Adv</span></a>
+
+  <div class="sg">Tunneling</div>
+  <a class="ni" onclick="go('ngrok')"><span class="nd" style="background:var(--D)"></span>Ngrok — local to internet<span class="nt td">Mid</span></a>
+  <a class="ni" onclick="go('tunnel-others')"><span class="nd" style="background:var(--E)"></span>Other tunnels (SSH, CF)<span class="nt te">Adv</span></a>
+
+  <div class="sg">Cloudflare</div>
+  <a class="ni" onclick="go('cf-what')"><span class="nd" style="background:var(--C)"></span>What is Cloudflare?<span class="nt tc">Core</span></a>
+  <a class="ni" onclick="go('cf-dns')"><span class="nd" style="background:var(--C)"></span>Cloudflare DNS<span class="nt tc">Mid</span></a>
+  <a class="ni" onclick="go('cf-tunnel')"><span class="nd" style="background:var(--F)"></span>Cloudflare Tunnel<span class="nt tf">Adv</span></a>
+  <a class="ni" onclick="go('cf-features')"><span class="nd" style="background:var(--E)"></span>CDN, WAF, Workers<span class="nt te">Adv</span></a>
+
+  <div class="sg">Protocols</div>
+  <a class="ni" onclick="go('protocols')"><span class="nd" style="background:var(--G)"></span>HTTP/HTTPS/WebSocket<span class="nt tg">Core</span></a>
+  <a class="ni" onclick="go('ssl-tls')"><span class="nd" style="background:var(--G)"></span>SSL / TLS / Certificates<span class="nt tg">Mid</span></a>
+
+  <div class="sg">Use Cases — Build it</div>
+  <a class="ni" onclick="go('uc-fastapi')"><span class="nd" style="background:var(--H)"></span>Deploy FastAPI app<span class="nt th">Build</span></a>
+  <a class="ni" onclick="go('uc-dev')"><span class="nd" style="background:var(--D)"></span>Expose local dev server<span class="nt td">Build</span></a>
+  <a class="ni" onclick="go('uc-voice')"><span class="nd" style="background:var(--A)"></span>Voice agent production<span class="nt ta">Build</span></a>
+  <a class="ni" onclick="go('uc-multi')"><span class="nd" style="background:var(--B)"></span>Multiple apps one server<span class="nt tb">Build</span></a>
+
+  <div class="sg">Reference</div>
+  <a class="ni" onclick="go('cheatsheet')"><span class="nd" style="background:var(--B)"></span>Command cheat sheet<span class="nt tb">Ref</span></a>
+  <a class="ni" onclick="go('troubleshoot')"><span class="nd" style="background:var(--H)"></span>Troubleshooting guide<span class="nt th">Fix</span></a>
+</nav>
+
+<!-- ══════ MAIN ══════ -->
+<main class="main">
+
+<!-- ══ HOW INTERNET WORKS ══ -->
+<section id="sec-net-basics" class="sec on">
+  <div class="hero">
+    <div class="htag" style="background:rgba(56,189,248,.1);color:var(--A)">Module 1 · Foundations</div>
+    <h1 class="htitle">How internet traffic works</h1>
+    <p class="hsub">Before Nginx, Ngrok, or Cloudflare make sense — you need to understand what happens when a user opens a browser, types a URL, and your server receives a request. This is the foundation everything else builds on.</p>
+  </div>
+
+  <div class="callout ca">
+    <strong>One paragraph summary:</strong> When you type <code>https://yourapp.com</code>, your browser asks DNS "what is the IP for yourapp.com?", gets back an IP address, opens a TCP connection to port 443 on that IP, sends an HTTPS request, and your server processes it and sends back a response. Every tool in this guide is about controlling some part of this journey.
+  </div>
+
+  <h2>The complete journey of one request</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(56,189,248,.2);color:var(--A)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">User types URL in browser</div><div class="sbody"><code>https://yourapp.com/api/chat</code> — the browser parses this: protocol=HTTPS, domain=yourapp.com, path=/api/chat, port=443 (implied by HTTPS).</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(56,189,248,.2);color:var(--A)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">DNS lookup — domain to IP</div><div class="sbody">Browser asks a DNS server: "what IP address is yourapp.com?" DNS returns <code>20.123.45.67</code>. Now the browser knows where to send the request.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(56,189,248,.2);color:var(--A)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">TCP connection established</div><div class="sbody">Browser opens a TCP connection to <code>20.123.45.67:443</code>. If it's HTTPS, SSL/TLS handshake happens here — certificates are exchanged, encryption is agreed upon.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(56,189,248,.2);color:var(--A)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">HTTP request arrives at your server</div><div class="sbody">Your server (Nginx) receives: <code>GET /api/chat HTTP/1.1</code>. Nginx reads it, applies your configuration rules, and decides what to do with it.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(56,189,248,.2);color:var(--A)">5</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Nginx routes to your application</div><div class="sbody">Nginx sees the path <code>/api/</code> and forwards the request to your FastAPI running on <code>localhost:8000</code>. This is called reverse proxying.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(56,189,248,.2);color:var(--A)">6</div></div><div class="sc"><div class="stitle">Response flows back</div><div class="sbody">FastAPI processes the request, returns JSON. Nginx sends it back through the SSL connection to the browser. User sees the response.</div></div></div>
+  </div>
+
+  <h2>The visual path</h2>
+  <div class="flow">
+    <div class="flow-row">
+      <div class="fbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--A)">Browser<br><span style="font-size:9px;font-weight:400;color:var(--t3)">User's device</span></div>
+      <span class="farr">──DNS──▶</span>
+      <div class="fbox" style="background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:var(--F)">DNS Server<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Cloudflare/Google</span></div>
+      <span class="farr">◀─IP─</span>
+      <div class="fbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--A)">Browser</div>
+    </div>
+    <div style="margin:8px 0;color:var(--t3);font-size:11px;font-family:'Fira Code',monospace;text-align:center">↓ TCP:443 HTTPS request</div>
+    <div class="flow-row">
+      <div class="fbox" style="background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--B)">Nginx<br><span style="font-size:9px;font-weight:400;color:var(--t3)">:443 — your server</span></div>
+      <span class="farr">──▶</span>
+      <div class="fbox" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:var(--E)">FastAPI<br><span style="font-size:9px;font-weight:400;color:var(--t3)">localhost:8000</span></div>
+      <span class="farr">──▶</span>
+      <div class="fbox" style="background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.3);color:var(--G)">Database<br><span style="font-size:9px;font-weight:400;color:var(--t3)">localhost:5432</span></div>
+    </div>
+  </div>
+
+  <h2>Key concepts you'll encounter</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt2" style="color:var(--A)">IP Address</div><div class="mb2">The numeric address of a computer on the internet. <code>20.123.45.67</code>. Like a postal address — every server needs one to receive mail.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--B)">Port</div><div class="mb2">A numbered door on an IP address. Port 443 = HTTPS, Port 80 = HTTP, Port 8000 = your FastAPI. Multiple apps share one IP via different ports.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--C)">DNS</div><div class="mb2">Domain Name System. Translates human-readable names (<code>yourapp.com</code>) to IP addresses. Like a phone book for the internet.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--F)">TCP/IP</div><div class="mb2">The protocol stack for internet communication. TCP ensures reliable delivery. IP routes packets to the right address.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--E)">SSL/TLS</div><div class="mb2">Encryption layer over TCP. Makes HTTP into HTTPS. Certificates prove you're the real server, not an impostor.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--G)">Reverse Proxy</div><div class="mb2">A middleman server (Nginx) that receives public traffic and forwards it to private backend servers. Hides your internal network.</div></div>
+  </div>
+</section>
+
+<!-- ══ IP & DNS ══ -->
+<section id="sec-ip-dns" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(74,222,128,.1);color:var(--B)">Module 2 · Foundations</div>
+    <h1 class="htitle">IP Addresses & DNS</h1>
+    <p class="hsub">Understanding IP addresses and DNS is essential for configuring Nginx, Cloudflare, and deploying applications. These are the building blocks of how servers find each other.</p>
+  </div>
+
+  <h2>Types of IP addresses</h2>
+  <div class="g2">
+    <div class="card a"><div class="ct">Public IP — visible on internet</div><div class="cb">Your Azure VM's IP. Anyone on the internet can send traffic to it. This is what DNS records point to. Example: <code>20.123.45.67</code>. Your ISP or cloud provider assigns this.</div></div>
+    <div class="card b"><div class="ct">Private IP — local network only</div><div class="cb">Internal network addresses. <code>192.168.x.x</code>, <code>10.x.x.x</code>, <code>172.16-31.x.x</code>. Your laptop's IP on WiFi. Not reachable from the internet directly. Nginx on a VM might listen on <code>127.0.0.1</code> (localhost).</div></div>
+    <div class="card c"><div class="ct">localhost / 127.0.0.1</div><div class="cb">Special IP that means "this machine itself." When FastAPI runs on <code>localhost:8000</code>, only programs on the same server can reach it. Nginx forwards to it from the public IP.</div></div>
+    <div class="card f"><div class="ct">0.0.0.0 — all interfaces</div><div class="cb">Means "listen on ALL network interfaces." When Nginx binds to <code>0.0.0.0:443</code>, it accepts connections from the public internet, the local network, and localhost. The default when you want to be publicly accessible.</div></div>
+  </div>
+
+  <h2>How DNS works — step by step</h2>
+  <div class="code"><span class="c"># DNS resolution chain for yourapp.com</span>
+
+<span class="c"># 1. Browser checks local cache — did we look this up recently?</span>
+<span class="c"># 2. OS checks /etc/hosts — any manual overrides?</span>
+<span class="c"># 3. Query goes to Recursive Resolver (your ISP or 1.1.1.1)</span>
+<span class="c"># 4. Resolver asks Root Nameserver: "who handles .com?"</span>
+<span class="c"># 5. Resolver asks .com TLD Nameserver: "who handles yourapp.com?"</span>
+<span class="c"># 6. Resolver asks Authoritative Nameserver (Cloudflare/Route53): "yourapp.com?"</span>
+<span class="c"># 7. Returns: yourapp.com → 20.123.45.67 (A record)</span>
+<span class="c"># 8. Browser caches result for TTL seconds, then connects to that IP</span>
+
+<span class="c"># Useful commands</span>
+nslookup yourapp.com           <span class="c"># basic DNS lookup</span>
+dig yourapp.com                <span class="c"># detailed DNS info</span>
+dig yourapp.com +short         <span class="c"># just the IP</span>
+dig yourapp.com MX             <span class="c"># mail records</span>
+host yourapp.com               <span class="c"># simple lookup</span></div>
+
+  <h2>DNS record types</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Record</th><th>Purpose</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill pa">A</span></td><td>Maps domain to IPv4 address</td><td><code>yourapp.com → 20.123.45.67</code></td></tr>
+        <tr><td><span class="pill pb">AAAA</span></td><td>Maps domain to IPv6 address</td><td><code>yourapp.com → 2001:db8::1</code></td></tr>
+        <tr><td><span class="pill pc">CNAME</span></td><td>Alias — points to another domain</td><td><code>www.yourapp.com → yourapp.com</code></td></tr>
+        <tr><td><span class="pill pe">MX</span></td><td>Mail server for the domain</td><td><code>yourapp.com → mail.yourapp.com</code></td></tr>
+        <tr><td><span class="pill pf">TXT</span></td><td>Arbitrary text — used for verification, SPF</td><td><code>yourapp.com → "v=spf1 include:..."</code></td></tr>
+        <tr><td><span class="pill pg">NS</span></td><td>Nameservers for the domain</td><td><code>yourapp.com → ns1.cloudflare.com</code></td></tr>
+        <tr><td><span class="pill ph">TTL</span></td><td>Time to live — how long to cache the record</td><td>300 = 5 minutes, 86400 = 1 day</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══ PORTS ══ -->
+<section id="sec-ports" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(251,146,60,.1);color:var(--C)">Module 3 · Ports</div>
+    <h1 class="htitle">What are ports?</h1>
+    <p class="hsub">A server has one IP address but can run many services. Ports are numbered "doors" — each service listens on a different door number. When you open port 8000 in Azure, you're unlocking that specific door for internet traffic.</p>
+  </div>
+
+  <div class="callout cc">
+    <strong>Analogy:</strong> Your server's IP address is like a building's street address. Ports are like apartment numbers within that building. The mail (traffic) arrives at the building (IP) and is delivered to the specific apartment (port) it's addressed to.
+  </div>
+
+  <h2>Common port numbers to memorize</h2>
+  <div class="port-grid">
+    <div class="pbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3)"><div class="pnum" style="color:var(--A)">80</div><div class="psvc">HTTP</div></div>
+    <div class="pbox" style="background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3)"><div class="pnum" style="color:var(--B)">443</div><div class="psvc">HTTPS</div></div>
+    <div class="pbox" style="background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3)"><div class="pnum" style="color:var(--C)">22</div><div class="psvc">SSH</div></div>
+    <div class="pbox" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3)"><div class="pnum" style="color:var(--E)">5432</div><div class="psvc">PostgreSQL</div></div>
+    <div class="pbox" style="background:rgba(244,114,182,.1);border-color:rgba(244,114,182,.3)"><div class="pnum" style="color:var(--D)">3306</div><div class="psvc">MySQL</div></div>
+    <div class="pbox" style="background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.3)"><div class="pnum" style="color:var(--G)">6379</div><div class="psvc">Redis</div></div>
+    <div class="pbox" style="background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3)"><div class="pnum" style="color:var(--F)">8000</div><div class="psvc">FastAPI</div></div>
+    <div class="pbox" style="background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3)"><div class="pnum" style="color:var(--F)">3000</div><div class="psvc">Node.js</div></div>
+    <div class="pbox" style="background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.3)"><div class="pnum" style="color:var(--H)">25</div><div class="psvc">SMTP</div></div>
+    <div class="pbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3)"><div class="pnum" style="color:var(--A)">7880</div><div class="psvc">LiveKit</div></div>
+    <div class="pbox" style="background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3)"><div class="pnum" style="color:var(--B)">27017</div><div class="psvc">MongoDB</div></div>
+    <div class="pbox" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3)"><div class="pnum" style="color:var(--E)">9200</div><div class="psvc">Elastic</div></div>
+  </div>
+
+  <h2>Port ranges</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Range</th><th>Name</th><th>Who uses them</th></tr></thead>
+      <tbody>
+        <tr><td>0–1023</td><td>Well-known ports</td><td>Standard services (HTTP=80, HTTPS=443, SSH=22). Require root/admin to bind.</td></tr>
+        <tr><td>1024–49151</td><td>Registered ports</td><td>Application servers (PostgreSQL=5432, MySQL=3306, Redis=6379). No root needed.</td></tr>
+        <tr><td>49152–65535</td><td>Dynamic/ephemeral</td><td>Temporary client ports assigned automatically for outgoing connections.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Checking what's running on which port</h2>
+  <div class="code"><span class="c"># Linux — list all ports and what's listening</span>
+ss -tulpn                     <span class="c"># modern, fast</span>
+netstat -tulpn                <span class="c"># older alternative</span>
+lsof -i :8000                 <span class="c"># what's using port 8000 specifically</span>
+fuser 8000/tcp                <span class="c"># process ID using port 8000</span>
+
+<span class="c"># Kill a process on a specific port</span>
+fuser -k 8000/tcp             <span class="c"># kills whatever is on port 8000</span>
+
+<span class="c"># Check if port is open from another machine</span>
+nc -zv 20.123.45.67 8000      <span class="c"># netcat: is port 8000 open?</span>
+telnet 20.123.45.67 8000      <span class="c"># older way</span>
+curl -I http://20.123.45.67:8000  <span class="c"># HTTP request test</span>
+
+<span class="c"># Ubuntu UFW firewall — manage which ports are open</span>
+sudo ufw status               <span class="c"># see current rules</span>
+sudo ufw allow 8000           <span class="c"># open port 8000</span>
+sudo ufw deny 8000            <span class="c"># close port 8000</span>
+sudo ufw allow 'Nginx Full'   <span class="c"># open 80 + 443 for Nginx</span></div>
+</section>
+
+<!-- ══ PORT BINDING ══ -->
+<section id="sec-port-binding" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(251,146,60,.1);color:var(--C)">Module 4 · Ports</div>
+    <h1 class="htitle">Port Binding</h1>
+    <p class="hsub">Port binding is when a program "claims" a port and starts listening for connections on it. When you run <code>uvicorn main:app --port 8000</code>, FastAPI is binding to port 8000. Only one program can bind to a port at a time.</p>
+  </div>
+
+  <h2>How binding works</h2>
+  <div class="code"><span class="c"># When you start FastAPI:</span>
+uvicorn main:app <span class="k">--host</span> 0.0.0.0 <span class="k">--port</span> 8000
+
+<span class="c"># The OS creates a socket and binds it:</span>
+<span class="c"># socket.bind(('0.0.0.0', 8000))  — "I claim port 8000 on all interfaces"</span>
+<span class="c"># socket.listen()                  — "start accepting connections"</span>
+
+<span class="c"># --host controls WHICH interface to listen on:</span>
+uvicorn main:app <span class="k">--host</span> 127.0.0.1 <span class="k">--port</span> 8000   <span class="c"># ONLY localhost — cannot reach from internet</span>
+uvicorn main:app <span class="k">--host</span> 0.0.0.0   <span class="k">--port</span> 8000   <span class="c"># ALL interfaces — reachable from internet</span>
+
+<span class="c"># In production: bind to 127.0.0.1, let Nginx handle public traffic</span>
+<span class="c"># Nginx binds 0.0.0.0:443 → forwards to 127.0.0.1:8000</span></div>
+
+  <div class="g2">
+    <div class="card b"><div class="ct">Bind to 127.0.0.1 (production)</div><div class="cb">FastAPI only accepts connections from the same machine. Nobody outside can directly hit your app. Nginx is the only thing that talks to FastAPI. <strong>This is the secure way.</strong></div></div>
+    <div class="card h"><div class="ct">Bind to 0.0.0.0 (risky)</div><div class="cb">FastAPI accepts connections from anywhere. Anyone who knows your IP and port 8000 can hit your app directly, bypassing Nginx security. Only do this for temporary debugging.</div></div>
+  </div>
+
+  <h2>Binding in different frameworks</h2>
+  <div class="code"><span class="c"># FastAPI / Uvicorn</span>
+uvicorn main:app <span class="k">--host</span> 127.0.0.1 <span class="k">--port</span> 8000
+
+<span class="c"># Node.js</span>
+app.listen(<span class="n">3000</span>, <span class="s">'127.0.0.1'</span>)
+
+<span class="c"># Python raw socket</span>
+server_socket.bind((<span class="s">'127.0.0.1'</span>, <span class="n">8000</span>))
+
+<span class="c"># Nginx binding (in config)</span>
+listen 443 ssl;              <span class="c"># binds 0.0.0.0:443 (all interfaces)</span>
+listen 127.0.0.1:8080;       <span class="c"># only localhost</span>
+
+<span class="c"># systemd service to auto-start on boot</span>
+<span class="c"># /etc/systemd/system/fastapi.service</span>
+[Unit]
+Description=FastAPI Application
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/var/www/yourapp
+ExecStart=/usr/bin/uvicorn main:app <span class="k">--host</span> 127.0.0.1 <span class="k">--port</span> 8000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target</div>
+
+  <div class="callout cb2">
+    <strong>Port already in use error?</strong> <code>OSError: [Errno 98] Address already in use</code> means another process is already bound to that port. Run <code>lsof -i :8000</code> to find it, then either kill it or choose a different port.
+  </div>
+</section>
+
+<!-- ══ PORT FORWARDING ══ -->
+<section id="sec-port-forwarding" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(251,191,36,.1);color:var(--F)">Module 5 · Ports</div>
+    <h1 class="htitle">Port Forwarding</h1>
+    <p class="hsub">Port forwarding redirects incoming traffic from one port/address to another. It's the mechanism that lets a router share one public IP among many devices, lets Nginx route traffic to different apps, and lets you expose local services to the internet.</p>
+  </div>
+
+  <h2>3 types of port forwarding you'll use</h2>
+
+  <h3>1. Router / NAT port forwarding (home lab)</h3>
+  <div class="callout cc"><strong>Problem:</strong> Your home server has a private IP (192.168.1.100). The internet can only see your router's public IP. Port forwarding tells your router: "when traffic arrives on port 8000, send it to 192.168.1.100:8000."</div>
+  <div class="code"><span class="c"># Router admin panel (192.168.1.1) → Port Forwarding section:</span>
+External Port: 8000
+Internal IP:   192.168.1.100    <span class="c"># your server's local IP</span>
+Internal Port: 8000
+Protocol:      TCP
+
+<span class="c"># After this: publicIP:8000 → 192.168.1.100:8000</span></div>
+
+  <h3>2. SSH port forwarding (tunneling)</h3>
+  <div class="code"><span class="c"># LOCAL forwarding — access remote service locally</span>
+<span class="c"># "Forward my localhost:5432 to the remote server's localhost:5432"</span>
+ssh <span class="k">-L</span> 5432:localhost:5432 user@remoteserver.com
+
+<span class="c"># Now you can connect to PostgreSQL on remote server via localhost:5432</span>
+psql -h localhost -p 5432 -U myuser mydatabase
+
+<span class="c"># REMOTE forwarding — expose local port to remote server</span>
+<span class="c"># "My localhost:8000 should be accessible on remote server's port 9000"</span>
+ssh <span class="k">-R</span> 9000:localhost:8000 user@remoteserver.com
+
+<span class="c"># DYNAMIC forwarding — SOCKS proxy through SSH</span>
+ssh <span class="k">-D</span> 1080 user@remoteserver.com
+<span class="c"># Then set browser to use SOCKS5 proxy at localhost:1080</span></div>
+
+  <h3>3. Azure NSG + application-level forwarding (your setup)</h3>
+  <div class="code"><span class="c"># Azure NSG: controls which ports the cloud firewall allows</span>
+<span class="c"># Inbound rule: port 443 from internet → your VM</span>
+<span class="c"># Then Nginx inside VM: port 443 → localhost:8000 (FastAPI)</span>
+
+<span class="c"># The chain for your Azure setup:</span>
+Internet → Azure NSG (port 443 allowed)
+        → VM public IP :443
+        → Nginx (listens on :443)
+        → FastAPI (localhost:8000)
+
+<span class="c"># In Azure portal: VM → Networking → Add inbound port rule</span>
+Destination port: 443
+Protocol: TCP
+Action: Allow
+Priority: 100</div>
+
+  <h2>When to open which ports in Azure</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Port</th><th>Open to internet?</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>443 (HTTPS)</td><td><span class="pill pb">Yes — always</span></td><td>Your public-facing app. Nginx handles this.</td></tr>
+        <tr><td>80 (HTTP)</td><td><span class="pill pb">Yes — for redirect</span></td><td>Redirects users to HTTPS. Nginx redirects, not your app.</td></tr>
+        <tr><td>22 (SSH)</td><td><span class="pill pf">Your IP only</span></td><td>Restrict to your static IP. Open to all = constant attack attempts.</td></tr>
+        <tr><td>8000 (FastAPI)</td><td><span class="pill ph">Never</span></td><td>Nginx proxies to this. No need for direct internet access.</td></tr>
+        <tr><td>5432 (PostgreSQL)</td><td><span class="pill ph">Never</span></td><td>Database should never be directly internet-accessible.</td></tr>
+        <tr><td>7880 (LiveKit)</td><td><span class="pill pc">If self-hosting</span></td><td>Only if running your own LiveKit server, not using LiveKit Cloud.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══ NGINX WHAT ══ -->
+<section id="sec-nginx-what" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(74,222,128,.1);color:var(--B)">Module 6 · Nginx</div>
+    <h1 class="htitle">What is Nginx?</h1>
+    <p class="hsub">Nginx (pronounced "engine-x") is a high-performance web server and reverse proxy. It sits in front of your applications and handles everything the internet throws at it — routing, SSL termination, rate limiting, static files, WebSockets — before traffic ever reaches your code.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Created</div><div class="sv" style="color:var(--B)">2004 by Igor Sysoev</div></div>
+    <div class="stat"><div class="sl">Market share</div><div class="sv" style="color:var(--A)">~34% of all websites</div></div>
+    <div class="stat"><div class="sl">Model</div><div class="sv" style="color:var(--C)">Event-driven async</div></div>
+    <div class="stat"><div class="sl">Config file</div><div class="sv" style="color:var(--F)">/etc/nginx/nginx.conf</div></div>
+  </div>
+
+  <h2>Web server vs Reverse proxy — the two modes</h2>
+  <div class="cmp">
+    <div class="cmpc">
+      <h3 style="color:var(--A)">Mode 1 — Web server</h3>
+      <li>Serves static files directly (HTML, CSS, JS, images)</li>
+      <li>No backend processing needed</li>
+      <li>Extremely fast — reads files, sends bytes</li>
+      <li>Use: React/Vue build output, static sites</li>
+      <li>Example: <code>root /var/www/html; try_files $uri /index.html;</code></li>
+    </div>
+    <div class="cmpc">
+      <h3 style="color:var(--B)">Mode 2 — Reverse proxy</h3>
+      <li>Forwards requests to a backend app (FastAPI, Node.js)</li>
+      <li>Backend processes the request, Nginx delivers the response</li>
+      <li>Adds SSL, rate limiting, caching in front of any app</li>
+      <li>Use: FastAPI, Django, Express — any HTTP server</li>
+      <li>Example: <code>proxy_pass http://127.0.0.1:8000;</code></li>
+    </div>
+  </div>
+
+  <h2>What Nginx handles so your app doesn't have to</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt2" style="color:var(--B)">SSL termination</div><div class="mb2">Nginx decrypts HTTPS traffic and forwards plain HTTP to your app. Your FastAPI never needs to know about certificates.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--A)">Static file serving</div><div class="mb2">Serves HTML, CSS, JS, images from disk at millions of requests/sec. Never goes through Python for static assets.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--C)">Rate limiting</div><div class="mb2">Limits requests per second/minute per IP. Blocks abuse before it hits your application code.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--E)">Load balancing</div><div class="mb2">Distributes traffic across multiple app instances. If one crashes, others continue.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--F)">Gzip compression</div><div class="mb2">Compresses responses automatically. JSON that's 100KB becomes 15KB. Faster for users.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--G)">Caching</div><div class="mb2">Stores responses and serves them without hitting your backend for repeat requests.</div></div>
+  </div>
+
+  <h2>Install Nginx on Ubuntu (Azure VM)</h2>
+  <div class="code"><span class="c"># Install</span>
+sudo apt update
+sudo apt install nginx -y
+
+<span class="c"># Start and enable on boot</span>
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+<span class="c"># Check status</span>
+sudo systemctl status nginx
+
+<span class="c"># Test config before applying</span>
+sudo nginx -t
+
+<span class="c"># Reload after config changes (zero downtime)</span>
+sudo systemctl reload nginx
+
+<span class="c"># Restart (brief downtime)</span>
+sudo systemctl restart nginx
+
+<span class="c"># Config locations</span>
+/etc/nginx/nginx.conf              <span class="c"># main config</span>
+/etc/nginx/sites-available/        <span class="c"># your site configs go here</span>
+/etc/nginx/sites-enabled/          <span class="c"># symlinks to active configs</span>
+/var/log/nginx/access.log          <span class="c"># all requests</span>
+/var/log/nginx/error.log           <span class="c"># errors</span></div>
+</section>
+
+<!-- ══ NGINX CONFIG ══ -->
+<section id="sec-nginx-config" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(74,222,128,.1);color:var(--B)">Module 7 · Nginx</div>
+    <h1 class="htitle">Nginx Configuration Deep Dive</h1>
+    <p class="hsub">Nginx config is a hierarchy of blocks. Understanding the structure — and how <code>server</code>, <code>location</code>, and <code>upstream</code> blocks work — lets you build any routing logic you need.</p>
+  </div>
+
+  <h2>The config hierarchy</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--A);background:rgba(56,189,248,.05)"><div class="lname" style="color:var(--A)">http { } block</div><div class="ldesc">Global HTTP settings. Rate limit zones, gzip, log formats, upstream groups. One per nginx.conf.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:2px;font-family:'Fira Code',monospace">↓ contains</div>
+    <div class="layer" style="border-color:var(--B);background:rgba(74,222,128,.05)"><div class="lname" style="color:var(--B)">server { } block</div><div class="ldesc">Defines a virtual host — one per domain/subdomain. Listens on a port, matches server_name. Can have many per nginx.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:2px;font-family:'Fira Code',monospace">↓ contains</div>
+    <div class="layer" style="border-color:var(--C);background:rgba(251,146,60,.05)"><div class="lname" style="color:var(--C)">location { } block</div><div class="ldesc">Matches URL paths. <code>location /api/ { }</code> handles all /api/* requests. Contains proxy rules, rate limits, etc.</div></div>
+  </div>
+
+  <h2>Anatomy of a server block</h2>
+  <div class="code"><span class="c"># /etc/nginx/sites-available/yourapp</span>
+
+server {
+    listen <span class="n">80</span>;                         <span class="c"># what port to listen on</span>
+    server_name yourapp.com www.yourapp.com;  <span class="c"># what domain to match</span>
+    return <span class="n">301</span> https://$host$request_uri;    <span class="c"># redirect HTTP → HTTPS</span>
+}
+
+server {
+    listen <span class="n">443</span> ssl http2;               <span class="c"># HTTPS with HTTP/2</span>
+    server_name yourapp.com www.yourapp.com;
+
+    <span class="c"># ── SSL certificates ──</span>
+    ssl_certificate     /etc/letsencrypt/live/yourapp.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yourapp.com/privkey.pem;
+
+    <span class="c"># ── Logging ──</span>
+    access_log /var/log/nginx/yourapp.access.log;
+    error_log  /var/log/nginx/yourapp.error.log;
+
+    <span class="c"># ── Gzip ──</span>
+    gzip on;
+    gzip_types application/json text/css application/javascript;
+
+    <span class="c"># ── Location blocks ──</span>
+    location / {
+        proxy_pass http://127.0.0.1:<span class="n">8000</span>;     <span class="c"># FastAPI</span>
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
+<span class="c"># Enable this site</span>
+sudo ln -s /etc/nginx/sites-available/yourapp /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx</div>
+
+  <h2>Location block matching — how Nginx picks the right block</h2>
+  <div class="code"><span class="c"># Location matching priority (highest to lowest)</span>
+location = /exact/path { }      <span class="c"># 1. EXACT match — highest priority</span>
+location ^~ /prefix/ { }        <span class="c"># 2. PREFIX (blocks regex)</span>
+location ~ /regex/ { }          <span class="c"># 3. REGEX (case-sensitive)</span>
+location ~* /regex/ { }         <span class="c"># 4. REGEX (case-insensitive)</span>
+location /prefix/ { }           <span class="c"># 5. PREFIX match (longest wins)</span>
+location / { }                  <span class="c"># 6. DEFAULT — catch-all</span>
+
+<span class="c"># Practical examples</span>
+location = /health { return 200 "OK"; }        <span class="c"># exact: only /health</span>
+location /api/ { proxy_pass http://127.0.0.1:8000; }   <span class="c"># /api/anything</span>
+location /webhook/ { proxy_pass http://127.0.0.1:8001; } <span class="c"># different service</span>
+location ~* \.(jpg|png|gif|css|js)$ {          <span class="c"># static files</span>
+    root /var/www/yourapp/static;
+    expires 30d;
+}
+location / { root /var/www/yourapp; }          <span class="c"># everything else: static</span></div>
+</section>
+
+<!-- ══ REVERSE PROXY ══ -->
+<section id="sec-nginx-reverse" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(74,222,128,.1);color:var(--B)">Module 8 · Nginx</div>
+    <h1 class="htitle">Nginx as Reverse Proxy</h1>
+    <p class="hsub">A reverse proxy sits between the internet and your backend services. It receives all public traffic and forwards it to the right internal service. This is the most important Nginx pattern for deploying FastAPI, Node.js, or any backend app.</p>
+  </div>
+
+  <h2>Forward proxy vs Reverse proxy</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--A)">Forward proxy</h3>
+      <li>Sits in front of <strong>clients</strong> (browsers, scripts)</li>
+      <li>Clients configure it explicitly (browser settings)</li>
+      <li>Use: corporate firewalls, VPNs, bypassing geo-blocks</li>
+      <li>Backend servers don't know the real client</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--B)">Reverse proxy (Nginx)</h3>
+      <li>Sits in front of <strong>servers</strong> (FastAPI, Node.js)</li>
+      <li>Transparent to clients — they think they're talking to Nginx</li>
+      <li>Use: load balancing, SSL, routing, security</li>
+      <li>Clients don't know about backend servers</li>
+    </div>
+  </div>
+
+  <h2>Complete reverse proxy configuration</h2>
+  <div class="code"><span class="c"># Full production proxy setup for FastAPI</span>
+server {
+    listen <span class="n">443</span> ssl http2;
+    server_name api.yourapp.com;
+
+    <span class="c"># ── Proxy headers — tell FastAPI who the real client is ──</span>
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    <span class="c"># ── Timeouts ──</span>
+    proxy_connect_timeout  60s;
+    proxy_send_timeout     60s;
+    proxy_read_timeout     60s;          <span class="c"># increase for AI/long ops</span>
+
+    <span class="c"># ── Buffer settings ──</span>
+    proxy_buffering    off;              <span class="c"># OFF for streaming (SSE, AI)</span>
+    proxy_buffer_size  4k;
+
+    <span class="c"># ── API routes → FastAPI ──</span>
+    location /api/ {
+        limit_req zone=api burst=<span class="n">30</span> nodelay;
+        proxy_pass http://127.0.0.1:<span class="n">8000</span>;
+    }
+
+    <span class="c"># ── WebSocket → FastAPI ──</span>
+    location /ws/ {
+        proxy_pass         http://127.0.0.1:<span class="n">8000</span>;
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade    $http_upgrade;
+        proxy_set_header   Connection "upgrade";
+        proxy_read_timeout <span class="n">3600s</span>;     <span class="c"># long-lived WS connections</span>
+    }
+
+    <span class="c"># ── SSE (Server-Sent Events for AI streaming) ──</span>
+    location /api/stream/ {
+        proxy_pass         http://127.0.0.1:<span class="n">8000</span>;
+        proxy_buffering    off;
+        proxy_cache        off;
+        proxy_set_header   X-Accel-Buffering no;
+        proxy_read_timeout <span class="n">300s</span>;      <span class="c"># long timeout for AI responses</span>
+    }
+
+    <span class="c"># ── Internal endpoints — BLOCK ──</span>
+    location /internal/ { return <span class="n">404</span>; }
+}</div>
+
+  <div class="callout cb2">
+    <strong>X-Real-IP is essential.</strong> Without <code>proxy_set_header X-Real-IP $remote_addr</code>, your FastAPI sees all requests coming from 127.0.0.1 (Nginx). Rate limiting per IP won't work. User IP logging won't work. Always pass real IP headers through.
+  </div>
+</section>
+
+<!-- ══ SSL ══ -->
+<section id="sec-nginx-ssl" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(74,222,128,.1);color:var(--B)">Module 9 · Nginx</div>
+    <h1 class="htitle">SSL / HTTPS Setup with Let's Encrypt</h1>
+    <p class="hsub">HTTPS encrypts traffic between users and your server. Without it, anyone on the network can read passwords, tokens, and data in transit. Let's Encrypt gives you free SSL certificates. Certbot automates renewal.</p>
+  </div>
+
+  <h2>Setup HTTPS in 5 minutes</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(74,222,128,.2);color:var(--B)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Point your domain to your server</div><div class="sbody">In your DNS provider (Cloudflare or domain registrar), add an A record: <code>yourapp.com → 20.123.45.67</code>. Wait for propagation (30 sec to a few minutes with Cloudflare).</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(74,222,128,.2);color:var(--B)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Install Certbot</div><div class="sbody"><div class="code" style="margin:4px 0">sudo apt install certbot python3-certbot-nginx -y</div></div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(74,222,128,.2);color:var(--B)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Get certificate (auto-configures Nginx)</div><div class="sbody"><div class="code" style="margin:4px 0">sudo certbot --nginx -d yourapp.com -d www.yourapp.com</div></div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(74,222,128,.2);color:var(--B)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Certbot auto-renews — verify it works</div><div class="sbody"><div class="code" style="margin:4px 0">sudo certbot renew --dry-run   <span class="c"># test auto-renewal</span></div>Certificates expire every 90 days. Certbot adds a cron job to renew automatically.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(74,222,128,.2);color:var(--B)">5</div></div><div class="sc"><div class="stitle">Open ports 80 and 443 in Azure NSG</div><div class="sbody">Certbot needs port 80 to verify domain ownership. Port 443 for HTTPS. Both must be open in Azure NSG inbound rules.</div></div></div>
+  </div>
+
+  <div class="code"><span class="c"># What Certbot adds to your Nginx config:</span>
+ssl_certificate     /etc/letsencrypt/live/yourapp.com/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/yourapp.com/privkey.pem;
+include             /etc/letsencrypt/options-ssl-nginx.conf;
+ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
+
+<span class="c"># Certificate locations</span>
+/etc/letsencrypt/live/yourapp.com/
+  ├── fullchain.pem   <span class="c"># your cert + intermediate chain</span>
+  ├── privkey.pem     <span class="c"># private key — keep secret</span>
+  ├── cert.pem        <span class="c"># your cert only</span>
+  └── chain.pem       <span class="c"># intermediate chain only</span>
+
+<span class="c"># Check certificate expiry</span>
+sudo certbot certificates
+openssl x509 -noout -dates -in /etc/letsencrypt/live/yourapp.com/cert.pem</div>
+</section>
+
+<!-- ══ LOAD BALANCING ══ -->
+<section id="sec-nginx-lb" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(167,139,250,.1);color:var(--E)">Module 10 · Nginx Advanced</div>
+    <h1 class="htitle">Load Balancing with Nginx</h1>
+    <p class="hsub">When one server instance can't handle your traffic, you run multiple instances and distribute load across them. Nginx's upstream block defines the pool of backend servers and the algorithm for distributing requests.</p>
+  </div>
+
+  <div class="code"><span class="c"># Define upstream group (pool of backend servers)</span>
+upstream fastapi_cluster {
+    <span class="c"># Round-robin (default) — each request goes to next server</span>
+    server 127.0.0.1:<span class="n">8000</span>;
+    server 127.0.0.1:<span class="n">8001</span>;
+    server 127.0.0.1:<span class="n">8002</span>;
+}
+
+upstream fastapi_weighted {
+    <span class="c"># Weighted — powerful server gets more traffic</span>
+    server 127.0.0.1:<span class="n">8000</span> weight=<span class="n">3</span>;    <span class="c"># 3x more traffic</span>
+    server 127.0.0.1:<span class="n">8001</span> weight=<span class="n">1</span>;
+}
+
+upstream fastapi_sticky {
+    <span class="c"># ip_hash — same client always goes to same server (sessions)</span>
+    ip_hash;
+    server 127.0.0.1:<span class="n">8000</span>;
+    server 127.0.0.1:<span class="n">8001</span>;
+}
+
+upstream fastapi_least_conn {
+    <span class="c"># least_conn — send to server with fewest active connections</span>
+    least_conn;
+    server 127.0.0.1:<span class="n">8000</span>;
+    server 127.0.0.1:<span class="n">8001</span>;
+    server 127.0.0.1:<span class="n">8002</span> backup;   <span class="c"># only used if others are down</span>
+}
+
+server {
+    location /api/ {
+        proxy_pass http://fastapi_cluster;
+    }
+}</div>
+
+  <h2>Run multiple FastAPI instances with systemd</h2>
+  <div class="code"><span class="c"># Start 3 FastAPI instances on different ports</span>
+uvicorn main:app <span class="k">--host</span> 127.0.0.1 <span class="k">--port</span> <span class="n">8000</span> <span class="k">--workers</span> <span class="n">1</span> &
+uvicorn main:app <span class="k">--host</span> 127.0.0.1 <span class="k">--port</span> <span class="n">8001</span> <span class="k">--workers</span> <span class="n">1</span> &
+uvicorn main:app <span class="k">--host</span> 127.0.0.1 <span class="k">--port</span> <span class="n">8002</span> <span class="k">--workers</span> <span class="n">1</span> &
+
+<span class="c"># OR: single command with multiple workers (Uvicorn manages)</span>
+uvicorn main:app <span class="k">--host</span> 127.0.0.1 <span class="k">--port</span> <span class="n">8000</span> <span class="k">--workers</span> <span class="n">4</span></div>
+
+  <h2>Health checks — remove failed servers</h2>
+  <div class="code"><span class="c"># Nginx Plus (paid) has active health checks</span>
+<span class="c"># Open-source Nginx uses passive health checks:</span>
+upstream backend {
+    server 127.0.0.1:<span class="n">8000</span> max_fails=<span class="n">3</span> fail_timeout=<span class="n">30s</span>;
+    server 127.0.0.1:<span class="n">8001</span> max_fails=<span class="n">3</span> fail_timeout=<span class="n">30s</span>;
+    <span class="c"># If a server fails 3 times in 30s → marked as down for 30s</span>
+}</div>
+</section>
+
+<!-- ══ WS STREAMING ══ -->
+<section id="sec-nginx-ws" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(167,139,250,.1);color:var(--E)">Module 11 · Nginx Advanced</div>
+    <h1 class="htitle">WebSocket & Streaming (SSE)</h1>
+    <p class="hsub">WebSockets and Server-Sent Events (SSE) are persistent connections — the server keeps pushing data. Standard HTTP proxy settings don't work for these. Nginx needs specific configuration to handle them correctly.</p>
+  </div>
+
+  <h2>WebSocket proxying</h2>
+  <div class="callout ce"><strong>Why special config?</strong> WebSockets start as HTTP and then upgrade to a persistent bidirectional connection via the <code>Upgrade</code> header. Nginx must be told to forward this upgrade, otherwise it closes the connection after the first response.</div>
+  <div class="code"><span class="c"># WebSocket proxy — the crucial headers</span>
+location /ws/ {
+    proxy_pass         http://127.0.0.1:<span class="n">8000</span>;
+    proxy_http_version <span class="n">1.1</span>;                    <span class="c"># WebSocket requires HTTP/1.1</span>
+    proxy_set_header   Upgrade    $http_upgrade; <span class="c"># forward the Upgrade header</span>
+    proxy_set_header   Connection "upgrade";     <span class="c"># tell backend to upgrade</span>
+    proxy_set_header   Host       $host;
+    proxy_set_header   X-Real-IP  $remote_addr;
+    proxy_read_timeout <span class="n">3600s</span>;                  <span class="c"># keep connection for 1 hour</span>
+    proxy_send_timeout <span class="n">3600s</span>;
+}</div>
+
+  <h2>SSE (Server-Sent Events) for AI token streaming</h2>
+  <div class="callout ca"><strong>SSE is how you stream AI tokens to the browser.</strong> Your FastAPI yields tokens as they arrive from OpenAI/Anthropic, Nginx forwards each token immediately without buffering. The browser receives and displays tokens one by one.</div>
+  <div class="code"><span class="c"># SSE requires buffering OFF — or tokens wait until buffer is full</span>
+location /api/stream/ {
+    proxy_pass              http://127.0.0.1:<span class="n">8000</span>;
+    proxy_buffering         off;       <span class="c"># ⚑ CRITICAL for SSE</span>
+    proxy_cache             off;
+    proxy_set_header        X-Accel-Buffering no;
+    proxy_read_timeout      <span class="n">300s</span>;     <span class="c"># 5 min for long AI responses</span>
+    proxy_set_header        Host $host;
+    proxy_set_header        Connection '';   <span class="c"># keep-alive</span>
+    chunked_transfer_encoding on;           <span class="c"># allows streaming chunks</span>
+}</div>
+
+  <div class="code"><span class="c"># FastAPI SSE endpoint example</span>
+<span class="k">from</span> fastapi.responses <span class="k">import</span> StreamingResponse
+<span class="k">import</span> asyncio
+
+<span class="k">async def</span> <span class="f">token_generator</span>(prompt: str):
+    <span class="k">async for</span> chunk <span class="k">in</span> openai_stream(prompt):
+        <span class="k">yield</span> <span class="s">f"data: {chunk}\n\n"</span>     <span class="c"># SSE format: "data: ...\n\n"</span>
+    <span class="k">yield</span> <span class="s">"data: [DONE]\n\n"</span>
+
+<span class="f">@app.get</span>(<span class="s">"/api/stream/chat"</span>)
+<span class="k">async def</span> <span class="f">stream_chat</span>(prompt: str):
+    <span class="k">return</span> StreamingResponse(
+        <span class="f">token_generator</span>(prompt),
+        media_type=<span class="s">"text/event-stream"</span>
+    )</div>
+</section>
+
+<!-- ══ NGROK ══ -->
+<section id="sec-ngrok" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(244,114,182,.1);color:var(--D)">Module 12 · Tunneling</div>
+    <h1 class="htitle">Ngrok — Expose Local Servers to Internet</h1>
+    <p class="hsub">Ngrok creates a secure tunnel from a random public URL to your local machine. Your laptop running FastAPI on port 8000 becomes accessible as <code>https://abc123.ngrok.io</code> — without opening any router ports, without a domain, without a server.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Use case</div><div class="sv" style="color:var(--D)">Dev & testing</div></div>
+    <div class="stat"><div class="sl">Requires</div><div class="sv" style="color:var(--B)">No server setup</div></div>
+    <div class="stat"><div class="sl">URL</div><div class="sv" style="color:var(--C)">*.ngrok.io (free)</div></div>
+    <div class="stat"><div class="sl">Protocol</div><div class="sv" style="color:var(--A)">HTTPS, TCP, TLS</div></div>
+  </div>
+
+  <h2>How Ngrok works</h2>
+  <div class="flow">
+    <div class="flow-row">
+      <div class="fbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--A)">Browser / API caller<br><span style="font-size:9px;font-weight:400;color:var(--t3)">internet</span></div>
+      <span class="farr">─HTTPS─▶</span>
+      <div class="fbox" style="background:rgba(244,114,182,.1);border-color:rgba(244,114,182,.3);color:var(--D)">Ngrok Cloud<br><span style="font-size:9px;font-weight:400;color:var(--t3)">abc123.ngrok.io</span></div>
+      <span class="farr">─tunnel─▶</span>
+      <div class="fbox" style="background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--B)">Ngrok agent<br><span style="font-size:9px;font-weight:400;color:var(--t3)">your laptop</span></div>
+      <span class="farr">─local─▶</span>
+      <div class="fbox" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:var(--E)">FastAPI<br><span style="font-size:9px;font-weight:400;color:var(--t3)">localhost:8000</span></div>
+    </div>
+  </div>
+
+  <h2>Install and use Ngrok</h2>
+  <div class="code"><span class="c"># Install on Ubuntu/Debian</span>
+curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+echo <span class="s">"deb https://ngrok-agent.s3.amazonaws.com buster main"</span> | sudo tee /etc/apt/sources.list.d/ngrok.list
+sudo apt update && sudo apt install ngrok -y
+
+<span class="c"># Authenticate (get token from ngrok.com)</span>
+ngrok config add-authtoken YOUR_TOKEN_HERE
+
+<span class="c"># Basic usage — expose port 8000</span>
+ngrok http <span class="n">8000</span>
+
+<span class="c"># Output:</span>
+<span class="c"># Forwarding: https://abc123.ngrok.io → localhost:8000</span>
+<span class="c"># You now have a public URL with HTTPS!</span>
+
+<span class="c"># Expose on specific subdomain (paid plan)</span>
+ngrok http <span class="k">--subdomain</span>=myapp <span class="n">8000</span>
+<span class="c"># → https://myapp.ngrok.io</span>
+
+<span class="c"># Tunnel TCP port (for databases, SSH, etc.)</span>
+ngrok tcp <span class="n">5432</span>              <span class="c"># expose PostgreSQL</span>
+ngrok tcp <span class="n">22</span>               <span class="c"># expose SSH</span>
+
+<span class="c"># With basic auth (protect your tunnel)</span>
+ngrok http <span class="k">--basic-auth</span>=<span class="s">"user:password"</span> <span class="n">8000</span>
+
+<span class="c"># Ngrok config file ~/.ngrok2/ngrok.yml</span>
+authtoken: YOUR_TOKEN
+tunnels:
+  fastapi:
+    proto: http
+    addr: <span class="n">8000</span>
+    subdomain: myapp
+  chatbot:
+    proto: http
+    addr: <span class="n">8001</span>
+
+<span class="c"># Start all tunnels at once</span>
+ngrok start <span class="k">--all</span></div>
+
+  <h2>When to use Ngrok vs not</h2>
+  <div class="dd">
+    <div class="do"><h4>Good use cases</h4>
+      <li>Testing webhooks locally (Stripe, LiveKit, Twilio)</li>
+      <li>Sharing local demo with a client without deploying</li>
+      <li>Testing mobile app against local backend</li>
+      <li>OAuth callback URLs during development</li>
+      <li>Temporarily exposing a dev server for quick feedback</li>
+    </div>
+    <div class="dont"><h4>Don't use Ngrok for</h4>
+      <li>Production deployments — URLs change on restart</li>
+      <li>High traffic — free plan has connection limits</li>
+      <li>Long-running services — sessions expire</li>
+      <li>Anything that needs a stable, permanent URL</li>
+      <li>Services with sensitive data you can't route through ngrok.com</li>
+    </div>
+  </div>
+
+  <h2>Testing LiveKit webhooks locally with Ngrok</h2>
+  <div class="code"><span class="c"># Your FastAPI is running locally</span>
+uvicorn main:app <span class="k">--port</span> <span class="n">8000</span>
+
+<span class="c"># Ngrok creates public URL</span>
+ngrok http <span class="n">8000</span>
+<span class="c"># → https://abc123.ngrok.io</span>
+
+<span class="c"># In LiveKit dashboard → Webhooks → add:</span>
+<span class="c"># https://abc123.ngrok.io/webhook/livekit</span>
+
+<span class="c"># LiveKit now sends webhook events to your local FastAPI!
+# Ngrok web inspector at http://localhost:4040 shows all requests</span></div>
+</section>
+
+<!-- ══ OTHER TUNNELS ══ -->
+<section id="sec-tunnel-others" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(167,139,250,.1);color:var(--E)">Module 13 · Tunneling</div>
+    <h1 class="htitle">Other Tunneling Tools</h1>
+    <p class="hsub">Ngrok is the most popular tunneling tool, but there are alternatives with different trade-offs. For production-grade tunneling with your own domain and no traffic routing through a third party, Cloudflare Tunnel and SSH tunneling are the go-to options.</p>
+  </div>
+
+  <h2>Comparison overview</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Tool</th><th>Best for</th><th>Cost</th><th>Custom domain</th><th>Production-ready</th></tr></thead>
+      <tbody>
+        <tr><td>Ngrok</td><td>Local dev, webhook testing</td><td>Free / $10/mo</td><td>Paid plan</td><td>No</td></tr>
+        <tr><td>Cloudflare Tunnel</td><td>Production, self-hosted</td><td>Free</td><td>Yes, your domain</td><td>Yes</td></tr>
+        <tr><td>SSH Tunnel</td><td>DB access, admin tools</td><td>Free</td><td>If you control server</td><td>Sometimes</td></tr>
+        <tr><td>LocalTunnel</td><td>Quick dev sharing</td><td>Free</td><td>Subdomain</td><td>No</td></tr>
+        <tr><td>Bore</td><td>Open-source Ngrok alt</td><td>Free</td><td>Your server</td><td>Yes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>SSH Tunneling</h2>
+  <div class="code"><span class="c"># Use case: access production PostgreSQL from your laptop</span>
+<span class="c"># DB is on 127.0.0.1:5432 on remote server — not publicly accessible</span>
+
+<span class="c"># SSH local forward: localhost:5433 → remoteserver:localhost:5432</span>
+ssh <span class="k">-L</span> <span class="n">5433</span>:localhost:<span class="n">5432</span> azureuser@20.123.45.67 <span class="k">-N</span>
+
+<span class="c"># Now on your laptop: connect to DB as if it were local</span>
+psql <span class="k">-h</span> localhost <span class="k">-p</span> <span class="n">5433</span> <span class="k">-U</span> myuser mydb
+
+<span class="c"># -N = no command, just tunnel. -f = background.</span>
+ssh <span class="k">-L</span> <span class="n">5433</span>:localhost:<span class="n">5432</span> azureuser@20.123.45.67 <span class="k">-N</span> <span class="k">-f</span>
+
+<span class="c"># Remote forward: expose local port on remote server</span>
+<span class="c"># Access remote:9000 → your localhost:8000</span>
+ssh <span class="k">-R</span> <span class="n">9000</span>:localhost:<span class="n">8000</span> azureuser@20.123.45.67 <span class="k">-N</span></div>
+
+  <h2>LocalTunnel — simplest, no auth needed</h2>
+  <div class="code"><span class="c"># No account needed</span>
+npx localtunnel <span class="k">--port</span> <span class="n">8000</span>
+<span class="c"># → https://random-name.loca.lt</span>
+
+npx localtunnel <span class="k">--port</span> <span class="n">8000</span> <span class="k">--subdomain</span> myapp
+<span class="c"># → https://myapp.loca.lt (if available)</span>
+
+<span class="c"># Downsides: unreliable, slow, no auth, not for production</span></div>
+</section>
+
+<!-- ══ CF WHAT ══ -->
+<section id="sec-cf-what" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(251,146,60,.1);color:var(--C)">Module 14 · Cloudflare</div>
+    <h1 class="htitle">What is Cloudflare?</h1>
+    <p class="hsub">Cloudflare is a global network of servers (CDN) that sits between your users and your origin server. It handles DNS, DDoS protection, caching, SSL, bot protection, and much more — all for free at the basic tier. It's the fastest way to make your app faster and more secure.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Network</div><div class="sv" style="color:var(--C)">310+ cities worldwide</div></div>
+    <div class="stat"><div class="sl">DDoS protected</div><div class="sv" style="color:var(--B)">Up to 71 Tbps</div></div>
+    <div class="stat"><div class="sl">Basic plan</div><div class="sv" style="color:var(--B)">Free forever</div></div>
+    <div class="stat"><div class="sl">DNS propagation</div><div class="sv" style="color:var(--A)">&lt; 60 seconds</div></div>
+  </div>
+
+  <h2>How Cloudflare works with your server</h2>
+  <div class="flow">
+    <div class="flow-row">
+      <div class="fbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--A)">User browser<br><span style="font-size:9px;font-weight:400;color:var(--t3)">anywhere in world</span></div>
+      <span class="farr">─▶</span>
+      <div class="fbox" style="background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:var(--C)">Cloudflare Edge<br><span style="font-size:9px;font-weight:400;color:var(--t3)">nearest data center</span></div>
+      <span class="farr">─▶</span>
+      <div class="fbox" style="background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:var(--F)">Cache / WAF / DDoS<br><span style="font-size:9px;font-weight:400;color:var(--t3)">protection layers</span></div>
+      <span class="farr">─▶</span>
+      <div class="fbox" style="background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--B)">Your server<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Azure VM + Nginx</span></div>
+    </div>
+  </div>
+
+  <h2>What Cloudflare does automatically (free)</h2>
+  <div class="g2">
+    <div class="card c"><div class="ct">DDoS protection</div><div class="cb">Cloudflare absorbs attacks on their network before traffic reaches you. Even free plan blocks 71 Tbps. Your small VM survives attacks that would normally take it offline.</div></div>
+    <div class="card b"><div class="ct">Free SSL certificate</div><div class="cb">Cloudflare provides SSL between users and Cloudflare automatically. You still need a certificate between Cloudflare and your server (Let's Encrypt works fine).</div></div>
+    <div class="card a"><div class="ct">CDN caching</div><div class="cb">Static assets (images, CSS, JS) are cached at Cloudflare's 310 edge locations worldwide. Users in India get your JS from a Mumbai server, not your US VM.</div></div>
+    <div class="card f"><div class="ct">Fast DNS</div><div class="cb">Cloudflare's DNS is the fastest in the world. Changes propagate in under 60 seconds globally. Free, unlimited DNS queries.</div></div>
+    <div class="card e"><div class="ct">Bot protection</div><div class="cb">Cloudflare identifies and blocks bot traffic, scrapers, and known malicious IPs before they reach your server.</div></div>
+    <div class="card g"><div class="ct">Analytics</div><div class="cb">See traffic, threats blocked, cache hit rates, bandwidth saved — without any code in your app.</div></div>
+  </div>
+
+  <h2>Set up Cloudflare in 5 steps</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(251,146,60,.2);color:var(--C)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Create free Cloudflare account</div><div class="sbody">Sign up at cloudflare.com. Go to "Add a site" and enter your domain name.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(251,146,60,.2);color:var(--C)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Cloudflare scans your existing DNS</div><div class="sbody">Cloudflare imports your existing DNS records automatically. Review and confirm they're correct.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(251,146,60,.2);color:var(--C)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Update nameservers at your registrar</div><div class="sbody">Your domain registrar (GoDaddy, Namecheap, etc.) → DNS settings → change nameservers to the two Cloudflare nameservers they show you. Takes up to 24h, usually minutes.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(251,146,60,.2);color:var(--C)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Enable "Proxied" on your A record</div><div class="sbody">The orange cloud ☁️ icon in Cloudflare DNS means traffic goes through Cloudflare. Grey cloud = DNS-only (no protection). Set your main A record to orange cloud.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(251,146,60,.2);color:var(--C)">5</div></div><div class="sc"><div class="stitle">Configure SSL mode to "Full (strict)"</div><div class="sbody">SSL/TLS → Full (strict). This requires a valid certificate on your origin server (Let's Encrypt). Never use "Flexible" — it leaves your origin unencrypted.</div></div></div>
+  </div>
+</section>
+
+<!-- ══ CF DNS ══ -->
+<section id="sec-cf-dns" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(251,146,60,.1);color:var(--C)">Module 15 · Cloudflare</div>
+    <h1 class="htitle">Cloudflare DNS Management</h1>
+    <p class="hsub">Cloudflare's DNS is where you map your domain to your server. Understanding how to add records, the difference between proxied and DNS-only, and how subdomains work is essential for deploying any application.</p>
+  </div>
+
+  <h2>Common DNS setup for web apps</h2>
+  <div class="code"><span class="c"># In Cloudflare DNS dashboard:</span>
+
+<span class="c"># Root domain → your Azure VM</span>
+Type: A
+Name: @                     <span class="c"># @ means the root domain (yourapp.com)</span>
+Content: 20.123.45.67       <span class="c"># your Azure VM public IP</span>
+Proxy status: Proxied ☁️    <span class="c"># orange cloud = Cloudflare protection</span>
+
+<span class="c"># www subdomain → same server</span>
+Type: CNAME
+Name: www
+Content: yourapp.com
+Proxy status: Proxied ☁️
+
+<span class="c"># API subdomain → same or different server</span>
+Type: A
+Name: api
+Content: 20.123.45.67
+Proxy status: Proxied ☁️    <span class="c"># api.yourapp.com → nginx → fastapi</span>
+
+<span class="c"># Database — NEVER proxied, not exposed at all</span>
+<span class="c"># DB should not have a public DNS record</span>
+
+<span class="c"># Staging environment</span>
+Type: A
+Name: staging
+Content: 20.123.45.99       <span class="c"># staging VM (different IP)</span>
+Proxy status: DNS only ☁️   <span class="c"># grey cloud — bypass Cloudflare for staging</span></div>
+
+  <h2>Proxied vs DNS-only</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--C)">☁️ Proxied (Orange cloud)</h3>
+      <li>Traffic routes through Cloudflare servers</li>
+      <li>Your server's real IP is hidden</li>
+      <li>DDoS protection, WAF, caching active</li>
+      <li>Free SSL between user and Cloudflare</li>
+      <li>Use for: all public-facing web traffic</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--A)">⚫ DNS only (Grey cloud)</h3>
+      <li>DNS resolves directly to your server IP</li>
+      <li>Traffic goes straight to your server</li>
+      <li>No Cloudflare protection or caching</li>
+      <li>Required for: email (MX records), SSH, non-HTTP</li>
+      <li>Use for: staging, internal services, mail servers</li>
+    </div>
+  </div>
+
+  <div class="callout cc"><strong>Cloudflare doesn't proxy everything.</strong> Email (MX records) must be DNS-only — Cloudflare doesn't handle mail. SSH also needs DNS-only since it's TCP port 22, not HTTP/HTTPS. Cloudflare proxy only works for HTTP (port 80) and HTTPS (port 443) by default.</div>
+</section>
+
+<!-- ══ CF TUNNEL ══ -->
+<section id="sec-cf-tunnel" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(251,191,36,.1);color:var(--F)">Module 16 · Cloudflare</div>
+    <h1 class="htitle">Cloudflare Tunnel</h1>
+    <p class="hsub">Cloudflare Tunnel creates an outbound-only encrypted connection from your server to Cloudflare's network. No inbound ports needed — not even 443. Your server calls Cloudflare, Cloudflare routes traffic to it. More secure than opening any port.</p>
+  </div>
+
+  <div class="callout cf"><strong>The game-changer:</strong> With Cloudflare Tunnel, you close ALL inbound ports on your server (including 443 and 80). The tunnel agent (<code>cloudflared</code>) runs on your server and makes an outbound connection to Cloudflare. Traffic flows through this outbound tunnel. Attackers have no open port to attack.</div>
+
+  <h2>Cloudflare Tunnel vs Traditional setup</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--C)">Traditional (ports open)</h3>
+      <li>Azure NSG: ports 80 and 443 open to internet</li>
+      <li>Nginx listens on public IP</li>
+      <li>Direct path for DDoS: hit your IP directly</li>
+      <li>Server IP is exposed (even with Cloudflare proxy)</li>
+      <li>Port scanning reveals open ports</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--B)">Cloudflare Tunnel (no ports)</h3>
+      <li>Azure NSG: ALL inbound ports closed</li>
+      <li>Cloudflared agent: outbound only</li>
+      <li>No direct path to your server — must go through Cloudflare</li>
+      <li>Real IP completely hidden</li>
+      <li>No ports = nothing to scan</li>
+    </div>
+  </div>
+
+  <h2>Setup Cloudflare Tunnel</h2>
+  <div class="code"><span class="c"># 1. Install cloudflared on your server</span>
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared.deb
+
+<span class="c"># 2. Authenticate with Cloudflare</span>
+cloudflared tunnel login
+
+<span class="c"># 3. Create a tunnel</span>
+cloudflared tunnel create my-app-tunnel
+<span class="c"># Creates a tunnel ID: e.g., 6e0ee0a5-3e57-4e4d-b2f9-abc123...</span>
+
+<span class="c"># 4. Create config file ~/.cloudflared/config.yml</span>
+tunnel: 6e0ee0a5-3e57-4e4d-b2f9-abc123
+credentials-file: /root/.cloudflared/6e0ee0a5-...json
+
+ingress:
+  - hostname: yourapp.com
+    service: http://localhost:8000      <span class="c"># your FastAPI</span>
+  - hostname: api.yourapp.com
+    service: http://localhost:8001      <span class="c"># another service</span>
+  - hostname: ws.yourapp.com
+    service: http://localhost:8000      <span class="c"># WebSocket works too</span>
+  - service: http_status:404           <span class="c"># catch-all</span>
+
+<span class="c"># 5. Add DNS routes (Cloudflare creates the DNS records)</span>
+cloudflared tunnel route dns my-app-tunnel yourapp.com
+cloudflared tunnel route dns my-app-tunnel api.yourapp.com
+
+<span class="c"># 6. Run the tunnel</span>
+cloudflared tunnel run my-app-tunnel
+
+<span class="c"># 7. Install as systemd service (start on boot)</span>
+sudo cloudflared service install
+sudo systemctl start cloudflared
+sudo systemctl enable cloudflared</div>
+
+  <div class="callout cb2"><strong>After setting up Cloudflare Tunnel:</strong> Go to Azure NSG and set all inbound rules to Deny (except SSH for your IP). Your server is now completely locked down. Traffic only flows through the outbound Cloudflare connection.</div>
+</section>
+
+<!-- ══ CF FEATURES ══ -->
+<section id="sec-cf-features" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(167,139,250,.1);color:var(--E)">Module 17 · Cloudflare</div>
+    <h1 class="htitle">Cloudflare CDN, WAF & Workers</h1>
+    <p class="hsub">Beyond DNS and tunneling, Cloudflare has a suite of powerful tools: a WAF (Web Application Firewall) that blocks attacks, a CDN that caches globally, and Workers that run JavaScript at the edge — all configurable from a dashboard.</p>
+  </div>
+
+  <h2>Cloudflare WAF (Web Application Firewall)</h2>
+  <p>The WAF inspects every request and blocks attacks before they reach your server — SQL injection, XSS, bad bots, known attack patterns.</p>
+  <div class="code"><span class="c"># Cloudflare WAF rules (set in dashboard — no code needed)</span>
+
+<span class="c"># Block specific countries</span>
+(ip.geoip.country in {"CN" "RU"}) → Block
+
+<span class="c"># Rate limit an endpoint</span>
+http.request.uri.path eq "/api/login" → Rate limit: 5 req/min
+
+<span class="c"># Block bad user agents</span>
+(http.user_agent contains "sqlmap") → Block
+(http.user_agent contains "nikto") → Block
+
+<span class="c"># Challenge suspicious traffic (show CAPTCHA)</span>
+(cf.threat_score gt 10) → Challenge
+
+<span class="c"># Allow only your API keys through a specific path</span>
+(http.request.uri.path eq "/admin" and not http.request.headers["x-admin-key"] eq "secret") → Block</div>
+
+  <h2>Cloudflare Workers — code at the edge</h2>
+  <div class="callout ce"><strong>Workers run JavaScript at Cloudflare's 310 edge locations.</strong> They execute before requests reach your server — in under 1ms. Use them for: auth checks, A/B testing, redirects, request transformation, geo-based routing.</div>
+  <div class="code"><span class="c">// Example: Cloudflare Worker — add auth header, geo-route</span>
+<span class="k">export default</span> {
+  <span class="k">async</span> <span class="f">fetch</span>(request, env) {
+    <span class="k">const</span> url = <span class="k">new</span> URL(request.url);
+    <span class="k">const</span> country = request.cf.country;  <span class="c">// user's country code</span>
+
+    <span class="c">// Block requests without API key</span>
+    <span class="k">const</span> apiKey = request.headers.<span class="f">get</span>(<span class="s">'x-api-key'</span>);
+    <span class="k">if</span> (!apiKey || apiKey !== env.API_KEY) {
+      <span class="k">return new</span> Response(<span class="s">'Forbidden'</span>, { status: <span class="n">403</span> });
+    }
+
+    <span class="c">// Geo-route: India → Mumbai server, US → Virginia server</span>
+    <span class="k">const</span> originUrl = country === <span class="s">'IN'</span>
+      ? <span class="s">'https://mumbai.yourapp.com'</span>
+      : <span class="s">'https://us-east.yourapp.com'</span>;
+
+    <span class="k">return</span> <span class="f">fetch</span>(originUrl + url.pathname, request);
+  }
+};</div>
+
+  <h2>Cache control with Cloudflare</h2>
+  <div class="code"><span class="c"># Nginx: tell Cloudflare what to cache and for how long</span>
+location /static/ {
+    add_header Cache-Control "public, max-age=31536000, immutable";
+    <span class="c"># Cloudflare sees this and caches for 1 year at edge</span>
+}
+
+location /api/ {
+    add_header Cache-Control "no-cache, no-store";
+    <span class="c"># API responses — never cached by Cloudflare</span>
+}
+
+location /images/ {
+    add_header Cache-Control "public, max-age=86400";
+    <span class="c"># Images cached for 1 day at edge</span>
+}</div>
+</section>
+
+<!-- ══ PROTOCOLS ══ -->
+<section id="sec-protocols" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(45,212,191,.1);color:var(--G)">Module 18 · Protocols</div>
+    <h1 class="htitle">HTTP, HTTPS, WebSocket, gRPC</h1>
+    <p class="hsub">Every communication between client and server follows a protocol — a set of rules for how data is formatted and exchanged. Different protocols suit different needs: HTTP for APIs, WebSocket for real-time, gRPC for microservices.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Protocol</th><th>Connection</th><th>Direction</th><th>Use case</th><th>Nginx support</th></tr></thead>
+      <tbody>
+        <tr><td>HTTP/1.1</td><td>Request/response, keep-alive</td><td>Client → Server</td><td>REST APIs, web pages</td><td>Native</td></tr>
+        <tr><td>HTTP/2</td><td>Multiplexed streams</td><td>Bidirectional</td><td>Faster APIs, multiplexing</td><td>Native (listen 443 http2)</td></tr>
+        <tr><td>HTTPS</td><td>HTTP over TLS</td><td>Client → Server</td><td>All production traffic</td><td>Native + SSL config</td></tr>
+        <tr><td>WebSocket</td><td>Persistent duplex</td><td>Both ways</td><td>Chat, live updates, voice</td><td>Proxy with Upgrade header</td></tr>
+        <tr><td>SSE</td><td>Persistent, server pushes</td><td>Server → Client</td><td>AI token streaming, feeds</td><td>proxy_buffering off</td></tr>
+        <tr><td>gRPC</td><td>HTTP/2 based, binary</td><td>Both ways</td><td>Microservices, high perf</td><td>grpc_pass directive</td></tr>
+        <tr><td>WebRTC</td><td>P2P, DTLS-SRTP</td><td>Both ways</td><td>Voice/video calling</td><td>Signaling only</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>HTTP request anatomy</h2>
+  <div class="code"><span class="c"># An HTTP request has: method, path, headers, body</span>
+POST /api/chat HTTP/1.1
+Host: yourapp.com
+Authorization: Bearer eyJhbGci...
+Content-Type: application/json
+Content-Length: 42
+
+{"message": "Hello", "conversation_id": "123"}
+
+<span class="c"># Response:</span>
+HTTP/1.1 200 OK
+Content-Type: application/json
+X-RateLimit-Remaining: 19
+
+{"reply": "Hi there!", "tokens_used": 8}</div>
+</section>
+
+<!-- ══ SSL TLS ══ -->
+<section id="sec-ssl-tls" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(45,212,191,.1);color:var(--G)">Module 19 · Protocols</div>
+    <h1 class="htitle">SSL / TLS / Certificates</h1>
+    <p class="hsub">SSL (now called TLS) is the encryption that makes HTTPS. It does two things: proves the server is who it claims to be (authentication) and encrypts all data in transit (confidentiality). Understanding the certificate chain helps you debug HTTPS issues.</p>
+  </div>
+
+  <h2>The TLS handshake — simplified</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(45,212,191,.2);color:var(--G)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Client Hello</div><div class="sbody">Browser says: "I want to connect securely. Here are the encryption algorithms I support (TLS version, cipher suites)."</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(45,212,191,.2);color:var(--G)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Server sends certificate</div><div class="sbody">Server sends its SSL certificate — contains the server's public key and is signed by a Certificate Authority (CA) like Let's Encrypt.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(45,212,191,.2);color:var(--G)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Browser verifies certificate</div><div class="sbody">Browser checks: Is the cert signed by a trusted CA? Is it for the right domain? Is it expired? If all pass, connection is trusted.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(45,212,191,.2);color:var(--G)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Key exchange</div><div class="sbody">Browser and server agree on a shared encryption key using asymmetric encryption. Now both have the same secret key without ever sending it over the wire.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(45,212,191,.2);color:var(--G)">5</div></div><div class="sc"><div class="stitle">Encrypted communication begins</div><div class="sbody">All subsequent messages are encrypted with the shared key (symmetric encryption — fast). The handshake happens in ~50ms.</div></div></div>
+  </div>
+
+  <h2>Certificate types</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt2" style="color:var(--G)">DV (Domain Validated)</div><div class="mb2">Proves you control the domain. Free from Let's Encrypt. Good for most web apps and APIs.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--A)">OV (Organization Validated)</div><div class="mb2">Proves your organization exists. Paid. Used by businesses where the org name in the cert matters.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--F)">EV (Extended Validation)</div><div class="mb2">Highest validation. Shows company name in browser. Used by banks, payment processors. Most expensive.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--E)">Wildcard cert</div><div class="mb2">One cert for all subdomains: <code>*.yourapp.com</code> covers api.yourapp.com, ws.yourapp.com, admin.yourapp.com etc.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--B)">Multi-domain (SAN)</div><div class="mb2">One cert for multiple distinct domains: <code>yourapp.com</code> AND <code>yourotherapp.com</code>.</div></div>
+    <div class="mini"><div class="mt2" style="color:var(--C)">Self-signed</div><div class="mb2">You signed it yourself. Free but browsers show "Not Secure" warning. OK for internal services, never for public.</div></div>
+  </div>
+
+  <h2>Cloudflare SSL modes — choose carefully</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Mode</th><th>User ↔ Cloudflare</th><th>Cloudflare ↔ Origin</th><th>Use it?</th></tr></thead>
+      <tbody>
+        <tr><td>Off</td><td>HTTP only</td><td>HTTP only</td><td><span class="pill ph">Never</span></td></tr>
+        <tr><td>Flexible</td><td>HTTPS ✓</td><td>HTTP (unencrypted!)</td><td><span class="pill ph">Never</span> — origin is unencrypted</td></tr>
+        <tr><td>Full</td><td>HTTPS ✓</td><td>HTTPS (self-signed OK)</td><td><span class="pill pf">OK</span> but not ideal</td></tr>
+        <tr><td>Full (Strict)</td><td>HTTPS ✓</td><td>HTTPS (valid cert required)</td><td><span class="pill pb">Use this</span> — most secure</td></tr>
+        <tr><td>Strict (HSTS)</td><td>HTTPS + HSTS</td><td>HTTPS (valid cert required)</td><td><span class="pill pb">Best</span> — once enabled, no rollback</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══ USE CASE: FASTAPI ══ -->
+<section id="sec-uc-fastapi" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(248,113,113,.1);color:var(--H)">Use Case 1 — Build it</div>
+    <h1 class="htitle">Deploy FastAPI on Azure with Nginx + Cloudflare</h1>
+    <p class="hsub">Complete production deployment: FastAPI on Azure VM, Nginx as reverse proxy, Let's Encrypt SSL, Cloudflare DNS. Step by step from zero to live.</p>
+  </div>
+
+  <div class="flow">
+    <div class="flow-row">
+      <div class="fbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--A)">User</div>
+      <span class="farr">→</span>
+      <div class="fbox" style="background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:var(--C)">Cloudflare<br><span style="font-size:9px">CDN + DDoS</span></div>
+      <span class="farr">→</span>
+      <div class="fbox" style="background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--B)">Nginx :443<br><span style="font-size:9px">SSL + proxy</span></div>
+      <span class="farr">→</span>
+      <div class="fbox" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:var(--E)">FastAPI<br><span style="font-size:9px">127.0.0.1:8000</span></div>
+      <span class="farr">→</span>
+      <div class="fbox" style="background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.3);color:var(--G)">PostgreSQL<br><span style="font-size:9px">127.0.0.1:5432</span></div>
+    </div>
+  </div>
+
+  <h2>Step 1 — Azure VM setup</h2>
+  <div class="code"><span class="c"># Azure NSG: only allow these inbound rules</span>
+Port 443 — HTTPS from Any
+Port 80  — HTTP from Any (certbot needs this, redirect to 443)
+Port 22  — SSH from YOUR_IP only
+
+<span class="c"># Connect to VM</span>
+ssh azureuser@20.123.45.67
+
+<span class="c"># Update and install packages</span>
+sudo apt update && sudo apt upgrade -y
+sudo apt install nginx python3-pip python3-venv certbot python3-certbot-nginx -y</div>
+
+  <h2>Step 2 — Deploy FastAPI</h2>
+  <div class="code"><span class="c"># Create app directory</span>
+sudo mkdir -p /var/www/yourapp
+cd /var/www/yourapp
+
+<span class="c"># Clone your code</span>
+git clone https://github.com/yourname/yourapp.git .
+
+<span class="c"># Setup virtual environment</span>
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+<span class="c"># Create environment file</span>
+cat &gt; /var/www/yourapp/.env &lt;&lt; EOF
+DATABASE_URL=postgresql://user:pass@localhost/dbname
+JWT_SECRET=your-secret-here
+OPENAI_API_KEY=sk-...
+EOF
+
+<span class="c"># Test it runs</span>
+uvicorn main:app <span class="k">--host</span> 127.0.0.1 <span class="k">--port</span> 8000
+
+<span class="c"># Create systemd service</span>
+sudo tee /etc/systemd/system/fastapi.service &lt;&lt; EOF
+[Unit]
+Description=FastAPI App
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/var/www/yourapp
+EnvironmentFile=/var/www/yourapp/.env
+ExecStart=/var/www/yourapp/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000 --workers 2
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable fastapi
+sudo systemctl start fastapi
+sudo systemctl status fastapi</div>
+
+  <h2>Step 3 — Nginx configuration</h2>
+  <div class="code"><span class="c"># /etc/nginx/sites-available/yourapp</span>
+sudo tee /etc/nginx/sites-available/yourapp &lt;&lt; EOF
+limit_req_zone \$binary_remote_addr zone=api:10m rate=20r/s;
+limit_req_zone \$binary_remote_addr zone=login:10m rate=5r/m;
+
+server {
+    listen 80;
+    server_name yourapp.com www.yourapp.com;
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name yourapp.com www.yourapp.com;
+    server_tokens off;
+
+    <span class="c"># SSL (Certbot will fill these in)</span>
+    ssl_certificate /etc/letsencrypt/live/yourapp.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yourapp.com/privkey.pem;
+
+    <span class="c"># Proxy headers</span>
+    proxy_set_header Host              \$host;
+    proxy_set_header X-Real-IP         \$remote_addr;
+    proxy_set_header X-Forwarded-For   \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+
+    <span class="c"># API endpoints</span>
+    location /api/ {
+        limit_req zone=api burst=30 nodelay;
+        proxy_pass http://127.0.0.1:8000;
+        proxy_read_timeout 120s;
+    }
+
+    <span class="c"># Auth — stricter rate limit</span>
+    location /api/auth/ {
+        limit_req zone=login burst=3 nodelay;
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    <span class="c"># WebSocket</span>
+    location /ws/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 3600s;
+    }
+
+    <span class="c"># SSE for AI streaming</span>
+    location /api/stream/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_buffering off;
+        proxy_set_header X-Accel-Buffering no;
+        proxy_read_timeout 300s;
+    }
+
+    <span class="c"># Block internal endpoints</span>
+    location /internal/ { return 404; }
+
+    <span class="c"># Frontend static files</span>
+    location / {
+        root /var/www/yourapp/static;
+        try_files \$uri \$uri/ /index.html;
+        expires 7d;
+    }
+}
+EOF
+
+sudo ln -s /etc/nginx/sites-available/yourapp /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx</div>
+
+  <h2>Step 4 — SSL + Cloudflare</h2>
+  <div class="code"><span class="c"># Get Let's Encrypt certificate</span>
+sudo certbot --nginx -d yourapp.com -d www.yourapp.com
+
+<span class="c"># In Cloudflare dashboard:</span>
+<span class="c"># 1. Add A record: yourapp.com → 20.123.45.67 (Proxied ☁️)</span>
+<span class="c"># 2. SSL/TLS → Full (Strict)</span>
+<span class="c"># 3. SSL/TLS → Edge Certificates → Always Use HTTPS: ON</span>
+<span class="c"># 4. Speed → Optimization → Auto Minify: ON</span></div>
+</section>
+
+<!-- ══ USE CASE: DEV ══ -->
+<section id="sec-uc-dev" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(244,114,182,.1);color:var(--D)">Use Case 2 — Build it</div>
+    <h1 class="htitle">Expose Local Dev Server to Internet</h1>
+    <p class="hsub">You're building locally on your laptop. You need to test a LiveKit webhook, show a client a demo, or debug mobile app integration. Here's the toolkit for every scenario.</p>
+  </div>
+
+  <h2>Scenario A: Test LiveKit webhook locally</h2>
+  <div class="code"><span class="c"># 1. Start your FastAPI locally</span>
+uvicorn main:app <span class="k">--port</span> 8000 <span class="k">--reload</span>
+
+<span class="c"># 2. Expose with Ngrok</span>
+ngrok http 8000
+<span class="c"># → https://abc123.ngrok.io</span>
+
+<span class="c"># 3. Set webhook URL in LiveKit dashboard:</span>
+<span class="c"># https://abc123.ngrok.io/webhook/livekit</span>
+
+<span class="c"># 4. Ngrok inspector shows every webhook event:</span>
+<span class="c"># http://localhost:4040 — full request/response viewer</span></div>
+
+  <h2>Scenario B: Show client a demo without deploying</h2>
+  <div class="code"><span class="c"># Quick demo with a stable URL (Ngrok paid) or LocalTunnel</span>
+ngrok http <span class="k">--subdomain</span>=my-client-demo 8000
+<span class="c"># → https://my-client-demo.ngrok.io  (stable during session)</span>
+
+<span class="c"># Or Cloudflare Quick Tunnel (no account needed, expires after 24h)</span>
+cloudflared tunnel <span class="k">--url</span> http://localhost:8000
+<span class="c"># → https://random-name.trycloudflare.com</span></div>
+
+  <h2>Scenario C: Access production DB from laptop</h2>
+  <div class="code"><span class="c"># SSH tunnel — forward remote DB to local port</span>
+<span class="c"># DO NOT open PostgreSQL port on Azure NSG</span>
+ssh <span class="k">-L</span> 5433:localhost:5432 azureuser@20.123.45.67 <span class="k">-N</span> <span class="k">-f</span>
+
+<span class="c"># Now connect from local DB client</span>
+psql <span class="k">-h</span> localhost <span class="k">-p</span> 5433 <span class="k">-U</span> myuser mydb
+
+<span class="c"># Or use VS Code Remote + SSH extension — file editing on remote server</span></div>
+</section>
+
+<!-- ══ USE CASE: VOICE ══ -->
+<section id="sec-uc-voice" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(56,189,248,.1);color:var(--A)">Use Case 3 — Build it</div>
+    <h1 class="htitle">Voice Agent Production Setup</h1>
+    <p class="hsub">Your voice calling agent with LiveKit needs careful networking: LiveKit Cloud handles WebRTC, your FastAPI handles business logic, and Nginx routes everything. Here's the complete production topology.</p>
+  </div>
+
+  <div class="code"><span class="c"># /etc/nginx/sites-available/voice-agent</span>
+
+<span class="c"># Rate limit zones</span>
+limit_req_zone $binary_remote_addr zone=call:10m rate=3r/m;
+limit_req_zone $binary_remote_addr zone=api:10m  rate=20r/s;
+
+server {
+    listen 443 ssl http2;
+    server_name voiceagent.yourapp.com;
+
+    <span class="c"># ── REST API endpoints ──</span>
+    location /api/call/start {
+        limit_req zone=call burst=2 nodelay;   <span class="c"># max 3 calls/min per IP</span>
+        proxy_pass http://127.0.0.1:8000;
+        proxy_read_timeout 30s;
+    }
+
+    location /api/ {
+        limit_req zone=api burst=30 nodelay;
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    <span class="c"># ── LiveKit Webhook ──</span>
+    location /webhook/livekit {
+        <span class="c"># Only accept from LiveKit's IP ranges</span>
+        allow 34.64.0.0/16;     <span class="c"># LiveKit cloud IPs — check docs for current</span>
+        deny all;
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    <span class="c"># ── WebSocket for real-time updates ──</span>
+    location /ws/agent-status {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 3600s;
+    }
+
+    <span class="c"># ── SSE for transcript streaming ──</span>
+    location /api/stream/transcript {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_buffering off;
+        proxy_set_header X-Accel-Buffering no;
+        proxy_read_timeout 600s;         <span class="c"># 10 min for long calls</span>
+    }
+
+    <span class="c"># ── Block internal ──</span>
+    location /internal/ { return 404; }
+}</div>
+
+  <div class="callout ca"><strong>LiveKit Cloud handles WebRTC for you.</strong> You don't need to open WebRTC ports (UDP 40000-60000) on your Azure VM — that's LiveKit Cloud's problem. Your server only needs 443 for the API + webhooks. The browser connects directly to LiveKit Cloud for media.</div>
+</section>
+
+<!-- ══ USE CASE: MULTI ══ -->
+<section id="sec-uc-multi" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(74,222,128,.1);color:var(--B)">Use Case 4 — Build it</div>
+    <h1 class="htitle">Multiple Apps on One Server</h1>
+    <p class="hsub">One Azure VM, one public IP — but you have a voice agent, a chatbot, and a web app, each on different domains. Nginx virtual hosts handle this elegantly: different <code>server_name</code> blocks route to different backend processes.</p>
+  </div>
+
+  <div class="flow">
+    <div class="flow-row">
+      <div class="fbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--A)">:443<br><span style="font-size:9px;font-weight:400;color:var(--t3)">one port</span></div>
+      <span class="farr">→</span>
+      <div class="fbox" style="background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--B)">Nginx<br><span style="font-size:9px;font-weight:400;color:var(--t3)">reads domain name</span></div>
+      <span class="farr">→</span>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <div class="fbox" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:var(--E)">voice.app.com → :8000</div>
+        <div class="fbox" style="background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:var(--C)">chat.app.com → :8001</div>
+        <div class="fbox" style="background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.3);color:var(--G)">admin.app.com → :8002</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code"><span class="c"># /etc/nginx/sites-available/voice-agent</span>
+server {
+    listen 443 ssl http2;
+    server_name voice.yourapp.com;
+    location / { proxy_pass http://127.0.0.1:<span class="n">8000</span>; }
+}
+
+<span class="c"># /etc/nginx/sites-available/chatbot</span>
+server {
+    listen 443 ssl http2;
+    server_name chat.yourapp.com;
+    location / { proxy_pass http://127.0.0.1:<span class="n">8001</span>; }
+}
+
+<span class="c"># /etc/nginx/sites-available/admin</span>
+server {
+    listen 443 ssl http2;
+    server_name admin.yourapp.com;
+    <span class="c"># Extra security for admin</span>
+    allow 203.0.113.5;    <span class="c"># your office IP only</span>
+    deny all;
+    location / { proxy_pass http://127.0.0.1:<span class="n">8002</span>; }
+}
+
+<span class="c"># Enable all of them</span>
+sudo ln -s /etc/nginx/sites-available/voice-agent  /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/chatbot      /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/admin        /etc/nginx/sites-enabled/
+
+<span class="c"># Get wildcard cert (covers all subdomains)</span>
+sudo certbot --nginx -d yourapp.com -d *.yourapp.com
+
+<span class="c"># In Cloudflare DNS:</span>
+<span class="c"># voice.yourapp.com → 20.123.45.67 (Proxied)</span>
+<span class="c"># chat.yourapp.com  → 20.123.45.67 (Proxied)</span>
+<span class="c"># admin.yourapp.com → 20.123.45.67 (DNS only - extra protection)</span></div>
+</section>
+
+<!-- ══ CHEATSHEET ══ -->
+<section id="sec-cheatsheet" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(74,222,128,.1);color:var(--B)">Reference</div>
+    <h1 class="htitle">Command Cheat Sheet</h1>
+    <p class="hsub">Every command you'll use regularly, organized by tool. Save this for quick reference.</p>
+  </div>
+
+  <h2>Nginx commands</h2>
+  <div class="code"><span class="c"># ─── Service management ───</span>
+sudo systemctl start   nginx     <span class="c"># start</span>
+sudo systemctl stop    nginx     <span class="c"># stop</span>
+sudo systemctl restart nginx     <span class="c"># restart (brief downtime)</span>
+sudo systemctl reload  nginx     <span class="c"># reload config (zero downtime)</span>
+sudo systemctl status  nginx     <span class="c"># check if running</span>
+sudo systemctl enable  nginx     <span class="c"># start on boot</span>
+
+<span class="c"># ─── Config ───</span>
+sudo nginx -t                    <span class="c"># test config syntax</span>
+sudo nginx -T                    <span class="c"># test + print full config</span>
+sudo nginx -s reload             <span class="c"># reload without systemctl</span>
+
+<span class="c"># ─── Logs ───</span>
+sudo tail -f /var/log/nginx/access.log   <span class="c"># live access log</span>
+sudo tail -f /var/log/nginx/error.log    <span class="c"># live error log</span>
+sudo grep "502" /var/log/nginx/error.log <span class="c"># find specific errors</span>
+
+<span class="c"># ─── Site management ───</span>
+sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/myapp    <span class="c"># disable site</span></div>
+
+  <h2>Ngrok commands</h2>
+  <div class="code"><span class="c"># ─── Basic tunnels ───</span>
+ngrok http 8000                           <span class="c"># HTTP tunnel</span>
+ngrok http 8000 --log=stdout              <span class="c"># with logging</span>
+ngrok http 8000 --basic-auth="u:p"        <span class="c"># with basic auth</span>
+ngrok tcp 5432                            <span class="c"># TCP (for DB, SSH)</span>
+
+<span class="c"># ─── Multiple tunnels from config ───</span>
+ngrok start --all                         <span class="c"># start all in config</span>
+ngrok start fastapi chatbot               <span class="c"># start specific ones</span>
+
+<span class="c"># ─── Inspector ───</span>
+open http://localhost:4040                 <span class="c"># web UI: all requests</span>
+curl http://localhost:4040/api/tunnels     <span class="c"># API: get tunnel URLs</span></div>
+
+  <h2>Cloudflare Tunnel (cloudflared) commands</h2>
+  <div class="code">cloudflared tunnel login                  <span class="c"># authenticate</span>
+cloudflared tunnel create myapp           <span class="c"># create tunnel</span>
+cloudflared tunnel list                   <span class="c"># list tunnels</span>
+cloudflared tunnel run myapp              <span class="c"># run tunnel</span>
+cloudflared tunnel route dns myapp yourapp.com  <span class="c"># add DNS</span>
+cloudflared tunnel delete myapp           <span class="c"># delete tunnel</span>
+cloudflared tunnel --url http://localhost:8000  <span class="c"># quick tunnel</span></div>
+
+  <h2>SSL / Certbot commands</h2>
+  <div class="code">sudo certbot --nginx -d yourapp.com       <span class="c"># get cert + auto-configure nginx</span>
+sudo certbot renew                        <span class="c"># renew all certs</span>
+sudo certbot renew --dry-run              <span class="c"># test renewal</span>
+sudo certbot certificates                 <span class="c"># list certs and expiry</span>
+sudo certbot delete --cert-name yourapp.com  <span class="c"># delete cert</span>
+
+<span class="c"># Check cert expiry</span>
+openssl x509 -noout -dates -in /etc/letsencrypt/live/yourapp.com/cert.pem
+echo | openssl s_client -connect yourapp.com:443 2>/dev/null | openssl x509 -noout -dates</div>
+
+  <h2>Port and network commands</h2>
+  <div class="code"><span class="c"># Find what's on a port</span>
+ss -tulpn | grep :8000             <span class="c"># what's on 8000</span>
+lsof -i :8000                      <span class="c"># same, more detail</span>
+sudo fuser 8000/tcp                <span class="c"># process ID only</span>
+sudo fuser -k 8000/tcp             <span class="c"># kill it</span>
+
+<span class="c"># Test connectivity</span>
+nc -zv yourapp.com 443             <span class="c"># is port 443 open?</span>
+curl -I https://yourapp.com/api/health
+curl -I -v https://yourapp.com     <span class="c"># verbose, shows SSL info</span>
+
+<span class="c"># UFW firewall</span>
+sudo ufw status
+sudo ufw allow 443
+sudo ufw allow 'Nginx Full'        <span class="c"># opens 80 + 443</span>
+sudo ufw deny 8000                 <span class="c"># block FastAPI direct access</span>
+
+<span class="c"># DNS debugging</span>
+dig yourapp.com                    <span class="c"># full DNS info</span>
+dig yourapp.com +short             <span class="c"># just the IP</span>
+nslookup yourapp.com 1.1.1.1      <span class="c"># use Cloudflare's resolver</span>
+curl -I https://yourapp.com        <span class="c"># check CF-Ray header (Cloudflare active)</span></div>
+</section>
+
+<!-- ══ TROUBLESHOOT ══ -->
+<section id="sec-troubleshoot" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(248,113,113,.1);color:var(--H)">Reference</div>
+    <h1 class="htitle">Troubleshooting Guide</h1>
+    <p class="hsub">The most common problems you'll hit — and exactly how to diagnose and fix them. Work through the checklist for each issue.</p>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">502 Bad Gateway — Nginx can't reach my app <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <div class="code" style="margin:0"><span class="c"># Means: Nginx is up, but backend (FastAPI) is down or unreachable</span>
+<span class="c"># Check 1: is FastAPI running?</span>
+sudo systemctl status fastapi
+sudo journalctl -u fastapi -n 50 --no-pager   <span class="c"># recent logs</span>
+
+<span class="c"># Check 2: is it listening on the right port?</span>
+ss -tulpn | grep 8000
+
+<span class="c"># Check 3: can Nginx reach it?</span>
+curl http://127.0.0.1:8000/health             <span class="c"># from the server itself</span>
+
+<span class="c"># Check 4: correct proxy_pass in Nginx?</span>
+<span class="c"># Make sure: proxy_pass http://127.0.0.1:8000;  (not https, not 0.0.0.0)</span>
+sudo nginx -t && sudo systemctl reload nginx</div>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">SSL certificate error — browser shows "Not Secure" <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <div class="code" style="margin:0"><span class="c"># Check 1: cert exists and isn't expired</span>
+sudo certbot certificates
+
+<span class="c"># Check 2: Nginx is using the right cert paths</span>
+sudo nginx -t
+
+<span class="c"># Check 3: Cloudflare SSL mode is "Full (Strict)" — not "Flexible"</span>
+<span class="c"># "Flexible" = CF encrypts to user, but HTTP to your server = cert errors</span>
+
+<span class="c"># Check 4: renew expired cert</span>
+sudo certbot renew --force-renewal
+
+<span class="c"># Check 5: ports 80 and 443 open in Azure NSG?</span>
+<span class="c"># Certbot needs port 80 to verify domain</span></div>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">CORS error — browser blocks my API calls <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <div class="code" style="margin:0"><span class="c"># Error: "Access to fetch has been blocked by CORS policy"</span>
+<span class="c"># Check: FastAPI CORS middleware — is your frontend domain in allow_origins?</span>
+
+<span class="c"># In FastAPI:</span>
+allow_origins=["https://yourapp.com"]   <span class="c"># NOT ["*"] in production</span>
+
+<span class="c"># Check: are you using https:// not http://?</span>
+<span class="c"># "http://yourapp.com" and "https://yourapp.com" are DIFFERENT origins</span>
+
+<span class="c"># Debug: check actual origin in browser DevTools → Network → Request Headers</span>
+<span class="c"># The "Origin" header shows exactly what string needs to be in allow_origins</span></div>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">WebSocket connection fails — 101 upgrade not working <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <div class="code" style="margin:0"><span class="c"># Check: Nginx location for /ws/ has the upgrade headers?</span>
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+
+<span class="c"># Check: using wss:// not ws:// in JavaScript?</span>
+<span class="c"># HTTPS sites must use wss:// (secure WebSocket)</span>
+<span class="k">const</span> ws = <span class="k">new</span> WebSocket(<span class="s">'wss://yourapp.com/ws/agent'</span>)
+
+<span class="c"># Check: proxy_read_timeout long enough?</span>
+<span class="c"># Default 60s — WS connections need much longer</span>
+proxy_read_timeout 3600s;</div>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Ngrok tunnel stopped working — connection refused <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <div class="code" style="margin:0"><span class="c"># Check 1: is your app still running locally?</span>
+curl http://localhost:8000/health
+
+<span class="c"># Check 2: ngrok session expired? (free plan has time limits)</span>
+<span class="c"># Restart ngrok: ngrok http 8000</span>
+<span class="c"># Note: URL changes on restart! Update your webhook settings.</span>
+
+<span class="c"># Check 3: port matches? App on 8000, ngrok tunneling 8001?</span>
+ngrok http 8000   <span class="c"># must match what your app is listening on</span>
+
+<span class="c"># Check 4: view ngrok inspector</span>
+open http://localhost:4040  <span class="c"># see all requests + errors</span></div>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Cloudflare shows error 520/521/522 — origin connection failed <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <div class="code" style="margin:0"><span class="c"># Error 520: Origin returned unexpected response</span>
+<span class="c"># Error 521: Origin is down (Nginx not running)</span>
+<span class="c"># Error 522: Connection timed out (firewall blocking Cloudflare)</span>
+
+<span class="c"># 521 fix: check Nginx is running</span>
+sudo systemctl status nginx
+sudo systemctl start nginx
+
+<span class="c"># 522 fix: Azure NSG must allow Cloudflare IPs on port 443</span>
+<span class="c"># Cloudflare publishes their IP ranges: https://cloudflare.com/ips</span>
+<span class="c"># Or simply allow 443 from Any in NSG</span>
+
+<span class="c"># Test without Cloudflare (temporarily set DNS to DNS-only)</span>
+curl -H "Host: yourapp.com" https://20.123.45.67/health <span class="c"># direct to server</span>
+
+<span class="c"># Check Cloudflare SSL mode — must be Full (Strict) with valid cert</span></div>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Port already in use — can't start my app <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <div class="code" style="margin:0"><span class="c"># OSError: [Errno 98] Address already in use</span>
+<span class="c"># Find what's using the port</span>
+lsof -i :8000
+ss -tulpn | grep :8000
+
+<span class="c"># Kill the process</span>
+sudo fuser -k 8000/tcp
+
+<span class="c"># Or kill by PID (from lsof output)</span>
+kill -9 <PID>
+
+<span class="c"># Check: previous uvicorn didn't shut down cleanly?</span>
+ps aux | grep uvicorn
+killall uvicorn    <span class="c"># nuclear option</span></div>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">AI streaming is buffered — tokens arrive all at once, not one by one <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <div class="code" style="margin:0"><span class="c"># Nginx is buffering your SSE stream — set proxy_buffering off</span>
+location /api/stream/ {
+    proxy_buffering         off;
+    proxy_set_header        X-Accel-Buffering no;  <span class="c"># tells Nginx: no buffering</span>
+    proxy_cache             off;
+    proxy_read_timeout      300s;
+    chunked_transfer_encoding on;
+}
+
+<span class="c"># Check FastAPI is actually yielding tokens:</span>
+<span class="k">async def</span> <span class="f">generator</span>():
+    <span class="k">async for</span> chunk <span class="k">in</span> llm_stream():
+        <span class="k">yield</span> <span class="s">f"data: {chunk}\n\n"</span>   <span class="c"># must flush immediately</span>
+
+<span class="c"># Cloudflare buffers responses too — disable with Page Rule or Cache Rule:</span>
+<span class="c"># URL: yourapp.com/api/stream/*  → Response Buffering: Off</span></div>
+    </div>
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  if(event&&event.currentTarget)event.currentTarget.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700)closeSb();
+}
+function toggleAcc(el){el.classList.toggle('open')}
+const sb=document.getElementById('sb'),ov=document.getElementById('ov'),hbg=document.getElementById('hbg');
+function openSb(){sb.classList.add('open');ov.classList.add('open')}
+function closeSb(){sb.classList.remove('open');ov.classList.remove('open')}
+hbg.addEventListener('click',()=>sb.classList.contains('open')?closeSb():openSb());
+ov.addEventListener('click',closeSb);
+</script>
+</body>
+</html>

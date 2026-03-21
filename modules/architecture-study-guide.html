@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Architecture & Folder Structure — Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-dark: #0f1117;
+  --bg-sidebar: #141820;
+  --bg-card: #1a1f2e;
+  --bg-card2: #1e2535;
+  --bg-hover: #252d3d;
+  --accent: #00c96e;
+  --accent2: #00a8ff;
+  --accent3: #f5a623;
+  --accent4: #e85d75;
+  --accent5: #9b6dff;
+  --text-primary: #e8eaf0;
+  --text-secondary: #8892a4;
+  --text-muted: #505a6e;
+  --border: #252d3d;
+  --border2: #2e3748;
+  --green: #00c96e;
+  --blue: #00a8ff;
+  --orange: #f5a623;
+  --pink: #e85d75;
+  --purple: #9b6dff;
+  --sidebar-w: 280px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* TOPBAR */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px;
+  background: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px 0 0;
+}
+.topbar-brand {
+  display: flex; align-items: center; gap: 0;
+  width: var(--sidebar-w);
+  padding: 0 24px;
+  border-right: 1px solid var(--border);
+  height: 100%;
+}
+.brand-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-weight: 600; font-size: 14px; color: #000; margin-right: 10px;
+}
+.brand-text { font-weight: 600; font-size: 15px; color: var(--text-primary); }
+.brand-sub { font-size: 11px; color: var(--text-muted); }
+.topbar-meta { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--text-secondary); }
+.progress-pill {
+  background: rgba(0,201,110,0.12); color: var(--accent);
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  border: 1px solid rgba(0,201,110,0.25);
+}
+.topic-count { color: var(--text-muted); font-size: 12px; }
+
+/* LAYOUT */
+.layout { display: flex; padding-top: 56px; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  position: fixed; top: 56px; left: 0; bottom: 0;
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.sidebar-section-header {
+  padding: 20px 20px 8px;
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  color: var(--text-muted); text-transform: uppercase;
+}
+.sidebar-section-header:first-child { padding-top: 16px; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; cursor: pointer;
+  font-size: 13px; color: var(--text-secondary);
+  border-left: 3px solid transparent;
+  transition: all .15s;
+  text-decoration: none;
+}
+.nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.nav-item.active {
+  color: var(--accent); background: rgba(0,201,110,0.08);
+  border-left-color: var(--accent); font-weight: 500;
+}
+.nav-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.nav-badge {
+  margin-left: auto; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500;
+}
+.badge-beginner { background: rgba(0,201,110,.15); color: var(--green); }
+.badge-inter { background: rgba(0,168,255,.15); color: var(--blue); }
+.badge-adv { background: rgba(155,109,255,.15); color: var(--purple); }
+.badge-ai { background: rgba(245,166,35,.15); color: var(--orange); }
+
+/* MAIN CONTENT */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1; padding: 40px 48px 80px;
+  max-width: 900px;
+}
+
+/* SECTION */
+.section { display: none; }
+.section.active { display: block; }
+
+/* HERO */
+.section-hero {
+  margin-bottom: 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+  padding: 4px 10px; border-radius: 6px; margin-bottom: 14px;
+}
+.hero-title {
+  font-size: 28px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.25; margin-bottom: 10px;
+}
+.hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 680px; }
+
+/* CARDS */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 22px 24px; margin-bottom: 16px;
+}
+.card-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.card-body { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+.card-accent {
+  border-left: 3px solid var(--accent);
+  background: rgba(0,201,110,.05);
+}
+.card-blue { border-left: 3px solid var(--blue); background: rgba(0,168,255,.05); }
+.card-orange { border-left: 3px solid var(--orange); background: rgba(245,166,35,.05); }
+.card-purple { border-left: 3px solid var(--purple); background: rgba(155,109,255,.05); }
+.card-pink { border-left: 3px solid var(--pink); background: rgba(232,93,117,.05); }
+
+/* CODE BLOCKS */
+.code-block {
+  background: #0a0e16; border: 1px solid var(--border);
+  border-radius: 8px; padding: 18px 20px; margin: 14px 0;
+  font-family: 'DM Mono', monospace; font-size: 12.5px;
+  line-height: 1.75; overflow-x: auto; white-space: pre;
+}
+.code-block .dir { color: #00a8ff; }
+.code-block .cmt { color: #505a6e; }
+.code-block .kw { color: #9b6dff; }
+.code-block .str { color: #00c96e; }
+.code-block .cls { color: #f5a623; }
+.code-block .fn { color: #e85d75; }
+
+/* INLINE CODE */
+code {
+  font-family: 'DM Mono', monospace; font-size: 12.5px;
+  background: rgba(255,255,255,.06); color: var(--accent);
+  padding: 1px 6px; border-radius: 4px;
+}
+
+/* GRIDS */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+.mini-card {
+  background: var(--bg-card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px;
+}
+.mini-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.mini-body { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+/* LAYERS */
+.layer-stack { display: flex; flex-direction: column; gap: 3px; margin: 14px 0; }
+.layer {
+  border-radius: 6px; padding: 12px 16px;
+  border-left: 4px solid; font-size: 13px;
+}
+.layer-name { font-weight: 600; margin-bottom: 2px; }
+.layer-desc { font-size: 12px; color: var(--text-secondary); }
+
+/* FLOW */
+.flow-row {
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap; margin: 14px 0;
+}
+.flow-box {
+  padding: 7px 14px; border-radius: 6px;
+  font-size: 12px; font-weight: 500; border: 1px solid;
+  text-align: center;
+}
+.flow-arrow { color: var(--text-muted); font-size: 16px; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; margin: 14px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--bg-card2); }
+th {
+  text-align: left; padding: 10px 16px;
+  font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--text-muted); border-bottom: 1px solid var(--border2);
+}
+td { padding: 11px 16px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.02); }
+.td-name { color: var(--text-primary); font-weight: 500; }
+
+/* BADGE PILL */
+.pill {
+  display: inline-block; font-size: 11px; font-weight: 500;
+  padding: 2px 8px; border-radius: 10px;
+}
+.pill-green { background: rgba(0,201,110,.15); color: var(--green); }
+.pill-blue { background: rgba(0,168,255,.15); color: var(--blue); }
+.pill-orange { background: rgba(245,166,35,.15); color: var(--orange); }
+.pill-purple { background: rgba(155,109,255,.15); color: var(--purple); }
+.pill-pink { background: rgba(232,93,117,.15); color: var(--pink); }
+.pill-gray { background: rgba(255,255,255,.07); color: var(--text-secondary); }
+
+/* CALLOUT */
+.callout {
+  border-radius: 8px; padding: 14px 18px; margin: 14px 0;
+  font-size: 13px; line-height: 1.65;
+}
+.callout-green { background: rgba(0,201,110,.08); border: 1px solid rgba(0,201,110,.2); color: #7ddcaa; }
+.callout-blue { background: rgba(0,168,255,.08); border: 1px solid rgba(0,168,255,.2); color: #7dc8f0; }
+.callout-orange { background: rgba(245,166,35,.08); border: 1px solid rgba(245,166,35,.2); color: #f0c87a; }
+.callout-purple { background: rgba(155,109,255,.08); border: 1px solid rgba(155,109,255,.2); color: #c4aafe; }
+
+.callout strong { color: inherit; font-weight: 600; }
+
+/* STEPS */
+.step { display: flex; gap: 14px; margin-bottom: 18px; }
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: var(--accent); color: #000; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.step-content { flex: 1; }
+.step-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ACCORDION */
+.acc { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
+.acc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 18px; cursor: pointer; font-size: 13px; font-weight: 500;
+  color: var(--text-primary); background: var(--bg-card);
+  transition: background .15s; user-select: none;
+}
+.acc-head:hover { background: var(--bg-hover); }
+.acc-icon { color: var(--text-muted); font-size: 18px; transition: transform .2s; }
+.acc-body {
+  display: none; padding: 14px 18px; font-size: 13px; color: var(--text-secondary);
+  line-height: 1.65; background: var(--bg-card2); border-top: 1px solid var(--border);
+}
+.acc.open .acc-body { display: block; }
+.acc.open .acc-icon { transform: rotate(45deg); }
+
+/* ROADMAP */
+.roadmap { padding: 4px 0; }
+.rm-item { display: flex; gap: 16px; }
+.rm-line { display: flex; flex-direction: column; align-items: center; }
+.rm-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; border: 2px solid; }
+.rm-vline { width: 2px; flex: 1; min-height: 24px; margin: 4px 0; }
+.rm-content { padding-bottom: 24px; flex: 1; }
+.rm-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+.rm-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.rm-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+/* COMPARISON TABLE */
+.comp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0; }
+.comp-col { background: var(--bg-card2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.comp-col h4 { font-size: 12px; font-weight: 600; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border); }
+.comp-col li { font-size: 11.5px; color: var(--text-secondary); list-style: none; padding: 3px 0; }
+.comp-col li::before { content: "—"; margin-right: 6px; color: var(--text-muted); }
+
+/* SECTION DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+/* H2 H3 */
+h2 { font-size: 20px; font-weight: 600; color: var(--text-primary); margin: 28px 0 12px; }
+h2:first-child { margin-top: 0; }
+h3 { font-size: 15px; font-weight: 600; color: var(--text-primary); margin: 22px 0 10px; }
+
+p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
+
+/* MOBILE */
+.hamburger {
+  display: none; background: none; border: none; cursor: pointer;
+  flex-direction: column; gap: 5px; padding: 4px;
+}
+.hamburger span { display: block; width: 20px; height: 2px; background: var(--text-secondary); border-radius: 1px; transition: .2s; }
+.sidebar-overlay { display: none; }
+
+@media (max-width: 900px) {
+  .main { padding: 28px 24px 60px; max-width: 100%; }
+}
+@media (max-width: 700px) {
+  :root { --sidebar-w: 260px; }
+  .main { margin-left: 0; padding: 24px 18px 60px; }
+  .sidebar { transform: translateX(-100%); transition: transform .25s; z-index: 90; }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay { display: none; position: fixed; inset: 56px 0 0 0; background: rgba(0,0,0,.5); z-index: 89; }
+  .sidebar-overlay.open { display: block; }
+  .hamburger { display: flex; }
+  .topbar-brand { width: auto; border-right: none; }
+  .grid2 { grid-template-columns: 1fr; }
+  .grid3 { grid-template-columns: 1fr 1fr; }
+  .comp-grid { grid-template-columns: 1fr; }
+  .flow-row { flex-direction: column; align-items: flex-start; }
+  .flow-arrow { transform: rotate(90deg); }
+}
+@media (max-width: 480px) {
+  .grid3 { grid-template-columns: 1fr; }
+  .hero-title { font-size: 22px; }
+}
+
+/* ANIMATIONS */
+.section.active .card,
+.section.active .mini-card,
+.section.active .section-hero {
+  animation: fadeUp .3s ease both;
+}
+.section.active .card:nth-child(2) { animation-delay: .05s; }
+.section.active .card:nth-child(3) { animation-delay: .1s; }
+.section.active .card:nth-child(4) { animation-delay: .15s; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* TERMINAL PROMPT */
+.term-line { color: var(--text-muted); }
+.term-line::before { content: "$ "; color: var(--accent); }
+
+/* USE CASE SPECIFIC */
+.uc-header {
+  display: flex; align-items: flex-start; gap: 18px; margin-bottom: 28px;
+  padding-bottom: 24px; border-bottom: 1px solid var(--border);
+}
+.uc-icon {
+  width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; border: 1px solid;
+}
+.uc-meta { flex: 1; }
+.uc-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
+.uc-title { font-size: 24px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; line-height: 1.2; }
+.uc-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0; }
+.tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; border: 1px solid; }
+
+.phase {
+  border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; margin-bottom: 14px;
+}
+.phase-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 18px; background: var(--bg-card2);
+  border-bottom: 1px solid var(--border);
+}
+.phase-num {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+.phase-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.phase-sub { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+.phase-body { padding: 16px 18px; background: var(--bg-card); }
+.phase-body p { margin-bottom: 8px; font-size: 13px; }
+.phase-body p:last-child { margin-bottom: 0; }
+
+.do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+.do-box, .dont-box { border-radius: 8px; padding: 14px 16px; }
+.do-box { background: rgba(0,201,110,.07); border: 1px solid rgba(0,201,110,.2); }
+.dont-box { background: rgba(232,93,117,.07); border: 1px solid rgba(232,93,117,.2); }
+.do-box h4 { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.dont-box h4 { font-size: 11px; font-weight: 700; color: var(--pink); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.do-box li, .dont-box li { font-size: 12px; color: var(--text-secondary); list-style: none; padding: 3px 0 3px 14px; position: relative; line-height: 1.5; }
+.do-box li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-size: 11px; }
+.dont-box li::before { content: "✗"; position: absolute; left: 0; color: var(--pink); font-size: 11px; }
+
+.stack-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.stack-item {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg-card2); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 5px 10px; font-size: 12px; color: var(--text-secondary);
+}
+.stack-item span { font-weight: 500; color: var(--text-primary); }
+
+.rule-list { list-style: none; margin: 10px 0; }
+.rule-list li {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-secondary);
+}
+.rule-list li:last-child { border-bottom: none; }
+.rule-list li::before {
+  content: "→"; color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 1px;
+}
+.rule-list li strong { color: var(--text-primary); font-weight: 600; }
+
+.summary-bar {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  margin: 16px 0;
+}
+.sum-item {
+  background: var(--bg-card2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 14px; text-align: center;
+}
+.sum-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.sum-val { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+
+@media (max-width: 600px) {
+  .do-dont { grid-template-columns: 1fr; }
+  .summary-bar { grid-template-columns: 1fr 1fr; }
+  .uc-header { flex-direction: column; }
+}</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">&lt;/&gt;</div>
+    <div>
+      <div class="brand-text">ArchLearn</div>
+      <div class="brand-sub">Software Architecture</div>
+    </div>
+  </div>
+  <div class="topbar-meta">
+    <button class="hamburger" id="hamburger" aria-label="menu">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="topic-count">15 modules · 70+ concepts</span>
+    <span class="progress-pill">Study Guide</span>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-section-header">Foundations</div>
+  <a class="nav-item active" onclick="show('intro')">
+    <span class="nav-dot" style="background:var(--green)"></span> Why structure matters
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="show('three-things')">
+    <span class="nav-dot" style="background:var(--green)"></span> The 3 things every app does
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+
+  <div class="sidebar-section-header">Folder Structures</div>
+  <a class="nav-item" onclick="show('folder-types')">
+    <span class="nav-dot" style="background:var(--blue)"></span> Type-based
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="show('folder-feature')">
+    <span class="nav-dot" style="background:var(--blue)"></span> Feature-based
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+  <a class="nav-item" onclick="show('folder-layer')">
+    <span class="nav-dot" style="background:var(--blue)"></span> Layer-based
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+  <a class="nav-item" onclick="show('folder-monorepo')">
+    <span class="nav-dot" style="background:var(--blue)"></span> Monorepo & DDD
+    <span class="nav-badge badge-adv">Adv</span>
+  </a>
+
+  <div class="sidebar-section-header">Architecture Patterns</div>
+  <a class="nav-item" onclick="show('mvc')">
+    <span class="nav-dot" style="background:var(--orange)"></span> MVC
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="show('mvvm')">
+    <span class="nav-dot" style="background:var(--orange)"></span> MVVM & MVP
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+  <a class="nav-item" onclick="show('clean')">
+    <span class="nav-dot" style="background:var(--orange)"></span> Clean Architecture
+    <span class="nav-badge badge-adv">Adv</span>
+  </a>
+  <a class="nav-item" onclick="show('hex')">
+    <span class="nav-dot" style="background:var(--orange)"></span> Hexagonal & Events
+    <span class="nav-badge badge-adv">Adv</span>
+  </a>
+
+  <div class="sidebar-section-header">Connecting the Dots</div>
+  <a class="nav-item" onclick="show('connect')">
+    <span class="nav-dot" style="background:var(--purple)"></span> Patterns → Folders map
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+
+  <div class="sidebar-section-header">AI / Agent Platform</div>
+  <a class="nav-item" onclick="show('ai-arch')">
+    <span class="nav-dot" style="background:var(--pink)"></span> Architecture for AI apps
+    <span class="nav-badge badge-ai">AI</span>
+  </a>
+  <a class="nav-item" onclick="show('ai-folder')">
+    <span class="nav-dot" style="background:var(--pink)"></span> AI platform folder structure
+    <span class="nav-badge badge-ai">AI</span>
+  </a>
+
+  <div class="sidebar-section-header">Use Cases — What to Build</div>
+  <a class="nav-item" onclick="show('uc-chatbot')">
+    <span class="nav-dot" style="background:#00c96e"></span> Simple chatbot
+    <span class="nav-badge badge-beginner">Build</span>
+  </a>
+  <a class="nav-item" onclick="show('uc-rest-api')">
+    <span class="nav-dot" style="background:#00a8ff"></span> REST API / backend
+    <span class="nav-badge badge-inter">Build</span>
+  </a>
+  <a class="nav-item" onclick="show('uc-saas')">
+    <span class="nav-dot" style="background:#9b6dff"></span> SaaS platform
+    <span class="nav-badge badge-inter">Build</span>
+  </a>
+  <a class="nav-item" onclick="show('uc-ecommerce')">
+    <span class="nav-dot" style="background:#f5a623"></span> E-commerce app
+    <span class="nav-badge badge-inter">Build</span>
+  </a>
+  <a class="nav-item" onclick="show('uc-agent')">
+    <span class="nav-dot" style="background:#e85d75"></span> AI agent platform
+    <span class="nav-badge badge-ai">Build</span>
+  </a>
+  <a class="nav-item" onclick="show('uc-realtime')">
+    <span class="nav-dot" style="background:#00c96e"></span> Real-time collab app
+    <span class="nav-badge badge-adv">Build</span>
+  </a>
+  <a class="nav-item" onclick="show('uc-enterprise')">
+    <span class="nav-dot" style="background:#9b6dff"></span> Enterprise / multi-tenant
+    <span class="nav-badge badge-adv">Build</span>
+  </a>
+
+  <div class="sidebar-section-header">Wrap-up</div>
+  <a class="nav-item" onclick="show('roadmap')">
+    <span class="nav-dot" style="background:var(--accent)"></span> Learning roadmap
+  </a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ====================== INTRO ====================== -->
+<section id="sec-intro" class="section active">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.12);color:var(--green)">
+      Module 1 · Foundations
+    </div>
+    <h1 class="hero-title">Why does structure matter?</h1>
+    <p class="hero-desc">Before learning any pattern or folder convention, you need to understand the problem they all solve. This is the mental model everything else builds on.</p>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">The messy room problem</div>
+    <div class="card-body">Imagine your entire codebase lives in one file — 10,000 lines, no folders. Everything mixed: database queries, UI logic, email sending, price calculations. When something breaks, where do you look? When you want to change email logic, you risk breaking the price calculator.<br><br>
+    <strong style="color:var(--text-primary)">Folder structure and architecture are just ways of saying: put things in the right drawer.</strong></div>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-title">The restaurant analogy</div>
+    <div class="card-body">A restaurant has clearly separated areas — kitchen, dining room, storage, billing counter. If the chef also handled billing while serving tables and scrubbing dishes, everything would collapse. Software architecture is the same idea: separate areas, each with one job, communicating through clear interfaces.</div>
+  </div>
+
+  <h2>Separation of Concerns — the #1 rule</h2>
+  <p>Every architecture pattern, every folder convention, every "best practice" you'll ever read boils down to this one principle:</p>
+
+  <div class="callout callout-green">
+    <strong>Separation of Concerns:</strong> Don't mix things that do different jobs. A file that sends emails should ONLY send emails. A component that renders a button should ONLY render a button.
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-head">What does "mixing" actually look like in code? <span class="acc-icon">+</span></div>
+    <div class="acc-body">Imagine a single function that: validates user input, queries the database, formats the response, sends a welcome email, logs the action, and returns HTML. When email breaks — you're in this function. When DB changes — same function. When UI changes — same function. One change = potential for everything to break.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-head">What does "separated" look like? <span class="acc-icon">+</span></div>
+    <div class="acc-body">You have: <code>UserValidator.ts</code> (only validates), <code>UserRepository.ts</code> (only queries DB), <code>EmailService.ts</code> (only sends emails), <code>UserController.ts</code> (only coordinates the others). When email breaks — open EmailService.ts. Done. Zero risk of touching anything else.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-head">Why does this connect to folders? <span class="acc-icon">+</span></div>
+    <div class="acc-body">Folder structure IS how you physically enforce separation of concerns on disk. A folder named <code>/services/</code> tells every developer: business logic lives here. A folder named <code>/components/</code> says: UI lives here. The folder name is a contract the whole team signs.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2>A file = a responsibility. A folder = a category.</h2>
+
+  <div class="code-block"><span class="dir">src/</span>
+├── <span class="dir">components/</span>     <span class="cmt"># everything that renders UI</span>
+│   └── Button.tsx   <span class="cmt"># ONE job: render a button</span>
+├── <span class="dir">services/</span>        <span class="cmt"># everything that calls APIs</span>
+│   └── chat.ts      <span class="cmt"># ONE job: chat API calls</span>
+├── <span class="dir">utils/</span>           <span class="cmt"># tiny helper functions</span>
+│   └── format.ts    <span class="cmt"># ONE job: format strings/dates</span>
+└── <span class="dir">pages/</span>           <span class="cmt"># one file per screen/route</span>
+    └── ChatPage.tsx  <span class="cmt"># ONE job: the chat screen</span></div>
+
+  <div class="callout callout-orange">
+    <strong>The test:</strong> Can you describe what a file does in one sentence without using the word "and"? If you need "and" — it's doing too much.
+  </div>
+</section>
+
+<!-- ====================== THREE THINGS ====================== -->
+<section id="sec-three-things" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.12);color:var(--green)">Module 1 · Foundations</div>
+    <h1 class="hero-title">The 3 things every app does</h1>
+    <p class="hero-desc">No matter how complex the application — a chatbot, a bank, a social network — every app does exactly three things. Understanding this unlocks everything else.</p>
+  </div>
+
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">1. Store data</div>
+      <div class="mini-body">Saving messages, users, settings, files. This is your database layer. MySQL, PostgreSQL, MongoDB — all doing the same job.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">2. Process logic</div>
+      <div class="mini-body">Rules: "can't send empty messages", "max 500 tokens", "only admins can delete". This is your business logic layer.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">3. Show UI</div>
+      <div class="mini-body">What the user actually sees and clicks. HTML, React components, mobile screens. Knows nothing about databases.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:20px">
+    <strong>Every architecture pattern is just a specific answer to:</strong> How should these three things talk to each other, and where should each one physically live in your codebase?
+  </div>
+
+  <h2>The layer sandwich</h2>
+  <p>Think of your app as a sandwich. Each layer only talks to the layers directly above and below it — never skipping layers.</p>
+
+  <div class="layer-stack">
+    <div class="layer" style="border-color:var(--blue);background:rgba(0,168,255,.06)">
+      <div class="layer-name" style="color:var(--blue)">UI layer — top</div>
+      <div class="layer-desc">What the user sees. React components, screens, templates. Knows nothing about databases or business rules.</div>
+    </div>
+    <div style="text-align:center;color:var(--text-muted);font-size:18px;padding:2px 0">↕</div>
+    <div class="layer" style="border-color:var(--purple);background:rgba(155,109,255,.06)">
+      <div class="layer-name" style="color:var(--purple)">Logic layer — middle</div>
+      <div class="layer-desc">Business rules. Validates inputs, transforms data, makes decisions. Knows nothing about HTML or the database engine.</div>
+    </div>
+    <div style="text-align:center;color:var(--text-muted);font-size:18px;padding:2px 0">↕</div>
+    <div class="layer" style="border-color:var(--green);background:rgba(0,201,110,.06)">
+      <div class="layer-name" style="color:var(--green)">Data layer — bottom</div>
+      <div class="layer-desc">Database queries, files, external API calls. Knows nothing about the UI or business rules above it.</div>
+    </div>
+  </div>
+
+  <div class="card card-accent" style="margin-top:16px">
+    <div class="card-title">Why layers give you superpowers</div>
+    <div class="card-body">If you swap your database from MySQL to MongoDB, only the data layer changes. The UI and logic layers never know it happened. This is the fundamental superpower of layered architecture — swap out any layer without touching the others.</div>
+  </div>
+</section>
+
+<!-- ====================== TYPE-BASED ====================== -->
+<section id="sec-folder-types" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.12);color:var(--blue)">Module 2 · Folder Structures</div>
+    <h1 class="hero-title">Type-based structure</h1>
+    <p class="hero-desc">The first structure you'll encounter. Files are grouped by what <em>type</em> of thing they are — components, hooks, services, utils. Simple, fast to set up, breaks at scale.</p>
+  </div>
+
+  <div class="code-block"><span class="dir">src/</span>
+├── <span class="dir">components/</span>     <span class="cmt"># ALL UI components</span>
+│   ├── Button.tsx
+│   ├── Modal.tsx
+│   ├── Navbar.tsx
+│   └── ChatBubble.tsx
+├── <span class="dir">hooks/</span>          <span class="cmt"># ALL custom hooks</span>
+│   ├── useAuth.ts
+│   └── useChat.ts
+├── <span class="dir">services/</span>        <span class="cmt"># ALL API call logic</span>
+│   ├── auth.ts
+│   └── chat.ts
+├── <span class="dir">utils/</span>           <span class="cmt"># ALL helper functions</span>
+├── <span class="dir">context/</span>         <span class="cmt"># ALL React context</span>
+├── <span class="dir">types/</span>           <span class="cmt"># ALL TypeScript types</span>
+└── <span class="dir">pages/</span>           <span class="cmt"># Route-level components</span></div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">When to use it</div>
+      <div class="mini-body">Portfolio sites, startup MVPs, personal projects, tutorials, prototypes, any project with fewer than ~10 distinct features. When speed matters more than scale.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">When it breaks</div>
+      <div class="mini-body">When <code>components/</code> has 80 files. When changing the auth feature means touching 5 different folders. When new teammates can't find anything.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-orange" style="margin-top:16px">
+    <strong>The key problem:</strong> To build the "auth" feature you need files from <code>components/</code>, <code>hooks/</code>, <code>services/</code>, <code>context/</code>, and <code>types/</code>. That's low cohesion — related things are scattered across the codebase.
+  </div>
+
+  <h2>When does type-based stop working?</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Scale</th><th>Files per folder</th><th>Experience</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Small (1–5 features)</td><td><span class="pill pill-green">5–15 files</span></td><td style="color:var(--text-secondary)">Comfortable, fast</td></tr>
+        <tr><td class="td-name">Medium (5–15 features)</td><td><span class="pill pill-orange">15–50 files</span></td><td style="color:var(--text-secondary)">Starting to scroll</td></tr>
+        <tr><td class="td-name">Large (15+ features)</td><td><span class="pill pill-pink">50+ files</span></td><td style="color:var(--text-secondary)">Pain. Switch patterns.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ====================== FEATURE-BASED ====================== -->
+<section id="sec-folder-feature" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.12);color:var(--blue)">Module 2 · Folder Structures</div>
+    <h1 class="hero-title">Feature-based structure</h1>
+    <p class="hero-desc">The most scalable frontend structure. Files are grouped by what they <em>do</em> — auth, chat, payments each own their components, hooks, and services. High cohesion: related code lives together.</p>
+  </div>
+
+  <div class="code-block"><span class="dir">src/</span>
+├── <span class="dir">features/</span>
+│   ├── <span class="dir">auth/</span>               <span class="cmt"># Everything auth-related</span>
+│   │   ├── <span class="dir">components/</span>     <span class="cmt"># Auth UI only</span>
+│   │   │   ├── LoginForm.tsx
+│   │   │   └── SignupModal.tsx
+│   │   ├── <span class="dir">hooks/</span>          <span class="cmt"># Auth hooks only</span>
+│   │   │   └── useAuth.ts
+│   │   ├── <span class="dir">services/</span>       <span class="cmt"># Auth API calls only</span>
+│   │   │   └── authApi.ts
+│   │   └── index.ts            <span class="cmt"># Public interface of auth feature</span>
+│   ├── <span class="dir">chat/</span>               <span class="cmt"># Everything chat-related</span>
+│   └── <span class="dir">agents/</span>             <span class="cmt"># Everything agent-related</span>
+├── <span class="dir">shared/</span>             <span class="cmt"># Truly reusable across features</span>
+│   ├── <span class="dir">ui/</span>              <span class="cmt"># Button, Modal, Input</span>
+│   └── <span class="dir">utils/</span>           <span class="cmt"># formatDate, truncate</span>
+└── <span class="dir">app/</span>                <span class="cmt"># Routing, global providers, store</span></div>
+
+  <div class="callout callout-green" style="margin-top:16px">
+    <strong>The key insight:</strong> To change the auth feature, you open <code>features/auth/</code> and everything you need is there. One folder, one feature, high cohesion. Deleting a feature = deleting one folder.
+  </div>
+
+  <h2>Two concepts that connect folders to architecture</h2>
+
+  <div class="grid2">
+    <div class="card card-accent">
+      <div class="card-title">High cohesion (good)</div>
+      <div class="card-body">Things that change together, live together. When auth requirements change, you touch one folder — not 5.</div>
+    </div>
+    <div class="card card-blue">
+      <div class="card-title">Low coupling (good)</div>
+      <div class="card-body">Features don't depend on each other's internals. Auth doesn't reach into payments. They talk through a shared interface (<code>index.ts</code>).</div>
+    </div>
+  </div>
+
+  <h2>The index.ts contract</h2>
+  <p>Each feature exports only what other features need to know about it. Everything else is private. This is the feature's "public API".</p>
+
+  <div class="code-block"><span class="cmt">// features/auth/index.ts — the only file other features import from</span>
+<span class="kw">export</span> { LoginForm } <span class="kw">from</span> <span class="str">'./components/LoginForm'</span>;
+<span class="kw">export</span> { useAuth } <span class="kw">from</span> <span class="str">'./hooks/useAuth'</span>;
+<span class="kw">export type</span> { User, AuthState } <span class="kw">from</span> <span class="str">'./types'</span>;
+
+<span class="cmt">// ✅ Correct — import from the feature's index</span>
+<span class="kw">import</span> { useAuth } <span class="kw">from</span> <span class="str">'@/features/auth'</span>;
+
+<span class="cmt">// ❌ Wrong — reaching into a feature's internals</span>
+<span class="kw">import</span> { useAuth } <span class="kw">from</span> <span class="str">'@/features/auth/hooks/useAuth'</span>;</div>
+</section>
+
+<!-- ====================== LAYER-BASED ====================== -->
+<section id="sec-folder-layer" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.12);color:var(--blue)">Module 2 · Folder Structures</div>
+    <h1 class="hero-title">Layer-based structure</h1>
+    <p class="hero-desc">The standard for backend APIs and servers. Folders map to architectural layers: controllers, services, repositories, models. Predictable, industry-standard, mirrors MVC and Clean Architecture.</p>
+  </div>
+
+  <div class="code-block"><span class="dir">src/</span>
+├── <span class="dir">controllers/</span>    <span class="cmt"># HTTP request handlers</span>
+│   ├── chatController.ts   <span class="cmt"># handles POST /chat</span>
+│   └── userController.ts
+├── <span class="dir">services/</span>        <span class="cmt"># Core business logic</span>
+│   ├── chatService.ts      <span class="cmt"># "can user send this message?"</span>
+│   └── authService.ts
+├── <span class="dir">repositories/</span>    <span class="cmt"># Database queries ONLY</span>
+│   ├── messageRepo.ts
+│   └── userRepo.ts
+├── <span class="dir">models/</span>          <span class="cmt"># Database schemas / ORM models</span>
+│   ├── Message.ts
+│   └── User.ts
+├── <span class="dir">routes/</span>          <span class="cmt"># Route definitions (URL → controller)</span>
+├── <span class="dir">middleware/</span>      <span class="cmt"># Auth, logging, rate limiting</span>
+├── <span class="dir">validators/</span>      <span class="cmt"># Input validation schemas</span>
+└── <span class="dir">config/</span>          <span class="cmt"># DB connection, env variables</span></div>
+
+  <div class="callout callout-blue" style="margin-top:16px">
+    <strong>The data flow:</strong> Route → Middleware → Controller → Service → Repository → Database. Each layer has exactly one job and only calls the layer below it.
+  </div>
+
+  <h2>The request lifecycle</h2>
+  <div class="flow-row">
+    <div class="flow-box" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.3);color:var(--blue)">POST /chat</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.3);color:var(--purple)">Auth middleware</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.3);color:var(--orange)">Controller</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.3);color:var(--green)">Service</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.3);color:var(--pink)">Repository</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(255,255,255,.05);border-color:var(--border2);color:var(--text-secondary)">Database</div>
+  </div>
+
+  <h2>Best for</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Stack</th><th>Framework</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Node.js</td><td>Express, Fastify, NestJS</td><td>Most common for JS backends</td></tr>
+        <tr><td class="td-name">Python</td><td>Django, FastAPI</td><td>Django has this built-in</td></tr>
+        <tr><td class="td-name">Ruby</td><td>Rails</td><td>Invented MVC for the web</td></tr>
+        <tr><td class="td-name">PHP</td><td>Laravel</td><td>Strong MVC conventions</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ====================== MONOREPO + DDD ====================== -->
+<section id="sec-folder-monorepo" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.12);color:var(--blue)">Module 2 · Folder Structures</div>
+    <h1 class="hero-title">Monorepo & Domain-Driven Design</h1>
+    <p class="hero-desc">Advanced structures for large platforms. Monorepo keeps multiple apps in one repo. DDD mirrors your business domains in code. Both require planning — don't start here.</p>
+  </div>
+
+  <h2>Monorepo</h2>
+  <p>Multiple apps (web, mobile, API, admin) and shared packages (UI library, types, config) in one repository. Managed with Turborepo, Nx, or pnpm workspaces.</p>
+
+  <div class="code-block"><span class="dir">my-platform/</span>         <span class="cmt"># one Git repo for everything</span>
+├── <span class="dir">apps/</span>
+│   ├── <span class="dir">web/</span>           <span class="cmt"># Next.js frontend</span>
+│   ├── <span class="dir">api/</span>           <span class="cmt"># Node.js backend</span>
+│   ├── <span class="dir">mobile/</span>        <span class="cmt"># React Native app</span>
+│   └── <span class="dir">admin/</span>         <span class="cmt"># Admin dashboard</span>
+├── <span class="dir">packages/</span>
+│   ├── <span class="dir">ui/</span>            <span class="cmt"># Shared component library</span>
+│   ├── <span class="dir">types/</span>         <span class="cmt"># Shared TypeScript types</span>
+│   ├── <span class="dir">utils/</span>         <span class="cmt"># Shared utility functions</span>
+│   └── <span class="dir">config/</span>        <span class="cmt"># Shared ESLint, TS, Tailwind config</span>
+├── turbo.json             <span class="cmt"># Turborepo build pipeline</span>
+└── pnpm-workspace.yaml</div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Pros</div>
+      <div class="mini-body">Share types between API and web with no publishing. One PR changes backend + frontend together. Unified CI/CD. Consistent tooling everywhere.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">Cons</div>
+      <div class="mini-body">Complex tooling setup. Slow CI if not configured correctly. Steep learning curve. Overkill for solo developers or small teams.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2>Domain-Driven Design (DDD)</h2>
+  <p>Code mirrors real business domains. Each domain (Users, Orders, Payments) is fully self-contained with its own entities, use cases, repositories, and events.</p>
+
+  <div class="code-block"><span class="dir">src/</span>
+├── <span class="dir">domains/</span>
+│   ├── <span class="dir">user/</span>
+│   │   ├── <span class="dir">entities/</span>      <span class="cmt"># User, Role, Permission</span>
+│   │   ├── <span class="dir">usecases/</span>     <span class="cmt"># CreateUser, BanUser</span>
+│   │   ├── <span class="dir">repositories/</span> <span class="cmt"># IUserRepository interface</span>
+│   │   └── <span class="dir">events/</span>        <span class="cmt"># UserCreated, UserBanned</span>
+│   ├── <span class="dir">orders/</span>
+│   └── <span class="dir">payments/</span>
+├── <span class="dir">infra/</span>             <span class="cmt"># DB, email, queue implementations</span>
+├── <span class="dir">interfaces/</span>        <span class="cmt"># HTTP API, GraphQL, CLI</span>
+└── <span class="dir">shared/</span>            <span class="cmt"># ValueObjects, base classes</span></div>
+
+  <div class="callout callout-purple">
+    <strong>Use DDD when:</strong> your codebase has complex business rules that map to real-world domains. Fintech, healthcare, logistics. Not for simple CRUD apps — the overhead isn't worth it.
+  </div>
+</section>
+
+<!-- ====================== MVC ====================== -->
+<section id="sec-mvc" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.12);color:var(--orange)">Module 3 · Architecture Patterns</div>
+    <h1 class="hero-title">MVC — Model View Controller</h1>
+    <p class="hero-desc">The original and most well-known pattern, invented in the 1970s. Every web framework you'll encounter is a variation of MVC. Understanding it first makes every other pattern make sense.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">The three parts</div>
+    <div class="card-body">
+      <div class="layer-stack" style="margin-top:8px">
+        <div class="layer" style="border-color:var(--blue);background:rgba(0,168,255,.06)">
+          <div class="layer-name" style="color:var(--blue)">View</div>
+          <div class="layer-desc">The UI. HTML templates, JSX. Shows data to the user. Sends user input to the Controller. Has no business logic.</div>
+        </div>
+        <div class="layer" style="border-color:var(--green);background:rgba(0,201,110,.06)">
+          <div class="layer-name" style="color:var(--green)">Controller</div>
+          <div class="layer-desc">The middleman. Receives user requests, calls Model methods, decides which View to render. Coordinates, doesn't calculate.</div>
+        </div>
+        <div class="layer" style="border-color:var(--orange);background:rgba(245,166,35,.06)">
+          <div class="layer-name" style="color:var(--orange)">Model</div>
+          <div class="layer-desc">The data and rules. Database queries, business logic, data validation. Knows nothing about the UI.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-orange">
+    <strong>Restaurant analogy:</strong> Controller = waiter (takes order, coordinates). Model = chef + pantry (makes food, manages ingredients). View = the dish presented to you at the table.
+  </div>
+
+  <h2>Real flow: user sends a chat message</h2>
+  <div class="flow-row">
+    <div class="flow-box" style="background:rgba(255,255,255,.05);border-color:var(--border2);color:var(--text-secondary)">User types message</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.3);color:var(--green)">ChatController<br><small>validates input</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.3);color:var(--orange)">MessageModel<br><small>saves to DB</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.3);color:var(--blue)">ChatView<br><small>renders response</small></div>
+  </div>
+
+  <h2>MVC in popular frameworks</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Framework</th><th>Model</th><th>View</th><th>Controller</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Django (Python)</td><td>models.py</td><td>templates/</td><td>views.py <span class="pill pill-orange" style="font-size:10px">confusingly named</span></td></tr>
+        <tr><td class="td-name">Ruby on Rails</td><td>app/models</td><td>app/views</td><td>app/controllers</td></tr>
+        <tr><td class="td-name">Laravel (PHP)</td><td>app/Models</td><td>resources/views</td><td>app/Http/Controllers</td></tr>
+        <tr><td class="td-name">Express (Node.js)</td><td>models/</td><td>views/ or frontend</td><td>controllers/ or routes/</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>MVC's main weakness: the fat controller</h2>
+  <div class="code-block"><span class="cmt">// ❌ A fat controller — doing way too much</span>
+<span class="kw">async function</span> <span class="fn">sendMessage</span>(req, res) {
+  <span class="cmt">// Validation (should be in validator)</span>
+  <span class="kw">if</span> (!req.body.text) <span class="kw">return</span> res.status(400).send();
+
+  <span class="cmt">// Auth check (should be in middleware)</span>
+  <span class="kw">const</span> user = <span class="kw">await</span> verifyToken(req.headers.auth);
+
+  <span class="cmt">// Business logic (should be in service)</span>
+  <span class="kw">if</span> (user.plan === <span class="str">'free'</span> && messageCount > 10) <span class="kw">return</span>...
+
+  <span class="cmt">// DB query (should be in repository)</span>
+  <span class="kw">const</span> msg = <span class="kw">await</span> db.messages.create({ text, userId: user.id });
+
+  <span class="cmt">// AI call (should be in service)</span>
+  <span class="kw">const</span> reply = <span class="kw">await</span> openai.complete(text);
+
+  res.json({ reply });
+}
+<span class="cmt">// This is why Clean Architecture and Hexagonal exist.</span></div>
+</section>
+
+<!-- ====================== MVVM + MVP ====================== -->
+<section id="sec-mvvm" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.12);color:var(--orange)">Module 3 · Architecture Patterns</div>
+    <h1 class="hero-title">MVVM & MVP</h1>
+    <p class="hero-desc">Both are reactions to MVC's weaknesses. MVVM is what modern frontend frameworks (React, Vue, Angular) use. MVP is what older native apps used. Understanding both clarifies why React works the way it does.</p>
+  </div>
+
+  <h2>MVVM — Model View ViewModel</h2>
+  <p>The dominant pattern for modern reactive UI. The ViewModel exposes reactive state — when state changes, the View automatically re-renders. No manual DOM manipulation.</p>
+
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">View</div>
+      <div class="mini-body">Declarative UI. Pure render output. No logic. Auto-updates when ViewModel state changes. In React: JSX components.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">ViewModel</div>
+      <div class="mini-body">Holds reactive state. Exposes commands and data. In React: <code>useState</code>, <code>useReducer</code>, Zustand store, Redux.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">Model</div>
+      <div class="mini-body">API calls, business logic, local persistence. In React: <code>fetch()</code>, React Query, service functions.</div>
+    </div>
+  </div>
+
+  <div class="code-block" style="margin-top:16px"><span class="cmt">// ViewModel — state + logic in a hook</span>
+<span class="kw">function</span> <span class="fn">useChatViewModel</span>() {
+  <span class="kw">const</span> [messages, setMessages] = <span class="fn">useState</span>([]);
+  <span class="kw">const</span> [loading, setLoading] = <span class="fn">useState</span>(<span class="kw">false</span>);
+
+  <span class="kw">const</span> <span class="fn">sendMessage</span> = <span class="kw">async</span> (text) => {
+    <span class="fn">setLoading</span>(<span class="kw">true</span>);
+    <span class="kw">const</span> reply = <span class="kw">await</span> chatService.<span class="fn">send</span>(text); <span class="cmt">// Model</span>
+    <span class="fn">setMessages</span>(prev => [...prev, reply]);
+    <span class="fn">setLoading</span>(<span class="kw">false</span>);
+  };
+  <span class="kw">return</span> { messages, loading, sendMessage }; <span class="cmt">// exposed to View</span>
+}
+
+<span class="cmt">// View — pure render, zero business logic</span>
+<span class="kw">function</span> <span class="fn">ChatView</span>() {
+  <span class="kw">const</span> { messages, loading, sendMessage } = <span class="fn">useChatViewModel</span>();
+  <span class="kw">return</span> (
+    &lt;<span class="cls">div</span>&gt;
+      {messages.<span class="fn">map</span>(m => &lt;<span class="cls">Bubble</span> key={m.id} {...m} /&gt;)}
+      &lt;<span class="cls">SendButton</span> onSend={sendMessage} disabled={loading} /&gt;
+    &lt;/<span class="cls">div</span>&gt;
+  );
+}</div>
+
+  <div class="divider"></div>
+
+  <h2>MVP — Model View Presenter</h2>
+  <p>Similar to MVVM, but the View is completely passive and the Presenter is a 1-to-1 companion to the View. Popular in Android and Windows app development.</p>
+
+  <div class="grid2">
+    <div class="card card-blue">
+      <div class="card-title">MVP vs MVVM key difference</div>
+      <div class="card-body">In MVP, the View implements an interface (<code>ILoginView</code>). The Presenter calls methods on it directly. In MVVM, the View observes/subscribes to state — it doesn't get called by name.</div>
+    </div>
+    <div class="card card-accent">
+      <div class="card-title">When you'd see MVP today</div>
+      <div class="card-body">Legacy Android apps (before Jetpack Compose), WinForms applications, some .NET desktop software. New projects almost universally prefer MVVM or a component-based approach.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== CLEAN ARCHITECTURE ====================== -->
+<section id="sec-clean" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.12);color:var(--orange)">Module 3 · Architecture Patterns</div>
+    <h1 class="hero-title">Clean Architecture</h1>
+    <p class="hero-desc">Invented by Robert C. Martin (Uncle Bob). Organizes code in concentric circles. The most powerful principle: <strong style="color:var(--text-primary)">dependencies only point inward</strong>. Inner layers are completely ignorant of outer layers.</p>
+  </div>
+
+  <div class="layer-stack">
+    <div class="layer" style="border-color:var(--pink);background:rgba(232,93,117,.06)">
+      <div class="layer-name" style="color:var(--pink)">Entities — innermost circle</div>
+      <div class="layer-desc">Pure business objects. <code>User</code>, <code>Message</code>, <code>Agent</code>. No framework imports. No database. Would compile in a world with no internet.</div>
+    </div>
+    <div class="layer" style="border-color:var(--orange);background:rgba(245,166,35,.06)">
+      <div class="layer-name" style="color:var(--orange)">Use Cases</div>
+      <div class="layer-desc">Application rules. <code>CreateUser</code>, <code>SendMessage</code>, <code>RunAgent</code>. Imports entities only. Knows nothing about Postgres or Express.</div>
+    </div>
+    <div class="layer" style="border-color:var(--blue);background:rgba(0,168,255,.06)">
+      <div class="layer-name" style="color:var(--blue)">Interface Adapters</div>
+      <div class="layer-desc">Controllers, presenters, gateways. Translates between the web world and the use case world. Converts HTTP request → use case input.</div>
+    </div>
+    <div class="layer" style="border-color:var(--text-muted);background:rgba(255,255,255,.03)">
+      <div class="layer-name">Frameworks & Drivers — outermost</div>
+      <div class="layer-desc">Express, Postgres, React, Redis, OpenAI SDK. The most replaceable things. Knows everything but is known by nothing inner.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-green" style="margin-top:16px">
+    <strong>The Dependency Rule:</strong> Source code dependencies may only point inward. An inner layer never mentions anything from an outer layer by name. This is the one non-negotiable rule.
+  </div>
+
+  <h2>Why this matters practically</h2>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-head">I want to swap my database from PostgreSQL to MongoDB <span class="acc-icon">+</span></div>
+    <div class="acc-body">With Clean Architecture: only the outermost layer (infrastructure/persistence/) changes. Your entities, use cases, and interface adapters don't care what database you use. With a tightly coupled app: you'd be changing files in 10 different places.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-head">I want to test my business logic without a real database <span class="acc-icon">+</span></div>
+    <div class="acc-body">Your use cases depend on a repository <em>interface</em> (IMessageRepository), not the actual Postgres implementation. In tests, inject a mock that just uses an in-memory array. Zero database setup. Fast. Reliable.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-head">I want to add a CLI interface alongside the HTTP API <span class="acc-icon">+</span></div>
+    <div class="acc-body">Create a new adapter (CLIAdapter) in the interface adapters layer. Your use cases are untouched — they don't know they're being called from a CLI instead of HTTP. Just wire the CLI adapter to the same use cases.</div>
+  </div>
+
+  <h2>In code</h2>
+  <div class="code-block"><span class="cmt">// ENTITY — innermost, zero dependencies</span>
+<span class="kw">class</span> <span class="cls">Message</span> {
+  <span class="kw">constructor</span>(<span class="kw">public</span> text: <span class="kw">string</span>, <span class="kw">public</span> userId: <span class="kw">string</span>) {
+    <span class="kw">if</span> (!text.trim()) <span class="kw">throw new</span> <span class="cls">Error</span>(<span class="str">'Message cannot be empty'</span>);
+  }
+}
+
+<span class="cmt">// USE CASE — imports entity, nothing else</span>
+<span class="kw">class</span> <span class="cls">SendMessageUseCase</span> {
+  <span class="kw">constructor</span>(<span class="kw">private</span> repo: IMessageRepository) {} <span class="cmt">// interface, not impl</span>
+  <span class="kw">async</span> <span class="fn">execute</span>(text: <span class="kw">string</span>, userId: <span class="kw">string</span>) {
+    <span class="kw">const</span> msg = <span class="kw">new</span> <span class="cls">Message</span>(text, userId); <span class="cmt">// entity</span>
+    <span class="kw">return</span> <span class="kw">this</span>.repo.<span class="fn">save</span>(msg);           <span class="cmt">// interface, DB-agnostic</span>
+  }
+}
+
+<span class="cmt">// INFRASTRUCTURE — outermost, knows everything</span>
+<span class="kw">class</span> <span class="cls">PostgresMessageRepository</span> <span class="kw">implements</span> IMessageRepository {
+  <span class="kw">async</span> <span class="fn">save</span>(msg: Message) { <span class="kw">return</span> db.messages.<span class="fn">create</span>(msg); }
+}</div>
+</section>
+
+<!-- ====================== HEX + EVENTS ====================== -->
+<section id="sec-hex" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.12);color:var(--orange)">Module 3 · Architecture Patterns</div>
+    <h1 class="hero-title">Hexagonal Architecture & Event-Driven</h1>
+    <p class="hero-desc">Two advanced patterns that are especially powerful for AI platforms. Hexagonal lets you swap LLM providers without touching core logic. Event-driven enables real-time streaming and agent pipelines.</p>
+  </div>
+
+  <h2>Hexagonal Architecture — Ports & Adapters</h2>
+  <p>Think of your app core as a USB hub. It has ports (interfaces) that define what it needs. Adapters plug in like USB devices and implement those ports. Swap adapters without changing the hub.</p>
+
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Driving side (left)</div>
+      <div class="mini-body">Things that drive your app: HTTP API, CLI, tests, scheduled jobs. They call your core's ports.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">Driven side (right)</div>
+      <div class="mini-body">Things your app drives: databases, LLMs, email, queues. Your core defines what it needs via ports, adapters implement it.</div>
+    </div>
+  </div>
+
+  <div class="code-block" style="margin-top:16px"><span class="cmt">// PORT — what the core needs (interface)</span>
+<span class="kw">interface</span> <span class="cls">LLMPort</span> {
+  <span class="fn">complete</span>(prompt: <span class="kw">string</span>): Promise&lt;<span class="kw">string</span>&gt;;
+  <span class="fn">stream</span>(prompt: <span class="kw">string</span>): AsyncGenerator&lt;<span class="kw">string</span>&gt;;
+}
+
+<span class="cmt">// ADAPTER 1 — OpenAI implements the port</span>
+<span class="kw">class</span> <span class="cls">OpenAIAdapter</span> <span class="kw">implements</span> <span class="cls">LLMPort</span> {
+  <span class="kw">async</span> <span class="fn">complete</span>(prompt) {
+    <span class="kw">return</span> openai.chat.completions.<span class="fn">create</span>({ messages: [{ role: <span class="str">'user'</span>, content: prompt }] });
+  }
+}
+
+<span class="cmt">// ADAPTER 2 — Anthropic implements the SAME port</span>
+<span class="kw">class</span> <span class="cls">AnthropicAdapter</span> <span class="kw">implements</span> <span class="cls">LLMPort</span> {
+  <span class="kw">async</span> <span class="fn">complete</span>(prompt) {
+    <span class="kw">return</span> anthropic.messages.<span class="fn">create</span>({ messages: [{ role: <span class="str">'user'</span>, content: prompt }] });
+  }
+}
+
+<span class="cmt">// CORE — never changes when you swap providers</span>
+<span class="kw">class</span> <span class="cls">ConversationService</span> {
+  <span class="kw">constructor</span>(<span class="kw">private</span> llm: <span class="cls">LLMPort</span>) {} <span class="cmt">// inject any adapter</span>
+  <span class="kw">async</span> <span class="fn">reply</span>(prompt: <span class="kw">string</span>) { <span class="kw">return</span> <span class="kw">this</span>.llm.<span class="fn">complete</span>(prompt); }
+}</div>
+
+  <div class="callout callout-green">
+    <strong>For AI specifically:</strong> LLM providers change rapidly. OpenAI raises prices, Anthropic releases a better model, you want to test with a local Ollama model. Ports mean you write one new adapter file. Your entire business logic: untouched.
+  </div>
+
+  <div class="divider"></div>
+
+  <h2>Event-Driven Architecture</h2>
+  <p>Components communicate by publishing and subscribing to events — not by calling each other directly. Critical for real-time streaming and multi-step agent workflows.</p>
+
+  <div class="flow-row">
+    <div class="flow-box" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.3);color:var(--pink)">LLM streams token</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.3);color:var(--orange)">emits "token" event</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.3);color:var(--green)">SSE → client</div>
+  </div>
+  <div class="flow-row" style="margin-top:4px">
+    <div class="flow-box" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.3);color:var(--pink)">Agent uses tool</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.3);color:var(--orange)">emits "tool.called"</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.3);color:var(--blue)">Logger + Billing react</div>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:14px">
+    <strong>Key benefit:</strong> Multiple listeners react to the same event independently. To add billing tracking to every agent tool call, just add a new listener — zero changes to the agent code itself.
+  </div>
+
+  <h2>Tools: Kafka, Redis Streams, BullMQ, Socket.io</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tool</th><th>Best for</th><th>Scale</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">In-memory EventEmitter</td><td>Single-process apps, simple workflows</td><td>Small</td></tr>
+        <tr><td class="td-name">Redis Streams / BullMQ</td><td>Job queues, async agent tasks</td><td>Medium</td></tr>
+        <tr><td class="td-name">Socket.io / SSE</td><td>Real-time token streaming to browser</td><td>Any</td></tr>
+        <tr><td class="td-name">Kafka / RabbitMQ</td><td>High-throughput multi-service events</td><td>Large</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ====================== CONNECTING THE DOTS ====================== -->
+<section id="sec-connect" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(155,109,255,.12);color:var(--purple)">Module 4 · Connecting the dots</div>
+    <h1 class="hero-title">How patterns map to folder structures</h1>
+    <p class="hero-desc">This is the missing link. Every architecture pattern has a natural folder structure. Once you see the mapping, both the pattern and the folders make complete sense.</p>
+  </div>
+
+  <div class="callout callout-purple">
+    <strong>The big insight:</strong> Architecture patterns describe HOW code should relate. Folder structures describe WHERE code should live. They're the same idea — one is conceptual, one is physical.
+  </div>
+
+  <div class="comp-grid" style="margin-top:16px">
+    <div class="comp-col">
+      <h4 style="color:var(--orange)">MVC → Layer-based</h4>
+      <li>controllers/</li>
+      <li>models/</li>
+      <li>views/ (or frontend)</li>
+      <li>routes/</li>
+      <li>middleware/</li>
+      <li style="color:var(--text-muted);font-style:italic">folders = MVC layers</li>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:var(--blue)">MVVM → Feature-based</h4>
+      <li>features/auth/</li>
+      <li>features/chat/</li>
+      <li>shared/hooks/</li>
+      <li>shared/ui/</li>
+      <li>app/ (store, router)</li>
+      <li style="color:var(--text-muted);font-style:italic">folders = features</li>
+    </div>
+    <div class="comp-col">
+      <h4 style="color:var(--purple)">Clean Arch → Layered</h4>
+      <li>domain/ (entities)</li>
+      <li>application/ (use cases)</li>
+      <li>interfaces/ (adapters)</li>
+      <li>infrastructure/ (DB, LLM)</li>
+      <li>&nbsp;</li>
+      <li style="color:var(--text-muted);font-style:italic">folders = circles</li>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2>The evolution path</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Project stage</th><th>Folder structure</th><th>Architecture</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-name">MVP / prototype</td>
+          <td><span class="pill pill-green">Type-based</span></td>
+          <td>Simple MVC or none</td>
+          <td>Speed over correctness</td>
+        </tr>
+        <tr>
+          <td class="td-name">Growing product</td>
+          <td><span class="pill pill-blue">Feature-based</span></td>
+          <td>MVVM frontend + Layer-based backend</td>
+          <td>Teams own features</td>
+        </tr>
+        <tr>
+          <td class="td-name">Large platform</td>
+          <td><span class="pill pill-purple">Monorepo</span></td>
+          <td>Clean Architecture + Hexagonal</td>
+          <td>Swap anything, test everything</td>
+        </tr>
+        <tr>
+          <td class="td-name">AI / agents added</td>
+          <td><span class="pill pill-orange">AI hybrid</span></td>
+          <td>Clean + Hexagonal + Event-driven</td>
+          <td>Swap LLMs, stream tokens, run tools</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2>The 3 questions to ask for any file</h2>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">What layer does this belong to?</div>
+      <div class="step-desc">Is it UI, logic, or data? This determines which top-level folder it goes in (components/ vs services/ vs repositories/ vs domain/).</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">What feature does this belong to?</div>
+      <div class="step-desc">Is it specific to auth, chat, payments? Or is it shared across features? This determines features/X/ vs shared/.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">Can I describe this file's job in one sentence without "and"?</div>
+      <div class="step-desc">If yes — good. If you need "and" — this file is doing too much and should be split.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== AI ARCHITECTURE ====================== -->
+<section id="sec-ai-arch" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(232,93,117,.12);color:var(--pink)">Module 5 · AI / Agent Platform</div>
+    <h1 class="hero-title">Architecture for AI applications</h1>
+    <p class="hero-desc">AI platforms don't fit neatly into one pattern. They use a hybrid: Clean Architecture at the core, Hexagonal for swappable LLMs, Event-driven for streaming and async agent loops, MVVM on the frontend.</p>
+  </div>
+
+  <h2>The complete layer breakdown</h2>
+
+  <div class="layer-stack">
+    <div class="layer" style="border-color:var(--blue);background:rgba(0,168,255,.06)">
+      <div class="layer-name" style="color:var(--blue)">Frontend — MVVM (React + Zustand)</div>
+      <div class="layer-desc">Chat UI, agent builder, flow canvas. Components are pure render. Hooks hold state. WebSocket / SSE receives streaming tokens in real time. Feature-based folder structure inside.</div>
+    </div>
+    <div style="text-align:center;color:var(--text-muted);padding:4px 0">↕ HTTP / WebSocket / SSE</div>
+    <div class="layer" style="border-color:var(--text-muted);background:rgba(255,255,255,.02)">
+      <div class="layer-name">API layer — thin MVC</div>
+      <div class="layer-desc">Express / FastAPI routes. Auth middleware. Rate limiting. Input validation. Thin — no business logic. Just receives requests and delegates to the orchestration layer below.</div>
+    </div>
+    <div style="text-align:center;color:var(--text-muted);padding:4px 0">↓</div>
+    <div class="layer" style="border-color:var(--purple);background:rgba(155,109,255,.06)">
+      <div class="layer-name" style="color:var(--purple)">Orchestration layer — Use Cases (Clean Arch)</div>
+      <div class="layer-desc"><code>ConversationService</code>, <code>AgentRunner</code>, <code>WorkflowEngine</code>. The brain. Decides: retrieve memory → build prompt → call LLM → execute tools → stream back. Agent loops live here.</div>
+    </div>
+    <div style="text-align:center;color:var(--text-muted);padding:4px 0">↓</div>
+    <div class="layer" style="border-color:var(--pink);background:rgba(232,93,117,.06)">
+      <div class="layer-name" style="color:var(--pink)">Domain layer — Entities (Clean Arch)</div>
+      <div class="layer-desc">Pure classes: <code>Message</code>, <code>Conversation</code>, <code>Agent</code>, <code>Tool</code>, <code>Memory</code>. Zero framework imports. Zero LLM SDK. 100% unit testable with no setup.</div>
+    </div>
+    <div style="text-align:center;color:var(--text-muted);padding:4px 0">↓</div>
+    <div class="layer" style="border-color:var(--green);background:rgba(0,201,110,.06)">
+      <div class="layer-name" style="color:var(--green)">Infrastructure layer — Adapters (Hexagonal)</div>
+      <div class="layer-desc">OpenAI/Anthropic/Ollama adapters. Pinecone/pgvector. PostgreSQL. Redis. Tool executors (web search, code runner). Each implements a port interface. All swappable.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2>4 things AI platforms need that normal apps don't</h2>
+  <div class="grid2">
+    <div class="card card-purple">
+      <div class="card-title">Memory module</div>
+      <div class="card-body">
+        <strong style="color:var(--text-primary)">Short-term:</strong> recent messages in context window<br>
+        <strong style="color:var(--text-primary)">Long-term:</strong> vector embeddings of past conversations<br>
+        <strong style="color:var(--text-primary)">Session:</strong> who is talking, their preferences
+      </div>
+    </div>
+    <div class="card card-accent">
+      <div class="card-title">Tool registry</div>
+      <div class="card-body">
+        Register tools (web search, calculator, code interpreter)<br>
+        Agent discovers available tools dynamically<br>
+        Execute with input validation, sandboxing, timeouts
+      </div>
+    </div>
+    <div class="card card-orange">
+      <div class="card-title">Prompt management</div>
+      <div class="card-body">
+        System prompt versioning (v1, v2, v3)<br>
+        Template variables: <code>{{user_name}}</code>, <code>{{context}}</code><br>
+        A/B test different prompt strategies
+      </div>
+    </div>
+    <div class="card card-blue">
+      <div class="card-title">Observability</div>
+      <div class="card-body">
+        Every LLM call logs: tokens, latency, model, prompt version<br>
+        LangSmith, LangFuse, or custom tracing<br>
+        You cannot debug AI without traces
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== AI FOLDER ====================== -->
+<section id="sec-ai-folder" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(232,93,117,.12);color:var(--pink)">Module 5 · AI / Agent Platform</div>
+    <h1 class="hero-title">AI platform folder structure</h1>
+    <p class="hero-desc">The complete folder structure for a production AI chatbot or agent platform. Every folder maps to a layer from the architecture. Nothing is arbitrary.</p>
+  </div>
+
+  <h2>Complete structure</h2>
+  <div class="code-block"><span class="dir">my-ai-platform/</span>
+├── <span class="dir">apps/</span>
+│   ├── <span class="dir">web/</span>                  <span class="cmt"># React MVVM frontend</span>
+│   │   ├── <span class="dir">features/</span>
+│   │   │   ├── <span class="dir">chat/</span>           <span class="cmt"># Chat UI feature</span>
+│   │   │   │   ├── <span class="dir">components/</span>
+│   │   │   │   ├── <span class="dir">hooks/</span>      <span class="cmt"># useChatViewModel</span>
+│   │   │   │   └── index.ts
+│   │   │   ├── <span class="dir">agents/</span>         <span class="cmt"># Agent builder UI</span>
+│   │   │   └── <span class="dir">auth/</span>
+│   │   └── <span class="dir">shared/</span>
+│   │       ├── <span class="dir">ui/</span>             <span class="cmt"># Design system components</span>
+│   │       └── <span class="dir">store/</span>          <span class="cmt"># Zustand global state</span>
+│   │
+│   └── <span class="dir">api/</span>                  <span class="cmt"># Backend — Clean + Hexagonal</span>
+│       ├── <span class="dir">interfaces/</span>         <span class="cmt"># Driving side (MVC-thin)</span>
+│       │   ├── <span class="dir">http/</span>           <span class="cmt"># Express routes, controllers</span>
+│       │   └── <span class="dir">websocket/</span>      <span class="cmt"># Real-time handlers</span>
+│       │
+│       ├── <span class="dir">application/</span>        <span class="cmt"># Use Cases — the brain</span>
+│       │   ├── ConversationService.ts
+│       │   ├── AgentRunner.ts      <span class="cmt"># agent loop logic</span>
+│       │   ├── MemoryManager.ts
+│       │   └── ToolExecutor.ts
+│       │
+│       ├── <span class="dir">domain/</span>             <span class="cmt"># Pure entities, zero deps</span>
+│       │   ├── Message.ts
+│       │   ├── Conversation.ts
+│       │   ├── Agent.ts
+│       │   ├── Tool.ts
+│       │   └── Memory.ts
+│       │
+│       └── <span class="dir">infrastructure/</span>     <span class="cmt"># Adapters — driven side</span>
+│           ├── <span class="dir">llm/</span>            <span class="cmt"># LLM adapters (swappable)</span>
+│           │   ├── OpenAIAdapter.ts
+│           │   ├── AnthropicAdapter.ts
+│           │   └── OllamaAdapter.ts <span class="cmt"># local model</span>
+│           ├── <span class="dir">vectordb/</span>       <span class="cmt"># Memory adapters</span>
+│           │   ├── PineconeAdapter.ts
+│           │   └── PgVectorAdapter.ts
+│           ├── <span class="dir">tools/</span>          <span class="cmt"># Tool adapters</span>
+│           │   ├── WebSearchTool.ts
+│           │   └── CodeRunnerTool.ts
+│           └── <span class="dir">persistence/</span>    <span class="cmt"># DB adapters</span>
+│               ├── PostgresMessageRepo.ts
+│               └── RedisSessionStore.ts
+│
+└── <span class="dir">packages/</span>               <span class="cmt"># Shared (monorepo)</span>
+    ├── <span class="dir">types/</span>               <span class="cmt"># Shared TypeScript types</span>
+    └── <span class="dir">config/</span>              <span class="cmt"># Shared env/build config</span></div>
+
+  <div class="callout callout-green" style="margin-top:16px">
+    <strong>The test:</strong> Can you swap OpenAI for Anthropic by only touching files in <code>infrastructure/llm/</code>? If yes — your architecture is working. If you'd also need to change <code>application/</code> or <code>domain/</code> files — your ports and adapters aren't set up correctly.
+  </div>
+
+  <h2>Why each folder exists</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Folder</th><th>Pattern</th><th>Can import from</th><th>Cannot import</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">domain/</td><td><span class="pill pill-pink">Clean — Entity</span></td><td>Nothing</td><td>Everything else</td></tr>
+        <tr><td class="td-name">application/</td><td><span class="pill pill-orange">Clean — Use Case</span></td><td>domain/</td><td>infrastructure/, interfaces/</td></tr>
+        <tr><td class="td-name">interfaces/</td><td><span class="pill pill-blue">Clean — Adapter</span></td><td>application/, domain/</td><td>infrastructure/ internals</td></tr>
+        <tr><td class="td-name">infrastructure/</td><td><span class="pill pill-green">Hexagonal — Adapter</span></td><td>Anything</td><td>—</td></tr>
+        <tr><td class="td-name">features/ (frontend)</td><td><span class="pill pill-purple">MVVM</span></td><td>shared/, own feature</td><td>Other features' internals</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ====================== ROADMAP ====================== -->
+<section id="sec-roadmap" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.12);color:var(--green)">Learning Roadmap</div>
+    <h1 class="hero-title">Your path from beginner to advanced</h1>
+    <p class="hero-desc">Don't try to learn everything at once. Each stage builds on the last. Feel the pain before learning the cure — it makes the concepts stick much better.</p>
+  </div>
+
+  <div class="roadmap">
+    <div class="rm-item">
+      <div class="rm-line">
+        <div class="rm-dot" style="background:var(--green);border-color:var(--green)"></div>
+        <div class="rm-vline" style="background:rgba(0,201,110,.3)"></div>
+      </div>
+      <div class="rm-content">
+        <div class="rm-label" style="color:var(--green)">Week 1–2</div>
+        <div class="rm-title">Build a tiny MVC app</div>
+        <div class="rm-desc">Express + a simple database (SQLite is fine) + a template engine. No React yet. Build a simple chat log: POST a message, GET all messages. Feel the controller-service-model split. Don't add complexity — just build and feel the pattern.</div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-line">
+        <div class="rm-dot" style="background:var(--blue);border-color:var(--blue)"></div>
+        <div class="rm-vline" style="background:rgba(0,168,255,.3)"></div>
+      </div>
+      <div class="rm-content">
+        <div class="rm-label" style="color:var(--blue)">Week 3–4</div>
+        <div class="rm-title">Add React with feature-based folders</div>
+        <div class="rm-desc">Build a chat UI. Use type-based folders first. Then when <code>components/</code> has 20 files, migrate to feature-based. Feeling the pain before the solution makes the pattern click permanently.</div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-line">
+        <div class="rm-dot" style="background:var(--orange);border-color:var(--orange)"></div>
+        <div class="rm-vline" style="background:rgba(245,166,35,.3)"></div>
+      </div>
+      <div class="rm-content">
+        <div class="rm-label" style="color:var(--orange)">Month 2</div>
+        <div class="rm-title">Add an LLM with Hexagonal ports</div>
+        <div class="rm-desc">Create an <code>LLMPort</code> interface. Write one adapter for OpenAI, one mock adapter for testing. Wire it into your chat service. Notice how your business logic never imports the OpenAI SDK directly — only the adapter does.</div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-line">
+        <div class="rm-dot" style="background:var(--purple);border-color:var(--purple)"></div>
+        <div class="rm-vline" style="background:rgba(155,109,255,.3)"></div>
+      </div>
+      <div class="rm-content">
+        <div class="rm-label" style="color:var(--purple)">Month 3</div>
+        <div class="rm-title">Migrate backend to Clean Architecture</div>
+        <div class="rm-desc">Extract domain entities (<code>Message</code>, <code>Conversation</code>). Create use cases. Move DB queries to repositories. Move LLM call to infrastructure. Feel how each layer becomes independently testable.</div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-line">
+        <div class="rm-dot" style="background:var(--pink);border-color:var(--pink)"></div>
+        <div class="rm-vline" style="background:rgba(232,93,117,.3)"></div>
+      </div>
+      <div class="rm-content">
+        <div class="rm-label" style="color:var(--pink)">Month 4</div>
+        <div class="rm-title">Build the agent loop and streaming</div>
+        <div class="rm-desc"><code>AgentRunner</code> in <code>application/</code> layer. Tool registry in <code>infrastructure/tools/</code>. Memory module. Stream tokens via SSE to the frontend. Add event-driven tool execution. This is where all the pieces connect into a real AI platform.</div>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-line">
+        <div class="rm-dot" style="background:var(--green);border-color:var(--green)"></div>
+      </div>
+      <div class="rm-content">
+        <div class="rm-label" style="color:var(--green)">Ongoing</div>
+        <div class="rm-title">Observability, swap providers, scale</div>
+        <div class="rm-desc">Log every LLM call with LangFuse. Try swapping your OpenAI adapter for Anthropic — your business logic should be completely unchanged. Add a vector database. Test with a local Ollama model. Each swap proves your architecture is working.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2>Quick reference cheat sheet</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>You are building...</th><th>Use this folder structure</th><th>Use this pattern</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Portfolio / demo</td><td>Type-based</td><td>None / minimal MVC</td></tr>
+        <tr><td class="td-name">Startup MVP</td><td>Type-based → Feature-based</td><td>MVC backend, MVVM frontend</td></tr>
+        <tr><td class="td-name">SaaS product</td><td>Feature-based + Layer-based</td><td>MVVM + MVC + Clean basics</td></tr>
+        <tr><td class="td-name">Simple chatbot</td><td>Feature-based + Layer-based</td><td>Hexagonal (LLM port) + MVVM</td></tr>
+        <tr><td class="td-name">AI agent platform</td><td>Monorepo + AI hybrid</td><td>Clean + Hexagonal + Events</td></tr>
+        <tr><td class="td-name">Enterprise system</td><td>DDD domains</td><td>Clean + DDD + Events</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-green" style="margin-top:24px">
+    <strong>The golden rule:</strong> Folder structure is not decoration — it is enforced architecture. When you put a file in <code>domain/</code>, you are making a promise: this code has no database imports, no HTTP imports, no LLM SDK imports. The folder is a contract. Honor it.
+  </div>
+</section>
+
+<!-- ====================== USE CASE: CHATBOT ====================== -->
+<section id="sec-uc-chatbot" class="section">
+  <div class="uc-header">
+    <div class="uc-icon" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);">💬</div>
+    <div class="uc-meta">
+      <div class="uc-label" style="color:var(--green)">Use Case 1 — Build it</div>
+      <div class="uc-title">Simple Chatbot</div>
+      <div class="uc-desc">A ChatGPT-style conversational interface. User types a message, AI responds. Think: customer support bot, FAQ bot, personal assistant, study helper.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Folder structure</div><div class="sum-val" style="color:var(--green)">Type-based</div></div>
+    <div class="sum-item"><div class="sum-label">Architecture</div><div class="sum-val" style="color:var(--blue)">MVC + Hexagonal</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--orange)">Beginner</div></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">React</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Express / FastAPI</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">OpenAI / Anthropic</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">PostgreSQL / SQLite</span>
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">SSE for streaming</span>
+  </div>
+
+  <h2>Folder structure to use</h2>
+  <div class="code-block"><span class="dir">chatbot/</span>
+├── <span class="dir">frontend/</span>              <span class="cmt"># React app — type-based is fine here</span>
+│   ├── <span class="dir">src/</span>
+│   │   ├── <span class="dir">components/</span>    <span class="cmt"># ChatWindow, MessageBubble, InputBar</span>
+│   │   ├── <span class="dir">hooks/</span>         <span class="cmt"># useChat, useStream</span>
+│   │   ├── <span class="dir">services/</span>      <span class="cmt"># api.ts — all fetch calls</span>
+│   │   └── App.tsx
+│   └── package.json
+│
+└── <span class="dir">backend/</span>               <span class="cmt"># Express — MVC layer-based</span>
+    ├── <span class="dir">src/</span>
+    │   ├── <span class="dir">routes/</span>        <span class="cmt"># POST /chat, GET /history</span>
+    │   ├── <span class="dir">controllers/</span>   <span class="cmt"># chatController.ts</span>
+    │   ├── <span class="dir">services/</span>      <span class="cmt"># chatService.ts — business logic</span>
+    │   ├── <span class="dir">llm/</span>           <span class="cmt"># llmAdapter.ts — Hexagonal port</span>
+    │   ├── <span class="dir">models/</span>        <span class="cmt"># Message schema</span>
+    │   └── <span class="dir">middleware/</span>    <span class="cmt"># auth, rate limiting</span>
+    └── package.json</div>
+
+  <h2>How to build it — step by step</h2>
+
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num" style="background:rgba(0,201,110,.2);color:var(--green)">1</div>
+      <div class="phase-title">Backend: chat endpoint with streaming</div>
+      <div class="phase-sub">Day 1–2</div>
+    </div>
+    <div class="phase-body">
+      <div class="code-block"><span class="cmt">// routes/chat.ts</span>
+router.<span class="fn">post</span>(<span class="str">'/chat'</span>, authMiddleware, chatController.<span class="fn">send</span>);
+
+<span class="cmt">// controllers/chatController.ts</span>
+<span class="kw">async</span> <span class="fn">send</span>(req, res) {
+  <span class="kw">const</span> { message, conversationId } = req.body;
+  res.<span class="fn">setHeader</span>(<span class="str">'Content-Type'</span>, <span class="str">'text/event-stream'</span>); <span class="cmt">// SSE</span>
+  <span class="kw">await</span> chatService.<span class="fn">streamReply</span>(message, conversationId, res);
+}
+
+<span class="cmt">// services/chatService.ts</span>
+<span class="kw">async</span> <span class="fn">streamReply</span>(message, convId, res) {
+  <span class="kw">const</span> history = <span class="kw">await</span> messageRepo.<span class="fn">getHistory</span>(convId);
+  <span class="kw">const</span> stream = <span class="kw">await</span> llm.<span class="fn">stream</span>([...history, { role: <span class="str">'user'</span>, content: message }]);
+  <span class="kw">for await</span> (<span class="kw">const</span> token <span class="kw">of</span> stream) {
+    res.<span class="fn">write</span>(<span class="str">`data: ${token}\n\n`</span>);
+  }
+  res.<span class="fn">end</span>();
+  <span class="kw">await</span> messageRepo.<span class="fn">save</span>({ convId, role: <span class="str">'assistant'</span>, content: fullReply });
+}</div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num" style="background:rgba(0,168,255,.2);color:var(--blue)">2</div>
+      <div class="phase-title">LLM adapter — Hexagonal port</div>
+      <div class="phase-sub">Day 2</div>
+    </div>
+    <div class="phase-body">
+      <div class="code-block"><span class="cmt">// llm/ILLMAdapter.ts — the port</span>
+<span class="kw">interface</span> <span class="cls">ILLMAdapter</span> {
+  <span class="fn">stream</span>(messages: Message[]): AsyncGenerator&lt;<span class="kw">string</span>&gt;;
+}
+
+<span class="cmt">// llm/OpenAIAdapter.ts — one implementation</span>
+<span class="kw">class</span> <span class="cls">OpenAIAdapter</span> <span class="kw">implements</span> <span class="cls">ILLMAdapter</span> {
+  <span class="kw">async</span> *<span class="fn">stream</span>(messages) {
+    <span class="kw">const</span> res = <span class="kw">await</span> openai.chat.completions.<span class="fn">create</span>({ messages, stream: <span class="kw">true</span> });
+    <span class="kw">for await</span> (<span class="kw">const</span> chunk <span class="kw">of</span> res) <span class="kw">yield</span> chunk.choices[0].delta.content ?? <span class="str">''</span>;
+  }
+}
+<span class="cmt">// Swap to AnthropicAdapter later — chatService.ts never changes</span></div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num" style="background:rgba(155,109,255,.2);color:var(--purple)">3</div>
+      <div class="phase-title">Frontend: stream tokens into the UI</div>
+      <div class="phase-sub">Day 3–4</div>
+    </div>
+    <div class="phase-body">
+      <div class="code-block"><span class="cmt">// hooks/useChat.ts</span>
+<span class="kw">function</span> <span class="fn">useChat</span>() {
+  <span class="kw">const</span> [messages, setMessages] = <span class="fn">useState</span>([]);
+  <span class="kw">const</span> [streaming, setStreaming] = <span class="fn">useState</span>(<span class="str">''</span>);
+
+  <span class="kw">const</span> <span class="fn">send</span> = <span class="kw">async</span> (text) => {
+    <span class="kw">const</span> es = <span class="kw">new</span> <span class="cls">EventSource</span>(<span class="str">`/api/chat?msg=${text}`</span>);
+    es.<span class="fn">onmessage</span> = (e) => <span class="fn">setStreaming</span>(prev => prev + e.data);
+    es.<span class="fn">onerror</span>  = () => { <span class="fn">setMessages</span>(m => [...m, streaming]); <span class="fn">setStreaming</span>(<span class="str">''</span>); es.<span class="fn">close</span>(); };
+  };
+  <span class="kw">return</span> { messages, streaming, send };
+}</div>
+    </div>
+  </div>
+
+  <h2>What to follow — rules for this use case</h2>
+  <ul class="rule-list">
+    <li><strong>Always stream tokens</strong> — never wait for full response. Users abandon apps that feel slow. SSE or WebSocket, not polling.</li>
+    <li><strong>Save every message to DB</strong> — conversation history is your product's memory. Don't rely on frontend state.</li>
+    <li><strong>Rate limit per user</strong> — add middleware to cap requests per minute. LLM calls are expensive.</li>
+    <li><strong>Separate the LLM adapter</strong> — even for simple chatbots. When OpenAI changes pricing, you'll be glad you did.</li>
+    <li><strong>Add a system prompt manager</strong> — don't hardcode system prompts in the service. Put them in config or DB so you can change them without redeploying.</li>
+  </ul>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Stream responses token by token</li>
+        <li>Store chat history server-side</li>
+        <li>Add auth before every endpoint</li>
+        <li>Use an LLM port/interface</li>
+        <li>Handle errors gracefully in UI</li>
+        <li>Add conversation ID to requests</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Import OpenAI SDK in controllers</li>
+        <li>Store API keys in frontend code</li>
+        <li>Send full history every request (use summarization)</li>
+        <li>Skip input validation/sanitization</li>
+        <li>Forget to handle streaming errors</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== USE CASE: REST API ====================== -->
+<section id="sec-uc-rest-api" class="section">
+  <div class="uc-header">
+    <div class="uc-icon" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);">🔌</div>
+    <div class="uc-meta">
+      <div class="uc-label" style="color:var(--blue)">Use Case 2 — Build it</div>
+      <div class="uc-title">REST API / Backend Service</div>
+      <div class="uc-desc">A standalone backend that serves JSON to any frontend (React, mobile, CLI). Think: user management API, data processing service, authentication server, microservice.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Folder structure</div><div class="sum-val" style="color:var(--blue)">Layer-based</div></div>
+    <div class="sum-item"><div class="sum-label">Architecture</div><div class="sum-val" style="color:var(--orange)">MVC / Clean basics</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--blue)">Intermediate</div></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Express / Fastify / NestJS</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">PostgreSQL / MySQL</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">JWT Auth</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">Zod / Joi validation</span>
+  </div>
+
+  <h2>Folder structure to use</h2>
+  <div class="code-block"><span class="dir">api/</span>
+├── <span class="dir">src/</span>
+│   ├── <span class="dir">routes/</span>          <span class="cmt"># URL definitions only</span>
+│   │   ├── userRoutes.ts    <span class="cmt"># /api/users/*</span>
+│   │   └── authRoutes.ts    <span class="cmt"># /api/auth/*</span>
+│   │
+│   ├── <span class="dir">controllers/</span>     <span class="cmt"># Handle HTTP, call service, return JSON</span>
+│   │   ├── userController.ts
+│   │   └── authController.ts
+│   │
+│   ├── <span class="dir">services/</span>        <span class="cmt"># Business logic — the real code</span>
+│   │   ├── userService.ts   <span class="cmt"># createUser, updateUser, deleteUser</span>
+│   │   └── authService.ts   <span class="cmt"># login, logout, refreshToken</span>
+│   │
+│   ├── <span class="dir">repositories/</span>    <span class="cmt"># DB queries ONLY, no logic</span>
+│   │   └── userRepository.ts
+│   │
+│   ├── <span class="dir">models/</span>          <span class="cmt"># ORM models / DB schemas</span>
+│   │   └── User.ts
+│   │
+│   ├── <span class="dir">middleware/</span>      <span class="cmt"># Cross-cutting concerns</span>
+│   │   ├── auth.ts          <span class="cmt"># JWT verification</span>
+│   │   ├── rateLimiter.ts
+│   │   └── errorHandler.ts  <span class="cmt"># global error handler</span>
+│   │
+│   ├── <span class="dir">validators/</span>      <span class="cmt"># Zod/Joi schemas</span>
+│   │   └── userSchemas.ts
+│   │
+│   └── <span class="dir">config/</span>          <span class="cmt"># DB connection, env, constants</span>
+│       ├── db.ts
+│       └── env.ts
+│
+├── <span class="dir">tests/</span>
+│   ├── <span class="dir">unit/</span>            <span class="cmt"># Test services in isolation</span>
+│   └── <span class="dir">integration/</span>     <span class="cmt"># Test routes end-to-end</span>
+└── package.json</div>
+
+  <h2>How to build it — the right order</h2>
+
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num" style="background:rgba(0,201,110,.2);color:var(--green)">1</div>
+      <div class="phase-title">Design your DB schema first</div>
+      <div class="phase-sub">Always first</div>
+    </div>
+    <div class="phase-body">
+      <p style="color:var(--text-secondary)">Before writing a single route, decide what data you're storing. Draw tables, relationships, column types. Your models/ folder reflects this directly. Every other layer derives from the data model.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num" style="background:rgba(0,168,255,.2);color:var(--blue)">2</div>
+      <div class="phase-title">Write the repository layer</div>
+      <div class="phase-sub">Data access only</div>
+    </div>
+    <div class="phase-body">
+      <div class="code-block"><span class="cmt">// repositories/userRepository.ts</span>
+<span class="kw">export const</span> userRepository = {
+  <span class="fn">findById</span>: (id: <span class="kw">string</span>) =>
+    db.<span class="fn">query</span>(<span class="str">'SELECT * FROM users WHERE id = $1'</span>, [id]),
+
+  <span class="fn">findByEmail</span>: (email: <span class="kw">string</span>) =>
+    db.<span class="fn">query</span>(<span class="str">'SELECT * FROM users WHERE email = $1'</span>, [email]),
+
+  <span class="fn">create</span>: (data: CreateUserDTO) =>
+    db.<span class="fn">query</span>(<span class="str">'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING *'</span>, [data.email, data.hash]),
+};
+<span class="cmt">// No business logic here. ONLY SQL/ORM calls.</span></div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num" style="background:rgba(155,109,255,.2);color:var(--purple)">3</div>
+      <div class="phase-title">Write the service layer</div>
+      <div class="phase-sub">Business logic</div>
+    </div>
+    <div class="phase-body">
+      <div class="code-block"><span class="cmt">// services/userService.ts</span>
+<span class="kw">export const</span> userService = {
+  <span class="fn">createUser</span>: <span class="kw">async</span> (email: <span class="kw">string</span>, password: <span class="kw">string</span>) => {
+    <span class="cmt">// Business rules live HERE, not in controller or repository</span>
+    <span class="kw">const</span> existing = <span class="kw">await</span> userRepository.<span class="fn">findByEmail</span>(email);
+    <span class="kw">if</span> (existing) <span class="kw">throw new</span> <span class="cls">ConflictError</span>(<span class="str">'Email already registered'</span>);
+    <span class="kw">const</span> hash = <span class="kw">await</span> bcrypt.<span class="fn">hash</span>(password, 12);
+    <span class="kw">return</span> userRepository.<span class="fn">create</span>({ email, hash });
+  },
+};</div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num" style="background:rgba(245,166,35,.2);color:var(--orange)">4</div>
+      <div class="phase-title">Write thin controllers + validate input</div>
+      <div class="phase-sub">HTTP glue only</div>
+    </div>
+    <div class="phase-body">
+      <div class="code-block"><span class="cmt">// controllers/userController.ts</span>
+<span class="fn">createUser</span>: <span class="kw">async</span> (req, res, next) => {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> { email, password } = createUserSchema.<span class="fn">parse</span>(req.body); <span class="cmt">// validate</span>
+    <span class="kw">const</span> user = <span class="kw">await</span> userService.<span class="fn">createUser</span>(email, password); <span class="cmt">// delegate</span>
+    res.<span class="fn">status</span>(201).<span class="fn">json</span>({ user });                            <span class="cmt">// respond</span>
+  } <span class="kw">catch</span> (err) { <span class="fn">next</span>(err); }                               <span class="cmt">// delegate errors</span>
+}
+<span class="cmt">// Controller = validate + delegate + respond. Nothing else.</span></div>
+    </div>
+  </div>
+
+  <h2>What to follow</h2>
+  <ul class="rule-list">
+    <li><strong>Global error handler</strong> — one <code>middleware/errorHandler.ts</code> catches all errors. Controllers just <code>next(err)</code>.</li>
+    <li><strong>Validate at the boundary</strong> — validate request body in validators/ before it enters the service. Never trust raw input.</li>
+    <li><strong>Repository = no logic</strong> — if you're writing an <code>if</code> statement in a repository, it belongs in the service.</li>
+    <li><strong>HTTP status codes matter</strong> — 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 409 Conflict, 500 Server Error. Use them correctly.</li>
+    <li><strong>Never log passwords or tokens</strong> — add a request logger but strip sensitive fields explicitly.</li>
+  </ul>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Validate every request body</li>
+        <li>Keep controllers thin (3–5 lines)</li>
+        <li>Put all SQL in repositories</li>
+        <li>Use a global error handler</li>
+        <li>Write unit tests for services</li>
+        <li>Version your API: /api/v1/</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Write SQL in controllers</li>
+        <li>Skip input validation</li>
+        <li>Return stack traces to clients</li>
+        <li>Hardcode secrets in code</li>
+        <li>Mix auth logic into routes</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== USE CASE: SAAS ====================== -->
+<section id="sec-uc-saas" class="section">
+  <div class="uc-header">
+    <div class="uc-icon" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);">🚀</div>
+    <div class="uc-meta">
+      <div class="uc-label" style="color:var(--purple)">Use Case 3 — Build it</div>
+      <div class="uc-title">SaaS Platform</div>
+      <div class="uc-desc">A subscription-based web product. Users sign up, choose a plan, use features gated by plan, get billed monthly. Think: project management tool, analytics dashboard, email marketing platform.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Frontend structure</div><div class="sum-val" style="color:var(--purple)">Feature-based</div></div>
+    <div class="sum-item"><div class="sum-label">Backend structure</div><div class="sum-val" style="color:var(--blue)">Layer-based</div></div>
+    <div class="sum-item"><div class="sum-label">Architecture</div><div class="sum-val" style="color:var(--orange)">MVVM + Clean basics</div></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">Next.js</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Node.js / NestJS</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">Stripe billing</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">PostgreSQL + Redis</span>
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">SendGrid / Resend</span>
+  </div>
+
+  <h2>Folder structure to use</h2>
+  <div class="code-block"><span class="dir">saas-platform/</span>
+├── <span class="dir">frontend/</span>  (Next.js — feature-based)
+│   └── <span class="dir">src/</span>
+│       ├── <span class="dir">features/</span>
+│       │   ├── <span class="dir">auth/</span>          <span class="cmt"># login, signup, forgot password</span>
+│       │   ├── <span class="dir">dashboard/</span>     <span class="cmt"># main dashboard views</span>
+│       │   ├── <span class="dir">billing/</span>       <span class="cmt"># plan selection, payment UI</span>
+│       │   ├── <span class="dir">settings/</span>      <span class="cmt"># profile, team, notifications</span>
+│       │   └── <span class="dir">onboarding/</span>    <span class="cmt"># first-time user flow</span>
+│       ├── <span class="dir">shared/</span>
+│       │   ├── <span class="dir">ui/</span>            <span class="cmt"># Button, Modal, Table, Badge</span>
+│       │   ├── <span class="dir">hooks/</span>         <span class="cmt"># useUser, usePlan, usePermission</span>
+│       │   └── <span class="dir">store/</span>         <span class="cmt"># Zustand: auth state, plan state</span>
+│       └── <span class="dir">app/</span>               <span class="cmt"># Next.js app router, layouts</span>
+│
+└── <span class="dir">backend/</span>   (NestJS — layer-based + modular)
+    └── <span class="dir">src/</span>
+        ├── <span class="dir">modules/</span>
+        │   ├── <span class="dir">auth/</span>          <span class="cmt"># AuthModule</span>
+        │   ├── <span class="dir">users/</span>         <span class="cmt"># UsersModule</span>
+        │   ├── <span class="dir">billing/</span>       <span class="cmt"># BillingModule — Stripe webhook</span>
+        │   └── <span class="dir">subscriptions/</span> <span class="cmt"># SubscriptionsModule</span>
+        ├── <span class="dir">common/</span>
+        │   ├── <span class="dir">guards/</span>        <span class="cmt"># PlanGuard, RoleGuard</span>
+        │   ├── <span class="dir">decorators/</span>    <span class="cmt"># @RequiresPlan('pro')</span>
+        │   └── <span class="dir">filters/</span>       <span class="cmt"># Global exception filter</span>
+        └── <span class="dir">config/</span></div>
+
+  <h2>The critical SaaS concepts</h2>
+
+  <div class="grid2">
+    <div class="card card-purple">
+      <div class="card-title">Plan-gated features</div>
+      <div class="card-body">Every feature checks the user's plan before executing. Use a guard/middleware that reads the user's current plan from DB and compares against feature requirements. Don't gate in the UI only — always enforce server-side.
+      <div class="code-block" style="margin-top:12px"><span class="cmt">// @RequiresPlan('pro') decorator</span>
+<span class="kw">@Get</span>(<span class="str">'/advanced-analytics'</span>)
+<span class="kw">@RequiresPlan</span>(<span class="str">'pro'</span>)
+<span class="kw">async</span> <span class="fn">getAnalytics</span>() { ... }</div>
+      </div>
+    </div>
+    <div class="card card-blue">
+      <div class="card-title">Stripe webhook handler</div>
+      <div class="card-body">Stripe sends events to your webhook endpoint when subscriptions change. Your billing module listens and updates the user's plan in DB. This is the source of truth — not what the user claims their plan is.
+      <div class="code-block" style="margin-top:12px"><span class="cmt">// billing/billing.controller.ts</span>
+<span class="kw">@Post</span>(<span class="str">'/webhook'</span>)
+<span class="kw">async</span> <span class="fn">handleWebhook</span>(req, res) {
+  <span class="kw">const</span> event = stripe.webhooks.<span class="fn">constructEvent</span>(...);
+  <span class="kw">if</span> (event.type === <span class="str">'customer.subscription.updated'</span>)
+    <span class="kw">await</span> subscriptionService.<span class="fn">updatePlan</span>(event.data);
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>What to follow</h2>
+  <ul class="rule-list">
+    <li><strong>Gate features server-side, always</strong> — UI gating is UX. Server gating is security. Do both.</li>
+    <li><strong>Use webhooks as source of truth for billing</strong> — never trust the client. Stripe's webhook is the authority on subscription status.</li>
+    <li><strong>Separate billing from auth</strong> — BillingModule and AuthModule are independent. Billing changes don't touch auth code.</li>
+    <li><strong>Idempotent webhook handlers</strong> — Stripe may send the same webhook twice. Your handler must handle this safely (check if already processed).</li>
+    <li><strong>Onboarding flow is its own feature</strong> — <code>features/onboarding/</code> is the most important feature you'll build. First-time user experience drives retention.</li>
+  </ul>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Check plan in backend guards</li>
+        <li>Use Stripe webhooks for plan state</li>
+        <li>Soft-delete users (isDeleted flag)</li>
+        <li>Send transactional emails via queue</li>
+        <li>Implement usage quotas in service layer</li>
+        <li>Log every billing event</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Gate features only in frontend</li>
+        <li>Hard-delete user data immediately</li>
+        <li>Trust client-sent plan information</li>
+        <li>Send emails synchronously in controllers</li>
+        <li>Mix billing logic into user service</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== USE CASE: ECOMMERCE ====================== -->
+<section id="sec-uc-ecommerce" class="section">
+  <div class="uc-header">
+    <div class="uc-icon" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);">🛒</div>
+    <div class="uc-meta">
+      <div class="uc-label" style="color:var(--orange)">Use Case 4 — Build it</div>
+      <div class="uc-title">E-commerce Platform</div>
+      <div class="uc-desc">A product catalog, shopping cart, checkout, and order management system. Think: online store, marketplace, digital product shop, B2B order portal.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Folder structure</div><div class="sum-val" style="color:var(--orange)">Feature + DDD lite</div></div>
+    <div class="sum-item"><div class="sum-label">Architecture</div><div class="sum-val" style="color:var(--purple)">MVC + domain events</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--blue)">Intermediate</div></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">Next.js / Remix</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">Stripe Checkout</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">PostgreSQL</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">Redis (cart)</span>
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">S3 (product images)</span>
+  </div>
+
+  <h2>Folder structure to use</h2>
+  <div class="code-block"><span class="dir">ecommerce/</span>
+├── <span class="dir">frontend/</span>   (feature-based)
+│   └── <span class="dir">src/features/</span>
+│       ├── <span class="dir">catalog/</span>       <span class="cmt"># product listing, search, filters</span>
+│       ├── <span class="dir">product/</span>       <span class="cmt"># product detail page</span>
+│       ├── <span class="dir">cart/</span>          <span class="cmt"># cart state, add/remove items</span>
+│       ├── <span class="dir">checkout/</span>      <span class="cmt"># checkout flow, payment form</span>
+│       ├── <span class="dir">orders/</span>        <span class="cmt"># order history, tracking</span>
+│       └── <span class="dir">account/</span>       <span class="cmt"># profile, addresses, wishlist</span>
+│
+└── <span class="dir">backend/</span>    (domain-aligned modules)
+    └── <span class="dir">src/</span>
+        ├── <span class="dir">catalog/</span>       <span class="cmt"># Product, Category, Inventory</span>
+        │   ├── catalog.controller.ts
+        │   ├── catalog.service.ts
+        │   └── catalog.repository.ts
+        ├── <span class="dir">cart/</span>          <span class="cmt"># Cart (Redis) — ephemeral state</span>
+        ├── <span class="dir">orders/</span>        <span class="cmt"># Order creation, fulfillment</span>
+        │   ├── order.service.ts
+        │   └── events/            <span class="cmt"># OrderPlaced, OrderShipped</span>
+        ├── <span class="dir">payments/</span>      <span class="cmt"># Stripe integration</span>
+        └── <span class="dir">notifications/</span> <span class="cmt"># Email: confirmation, shipping</span></div>
+
+  <h2>The domain events pattern for orders</h2>
+  <div class="code-block"><span class="cmt">// When an order is placed, emit an event</span>
+<span class="kw">class</span> <span class="cls">OrderService</span> {
+  <span class="kw">async</span> <span class="fn">placeOrder</span>(cartId: <span class="kw">string</span>, userId: <span class="kw">string</span>) {
+    <span class="kw">const</span> order = <span class="kw">await</span> orderRepo.<span class="fn">create</span>({ cartId, userId });
+
+    <span class="cmt">// Emit event — multiple services react independently</span>
+    eventBus.<span class="fn">emit</span>(<span class="str">'order.placed'</span>, { orderId: order.id, userId });
+
+    <span class="kw">return</span> order;
+  }
+}
+
+<span class="cmt">// Notification service listens (not called directly)</span>
+eventBus.<span class="fn">on</span>(<span class="str">'order.placed'</span>, <span class="kw">async</span> ({ orderId, userId }) => {
+  <span class="kw">await</span> emailService.<span class="fn">sendOrderConfirmation</span>(orderId, userId);
+});
+
+<span class="cmt">// Inventory service listens separately</span>
+eventBus.<span class="fn">on</span>(<span class="str">'order.placed'</span>, <span class="kw">async</span> ({ orderId }) => {
+  <span class="kw">await</span> inventoryService.<span class="fn">reserveStock</span>(orderId);
+});
+<span class="cmt">// Adding analytics tracking = add one more listener. Zero code changes elsewhere.</span></div>
+
+  <h2>What to follow</h2>
+  <ul class="rule-list">
+    <li><strong>Cart in Redis, orders in Postgres</strong> — cart is ephemeral and changes constantly. Orders are permanent and need ACID guarantees.</li>
+    <li><strong>Use domain events for post-order actions</strong> — inventory, email, analytics, loyalty points — all react to <code>order.placed</code> independently.</li>
+    <li><strong>Atomic inventory decrement</strong> — use DB transactions or optimistic locking when reserving stock. Race conditions cause overselling.</li>
+    <li><strong>Never process payments in the order service</strong> — payments is a separate module with Stripe. It calls back to order service on success.</li>
+    <li><strong>Idempotent order creation</strong> — if the user double-clicks checkout, you should not create two orders. Use an idempotency key.</li>
+  </ul>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Validate stock before checkout</li>
+        <li>Use DB transactions for order + inventory</li>
+        <li>Store order snapshots (price at time of purchase)</li>
+        <li>Emit events after order confirmed</li>
+        <li>Handle payment webhook for status updates</li>
+        <li>Paginate product listings</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Mix cart logic into order service</li>
+        <li>Decrement stock without transaction</li>
+        <li>Store live product prices in orders (snapshot!)</li>
+        <li>Trust client-sent cart totals</li>
+        <li>Send confirmation email synchronously</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== USE CASE: AI AGENT ====================== -->
+<section id="sec-uc-agent" class="section">
+  <div class="uc-header">
+    <div class="uc-icon" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);">🤖</div>
+    <div class="uc-meta">
+      <div class="uc-label" style="color:var(--pink)">Use Case 5 — Build it</div>
+      <div class="uc-title">AI Agent Platform</div>
+      <div class="uc-desc">An autonomous agent that uses tools, remembers context, executes multi-step tasks. Think: AutoGPT-style assistant, research agent, code generation bot, workflow automation platform.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Folder structure</div><div class="sum-val" style="color:var(--pink)">Monorepo + AI hybrid</div></div>
+    <div class="sum-item"><div class="sum-label">Architecture</div><div class="sum-val" style="color:var(--purple)">Clean + Hexagonal + Events</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--pink)">Advanced</div></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">LangChain / custom</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">Vector DB (Pinecone / pgvector)</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Redis (queue)</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">LangFuse (tracing)</span>
+  </div>
+
+  <h2>Folder structure to use</h2>
+  <div class="code-block"><span class="dir">agent-platform/</span>
+├── <span class="dir">apps/web/</span>          <span class="cmt"># React — MVVM, feature-based</span>
+│   └── <span class="dir">src/features/</span>
+│       ├── <span class="dir">chat/</span>          <span class="cmt"># Conversation UI + streaming</span>
+│       └── <span class="dir">agent-builder/</span> <span class="cmt"># Visual agent config UI</span>
+│
+└── <span class="dir">apps/api/</span>          <span class="cmt"># Backend — Clean Architecture</span>
+    └── <span class="dir">src/</span>
+        ├── <span class="dir">interfaces/</span>    <span class="cmt"># HTTP + WebSocket endpoints</span>
+        │
+        ├── <span class="dir">application/</span>   <span class="cmt"># Use cases — the agent brain</span>
+        │   ├── AgentRunner.ts       <span class="cmt"># main agent loop</span>
+        │   ├── ConversationService.ts
+        │   ├── MemoryManager.ts     <span class="cmt"># retrieval + storage</span>
+        │   ├── ToolExecutor.ts      <span class="cmt"># safe tool invocation</span>
+        │   └── PromptBuilder.ts     <span class="cmt"># context assembly</span>
+        │
+        ├── <span class="dir">domain/</span>        <span class="cmt"># Pure entities — zero deps</span>
+        │   ├── Agent.ts
+        │   ├── Memory.ts
+        │   ├── Tool.ts
+        │   └── AgentStep.ts        <span class="cmt"># single agent iteration</span>
+        │
+        └── <span class="dir">infrastructure/</span> <span class="cmt"># All adapters</span>
+            ├── <span class="dir">llm/</span>          <span class="cmt"># OpenAI, Anthropic, Ollama</span>
+            ├── <span class="dir">memory/</span>       <span class="cmt"># Pinecone, pgvector, Redis</span>
+            ├── <span class="dir">tools/</span>        <span class="cmt"># WebSearch, CodeRunner, Calculator</span>
+            └── <span class="dir">tracing/</span>      <span class="cmt"># LangFuse, logging</span></div>
+
+  <h2>The agent loop — how to implement it</h2>
+  <div class="code-block"><span class="cmt">// application/AgentRunner.ts — the core loop</span>
+<span class="kw">class</span> <span class="cls">AgentRunner</span> {
+  <span class="kw">constructor</span>(
+    <span class="kw">private</span> llm: <span class="cls">ILLMPort</span>,          <span class="cmt">// hexagonal port</span>
+    <span class="kw">private</span> memory: <span class="cls">IMemoryPort</span>,      <span class="cmt">// hexagonal port</span>
+    <span class="kw">private</span> toolExecutor: <span class="cls">ToolExecutor</span>
+  ) {}
+
+  <span class="kw">async</span> *<span class="fn">run</span>(userMessage: <span class="kw">string</span>, agentId: <span class="kw">string</span>) {
+    <span class="kw">const</span> context = <span class="kw">await</span> <span class="kw">this</span>.memory.<span class="fn">retrieve</span>(userMessage); <span class="cmt">// RAG</span>
+    <span class="kw">const</span> prompt  = promptBuilder.<span class="fn">build</span>(userMessage, context);
+
+    <span class="kw">let</span> iteration = 0;
+    <span class="kw">while</span> (iteration++ < MAX_STEPS) {             <span class="cmt">// safety limit</span>
+      <span class="kw">const</span> response = <span class="kw">await</span> <span class="kw">this</span>.llm.<span class="fn">complete</span>(prompt);
+
+      <span class="kw">if</span> (response.type === <span class="str">'final'</span>) {
+        <span class="kw">yield</span> { type: <span class="str">'answer'</span>, content: response.text };
+        <span class="kw">break</span>;
+      }
+
+      <span class="kw">if</span> (response.type === <span class="str">'tool_call'</span>) {
+        <span class="kw">yield</span> { type: <span class="str">'thinking'</span>, tool: response.tool };
+        <span class="kw">const</span> result = <span class="kw">await</span> <span class="kw">this</span>.toolExecutor.<span class="fn">run</span>(response.tool);
+        <span class="kw">yield</span> { type: <span class="str">'tool_result'</span>, result };
+        prompt.<span class="fn">addToolResult</span>(result);  <span class="cmt">// feed back into context</span>
+      }
+    }
+  }
+}</div>
+
+  <h2>Memory: the 3 tiers</h2>
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">In-context (short-term)</div>
+      <div class="mini-body">Last N messages sent directly in the prompt. Managed by <code>PromptBuilder</code>. Limited by context window size.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">Vector store (long-term)</div>
+      <div class="mini-body">Past conversations and documents embedded and stored. Retrieved by semantic similarity. Pinecone or pgvector.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">Working memory (session)</div>
+      <div class="mini-body">Current task state, tool results, intermediate conclusions. Redis. Cleared when the session ends.</div>
+    </div>
+  </div>
+
+  <h2>What to follow</h2>
+  <ul class="rule-list">
+    <li><strong>Always cap agent iterations</strong> — set MAX_STEPS (e.g. 10). Without a cap, a looping agent burns money and crashes.</li>
+    <li><strong>Sandbox tool execution</strong> — code runner tools need a sandboxed environment (Docker, E2B). Never run agent-generated code on your server directly.</li>
+    <li><strong>Trace every LLM call</strong> — use LangFuse or a custom tracing adapter. Token usage, latency, prompt version — you can't debug agents without traces.</li>
+    <li><strong>The LLM port is non-negotiable</strong> — at this complexity level, you MUST be able to swap providers. Model landscape changes monthly.</li>
+    <li><strong>Emit tool events</strong> — each tool call is an event. Multiple systems (billing, logging, UI) react. The agent loop doesn't call them directly.</li>
+  </ul>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Set MAX_STEPS limit on agent loop</li>
+        <li>Use ports for every LLM provider</li>
+        <li>Sandbox code execution tools</li>
+        <li>Trace every LLM call with token count</li>
+        <li>Stream intermediate steps to UI</li>
+        <li>Version your system prompts</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Import OpenAI SDK in application layer</li>
+        <li>Skip the iteration limit</li>
+        <li>Run agent code without sandboxing</li>
+        <li>Forget to handle tool timeouts</li>
+        <li>Mix memory logic into agent runner</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== USE CASE: REALTIME ====================== -->
+<section id="sec-uc-realtime" class="section">
+  <div class="uc-header">
+    <div class="uc-icon" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);">⚡</div>
+    <div class="uc-meta">
+      <div class="uc-label" style="color:var(--green)">Use Case 6 — Build it</div>
+      <div class="uc-title">Real-time Collaborative App</div>
+      <div class="uc-desc">Multiple users working on the same data simultaneously with instant sync. Think: collaborative document editor, shared whiteboard, live dashboard, multiplayer game state, real-time kanban board.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Folder structure</div><div class="sum-label"></div><div class="sum-val" style="color:var(--green)">Feature-based</div></div>
+    <div class="sum-item"><div class="sum-label">Architecture</div><div class="sum-val" style="color:var(--blue)">MVVM + Event-driven</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--purple)">Advanced</div></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">Socket.io / WebSocket</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Redis Pub/Sub</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">CRDT / OT (conflict resolution)</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">Yjs / ShareDB</span>
+  </div>
+
+  <h2>Folder structure to use</h2>
+  <div class="code-block"><span class="dir">collab-app/</span>
+├── <span class="dir">frontend/</span>   (feature-based)
+│   └── <span class="dir">src/features/</span>
+│       ├── <span class="dir">editor/</span>            <span class="cmt"># main collaborative canvas/doc</span>
+│       │   ├── <span class="dir">components/</span>    <span class="cmt"># EditorCanvas, Cursor, Toolbar</span>
+│       │   ├── <span class="dir">hooks/</span>
+│       │   │   ├── useCollabDoc.ts  <span class="cmt"># Yjs / CRDT binding</span>
+│       │   │   └── usePresence.ts   <span class="cmt"># who else is online</span>
+│       │   └── <span class="dir">services/</span>
+│       │       └── socketClient.ts  <span class="cmt"># WebSocket connection</span>
+│       ├── <span class="dir">presence/</span>          <span class="cmt"># live cursors, avatars</span>
+│       └── <span class="dir">comments/</span>          <span class="cmt"># inline comments, threads</span>
+│
+└── <span class="dir">backend/</span>
+    └── <span class="dir">src/</span>
+        ├── <span class="dir">gateway/</span>           <span class="cmt"># WebSocket gateway (Socket.io)</span>
+        │   └── collab.gateway.ts  <span class="cmt"># joins rooms, relays ops</span>
+        ├── <span class="dir">rooms/</span>             <span class="cmt"># Room = shared document session</span>
+        │   ├── room.service.ts    <span class="cmt"># manage active rooms</span>
+        │   └── room.store.ts      <span class="cmt"># Redis: active room state</span>
+        ├── <span class="dir">operations/</span>        <span class="cmt"># Operational Transform / CRDT</span>
+        │   └── ot.service.ts      <span class="cmt"># conflict resolution</span>
+        └── <span class="dir">persistence/</span>       <span class="cmt"># Save doc snapshots periodically</span></div>
+
+  <h2>How real-time sync works</h2>
+  <div class="code-block"><span class="cmt">// backend/gateway/collab.gateway.ts</span>
+<span class="fn">handleOperation</span>(client, payload) {
+  <span class="kw">const</span> { docId, operation, version } = payload;
+
+  <span class="cmt">// 1. Transform against concurrent ops (OT)</span>
+  <span class="kw">const</span> transformed = ot.<span class="fn">transform</span>(operation, serverState[docId]);
+
+  <span class="cmt">// 2. Apply to server document</span>
+  serverDoc.<span class="fn">apply</span>(transformed);
+
+  <span class="cmt">// 3. Broadcast to everyone in the room (except sender)</span>
+  client.<span class="fn">to</span>(docId).<span class="fn">emit</span>(<span class="str">'operation'</span>, transformed);
+
+  <span class="cmt">// 4. Pub/Sub for multi-server scaling</span>
+  redis.<span class="fn">publish</span>(<span class="str">`doc:${docId}`</span>, JSON.<span class="fn">stringify</span>(transformed));
+}
+
+<span class="cmt">// frontend: optimistic update + reconcile</span>
+<span class="fn">onUserEdit</span>(change) {
+  doc.<span class="fn">applyLocal</span>(change);    <span class="cmt">// immediate (optimistic)</span>
+  socket.<span class="fn">emit</span>(<span class="str">'op'</span>, change); <span class="cmt">// send to server</span>
+}
+socket.<span class="fn">on</span>(<span class="str">'operation'</span>, (op) => doc.<span class="fn">applyRemote</span>(op)); <span class="cmt">// reconcile</span></div>
+
+  <h2>What to follow</h2>
+  <ul class="rule-list">
+    <li><strong>Use CRDT or OT for conflict resolution</strong> — two users editing the same line simultaneously needs an algorithm to merge. Use Yjs (CRDT) or ShareDB (OT) — don't write your own.</li>
+    <li><strong>Redis Pub/Sub for multi-server</strong> — when you scale to multiple server instances, WebSocket rooms don't span servers. Redis Pub/Sub broadcasts across all instances.</li>
+    <li><strong>Optimistic updates on client</strong> — apply the user's change immediately, then reconcile with server response. Waiting for server = laggy UX.</li>
+    <li><strong>Persist document snapshots</strong> — don't rely only on in-memory state. Save snapshots to Postgres every N operations or N seconds.</li>
+    <li><strong>Presence is its own feature</strong> — who is online, where their cursor is, what they're selecting. Keep this separate from the document state.</li>
+  </ul>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Use Yjs or ShareDB (don't invent CRDT)</li>
+        <li>Apply operations optimistically on client</li>
+        <li>Use Redis Pub/Sub for horizontal scale</li>
+        <li>Save document snapshots periodically</li>
+        <li>Show live cursors with user colors</li>
+        <li>Handle WebSocket reconnection gracefully</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Write your own conflict resolution</li>
+        <li>Store all state only in memory</li>
+        <li>Broadcast to all users (use rooms)</li>
+        <li>Ignore offline / reconnect state</li>
+        <li>Skip operation versioning</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== USE CASE: ENTERPRISE ====================== -->
+<section id="sec-uc-enterprise" class="section">
+  <div class="uc-header">
+    <div class="uc-icon" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);">🏢</div>
+    <div class="uc-meta">
+      <div class="uc-label" style="color:var(--purple)">Use Case 7 — Build it</div>
+      <div class="uc-title">Enterprise / Multi-tenant Platform</div>
+      <div class="uc-desc">A platform where multiple organizations (tenants) each have isolated data, custom settings, and different permission levels. Think: HR software, CRM, project management for teams, B2B SaaS with team accounts.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Folder structure</div><div class="sum-val" style="color:var(--purple)">Monorepo + DDD</div></div>
+    <div class="sum-item"><div class="sum-label">Architecture</div><div class="sum-val" style="color:var(--pink)">Clean + DDD + Events</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--pink)">Advanced</div></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">NestJS / Spring Boot</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">PostgreSQL (row-level security)</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">Redis</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">RBAC / ABAC</span>
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">Kafka / RabbitMQ</span>
+  </div>
+
+  <h2>Folder structure to use</h2>
+  <div class="code-block"><span class="dir">enterprise-platform/</span>
+├── <span class="dir">apps/</span>
+│   ├── <span class="dir">web/</span>               <span class="cmt"># React frontend — feature-based</span>
+│   ├── <span class="dir">api/</span>               <span class="cmt"># Main API — DDD-aligned</span>
+│   │   └── <span class="dir">src/domains/</span>
+│   │       ├── <span class="dir">tenants/</span>       <span class="cmt"># Org management, settings</span>
+│   │       │   ├── <span class="dir">entities/</span>  <span class="cmt"># Tenant, TenantSettings</span>
+│   │       │   ├── <span class="dir">usecases/</span>  <span class="cmt"># CreateTenant, UpdatePlan</span>
+│   │       │   └── <span class="dir">events/</span>    <span class="cmt"># TenantCreated, TenantSuspended</span>
+│   │       ├── <span class="dir">users/</span>         <span class="cmt"># User, Role, Permission</span>
+│   │       ├── <span class="dir">projects/</span>      <span class="cmt"># Project, Task, Milestone</span>
+│   │       └── <span class="dir">billing/</span>       <span class="cmt"># Subscription, Invoice</span>
+│   └── <span class="dir">admin/</span>             <span class="cmt"># Internal super-admin dashboard</span>
+│
+└── <span class="dir">packages/</span>
+    ├── <span class="dir">auth/</span>              <span class="cmt"># Shared RBAC library</span>
+    ├── <span class="dir">types/</span>             <span class="cmt"># Shared TS types across apps</span>
+    └── <span class="dir">events/</span>            <span class="cmt"># Shared event type definitions</span></div>
+
+  <h2>Multi-tenancy: the 3 isolation strategies</h2>
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Row-level isolation</div>
+      <div class="mini-body">Every table has a <code>tenant_id</code> column. PostgreSQL Row-Level Security (RLS) enforces that queries only return rows matching the current tenant. Cheapest to run.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">Schema-per-tenant</div>
+      <div class="mini-body">Each tenant gets their own Postgres schema. Strong isolation, easy to backup per tenant. More complex migrations. Medium cost.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">DB-per-tenant</div>
+      <div class="mini-body">Each tenant gets their own database. Total isolation. Most expensive. Used only for enterprise customers with strict compliance needs (HIPAA, etc.).</div>
+    </div>
+  </div>
+
+  <h2>RBAC — Role-Based Access Control</h2>
+  <div class="code-block"><span class="cmt">// The permission check middleware pattern</span>
+<span class="kw">function</span> <span class="fn">requirePermission</span>(resource: <span class="kw">string</span>, action: <span class="kw">string</span>) {
+  <span class="kw">return</span> (req, res, next) => {
+    <span class="kw">const</span> { user, tenant } = req;
+
+    <span class="cmt">// Check: does user's role in THIS tenant allow this action?</span>
+    <span class="kw">const</span> allowed = rbac.<span class="fn">check</span>({
+      role:     user.roleInTenant(tenant.id),  <span class="cmt">// roles are per-tenant</span>
+      resource, <span class="cmt">// e.g. 'project'</span>
+      action,   <span class="cmt">// e.g. 'delete'</span>
+    });
+
+    <span class="kw">if</span> (!allowed) <span class="kw">return</span> res.<span class="fn">status</span>(403).<span class="fn">json</span>({ error: <span class="str">'Forbidden'</span> });
+    <span class="fn">next</span>();
+  };
+}
+
+<span class="cmt">// Usage</span>
+router.<span class="fn">delete</span>(<span class="str">'/projects/:id'</span>, <span class="fn">requirePermission</span>(<span class="str">'project'</span>, <span class="str">'delete'</span>), controller.<span class="fn">delete</span>);</div>
+
+  <h2>What to follow</h2>
+  <ul class="rule-list">
+    <li><strong>Tenant context in every request</strong> — extract <code>tenantId</code> from JWT/subdomain in middleware. Every service and repository receives it. Never trust client-sent tenant ID.</li>
+    <li><strong>Roles are per-tenant</strong> — a user can be Admin in Company A and Viewer in Company B. Store roles as a <code>user_tenant_roles</code> junction table.</li>
+    <li><strong>Domain events across tenants</strong> — use a message queue (Kafka, RabbitMQ) for cross-domain events. <code>TenantCreated</code> triggers billing setup and welcome email.</li>
+    <li><strong>Super-admin is a separate app</strong> — your internal admin dashboard is not a feature of the main app. It's a separate <code>apps/admin/</code> with its own auth.</li>
+    <li><strong>Audit log everything</strong> — enterprise customers demand it. Every data mutation writes to an audit log with user, action, timestamp, before/after values.</li>
+  </ul>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Extract tenantId in middleware</li>
+        <li>Use Postgres RLS for data isolation</li>
+        <li>Check permissions server-side always</li>
+        <li>Store roles per tenant, not globally</li>
+        <li>Write an audit log for every mutation</li>
+        <li>Version your domain events</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Trust client-sent tenantId</li>
+        <li>Share admin UI with end users</li>
+        <li>Use global roles across tenants</li>
+        <li>Delete tenant data immediately</li>
+        <li>Skip audit logging for compliance features</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (window.innerWidth <= 700) closeSidebar();
+}
+
+function toggleAcc(el) {
+  el.classList.toggle('open');
+}
+
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+
+function openSidebar() {
+  sidebar.classList.add('open');
+  overlay.classList.add('open');
+}
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+});
+overlay.addEventListener('click', closeSidebar);
+</script>
+</body>
+</html>

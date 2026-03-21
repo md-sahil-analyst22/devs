@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Security — Complete Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #0a0c10;
+  --bg2:    #0f1218;
+  --bg3:    #141820;
+  --bg4:    #181f2a;
+  --bg5:    #1c2535;
+  --bdr:    #1e2a3a;
+  --bdr2:   #253040;
+  --t1:     #e4eaf6;
+  --t2:     #7b8fae;
+  --t3:     #3d4f68;
+  --red:    #f75c5c;
+  --orange: #ff9f43;
+  --yellow: #ffd32a;
+  --green:  #26de81;
+  --teal:   #2bcbba;
+  --blue:   #4d8af0;
+  --purple: #a55eea;
+  --pink:   #fd9644;
+  --sw: 275px;
+  --top: 52px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;overflow-x:hidden}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  height:var(--top);background:var(--bg2);
+  border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.tbl{
+  display:flex;align-items:center;gap:10px;
+  width:var(--sw);padding:0 18px;
+  border-right:1px solid var(--bdr);height:100%;flex-shrink:0;
+}
+.tlogo{
+  display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:6px;
+  background:var(--red);font-family:'JetBrains Mono',monospace;
+  font-size:12px;font-weight:700;color:#fff;letter-spacing:-.5px;
+  box-shadow:0 0 12px rgba(247,92,92,.35);
+}
+.tbrand{font-size:13px;font-weight:700;color:var(--t1)}
+.tbrand span{display:block;font-size:10px;font-weight:400;color:var(--t3)}
+.tbr{display:flex;align-items:center;gap:12px;padding-right:18px}
+.tcnt{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.tpill{
+  font-size:10px;font-weight:600;padding:3px 10px;border-radius:3px;
+  background:rgba(247,92,92,.12);color:var(--red);
+  border:1px solid rgba(247,92,92,.25);font-family:'JetBrains Mono',monospace;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.hbg{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px}
+.hbg span{display:block;width:18px;height:1.5px;background:var(--t2);transition:.18s}
+
+/* ── LAYOUT ── */
+.layout{display:flex;padding-top:var(--top);min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sw);flex-shrink:0;
+  position:fixed;top:var(--top);left:0;bottom:0;
+  background:var(--bg2);border-right:1px solid var(--bdr);
+  overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bdr2) transparent;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--bdr2)}
+
+.sg{
+  padding:16px 14px 5px;
+  font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--t3);
+  text-transform:uppercase;font-family:'JetBrains Mono',monospace;
+}
+.sg:first-child{padding-top:12px}
+.ni{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 14px;cursor:pointer;
+  font-size:12px;color:var(--t2);
+  border-left:2px solid transparent;transition:all .13s;
+  text-decoration:none;user-select:none;
+}
+.ni:hover{background:var(--bg3);color:var(--t1)}
+.ni.on{color:var(--red);background:rgba(247,92,92,.07);border-left-color:var(--red);font-weight:600}
+.nd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ntag{
+  margin-left:auto;font-size:9px;font-family:'JetBrains Mono',monospace;
+  font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em;
+}
+.t-red{background:rgba(247,92,92,.15);color:var(--red)}
+.t-orange{background:rgba(255,159,67,.15);color:var(--orange)}
+.t-green{background:rgba(38,222,129,.15);color:var(--green)}
+.t-blue{background:rgba(77,138,240,.15);color:var(--blue)}
+.t-purple{background:rgba(165,94,234,.15);color:var(--purple)}
+.t-teal{background:rgba(43,203,186,.15);color:var(--teal)}
+.t-yellow{background:rgba(255,211,42,.15);color:var(--yellow)}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sw);flex:1;padding:36px 44px 80px;max-width:950px}
+
+/* ── SECTIONS ── */
+.sec{display:none}
+.sec.on{display:block;animation:up .22s ease both}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO ── */
+.hero{padding-bottom:22px;margin-bottom:26px;border-bottom:1px solid var(--bdr)}
+.htag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:9px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;font-family:'JetBrains Mono',monospace;
+  padding:4px 10px;border-radius:3px;margin-bottom:12px;
+}
+.htitle{font-size:26px;font-weight:700;color:var(--t1);line-height:1.2;margin-bottom:8px}
+.hsub{font-size:13.5px;color:var(--t2);line-height:1.7;max-width:700px}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
+.stat{background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;padding:10px 14px}
+.sl{font-size:9px;color:var(--t3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.sv{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+
+/* ── CARDS ── */
+.card{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:18px 20px;margin-bottom:12px}
+.card.red{border-left:3px solid var(--red);background:rgba(247,92,92,.04)}
+.card.orange{border-left:3px solid var(--orange);background:rgba(255,159,67,.04)}
+.card.green{border-left:3px solid var(--green);background:rgba(38,222,129,.04)}
+.card.blue{border-left:3px solid var(--blue);background:rgba(77,138,240,.04)}
+.card.purple{border-left:3px solid var(--purple);background:rgba(165,94,234,.04)}
+.card.teal{border-left:3px solid var(--teal);background:rgba(43,203,186,.04)}
+.card.yellow{border-left:3px solid var(--yellow);background:rgba(255,211,42,.04)}
+.ct{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px}
+.cb{font-size:12.5px;color:var(--t2);line-height:1.7}
+
+/* ── CODE ── */
+.code{
+  background:#060a10;border:1px solid var(--bdr);border-radius:6px;
+  padding:16px 18px;margin:12px 0;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  line-height:1.85;overflow-x:auto;white-space:pre;
+}
+.code .kw{color:#a55eea}
+.code .st{color:#26de81}
+.code .fn{color:#4d8af0}
+.code .cm{color:#3d4f68}
+.code .cl{color:#ff9f43}
+.code .hl{color:#f75c5c}
+.code .nm{color:#ffd32a}
+.code .tl{color:#2bcbba}
+
+code{
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  background:rgba(255,255,255,.07);color:var(--orange);
+  padding:1px 5px;border-radius:3px;
+}
+
+/* ── THREAT BOX ── */
+.threat{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 16px;border-radius:6px;margin-bottom:8px;
+  background:rgba(247,92,92,.06);border:1px solid rgba(247,92,92,.18);
+}
+.threat-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.threat-body{flex:1}
+.threat-name{font-size:12px;font-weight:700;color:var(--red);margin-bottom:2px}
+.threat-desc{font-size:12px;color:var(--t2);line-height:1.5}
+
+/* ── DEFENSE BOX ── */
+.defense{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 16px;border-radius:6px;margin-bottom:8px;
+  background:rgba(38,222,129,.05);border:1px solid rgba(38,222,129,.18);
+}
+.defense-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.defense-body{flex:1}
+.defense-name{font-size:12px;font-weight:700;color:var(--green);margin-bottom:2px}
+.defense-desc{font-size:12px;color:var(--t2);line-height:1.5}
+
+/* ── FLOW ── */
+.flow{
+  display:flex;align-items:center;gap:4px;
+  flex-wrap:wrap;padding:16px;margin:12px 0;
+  background:#060a10;border:1px solid var(--bdr);border-radius:8px;
+}
+.fbox{
+  padding:8px 12px;border-radius:5px;font-size:11px;
+  font-family:'JetBrains Mono',monospace;font-weight:600;
+  border:1px solid;text-align:center;white-space:nowrap;
+}
+.farr{color:var(--t3);font-size:16px;padding:0 2px}
+
+/* ── TABLE ── */
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:var(--bg4)}
+th{
+  text-align:left;padding:9px 14px;
+  font-size:9px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--t3);
+  border-bottom:1px solid var(--bdr2);
+  font-family:'JetBrains Mono',monospace;
+}
+td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--t2)}
+td:first-child{color:var(--t1);font-weight:600}
+tr:hover td{background:rgba(255,255,255,.015)}
+tr:last-child td{border-bottom:none}
+
+/* ── CALLOUT ── */
+.callout{border-radius:6px;padding:13px 16px;margin:12px 0;font-size:12.5px;line-height:1.65}
+.cred{background:rgba(247,92,92,.08);border:1px solid rgba(247,92,92,.22);color:#ffaaaa}
+.cgreen{background:rgba(38,222,129,.07);border:1px solid rgba(38,222,129,.22);color:#86efb8}
+.corange{background:rgba(255,159,67,.07);border:1px solid rgba(255,159,67,.22);color:#ffd0a0}
+.cblue{background:rgba(77,138,240,.07);border:1px solid rgba(77,138,240,.22);color:#a0c4ff}
+.cpurple{background:rgba(165,94,234,.07);border:1px solid rgba(165,94,234,.22);color:#d0aaff}
+.cteal{background:rgba(43,203,186,.07);border:1px solid rgba(43,203,186,.22);color:#88f0e8}
+.callout strong{font-weight:700;color:inherit}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mini{background:var(--bg4);border:1px solid var(--bdr);border-radius:6px;padding:13px 15px}
+.mt{font-size:12px;font-weight:700;margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.mb{font-size:11.5px;color:var(--t2);line-height:1.5}
+
+/* ── DO/DON'T ── */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.do{background:rgba(38,222,129,.05);border:1px solid rgba(38,222,129,.18);border-radius:6px;padding:13px 15px}
+.dont{background:rgba(247,92,92,.05);border:1px solid rgba(247,92,92,.18);border-radius:6px;padding:13px 15px}
+.do h4{font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.dont h4{font-size:9px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.do li,.dont li{font-size:11.5px;color:var(--t2);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do li::before{content:"✓";position:absolute;left:0;color:var(--green);font-size:10px;top:4px}
+.dont li::before{content:"✗";position:absolute;left:0;color:var(--red);font-size:10px;top:4px}
+
+/* ── STEPS ── */
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;margin-bottom:4px}
+.sline{display:flex;flex-direction:column;align-items:center}
+.sdot{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-top:2px;
+}
+.svline{width:2px;flex:1;min-height:18px;margin:3px 0;background:var(--bdr2)}
+.scontent{flex:1;padding-bottom:16px}
+.stitle{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px}
+.sbody{font-size:12px;color:var(--t2);line-height:1.6}
+
+/* ── LAYERS ── */
+.layers{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.layer{border-radius:5px;padding:10px 15px;border-left:3px solid}
+.lname{font-size:12px;font-weight:700;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
+.ldesc{font-size:11.5px;color:var(--t2)}
+
+/* ── PILL ── */
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+.pr{background:rgba(247,92,92,.15);color:var(--red)}
+.pg{background:rgba(38,222,129,.15);color:var(--green)}
+.po{background:rgba(255,159,67,.15);color:var(--orange)}
+.pb{background:rgba(77,138,240,.15);color:var(--blue)}
+.pp{background:rgba(165,94,234,.15);color:var(--purple)}
+.pt{background:rgba(43,203,186,.15);color:var(--teal)}
+.py{background:rgba(255,211,42,.15);color:var(--yellow)}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--bdr);margin:24px 0}
+
+/* ── HEADINGS ── */
+h2{font-size:18px;font-weight:700;color:var(--t1);margin:22px 0 10px}
+h2:first-child{margin-top:0}
+h3{font-size:14px;font-weight:700;color:var(--t1);margin:16px 0 8px}
+p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px}
+p:last-child{margin-bottom:0}
+strong{color:var(--t1);font-weight:700}
+
+/* ── USE CASE HEADER ── */
+.uch{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--bdr)}
+.ucico{
+  width:48px;height:48px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;border:1px solid;
+}
+.ucmeta{flex:1}
+.uclbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.uctitle{font-size:22px;font-weight:700;color:var(--t1);margin-bottom:6px;line-height:1.25}
+.ucdesc{font-size:13px;color:var(--t2);line-height:1.6}
+
+/* ── CHECKLIST ── */
+.checklist{margin:12px 0}
+.ci{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 14px;border-radius:5px;margin-bottom:5px;
+  background:var(--bg3);border:1px solid var(--bdr);cursor:pointer;
+  transition:border-color .13s;
+}
+.ci:hover{border-color:var(--bdr2)}
+.ci-box{
+  width:16px;height:16px;border-radius:3px;flex-shrink:0;
+  border:1.5px solid var(--t3);margin-top:2px;
+  display:flex;align-items:center;justify-content:center;
+  transition:.13s;
+}
+.ci.checked .ci-box{background:var(--green);border-color:var(--green);color:#000;font-size:9px;font-weight:900}
+.ci-pri{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;flex-shrink:0;font-family:'JetBrains Mono',monospace;margin-top:2px}
+.ci-text{font-size:12px;color:var(--t2);line-height:1.5;flex:1}
+.ci-text strong{color:var(--t1)}
+
+/* ── ACCORDION ── */
+.acc{border:1px solid var(--bdr);border-radius:7px;overflow:hidden;margin-bottom:7px}
+.acc-h{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;cursor:pointer;background:var(--bg3);
+  font-size:12.5px;font-weight:600;color:var(--t1);transition:background .13s;user-select:none;
+}
+.acc-h:hover{background:var(--bg4)}
+.acc-ico{color:var(--t3);font-size:17px;transition:transform .18s;font-style:normal}
+.acc-b{
+  display:none;padding:14px 16px;font-size:12px;color:var(--t2);
+  line-height:1.65;background:var(--bg4);border-top:1px solid var(--bdr);
+}
+.acc.open .acc-b{display:block}
+.acc.open .acc-ico{transform:rotate(45deg)}
+
+/* ── COMPARE WIDE ── */
+.cmpw{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin:14px 0}
+.cmpc:first-child{border-right:1px solid var(--bdr);background:rgba(247,92,92,.03)}
+.cmpc{padding:16px 18px;background:rgba(38,222,129,.03)}
+.cmpc h3{font-size:13px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.cmpc li{font-size:11.5px;color:var(--t2);padding:3px 0;list-style:none;display:flex;gap:7px;line-height:1.5}
+.cmpc li::before{content:"·";color:var(--t3);flex-shrink:0}
+
+/* ── OVERLAY ── */
+.overlay{display:none;position:fixed;inset:var(--top) 0 0 0;background:rgba(0,0,0,.7);z-index:100}
+.overlay.open{display:block}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.main{padding:24px 22px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:265px}
+  .main{margin-left:0;padding:20px 15px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .22s;z-index:110}
+  .sidebar.open{transform:translateX(0)}
+  .hbg{display:flex}
+  .tbl{width:auto;border-right:none}
+  .tcnt{display:none}
+  .stats,.g2,.g3,.g4,.dd,.cmpw,.g2{grid-template-columns:1fr}
+  .cmpc:first-child{border-right:none;border-bottom:1px solid var(--bdr)}
+  .uch{flex-direction:column}
+}
+@media(max-width:480px){.htitle{font-size:20px}.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="tbl">
+    <div class="tlogo">🛡</div>
+    <div class="tbrand">SecureAPI<span>Complete Security Guide</span></div>
+  </div>
+  <div class="tbr">
+    <button class="hbg" id="hbg"><span></span><span></span><span></span></button>
+    <span class="tcnt">14 modules · 80+ concepts</span>
+    <span class="tpill">v1.0</span>
+  </div>
+</header>
+
+<div class="overlay" id="ov"></div>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sb">
+  <div class="sg">Start here</div>
+  <a class="ni on" onclick="go('why')"><span class="nd" style="background:var(--red)"></span>Why API security matters<span class="ntag t-red">Critical</span></a>
+  <a class="ni" onclick="go('threats')"><span class="nd" style="background:var(--orange)"></span>Threat landscape<span class="ntag t-orange">Know enemy</span></a>
+
+  <div class="sg">Authentication</div>
+  <a class="ni" onclick="go('apikey')"><span class="nd" style="background:var(--green)"></span>API Key auth<span class="ntag t-green">Beginner</span></a>
+  <a class="ni" onclick="go('jwt')"><span class="nd" style="background:var(--blue)"></span>JWT tokens<span class="ntag t-blue">Mid</span></a>
+  <a class="ni" onclick="go('oauth')"><span class="nd" style="background:var(--purple)"></span>OAuth2 / Azure AD<span class="ntag t-purple">Mid</span></a>
+
+  <div class="sg">Protection layers</div>
+  <a class="ni" onclick="go('cors')"><span class="nd" style="background:var(--orange)"></span>CORS<span class="ntag t-orange">Beginner</span></a>
+  <a class="ni" onclick="go('ratelimit')"><span class="nd" style="background:var(--teal)"></span>Rate limiting<span class="ntag t-teal">Mid</span></a>
+  <a class="ni" onclick="go('headers')"><span class="nd" style="background:var(--yellow)"></span>Security headers<span class="ntag t-yellow">Mid</span></a>
+
+  <div class="sg">Service security</div>
+  <a class="ni" onclick="go('s2s')"><span class="nd" style="background:var(--red)"></span>Service-to-service auth<span class="ntag t-red">Important</span></a>
+  <a class="ni" onclick="go('webhook')"><span class="nd" style="background:var(--orange)"></span>Webhook security<span class="ntag t-orange">Mid</span></a>
+  <a class="ni" onclick="go('ws')"><span class="nd" style="background:var(--blue)"></span>WebSocket security<span class="ntag t-blue">Mid</span></a>
+  <a class="ni" onclick="go('webrtc')"><span class="nd" style="background:var(--purple)"></span>WebRTC security<span class="ntag t-purple">Adv</span></a>
+
+  <div class="sg">Infrastructure</div>
+  <a class="ni" onclick="go('nginx')"><span class="nd" style="background:var(--teal)"></span>Nginx hardening<span class="ntag t-teal">Mid</span></a>
+  <a class="ni" onclick="go('azure')"><span class="nd" style="background:var(--blue)"></span>Azure security<span class="ntag t-blue">Mid</span></a>
+
+  <div class="sg">Use cases</div>
+  <a class="ni" onclick="go('uc-voiceagent')"><span class="nd" style="background:var(--red)"></span>Voice calling agent<span class="ntag t-red">Build</span></a>
+  <a class="ni" onclick="go('uc-chatbot')"><span class="nd" style="background:var(--orange)"></span>Chatbot API<span class="ntag t-orange">Build</span></a>
+  <a class="ni" onclick="go('uc-webapp')"><span class="nd" style="background:var(--green)"></span>Web application<span class="ntag t-green">Build</span></a>
+  <a class="ni" onclick="go('uc-fastapi')"><span class="nd" style="background:var(--blue)"></span>FastAPI complete setup<span class="ntag t-blue">Build</span></a>
+
+  <div class="sg">Reference</div>
+  <a class="ni" onclick="go('checklist')"><span class="nd" style="background:var(--green)"></span>Security checklist ✓<span class="ntag t-green">Action</span></a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══════════ WHY SECURITY ═══════════ -->
+<section id="sec-why" class="sec on">
+  <div class="hero">
+    <div class="htag" style="background:rgba(247,92,92,.12);color:var(--red)">Module 1 · Start here</div>
+    <h1 class="htitle">Why API security matters</h1>
+    <p class="hsub">You built it. You deployed it. You opened ports. Now anyone on the internet can find it. This is the reality of every server connected to the internet — and ignoring security isn't an option when real users and real data are involved.</p>
+  </div>
+
+  <div class="callout cred">
+    <strong>Your situation right now:</strong> You have a voice calling agent, chatbots, and web apps hosted on Azure with ports open. Every open port is a door. Some doors need to be open (your users walk through them). The goal is to install locks, cameras, and alarms — not to brick up all the doors.
+  </div>
+
+  <h2>What happens without security</h2>
+  <div class="g2">
+    <div class="threat"><div class="threat-icon">💸</div><div class="threat-body"><div class="threat-name">API bill explosion</div><div class="threat-desc">Someone finds your OpenAI-connected endpoint. They script 10,000 requests. Your API costs spike to hundreds of dollars overnight.</div></div></div>
+    <div class="threat"><div class="threat-icon">🗄️</div><div class="threat-body"><div class="threat-name">Data breach</div><div class="threat-desc">Your user data, conversation logs, personal information becomes accessible to anyone who hits the right endpoint.</div></div></div>
+    <div class="threat"><div class="threat-icon">🔊</div><div class="threat-body"><div class="threat-name">Service abuse</div><div class="threat-desc">Your voice calling agent gets scripted to make thousands of free calls. Your LiveKit minutes are consumed in hours.</div></div></div>
+    <div class="threat"><div class="threat-icon">🚫</div><div class="threat-body"><div class="threat-name">Service downtime</div><div class="threat-desc">Automated bots hammer your endpoints relentlessly. Your server crashes. Real users can't access your app.</div></div></div>
+  </div>
+
+  <h2>The security mindset</h2>
+  <p>Security is not a feature you add at the end. It's a set of layers you build into every component. Think of it like an onion — multiple layers, each one adding protection if the outer layer fails.</p>
+
+  <div class="layers">
+    <div class="layer" style="border-color:var(--red);background:rgba(247,92,92,.05)">
+      <div class="lname" style="color:var(--red)">Layer 1 — Network (Azure NSG / Firewall)</div>
+      <div class="ldesc">Block unauthorized traffic before it even reaches your server. Port rules, IP filtering, VNet isolation.</div>
+    </div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:2px;font-family:'JetBrains Mono',monospace">↓ if network layer passes</div>
+    <div class="layer" style="border-color:var(--orange);background:rgba(255,159,67,.05)">
+      <div class="lname" style="color:var(--orange)">Layer 2 — Web server (Nginx)</div>
+      <div class="ldesc">Rate limiting, IP whitelisting, blocking internal endpoints, SSL termination.</div>
+    </div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:2px;font-family:'JetBrains Mono',monospace">↓ if nginx layer passes</div>
+    <div class="layer" style="border-color:var(--yellow);background:rgba(255,211,42,.05)">
+      <div class="lname" style="color:var(--yellow)">Layer 3 — Application (FastAPI)</div>
+      <div class="ldesc">Authentication middleware, authorization checks, input validation, CORS policy.</div>
+    </div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:2px;font-family:'JetBrains Mono',monospace">↓ if app layer passes</div>
+    <div class="layer" style="border-color:var(--green);background:rgba(38,222,129,.05)">
+      <div class="lname" style="color:var(--green)">Layer 4 — Data</div>
+      <div class="ldesc">Parameterized queries (no SQL injection), encrypted at rest, access control per user.</div>
+    </div>
+  </div>
+
+  <div class="callout cgreen">
+    <strong>The golden rule of API security:</strong> Never rely on a single layer. If Nginx is misconfigured, your FastAPI auth should still reject the request. If a JWT is somehow forged, your database ACLs should still block the query. Defense in depth = multiple independent layers.
+  </div>
+
+  <h2>Quick priority matrix — do this NOW</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Priority</th><th>Action</th><th>Time to implement</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill pr">Critical</span></td><td>Close all ports except 80/443 and SSH in Azure NSG</td><td>5 minutes</td><td>Blocks most attacks immediately</td></tr>
+        <tr><td><span class="pill pr">Critical</span></td><td>Add API key auth to ALL endpoints</td><td>1–2 hours</td><td>Stops unauthorized access</td></tr>
+        <tr><td><span class="pill po">High</span></td><td>Add Nginx rate limiting</td><td>30 minutes</td><td>Stops abuse and brute force</td></tr>
+        <tr><td><span class="pill po">High</span></td><td>Lock CORS to your domain only</td><td>15 minutes</td><td>Stops cross-site API abuse</td></tr>
+        <tr><td><span class="pill py">Medium</span></td><td>Add webhook signature verification</td><td>1 hour</td><td>Secures LiveKit/Stripe callbacks</td></tr>
+        <tr><td><span class="pill py">Medium</span></td><td>Move secrets to Azure Key Vault</td><td>2 hours</td><td>No more hardcoded secrets</td></tr>
+        <tr><td><span class="pill pb">When scaling</span></td><td>Azure API Management + VNet</td><td>Half day</td><td>Enterprise-grade isolation</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════ THREATS ═══════════ -->
+<section id="sec-threats" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(255,159,67,.12);color:var(--orange)">Module 2 · Know your enemy</div>
+    <h1 class="htitle">The threat landscape</h1>
+    <p class="hsub">You cannot defend against what you don't understand. Here are the real attacks that happen to exposed APIs every day — with concrete examples of what they look like against YOUR system.</p>
+  </div>
+
+  <h2>Common API attacks</h2>
+
+  <div class="threat"><div class="threat-icon">🤖</div><div class="threat-body"><div class="threat-name">Brute force / credential stuffing</div><div class="threat-desc">Automated scripts try thousands of username/password combinations per second against your login endpoint. <strong>Your exposure:</strong> <code>POST /api/login</code> with no rate limiting.</div></div></div>
+  <div class="threat"><div class="threat-icon">💀</div><div class="threat-body"><div class="threat-name">Unauthorized API access</div><div class="threat-desc">Someone discovers your endpoint URL (from browser DevTools, GitHub, or port scanning) and calls it directly without being your frontend. <strong>Your exposure:</strong> <code>POST /api/chat</code>, <code>POST /api/call/start</code> with no auth.</div></div></div>
+  <div class="threat"><div class="threat-icon">🌐</div><div class="threat-body"><div class="threat-name">Cross-Site Request Forgery (CSRF)</div><div class="threat-desc">A malicious website tricks a logged-in user's browser into making requests to your API. The browser sends cookies automatically. <strong>Your exposure:</strong> Any cookie-based authenticated endpoint.</div></div></div>
+  <div class="threat"><div class="threat-icon">💉</div><div class="threat-body"><div class="threat-name">Injection attacks</div><div class="threat-desc">Malicious input in API parameters that executes as SQL, commands, or code. <strong>Your exposure:</strong> Any endpoint that takes user input and queries a database or runs commands.</div></div></div>
+  <div class="threat"><div class="threat-icon">🌊</div><div class="threat-body"><div class="threat-name">DDoS / resource exhaustion</div><div class="threat-desc">Flooding your API with thousands of requests per second until your server can't respond to legitimate users. <strong>Your exposure:</strong> Any public-facing endpoint, especially your voice calling agent.</div></div></div>
+  <div class="threat"><div class="threat-icon">🎭</div><div class="threat-body"><div class="threat-name">Fake webhook spoofing</div><div class="threat-desc">An attacker sends fake webhook events to your <code>/webhook/livekit</code> endpoint, pretending to be LiveKit. Your app processes fake call events. <strong>Your exposure:</strong> Any webhook endpoint without signature verification.</div></div></div>
+  <div class="threat"><div class="threat-icon">🔑</div><div class="threat-body"><div class="threat-name">Token/key theft</div><div class="threat-desc">API keys or JWT tokens intercepted from network traffic, browser storage, or GitHub commits. <strong>Your exposure:</strong> Any key stored in client-side JS, <code>.env</code> files committed to git, or unencrypted HTTP.</div></div></div>
+  <div class="threat"><div class="threat-icon">🕵️</div><div class="threat-body"><div class="threat-name">IDOR (Insecure Direct Object Reference)</div><div class="threat-desc">User A calls <code>GET /api/conversations/123</code> and gets User B's conversations by just changing the ID. <strong>Your exposure:</strong> Any endpoint that returns data by ID without verifying ownership.</div></div></div>
+
+  <div class="div"></div>
+
+  <h2>How attackers find your APIs</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--red)">Browser DevTools</div><div class="mb">Right-click → Inspect → Network tab shows every API call your frontend makes. Endpoint URLs, headers, request bodies — all visible.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--orange)">Port scanning</div><div class="mb">Tools like <code>nmap</code> scan your IP for open ports. Every open port is an invitation to investigate what's behind it.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--yellow)">GitHub / Git leaks</div><div class="mb">Developers accidentally commit <code>.env</code> files, API keys, or internal URLs to public repos. Bots scan GitHub 24/7 for these.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--blue)">Error messages</div><div class="mb">Detailed error responses reveal internal paths, database schemas, library names. Never expose stack traces in production.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--purple)">DNS enumeration</div><div class="mb">Subdomain brute-forcing reveals <code>api.yourdomain.com</code>, <code>internal.yourdomain.com</code>, <code>staging.yourdomain.com</code>.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--teal)">API path guessing</div><div class="mb">Common paths like <code>/admin</code>, <code>/api/v1</code>, <code>/health</code>, <code>/metrics</code> are tried automatically. Don't assume obscurity = security.</div></div>
+  </div>
+
+  <div class="callout corange">
+    <strong>Assume your endpoints will be found.</strong> Security through obscurity (hiding the URL) is not a strategy. Even if your URL is a random string, automated tools will eventually find it. Real security means the endpoint rejects unauthorized requests — not that no one knows the URL.
+  </div>
+</section>
+
+<!-- ═══════════ API KEY ═══════════ -->
+<section id="sec-apikey" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(38,222,129,.12);color:var(--green)">Module 3 · Authentication</div>
+    <h1 class="htitle">API Key Authentication</h1>
+    <p class="hsub">The simplest form of API authentication. A secret string that every caller must include in their request. If the key matches, you're allowed. If not, you're rejected. Perfect for service-to-service calls and trusted clients.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Best for</div><div class="sv" style="color:var(--green)">Internal services</div></div>
+    <div class="stat"><div class="sl">Location</div><div class="sv" style="color:var(--blue)">HTTP Header</div></div>
+    <div class="stat"><div class="sl">Rotation</div><div class="sv" style="color:var(--orange)">Manual / periodic</div></div>
+    <div class="stat"><div class="sl">Complexity</div><div class="sv" style="color:var(--green)">Very low</div></div>
+  </div>
+
+  <h2>How API keys work</h2>
+  <div class="flow">
+    <div class="fbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:#7dd3fc">Client sends request<br><span style="font-size:9px;font-weight:400">+ X-API-Key header</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(38,222,129,.1);border-color:rgba(38,222,129,.3);color:var(--green)">FastAPI middleware<br><span style="font-size:9px;font-weight:400">reads the header</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(255,159,67,.1);border-color:rgba(255,159,67,.3);color:var(--orange)">Compare with<br><span style="font-size:9px;font-weight:400">env variable</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(38,222,129,.1);border-color:rgba(38,222,129,.3);color:var(--green)">✓ Allow<br><span style="font-size:9px;font-weight:400">process request</span></div>
+    <span class="farr">or</span>
+    <div class="fbox" style="background:rgba(247,92,92,.1);border-color:rgba(247,92,92,.3);color:var(--red)">✗ 403 Forbidden<br><span style="font-size:9px;font-weight:400">reject immediately</span></div>
+  </div>
+
+  <h2>Implementation in FastAPI</h2>
+  <div class="code"><span class="cm"># main.py — complete API key setup</span>
+<span class="kw">import</span> os, secrets
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Header, HTTPException, Depends
+<span class="kw">from</span> dotenv <span class="kw">import</span> load_dotenv
+
+<span class="fn">load_dotenv</span>()
+app = <span class="fn">FastAPI</span>()
+
+<span class="cm"># Load from environment — NEVER hardcode in source code</span>
+API_KEY = os.<span class="fn">getenv</span>(<span class="st">"API_KEY"</span>)
+
+<span class="kw">async def</span> <span class="fn">verify_api_key</span>(x_api_key: str = <span class="fn">Header</span>(...)):
+    <span class="cm"># secrets.compare_digest prevents timing attacks</span>
+    <span class="cm"># (timing attack: attacker measures response time to guess key character by character)</span>
+    <span class="kw">if not</span> secrets.<span class="fn">compare_digest</span>(x_api_key, API_KEY):
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">403</span>, detail=<span class="st">"Forbidden"</span>)
+
+<span class="cm"># Apply to specific route</span>
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/api/chat"</span>, dependencies=[<span class="fn">Depends</span>(verify_api_key)])
+<span class="kw">async def</span> <span class="fn">chat</span>(body: dict):
+    <span class="kw">return</span> {<span class="st">"reply"</span>: <span class="st">"Hello"</span>}
+
+<span class="cm"># Apply to ALL routes globally</span>
+app = <span class="fn">FastAPI</span>(dependencies=[<span class="fn">Depends</span>(verify_api_key)])</div>
+
+  <div class="code"><span class="cm"># .env file — store secrets here, NEVER commit this to git</span>
+API_KEY=<span class="st">sk-a7f3b9c2d1e4f6a8b0c3d5e7f9a1b2c4d6e8f0a2b4c6d8e0f2a4b6c8d0e2f4</span>
+
+<span class="cm"># Generate a strong random key in Python</span>
+<span class="kw">import</span> secrets
+<span class="fn">print</span>(secrets.<span class="fn">token_hex</span>(<span class="nm">32</span>))  <span class="cm"># 64-character hex string</span></div>
+
+  <div class="code"><span class="cm">// Frontend JavaScript — send the key in every request</span>
+<span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">'/api/chat'</span>, {
+  method: <span class="st">'POST'</span>,
+  headers: {
+    <span class="st">'Content-Type'</span>: <span class="st">'application/json'</span>,
+    <span class="st">'x-api-key'</span>: <span class="st">'your-api-key-here'</span>
+    <span class="cm">// In production: read from env variable or config</span>
+  },
+  body: <span class="fn">JSON.stringify</span>({ message: <span class="st">'Hello'</span> })
+});</div>
+
+  <h2>Per-service API keys (better approach)</h2>
+  <p>Instead of one key for everything, give each of your services its own key. If one is compromised, rotate only that one.</p>
+  <div class="code"><span class="cm"># Each service has its own key</span>
+SERVICE_KEYS = {
+    <span class="st">"livekit-agent"</span>:   os.<span class="fn">getenv</span>(<span class="st">"KEY_LIVEKIT_AGENT"</span>),
+    <span class="st">"chatbot-service"</span>: os.<span class="fn">getenv</span>(<span class="st">"KEY_CHATBOT"</span>),
+    <span class="st">"frontend-web"</span>:    os.<span class="fn">getenv</span>(<span class="st">"KEY_FRONTEND"</span>),
+    <span class="st">"webhook-handler"</span>: os.<span class="fn">getenv</span>(<span class="st">"KEY_WEBHOOK"</span>),
+}
+
+<span class="kw">async def</span> <span class="fn">verify_service</span>(
+    x_api_key: str = <span class="fn">Header</span>(...),
+    x_service_name: str = <span class="fn">Header</span>(...)
+):
+    expected = SERVICE_KEYS.<span class="fn">get</span>(x_service_name)
+    <span class="kw">if not</span> expected <span class="kw">or not</span> secrets.<span class="fn">compare_digest</span>(x_api_key, expected):
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">403</span>, detail=<span class="st">"Unknown service"</span>)
+    <span class="kw">return</span> x_service_name  <span class="cm"># caller knows which service made the request</span></div>
+
+  <h2>What to do and what NOT to do</h2>
+  <div class="dd">
+    <div class="do">
+      <h4>Do</h4>
+      <li>Store keys in environment variables or Azure Key Vault</li>
+      <li>Use <code>secrets.compare_digest()</code> — not ==</li>
+      <li>Generate keys with <code>secrets.token_hex(32)</code></li>
+      <li>Rotate keys periodically (every 90 days)</li>
+      <li>Give each service its own key</li>
+      <li>Log which key was used (for audit)</li>
+    </div>
+    <div class="dont">
+      <h4>Don't</h4>
+      <li>Hardcode keys in source code</li>
+      <li>Commit .env files to git</li>
+      <li>Use short/guessable keys</li>
+      <li>Use the same key for everything</li>
+      <li>Store keys in frontend JavaScript files</li>
+      <li>Return key in error messages</li>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ JWT ═══════════ -->
+<section id="sec-jwt" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(77,138,240,.12);color:var(--blue)">Module 4 · Authentication</div>
+    <h1 class="htitle">JWT — JSON Web Tokens</h1>
+    <p class="hsub">API keys are static — once created they're valid forever until rotated. JWT tokens are dynamic — they expire automatically, carry user identity, and can store permissions. The standard for user-facing APIs.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Best for</div><div class="sv" style="color:var(--blue)">User authentication</div></div>
+    <div class="stat"><div class="sl">Expiry</div><div class="sv" style="color:var(--green)">Built-in (exp claim)</div></div>
+    <div class="stat"><div class="sl">Stateless</div><div class="sv" style="color:var(--green)">Yes — no DB lookup</div></div>
+    <div class="stat"><div class="sl">Carries data</div><div class="sv" style="color:var(--orange)">Yes — user id, roles</div></div>
+  </div>
+
+  <h2>What a JWT looks like</h2>
+  <div class="code"><span class="cm"># A JWT has 3 parts, separated by dots:</span>
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9    <span class="cm"># HEADER (base64)</span>
+.
+eyJzdWIiOiJ1c2VyXzEyMyIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA1MDAwMDAwfQ==  <span class="cm"># PAYLOAD</span>
+.
+SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c  <span class="cm"># SIGNATURE</span>
+
+<span class="cm"># Decoded payload contains:</span>
+{
+  <span class="st">"sub"</span>: <span class="st">"user_123"</span>,        <span class="cm"># subject = user id</span>
+  <span class="st">"role"</span>: <span class="st">"user"</span>,           <span class="cm"># custom claim</span>
+  <span class="st">"exp"</span>: <span class="nm">1705000000</span>,       <span class="cm"># expires at (unix timestamp)</span>
+  <span class="st">"iat"</span>: <span class="nm">1704913600</span>        <span class="cm"># issued at</span>
+}</div>
+
+  <h2>Create and verify tokens in FastAPI</h2>
+  <div class="code"><span class="cm"># pip install python-jose[cryptography]</span>
+<span class="kw">import</span> os
+<span class="kw">from</span> jose <span class="kw">import</span> JWTError, jwt
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime, timedelta
+<span class="kw">from</span> fastapi <span class="kw">import</span> Depends, HTTPException
+<span class="kw">from</span> fastapi.security <span class="kw">import</span> OAuth2PasswordBearer
+
+SECRET_KEY = os.<span class="fn">getenv</span>(<span class="st">"JWT_SECRET"</span>)
+ALGORITHM = <span class="st">"HS256"</span>
+
+<span class="cm"># ─── Create token (on login) ───</span>
+<span class="kw">def</span> <span class="fn">create_access_token</span>(user_id: str, role: str = <span class="st">"user"</span>):
+    payload = {
+        <span class="st">"sub"</span>: user_id,
+        <span class="st">"role"</span>: role,
+        <span class="st">"exp"</span>: datetime.<span class="fn">utcnow</span>() + timedelta(hours=<span class="nm">1</span>),   <span class="cm"># expires in 1hr</span>
+        <span class="st">"iat"</span>: datetime.<span class="fn">utcnow</span>()
+    }
+    <span class="kw">return</span> jwt.<span class="fn">encode</span>(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+<span class="cm"># ─── Verify token (on every protected request) ───</span>
+oauth2_scheme = <span class="fn">OAuth2PasswordBearer</span>(tokenUrl=<span class="st">"token"</span>)
+
+<span class="kw">async def</span> <span class="fn">get_current_user</span>(token: str = <span class="fn">Depends</span>(oauth2_scheme)):
+    <span class="kw">try</span>:
+        payload = jwt.<span class="fn">decode</span>(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.<span class="fn">get</span>(<span class="st">"sub"</span>)
+        role    = payload.<span class="fn">get</span>(<span class="st">"role"</span>)
+        <span class="kw">if not</span> user_id:
+            <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">401</span>)
+        <span class="kw">return</span> {<span class="st">"user_id"</span>: user_id, <span class="st">"role"</span>: role}
+    <span class="kw">except</span> JWTError:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">401</span>, detail=<span class="st">"Invalid or expired token"</span>)
+
+<span class="cm"># ─── Protect a route ───</span>
+<span class="kw">@</span>app.<span class="fn">get</span>(<span class="st">"/api/me"</span>)
+<span class="kw">async def</span> <span class="fn">get_profile</span>(user = <span class="fn">Depends</span>(get_current_user)):
+    <span class="kw">return</span> {<span class="st">"user_id"</span>: user[<span class="st">"user_id"</span>]}
+
+<span class="cm"># ─── Role-based access ───</span>
+<span class="kw">def</span> <span class="fn">require_admin</span>(user = <span class="fn">Depends</span>(get_current_user)):
+    <span class="kw">if</span> user[<span class="st">"role"</span>] != <span class="st">"admin"</span>:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">403</span>, detail=<span class="st">"Admin only"</span>)
+    <span class="kw">return</span> user
+
+<span class="kw">@</span>app.<span class="fn">delete</span>(<span class="st">"/api/admin/users/{id}"</span>)
+<span class="kw">async def</span> <span class="fn">delete_user</span>(id: str, admin = <span class="fn">Depends</span>(require_admin)):
+    <span class="kw">pass</span></div>
+
+  <h2>Access tokens vs Refresh tokens</h2>
+  <div class="g2">
+    <div class="card blue">
+      <div class="ct">Access Token (short-lived)</div>
+      <div class="cb">Expires in 15 minutes to 1 hour. Sent with every API request. If stolen, attacker has it only briefly. This is what <code>Authorization: Bearer ...</code> contains.</div>
+    </div>
+    <div class="card green">
+      <div class="ct">Refresh Token (long-lived)</div>
+      <div class="cb">Expires in 7–30 days. Stored in HttpOnly cookie (can't be read by JavaScript). Used only to get a new access token. More secure storage, longer lifetime justified.</div>
+    </div>
+  </div>
+
+  <div class="callout cblue">
+    <strong>JWT is stateless — great for scaling, risky for revocation.</strong> Once issued, you can't "cancel" a JWT unless you maintain a blacklist. This is why short expiry times (15–60 minutes) are important. If you need instant revocation, add a token ID to a Redis blacklist and check it on every request.
+  </div>
+</section>
+
+<!-- ═══════════ OAUTH ═══════════ -->
+<section id="sec-oauth" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(165,94,234,.12);color:var(--purple)">Module 5 · Authentication</div>
+    <h1 class="htitle">OAuth2 & Azure AD</h1>
+    <p class="hsub">OAuth2 is the standard protocol for "login with Google/Microsoft/GitHub." Azure AD (now Entra ID) is Microsoft's identity platform. For internal tools — especially in an organization — this means only your team members can log in, without you managing passwords.</p>
+  </div>
+
+  <h2>OAuth2 flow — how it works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="sline"><div class="sdot" style="background:rgba(165,94,234,.2);color:var(--purple)">1</div><div class="svline"></div></div>
+      <div class="scontent"><div class="stitle">User clicks "Login with Microsoft"</div><div class="sbody">Your app redirects to Azure AD login: <code>https://login.microsoftonline.com/tenant-id/oauth2/v2.0/authorize</code></div></div>
+    </div>
+    <div class="step">
+      <div class="sline"><div class="sdot" style="background:rgba(165,94,234,.2);color:var(--purple)">2</div><div class="svline"></div></div>
+      <div class="scontent"><div class="stitle">User authenticates with Microsoft</div><div class="sbody">Azure AD verifies credentials (including MFA if configured). Your app never sees the password.</div></div>
+    </div>
+    <div class="step">
+      <div class="sline"><div class="sdot" style="background:rgba(165,94,234,.2);color:var(--purple)">3</div><div class="svline"></div></div>
+      <div class="scontent"><div class="stitle">Azure AD redirects back with an authorization code</div><div class="sbody">A short-lived one-time code is sent to your callback URL: <code>https://yourapp.com/auth/callback?code=xxx</code></div></div>
+    </div>
+    <div class="step">
+      <div class="sline"><div class="sdot" style="background:rgba(165,94,234,.2);color:var(--purple)">4</div><div class="svline"></div></div>
+      <div class="scontent"><div class="stitle">Your backend exchanges code for tokens</div><div class="sbody">Server-side call to Azure AD: swap the code for an access token + refresh token. Only your backend holds the secret key needed for this exchange.</div></div>
+    </div>
+    <div class="step">
+      <div class="sline"><div class="sdot" style="background:rgba(165,94,234,.2);color:var(--purple)">5</div></div>
+      <div class="scontent"><div class="stitle">Use tokens to call your API</div><div class="sbody">Issue your own JWT to the user. Every subsequent API call carries this JWT. Your FastAPI verifies it.</div></div>
+    </div>
+  </div>
+
+  <h2>FastAPI with Azure AD — implementation</h2>
+  <div class="code"><span class="cm"># pip install msal fastapi</span>
+<span class="kw">import</span> msal
+
+TENANT_ID    = os.<span class="fn">getenv</span>(<span class="st">"AZURE_TENANT_ID"</span>)
+CLIENT_ID    = os.<span class="fn">getenv</span>(<span class="st">"AZURE_CLIENT_ID"</span>)
+CLIENT_SECRET = os.<span class="fn">getenv</span>(<span class="st">"AZURE_CLIENT_SECRET"</span>)
+REDIRECT_URI = <span class="st">"https://yourapp.com/auth/callback"</span>
+
+<span class="kw">@</span>app.<span class="fn">get</span>(<span class="st">"/auth/login"</span>)
+<span class="kw">async def</span> <span class="fn">login</span>():
+    <span class="cm"># Build the Azure AD login URL</span>
+    authority = <span class="fn">f</span><span class="st">"https://login.microsoftonline.com/{TENANT_ID}"</span>
+    msal_app = msal.<span class="fn">ConfidentialClientApplication</span>(CLIENT_ID, CLIENT_SECRET, authority)
+    auth_url = msal_app.<span class="fn">get_authorization_request_url</span>(
+        scopes=[<span class="st">"User.Read"</span>],
+        redirect_uri=REDIRECT_URI
+    )
+    <span class="kw">return</span> {<span class="st">"login_url"</span>: auth_url}  <span class="cm"># redirect user here</span>
+
+<span class="kw">@</span>app.<span class="fn">get</span>(<span class="st">"/auth/callback"</span>)
+<span class="kw">async def</span> <span class="fn">callback</span>(code: str):
+    msal_app = msal.<span class="fn">ConfidentialClientApplication</span>(CLIENT_ID, CLIENT_SECRET, authority)
+    result = msal_app.<span class="fn">acquire_token_by_authorization_code</span>(
+        code=code, scopes=[<span class="st">"User.Read"</span>], redirect_uri=REDIRECT_URI
+    )
+    <span class="kw">if</span> <span class="st">"error"</span> <span class="kw">in</span> result:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">401</span>)
+    
+    <span class="cm"># result["id_token_claims"] has user info: name, email, groups</span>
+    user_email = result[<span class="st">"id_token_claims"</span>][<span class="st">"preferred_username"</span>]
+    
+    <span class="cm"># Issue your own JWT for subsequent API calls</span>
+    token = <span class="fn">create_access_token</span>(user_id=user_email, role=<span class="st">"user"</span>)
+    <span class="kw">return</span> {<span class="st">"access_token"</span>: token}</div>
+
+  <div class="callout cpurple">
+    <strong>When to use Azure AD:</strong> If you're building internal tools for your team (admin dashboards, internal chatbots, team productivity tools), Azure AD means your team members log in with their Microsoft accounts — no password management for you, and MFA is handled by your organization.
+  </div>
+</section>
+
+<!-- ═══════════ CORS ═══════════ -->
+<section id="sec-cors" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(255,159,67,.12);color:var(--orange)">Module 6 · Protection layers</div>
+    <h1 class="htitle">CORS — Cross-Origin Resource Sharing</h1>
+    <p class="hsub">Your browser enforces a rule: JavaScript on <code>evil.com</code> cannot call your API on <code>yourapp.com</code>. CORS is the mechanism that controls which origins (domains) are permitted to call your API. Get it wrong in either direction and things break.</p>
+  </div>
+
+  <h2>What is an "origin"?</h2>
+  <div class="code"><span class="cm"># Origin = protocol + domain + port</span>
+https://yourapp.com:443    <span class="cm"># origin 1</span>
+http://yourapp.com:80      <span class="cm"># DIFFERENT origin (different protocol)</span>
+https://api.yourapp.com    <span class="cm"># DIFFERENT origin (different subdomain)</span>
+https://yourapp.com:3000   <span class="cm"># DIFFERENT origin (different port)</span>
+
+<span class="cm"># When your JS on yourapp.com calls api.yourapp.com — that's cross-origin</span>
+<span class="cm"># Browser blocks it UNLESS api.yourapp.com allows it in CORS headers</span></div>
+
+  <h2>FastAPI CORS configuration</h2>
+  <div class="code"><span class="kw">from</span> fastapi.middleware.cors <span class="kw">import</span> CORSMiddleware
+
+app.<span class="fn">add_middleware</span>(
+    CORSMiddleware,
+
+    <span class="cm"># ✅ PRODUCTION: Only your actual frontend domain</span>
+    allow_origins=[
+        <span class="st">"https://yourapp.com"</span>,
+        <span class="st">"https://www.yourapp.com"</span>,
+        <span class="st">"https://admin.yourapp.com"</span>,
+    ],
+
+    <span class="cm"># ❌ NEVER in production — allows ANY website to call your API</span>
+    <span class="cm"># allow_origins=["*"],</span>
+
+    allow_credentials=<span class="kw">True</span>,     <span class="cm"># allow cookies</span>
+    allow_methods=[<span class="st">"GET"</span>, <span class="st">"POST"</span>, <span class="st">"PUT"</span>, <span class="st">"DELETE"</span>],
+    allow_headers=[<span class="st">"*"</span>],         <span class="cm"># or list specific headers</span>
+)</div>
+
+  <div class="callout corange">
+    <strong>CORS is a browser security feature — it does NOT protect server-to-server calls.</strong> If an attacker writes a Python script (not a browser) to call your API, CORS won't stop them. CORS only affects browser-based requests. For real security, you still need API key auth.
+  </div>
+
+  <div class="g2">
+    <div class="card red">
+      <div class="ct">The mistake everyone makes</div>
+      <div class="cb">Setting <code>allow_origins=["*"]</code> for development, then deploying to production and forgetting to change it. Now any website can call your API using a logged-in user's credentials.</div>
+    </div>
+    <div class="card green">
+      <div class="ct">Environment-aware CORS</div>
+      <div class="cb">Use environment variables: <code>ALLOWED_ORIGINS=https://yourapp.com</code> in production. <code>ALLOWED_ORIGINS=http://localhost:3000</code> in development. Never wildcard in production.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ RATE LIMITING ═══════════ -->
+<section id="sec-ratelimit" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(43,203,186,.12);color:var(--teal)">Module 7 · Protection layers</div>
+    <h1 class="htitle">Rate Limiting</h1>
+    <p class="hsub">Rate limiting prevents any single client from overwhelming your API. Without it, one bot can send 10,000 requests per second and crash your server. With it, excessive callers are slowed down or blocked while legitimate users continue normally.</p>
+  </div>
+
+  <h2>Rate limiting in Nginx (fastest — before FastAPI)</h2>
+  <div class="code"><span class="cm"># nginx.conf — add to http block</span>
+http {
+    <span class="cm"># Define rate zones</span>
+    limit_req_zone $binary_remote_addr zone=general:10m rate=<span class="nm">10</span>r/s;
+    limit_req_zone $binary_remote_addr zone=login:10m    rate=<span class="nm">3</span>r/m;
+    limit_req_zone $binary_remote_addr zone=api:10m      rate=<span class="nm">30</span>r/m;
+    
+    server {
+        <span class="cm"># Apply to all routes (general protection)</span>
+        location / {
+            limit_req zone=general burst=<span class="nm">20</span> nodelay;
+            limit_req_status <span class="nm">429</span>;
+        }
+        
+        <span class="cm"># Stricter on login (anti brute-force)</span>
+        location /api/auth/login {
+            limit_req zone=login burst=<span class="nm">5</span> nodelay;
+            proxy_pass http://localhost:<span class="nm">8000</span>;
+        }
+        
+        <span class="cm"># Voice/AI endpoints (expensive operations)</span>
+        location /api/call {
+            limit_req zone=api burst=<span class="nm">10</span> nodelay;
+            proxy_pass http://localhost:<span class="nm">8001</span>;
+        }
+    }
+}</div>
+
+  <h2>Rate limiting in FastAPI with slowapi</h2>
+  <div class="code"><span class="cm"># pip install slowapi</span>
+<span class="kw">from</span> slowapi <span class="kw">import</span> Limiter, _rate_limit_exceeded_handler
+<span class="kw">from</span> slowapi.util <span class="kw">import</span> get_remote_address
+<span class="kw">from</span> slowapi.errors <span class="kw">import</span> RateLimitExceeded
+<span class="kw">from</span> fastapi <span class="kw">import</span> Request
+
+limiter = <span class="fn">Limiter</span>(key_func=get_remote_address)
+app.state.limiter = limiter
+app.<span class="fn">add_exception_handler</span>(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+<span class="cm"># Apply per-route rate limits</span>
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/api/chat"</span>)
+<span class="kw">@</span>limiter.<span class="fn">limit</span>(<span class="st">"20/minute"</span>)        <span class="cm"># 20 requests per minute per IP</span>
+<span class="kw">async def</span> <span class="fn">chat</span>(request: Request, body: dict):
+    <span class="kw">return</span> {<span class="st">"reply"</span>: <span class="st">"..."</span>}
+
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/api/auth/login"</span>)
+<span class="kw">@</span>limiter.<span class="fn">limit</span>(<span class="st">"5/minute"</span>)         <span class="cm"># strict login limit</span>
+<span class="kw">async def</span> <span class="fn">login</span>(request: Request):
+    <span class="kw">pass</span>
+
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/api/call/start"</span>)
+<span class="kw">@</span>limiter.<span class="fn">limit</span>(<span class="st">"3/minute"</span>)          <span class="cm"># expensive voice call — very strict</span>
+<span class="kw">async def</span> <span class="fn">start_call</span>(request: Request):
+    <span class="kw">pass</span></div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Endpoint type</th><th>Recommended limit</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>Login / auth</td><td>5 per minute per IP</td><td>Prevent brute force attacks</td></tr>
+        <tr><td>Chat / AI responses</td><td>20 per minute per user</td><td>Prevent LLM cost abuse</td></tr>
+        <tr><td>Voice call start</td><td>3 per minute per user</td><td>Very expensive — protect resources</td></tr>
+        <tr><td>General GET APIs</td><td>60 per minute per IP</td><td>Normal usage pattern</td></tr>
+        <tr><td>File upload</td><td>10 per hour per user</td><td>Storage cost control</td></tr>
+        <tr><td>Webhook handlers</td><td>100 per minute per IP</td><td>Must accept bursts from Stripe/LiveKit</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════ HEADERS ═══════════ -->
+<section id="sec-headers" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(255,211,42,.12);color:var(--yellow)">Module 8 · Protection layers</div>
+    <h1 class="htitle">Security Headers</h1>
+    <p class="hsub">HTTP response headers that tell browsers how to behave with your content. They protect against XSS attacks, clickjacking, MIME sniffing, and force HTTPS. Free protection — just config.</p>
+  </div>
+
+  <h2>Essential security headers</h2>
+  <div class="code"><span class="cm"># nginx — add to server block</span>
+server {
+    <span class="cm"># Force HTTPS — browser never uses HTTP again for this domain</span>
+    add_header Strict-Transport-Security <span class="st">"max-age=31536000; includeSubDomains"</span> always;
+    
+    <span class="cm"># Prevent clickjacking — your page can't be loaded in an iframe on another domain</span>
+    add_header X-Frame-Options <span class="st">"SAMEORIGIN"</span> always;
+    
+    <span class="cm"># Prevent MIME sniffing — browser uses declared content type, not guessing</span>
+    add_header X-Content-Type-Options <span class="st">"nosniff"</span> always;
+    
+    <span class="cm"># Controls what browser features your page can use</span>
+    add_header Permissions-Policy <span class="st">"microphone=(), camera=(), geolocation=()"</span> always;
+    
+    <span class="cm"># Content Security Policy — whitelist what can run on your page</span>
+    add_header Content-Security-Policy
+        <span class="st">"default-src 'self'; script-src 'self'; style-src 'self' fonts.googleapis.com"</span> always;
+    
+    <span class="cm"># Don't leak referrer info to external sites</span>
+    add_header Referrer-Policy <span class="st">"strict-origin-when-cross-origin"</span> always;
+}</div>
+
+  <div class="code"><span class="cm"># FastAPI — add headers via middleware</span>
+<span class="kw">from</span> fastapi <span class="kw">import</span> Request
+<span class="kw">from</span> starlette.middleware.base <span class="kw">import</span> BaseHTTPMiddleware
+
+<span class="kw">class</span> <span class="cl">SecurityHeadersMiddleware</span>(BaseHTTPMiddleware):
+    <span class="kw">async def</span> <span class="fn">dispatch</span>(self, request: Request, call_next):
+        response = <span class="kw">await</span> <span class="fn">call_next</span>(request)
+        response.headers[<span class="st">"X-Content-Type-Options"</span>] = <span class="st">"nosniff"</span>
+        response.headers[<span class="st">"X-Frame-Options"</span>] = <span class="st">"SAMEORIGIN"</span>
+        response.headers[<span class="st">"X-XSS-Protection"</span>] = <span class="st">"1; mode=block"</span>
+        <span class="cm"># Remove version info — don't tell attackers what you're running</span>
+        response.headers.<span class="fn">delete</span>(<span class="st">"server"</span>)
+        response.headers.<span class="fn">delete</span>(<span class="st">"x-powered-by"</span>)
+        <span class="kw">return</span> response
+
+app.<span class="fn">add_middleware</span>(SecurityHeadersMiddleware)</div>
+</section>
+
+<!-- ═══════════ S2S ═══════════ -->
+<section id="sec-s2s" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(247,92,92,.12);color:var(--red)">Module 9 · Service security</div>
+    <h1 class="htitle">Service-to-Service Authentication</h1>
+    <p class="hsub">You have multiple services: voice agent, chatbot, webhooks, main API. They call each other. The goal: only YOUR services can call YOUR internal endpoints. No stranger can use your internal APIs even if they somehow discover the URL.</p>
+  </div>
+
+  <h2>The problem visualized</h2>
+  <div class="flow">
+    <div class="fbox" style="background:rgba(38,222,129,.1);border-color:rgba(38,222,129,.3);color:var(--green)">LiveKit Agent<br><span style="font-size:9px;font-weight:400">Your service ✓</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(77,138,240,.1);border-color:rgba(77,138,240,.3);color:var(--blue)">POST /internal/transcribe<br><span style="font-size:9px;font-weight:400">Internal API</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(38,222,129,.1);border-color:rgba(38,222,129,.3);color:var(--green)">✓ Allowed<br><span style="font-size:9px;font-weight:400">has secret</span></div>
+  </div>
+  <div class="flow" style="margin-top:4px">
+    <div class="fbox" style="background:rgba(247,92,92,.1);border-color:rgba(247,92,92,.3);color:var(--red)">Random attacker<br><span style="font-size:9px;font-weight:400">Unknown caller</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(77,138,240,.1);border-color:rgba(77,138,240,.3);color:var(--blue)">POST /internal/transcribe<br><span style="font-size:9px;font-weight:400">Same URL</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(247,92,92,.1);border-color:rgba(247,92,92,.3);color:var(--red)">✗ 403 Forbidden<br><span style="font-size:9px;font-weight:400">no secret</span></div>
+  </div>
+
+  <h2>Implementation — caller side</h2>
+  <div class="code"><span class="cm"># Service making a call to another internal service</span>
+<span class="kw">import</span> httpx, os
+
+INTERNAL_SECRET = os.<span class="fn">getenv</span>(<span class="st">"INTERNAL_SERVICE_SECRET"</span>)
+SERVICE_NAME    = os.<span class="fn">getenv</span>(<span class="st">"SERVICE_NAME"</span>)  <span class="cm"># e.g. "livekit-agent"</span>
+
+<span class="kw">async def</span> <span class="fn">call_internal_api</span>(endpoint: str, payload: dict):
+    <span class="kw">async with</span> httpx.<span class="fn">AsyncClient</span>() <span class="kw">as</span> client:
+        response = <span class="kw">await</span> client.<span class="fn">post</span>(
+            <span class="fn">f</span><span class="st">"http://localhost:8000{endpoint}"</span>,
+            json=payload,
+            headers={
+                <span class="st">"X-Internal-Secret"</span>: INTERNAL_SECRET,
+                <span class="st">"X-Service-Name"</span>:    SERVICE_NAME,
+            },
+            timeout=<span class="nm">30.0</span>
+        )
+        response.<span class="fn">raise_for_status</span>()
+        <span class="kw">return</span> response.<span class="fn">json</span>()</div>
+
+  <h2>Implementation — receiver side</h2>
+  <div class="code"><span class="cm"># Service receiving an internal call</span>
+<span class="kw">import</span> secrets, os
+<span class="kw">from</span> fastapi <span class="kw">import</span> Header, HTTPException, Depends
+
+INTERNAL_SECRET = os.<span class="fn">getenv</span>(<span class="st">"INTERNAL_SERVICE_SECRET"</span>)
+ALLOWED_SERVICES = {<span class="st">"livekit-agent"</span>, <span class="st">"chatbot-service"</span>, <span class="st">"webhook-handler"</span>}
+
+<span class="kw">async def</span> <span class="fn">verify_internal_call</span>(
+    x_internal_secret: str = <span class="fn">Header</span>(...),
+    x_service_name:    str = <span class="fn">Header</span>(...)
+):
+    <span class="cm"># Check 1: is the calling service known?</span>
+    <span class="kw">if</span> x_service_name <span class="kw">not in</span> ALLOWED_SERVICES:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">403</span>, detail=<span class="st">"Unknown service"</span>)
+    
+    <span class="cm"># Check 2: is the secret correct? (constant-time comparison)</span>
+    <span class="kw">if not</span> secrets.<span class="fn">compare_digest</span>(x_internal_secret, INTERNAL_SECRET):
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">403</span>, detail=<span class="st">"Invalid secret"</span>)
+    
+    <span class="kw">return</span> x_service_name
+
+<span class="cm"># Internal endpoint — should ALSO be blocked by nginx</span>
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/internal/transcribe"</span>)
+<span class="kw">async def</span> <span class="fn">transcribe</span>(
+    body: dict,
+    calling_service: str = <span class="fn">Depends</span>(verify_internal_call)
+):
+    <span class="kw">return</span> {<span class="st">"transcript"</span>: <span class="st">"..."</span>}</div>
+</section>
+
+<!-- ═══════════ WEBHOOK ═══════════ -->
+<section id="sec-webhook" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(255,159,67,.12);color:var(--orange)">Module 10 · Service security</div>
+    <h1 class="htitle">Webhook Security</h1>
+    <p class="hsub">Webhooks are HTTP callbacks from external platforms (LiveKit, Stripe, Twilio) to your server. The challenge: how do you know the request really came from LiveKit and not an attacker pretending to be LiveKit? Signature verification is the answer.</p>
+  </div>
+
+  <h2>How HMAC signature verification works</h2>
+  <div class="flow">
+    <div class="fbox" style="background:rgba(38,222,129,.1);border-color:rgba(38,222,129,.3);color:var(--green)">LiveKit server<br><span style="font-size:9px;font-weight:400">sends event</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(255,159,67,.1);border-color:rgba(255,159,67,.3);color:var(--orange)">Signs payload<br><span style="font-size:9px;font-weight:400">with your secret</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(77,138,240,.1);border-color:rgba(77,138,240,.3);color:var(--blue)">Your endpoint<br><span style="font-size:9px;font-weight:400">receives request</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(165,94,234,.1);border-color:rgba(165,94,234,.3);color:var(--purple)">Re-compute signature<br><span style="font-size:9px;font-weight:400">from body + secret</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(38,222,129,.1);border-color:rgba(38,222,129,.3);color:var(--green)">✓ Match = authentic<br><span style="font-size:9px;font-weight:400">process event</span></div>
+  </div>
+
+  <h2>Generic HMAC webhook verification</h2>
+  <div class="code"><span class="kw">import</span> hmac, hashlib, secrets, os
+<span class="kw">from</span> fastapi <span class="kw">import</span> Request, Header, HTTPException
+
+<span class="kw">async def</span> <span class="fn">verify_webhook_signature</span>(
+    request: Request,
+    x_signature_256: str = <span class="fn">Header</span>(...)
+):
+    <span class="cm"># IMPORTANT: read the raw body bytes BEFORE parsing JSON</span>
+    body_bytes = <span class="kw">await</span> request.<span class="fn">body</span>()
+    
+    secret = os.<span class="fn">getenv</span>(<span class="st">"WEBHOOK_SECRET"</span>).<span class="fn">encode</span>()
+    
+    <span class="cm"># Re-compute the expected signature</span>
+    expected_sig = hmac.<span class="fn">new</span>(
+        secret,
+        body_bytes,
+        hashlib.sha256
+    ).<span class="fn">hexdigest</span>()
+    
+    <span class="cm"># Compare (constant-time to prevent timing attacks)</span>
+    <span class="kw">if not</span> secrets.<span class="fn">compare_digest</span>(<span class="fn">f</span><span class="st">"sha256={expected_sig}"</span>, x_signature_256):
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">403</span>, detail=<span class="st">"Invalid webhook signature"</span>)
+    
+    <span class="kw">return</span> body_bytes
+
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/webhook/livekit"</span>)
+<span class="kw">async def</span> <span class="fn">livekit_webhook</span>(body: bytes = <span class="fn">Depends</span>(verify_webhook_signature)):
+    event = json.<span class="fn">loads</span>(body)
+    <span class="kw">if</span> event[<span class="st">"event"</span>] == <span class="st">"room_started"</span>:
+        <span class="kw">pass</span>  <span class="cm"># handle room event</span>
+    <span class="kw">if</span> event[<span class="st">"event"</span>] == <span class="st">"participant_joined"</span>:
+        <span class="kw">pass</span>  <span class="cm"># handle participant</span></div>
+
+  <h2>Platform-specific webhook verification</h2>
+  <div class="g2">
+    <div class="card orange">
+      <div class="ct">LiveKit webhook</div>
+      <div class="cb">
+        <code>LIVEKIT_API_SECRET</code> is your signing secret.<br>
+        Header sent: <code>Authorization: Bearer {token}</code><br>
+        Use the LiveKit Python SDK's <code>webhook_receiver.receive()</code> method — it handles verification automatically.
+      </div>
+    </div>
+    <div class="card green">
+      <div class="ct">Stripe webhook</div>
+      <div class="cb">
+        From Stripe Dashboard → Webhooks → Signing secret.<br>
+        Header: <code>Stripe-Signature</code><br>
+        Use: <code>stripe.WebhookSignature.verify_header(payload, sig, secret)</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout corange">
+    <strong>Critical: always verify raw bytes, not parsed JSON.</strong> Parse the body as bytes first, verify the signature, THEN parse JSON. If you parse JSON first and re-serialize it, the signature will fail because whitespace or key ordering may differ.
+  </div>
+</section>
+
+<!-- ═══════════ WEBSOCKET ═══════════ -->
+<section id="sec-ws" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(77,138,240,.12);color:var(--blue)">Module 11 · Service security</div>
+    <h1 class="htitle">WebSocket Security</h1>
+    <p class="hsub">WebSockets are persistent, bidirectional connections. Unlike HTTP, you can't add auth headers after the initial handshake. Authentication must happen at connection time — typically via a token in the query parameter or during the HTTP upgrade request.</p>
+  </div>
+
+  <h2>The WebSocket authentication flow</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="sline"><div class="sdot" style="background:rgba(77,138,240,.2);color:var(--blue)">1</div><div class="svline"></div></div>
+      <div class="scontent"><div class="stitle">Client gets a short-lived WS token first</div><div class="sbody">Client calls <code>POST /api/ws-token</code> with their existing JWT. Server returns a short-lived WebSocket-specific token (15-minute expiry).</div></div>
+    </div>
+    <div class="step">
+      <div class="sline"><div class="sdot" style="background:rgba(77,138,240,.2);color:var(--blue)">2</div><div class="svline"></div></div>
+      <div class="scontent"><div class="stitle">Client connects with token in URL</div><div class="sbody"><code>wss://yourapp.com/ws/agent?token=eyJhbGci...</code> — token is in the query string, verified before accepting the connection.</div></div>
+    </div>
+    <div class="step">
+      <div class="sline"><div class="sdot" style="background:rgba(77,138,240,.2);color:var(--blue)">3</div></div>
+      <div class="scontent"><div class="stitle">Server validates token before accepting</div><div class="sbody">If the token is invalid or expired, server closes with code <code>1008 (Policy Violation)</code>. Connection is never established.</div></div>
+    </div>
+  </div>
+
+  <h2>FastAPI WebSocket implementation</h2>
+  <div class="code"><span class="kw">from</span> fastapi <span class="kw">import</span> WebSocket, WebSocketDisconnect
+
+<span class="cm"># Step 1: issue a short-lived WS token (HTTP endpoint)</span>
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/api/ws-token"</span>)
+<span class="kw">async def</span> <span class="fn">get_ws_token</span>(user = <span class="fn">Depends</span>(get_current_user)):
+    ws_token = <span class="fn">create_access_token</span>(
+        user_id=user[<span class="st">"user_id"</span>],
+        expires_delta=timedelta(minutes=<span class="nm">15</span>)  <span class="cm"># short-lived</span>
+    )
+    <span class="kw">return</span> {<span class="st">"ws_token"</span>: ws_token}
+
+<span class="cm"># Step 2: WebSocket endpoint that validates token first</span>
+<span class="kw">@</span>app.<span class="fn">websocket</span>(<span class="st">"/ws/agent"</span>)
+<span class="kw">async def</span> <span class="fn">websocket_agent</span>(websocket: WebSocket, token: str):
+    <span class="cm"># Verify token BEFORE accepting the connection</span>
+    <span class="kw">try</span>:
+        user = <span class="fn">verify_token</span>(token)
+    <span class="kw">except</span>:
+        <span class="kw">await</span> websocket.<span class="fn">close</span>(code=<span class="nm">1008</span>)  <span class="cm"># Policy Violation</span>
+        <span class="kw">return</span>
+    
+    <span class="kw">await</span> websocket.<span class="fn">accept</span>()  <span class="cm"># Only accept AFTER auth passes</span>
+    
+    <span class="kw">try</span>:
+        <span class="kw">while</span> <span class="kw">True</span>:
+            data = <span class="kw">await</span> websocket.<span class="fn">receive_text</span>()
+            <span class="cm"># Process message from authenticated user</span>
+            <span class="kw">await</span> websocket.<span class="fn">send_text</span>(<span class="fn">f</span><span class="st">"Echo: {data}"</span>)
+    <span class="kw">except</span> WebSocketDisconnect:
+        <span class="kw">pass</span>  <span class="cm"># Client disconnected normally</span></div>
+
+  <div class="code"><span class="cm">// Frontend — get token first, then connect</span>
+<span class="kw">async function</span> <span class="fn">connectWebSocket</span>() {
+  <span class="cm">// Get short-lived WS token</span>
+  <span class="kw">const</span> { ws_token } = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">'/api/ws-token'</span>, {
+    method: <span class="st">'POST'</span>,
+    headers: { <span class="st">'Authorization'</span>: <span class="fn">`Bearer ${userJwt}`</span> }
+  }).<span class="fn">then</span>(r => r.<span class="fn">json</span>());
+
+  <span class="cm">// Connect with token</span>
+  <span class="kw">const</span> ws = <span class="kw">new</span> <span class="fn">WebSocket</span>(<span class="fn">`wss://yourapp.com/ws/agent?token=${ws_token}`</span>);
+  ws.onopen = () => console.<span class="fn">log</span>(<span class="st">'Connected'</span>);
+  ws.onmessage = (e) => console.<span class="fn">log</span>(<span class="st">'Received:'</span>, e.data);
+}</div>
+</section>
+
+<!-- ═══════════ WEBRTC ═══════════ -->
+<section id="sec-webrtc" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(165,94,234,.12);color:var(--purple)">Module 12 · Service security</div>
+    <h1 class="htitle">WebRTC Security</h1>
+    <p class="hsub">WebRTC establishes peer-to-peer connections for real-time audio/video. The connection itself is encrypted (DTLS-SRTP mandatory). Security is controlled through the signaling layer — particularly by gatekeeping ICE/TURN credentials.</p>
+  </div>
+
+  <h2>How WebRTC security works</h2>
+  <div class="flow">
+    <div class="fbox" style="background:rgba(77,138,240,.1);border-color:rgba(77,138,240,.3);color:var(--blue)">Client requests<br>ICE credentials<br><span style="font-size:9px;font-weight:400">authenticated HTTP call</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(165,94,234,.1);border-color:rgba(165,94,234,.3);color:var(--purple)">Server verifies<br>caller identity<br><span style="font-size:9px;font-weight:400">JWT / API key check</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(38,222,129,.1);border-color:rgba(38,222,129,.3);color:var(--green)">Returns short-lived<br>TURN credentials<br><span style="font-size:9px;font-weight:400">expire in 1 hour</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(43,203,186,.1);border-color:rgba(43,203,186,.3);color:var(--teal)">WebRTC connection<br>established (DTLS)<br><span style="font-size:9px;font-weight:400">encrypted by default</span></div>
+  </div>
+
+  <h2>LiveKit-specific security (your voice agent)</h2>
+  <div class="code"><span class="cm"># pip install livekit</span>
+<span class="kw">from</span> livekit <span class="kw">import</span> api
+<span class="kw">import</span> os
+
+LIVEKIT_API_KEY    = os.<span class="fn">getenv</span>(<span class="st">"LIVEKIT_API_KEY"</span>)
+LIVEKIT_API_SECRET = os.<span class="fn">getenv</span>(<span class="st">"LIVEKIT_API_SECRET"</span>)
+
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/api/call/token"</span>)
+<span class="kw">async def</span> <span class="fn">get_livekit_token</span>(
+    room_name: str,
+    user = <span class="fn">Depends</span>(get_current_user)   <span class="cm"># user must be authenticated</span>
+):
+    <span class="cm"># Create a room token — participant can only access this specific room</span>
+    token = api.AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET)
+    token.<span class="fn">with_identity</span>(user[<span class="st">"user_id"</span>])
+    token.<span class="fn">with_name</span>(user[<span class="st">"user_id"</span>])
+    token.<span class="fn">with_grants</span>(api.VideoGrants(
+        room_join=<span class="kw">True</span>,
+        room=room_name,
+        can_publish=<span class="kw">True</span>,   <span class="cm"># can send audio/video</span>
+        can_subscribe=<span class="kw">True</span>,  <span class="cm"># can receive audio/video</span>
+    ))
+    
+    <span class="cm"># Token expires in 1 hour — must reconnect after expiry</span>
+    livekit_token = token.<span class="fn">to_jwt</span>()
+    <span class="kw">return</span> {<span class="st">"token"</span>: livekit_token, <span class="st">"room"</span>: room_name}</div>
+
+  <div class="callout cpurple">
+    <strong>Never expose your LiveKit API key/secret in frontend code.</strong> The secret stays on your server. The frontend calls your endpoint which returns a scoped, short-lived token. The token can only access the specific room for 1 hour. Even if stolen, the damage is limited.
+  </div>
+</section>
+
+<!-- ═══════════ NGINX ═══════════ -->
+<section id="sec-nginx" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(43,203,186,.12);color:var(--teal)">Module 13 · Infrastructure</div>
+    <h1 class="htitle">Nginx Security Hardening</h1>
+    <p class="hsub">Nginx is your first line of defense — it intercepts all traffic before it reaches FastAPI. Proper Nginx configuration blocks attacks at the network level, which is faster and more reliable than application-level blocking.</p>
+  </div>
+
+  <h2>Complete secure Nginx config</h2>
+  <div class="code"><span class="cm"># /etc/nginx/sites-available/yourapp.conf</span>
+server {
+    listen <span class="nm">80</span>;
+    server_name yourapp.com;
+    <span class="cm"># Redirect all HTTP to HTTPS</span>
+    <span class="kw">return</span> <span class="nm">301</span> https://$host$request_uri;
+}
+
+server {
+    listen <span class="nm">443</span> ssl http2;
+    server_name yourapp.com;
+    
+    <span class="cm"># SSL certificates (Let's Encrypt with Certbot)</span>
+    ssl_certificate     /etc/letsencrypt/live/yourapp.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yourapp.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
+    
+    <span class="cm"># Security headers</span>
+    add_header Strict-Transport-Security <span class="st">"max-age=31536000"</span> always;
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-XSS-Protection <span class="st">"1; mode=block"</span> always;
+    
+    <span class="cm"># Hide Nginx version</span>
+    server_tokens off;
+    
+    <span class="cm"># Rate limiting zones</span>
+    limit_req_zone $binary_remote_addr zone=general:10m rate=<span class="nm">20</span>r/s;
+    limit_req_zone $binary_remote_addr zone=login:10m   rate=<span class="nm">5</span>r/m;
+    
+    <span class="cm"># ── PUBLIC ENDPOINTS ──</span>
+    location /api/auth/ {
+        limit_req zone=login burst=<span class="nm">3</span> nodelay;
+        limit_req_status <span class="nm">429</span>;
+        proxy_pass http://127.0.0.1:<span class="nm">8000</span>;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    
+    location /api/ {
+        limit_req zone=general burst=<span class="nm">30</span> nodelay;
+        proxy_pass http://127.0.0.1:<span class="nm">8000</span>;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    
+    <span class="cm"># ── WEBSOCKET ──</span>
+    location /ws/ {
+        proxy_pass http://127.0.0.1:<span class="nm">8000</span>;
+        proxy_http_version <span class="nm">1.1</span>;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection <span class="st">"upgrade"</span>;
+        proxy_read_timeout <span class="nm">3600</span>;  <span class="cm"># 1hr for long WS connections</span>
+    }
+    
+    <span class="cm"># ── WEBHOOKS — allow only from known platform IPs ──</span>
+    location /webhook/livekit {
+        <span class="cm"># LiveKit cloud IP ranges (check their docs for current IPs)</span>
+        allow <span class="nm">34.82.0.0</span>/<span class="nm">16</span>;
+        deny all;
+        proxy_pass http://127.0.0.1:<span class="nm">8000</span>;
+    }
+    
+    location /webhook/stripe {
+        <span class="cm"># Stripe IP ranges (from Stripe documentation)</span>
+        allow <span class="nm">3.18.12.63</span>;
+        allow <span class="nm">3.130.192.231</span>;
+        deny all;
+        proxy_pass http://127.0.0.1:<span class="nm">8000</span>;
+    }
+    
+    <span class="cm"># ── INTERNAL ENDPOINTS — COMPLETELY BLOCKED ──</span>
+    location /internal/ {
+        return <span class="nm">404</span>;   <span class="cm"># 404 not 403 — don't confirm endpoint exists</span>
+    }
+    
+    <span class="cm"># ── BLOCK COMMON ATTACK PATHS ──</span>
+    location ~* (\.php|\.aspx|\.env|\.git|wp-admin) {
+        return <span class="nm">404</span>;
+    }
+    
+    <span class="cm"># ── STATIC FILES ──</span>
+    location / {
+        root /var/www/yourapp;
+        try_files $uri $uri/ /index.html;
+        expires <span class="nm">7</span>d;
+    }
+}</div>
+</section>
+
+<!-- ═══════════ AZURE ═══════════ -->
+<section id="sec-azure" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(77,138,240,.12);color:var(--blue)">Module 14 · Infrastructure</div>
+    <h1 class="htitle">Azure Security</h1>
+    <p class="hsub">Azure provides infrastructure-level security that protects your applications before requests even reach Nginx or FastAPI. Since you're already on Azure, these are the most important controls to configure.</p>
+  </div>
+
+  <h2>Network Security Groups (NSG) — your firewall</h2>
+  <div class="callout cred">
+    <strong>Most critical action:</strong> Check your Azure NSG inbound rules right now. If you see any rule allowing all traffic to all ports from <code>0.0.0.0/0</code> (Any) — that's a wide-open door. Fix this immediately.
+  </div>
+  <div class="code"><span class="cm"># Azure NSG inbound rules — what to allow</span>
+<span class="cm"># Rule Name      Priority  Source          Port    Action</span>
+Allow-HTTPS         100      Any           443/TCP   Allow   <span class="cm"># Your website</span>
+Allow-HTTP-Redirect  101      Any            80/TCP   Allow   <span class="cm"># Redirect to HTTPS</span>
+Allow-SSH-Admin     200      YOUR-IP-ONLY   22/TCP   Allow   <span class="cm"># ONLY your IP, not 0.0.0.0/0</span>
+Allow-LiveKit       300      LiveKit-IPs  7880-7881/TCP Allow  <span class="cm"># Only if needed</span>
+DenyAll-Inbound     4096     Any             *       Deny    <span class="cm"># Block everything else</span>
+
+<span class="cm"># WRONG — what many people have (and shouldn't):</span>
+<span class="hl">Allow-Everything    100      Any(0.0.0.0/0)  *   Allow  # ❌ DANGEROUS</span></div>
+
+  <h2>Azure Key Vault — store secrets safely</h2>
+  <div class="code"><span class="cm"># Store your secrets in Key Vault instead of .env files</span>
+<span class="cm"># pip install azure-keyvault-secrets azure-identity</span>
+<span class="kw">from</span> azure.keyvault.secrets <span class="kw">import</span> SecretClient
+<span class="kw">from</span> azure.identity <span class="kw">import</span> DefaultAzureCredential
+
+<span class="cm"># Your VM's Managed Identity is used — no keys needed in code</span>
+vault_url = <span class="st">"https://your-vault-name.vault.azure.net/"</span>
+credential = <span class="fn">DefaultAzureCredential</span>()  <span class="cm"># auto-uses VM Managed Identity</span>
+client = <span class="fn">SecretClient</span>(vault_url=vault_url, credential=credential)
+
+<span class="cm"># Get secrets — called once at startup</span>
+OPENAI_KEY     = client.<span class="fn">get_secret</span>(<span class="st">"OpenAI-API-Key"</span>).value
+LIVEKIT_SECRET = client.<span class="fn">get_secret</span>(<span class="st">"LiveKit-API-Secret"</span>).value
+JWT_SECRET     = client.<span class="fn">get_secret</span>(<span class="st">"JWT-Secret"</span>).value</div>
+
+  <h2>Azure security components</h2>
+  <div class="g2">
+    <div class="card blue">
+      <div class="ct">Azure Virtual Network (VNet)</div>
+      <div class="cb">Put your VMs inside a private network. Only your API Gateway VM is exposed publicly. Internal services (chatbot, agent) are not reachable from the internet at all — only from within the VNet.</div>
+    </div>
+    <div class="card purple">
+      <div class="ct">Azure API Management (APIM)</div>
+      <div class="cb">Enterprise-grade API gateway. Handles auth, rate limiting, logging, caching, and transformations centrally. Put APIM in front of all your FastAPI services. Central policy management.</div>
+    </div>
+    <div class="card green">
+      <div class="ct">Azure Managed Identity</div>
+      <div class="cb">Your VM gets an identity automatically. No credentials needed to access Key Vault, Azure Storage, or other Azure services. Nothing to rotate, nothing to leak.</div>
+    </div>
+    <div class="card teal">
+      <div class="ct">Azure Defender for APIs</div>
+      <div class="cb">Continuously monitors your APIs for unusual patterns — sudden traffic spikes, new endpoints being called, data exfiltration patterns. Alerts you before damage is done.</div>
+    </div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Azure service</th><th>What it protects</th><th>When to use</th></tr></thead>
+      <tbody>
+        <tr><td>NSG (Network Security Groups)</td><td>Port and IP access at VM level</td><td>Always — day 1</td></tr>
+        <tr><td>Key Vault</td><td>Secrets, certificates, connection strings</td><td>Day 1 — replace env files</td></tr>
+        <tr><td>VNet + Private Endpoints</td><td>Internal service isolation</td><td>When you have multiple VMs</td></tr>
+        <tr><td>API Management</td><td>Central auth, rate limits, monitoring</td><td>When you have multiple APIs</td></tr>
+        <tr><td>Azure AD / Entra ID</td><td>User identity for internal tools</td><td>For org-wide access control</td></tr>
+        <tr><td>DDoS Protection</td><td>Volumetric attack mitigation</td><td>When you go public at scale</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════ USE CASE: VOICE AGENT ═══════════ -->
+<section id="sec-uc-voiceagent" class="sec">
+  <div class="uch">
+    <div class="ucico" style="background:rgba(247,92,92,.1);border-color:rgba(247,92,92,.25)">🎙️</div>
+    <div class="ucmeta">
+      <div class="uclbl" style="color:var(--red)">Use Case 1 — Build it securely</div>
+      <div class="uctitle">Voice Calling Agent (LiveKit + FastAPI)</div>
+      <div class="ucdesc">Your current system. Secure the entire flow: room token generation, agent webhook events, WebRTC connection, and internal agent API calls.</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Auth method</div><div class="sv" style="color:var(--red)">JWT + LiveKit tokens</div></div>
+    <div class="stat"><div class="sl">Webhook</div><div class="sv" style="color:var(--orange)">HMAC signature</div></div>
+    <div class="stat"><div class="sl">WebRTC</div><div class="sv" style="color:var(--green)">Auth-gated ICE creds</div></div>
+    <div class="stat"><div class="sl">Internal API</div><div class="sv" style="color:var(--blue)">Shared secret</div></div>
+  </div>
+
+  <h2>Security architecture</h2>
+  <div class="flow">
+    <div class="fbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:#7dd3fc">Browser<br><span style="font-size:9px">User</span></div>
+    <span class="farr">→ JWT auth →</span>
+    <div class="fbox" style="background:rgba(38,222,129,.1);border-color:rgba(38,222,129,.3);color:var(--green)">POST /api/call/token<br><span style="font-size:9px">get LiveKit token</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(165,94,234,.1);border-color:rgba(165,94,234,.3);color:var(--purple)">LiveKit SDK<br><span style="font-size:9px">connect to room</span></div>
+    <span class="farr">→</span>
+    <div class="fbox" style="background:rgba(255,159,67,.1);border-color:rgba(255,159,67,.3);color:var(--orange)">LiveKit server<br><span style="font-size:9px">fires webhook</span></div>
+    <span class="farr">→ HMAC verify →</span>
+    <div class="fbox" style="background:rgba(43,203,186,.1);border-color:rgba(43,203,186,.3);color:var(--teal)">Your agent<br><span style="font-size:9px">handles event</span></div>
+  </div>
+
+  <h2>Complete secure implementation</h2>
+  <div class="code"><span class="cm"># security/dependencies.py</span>
+<span class="kw">import</span> os, secrets, hmac, hashlib
+<span class="kw">from</span> fastapi <span class="kw">import</span> Header, HTTPException, Depends, Request
+<span class="kw">from</span> jose <span class="kw">import</span> jwt, JWTError
+<span class="kw">from</span> livekit <span class="kw">import</span> api <span class="kw">as</span> lk_api
+
+<span class="cm"># ─── Auth dependency ───</span>
+<span class="kw">async def</span> <span class="fn">get_current_user</span>(authorization: str = <span class="fn">Header</span>(...)):
+    <span class="kw">try</span>:
+        scheme, token = authorization.<span class="fn">split</span>()
+        <span class="kw">if</span> scheme.lower() != <span class="st">"bearer"</span>: <span class="kw">raise</span> ValueError
+        payload = jwt.<span class="fn">decode</span>(token, os.<span class="fn">getenv</span>(<span class="st">"JWT_SECRET"</span>), algorithms=[<span class="st">"HS256"</span>])
+        <span class="kw">return</span> payload
+    <span class="kw">except</span> (JWTError, ValueError):
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">401</span>)
+
+<span class="cm"># ─── Get LiveKit token (authenticated) ───</span>
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/api/call/start"</span>)
+<span class="kw">@</span>limiter.<span class="fn">limit</span>(<span class="st">"3/minute"</span>)
+<span class="kw">async def</span> <span class="fn">start_call</span>(request: Request, user = <span class="fn">Depends</span>(get_current_user)):
+    room_name = <span class="fn">f</span><span class="st">"room-{user['sub']}-{secrets.token_hex(8)}"</span>
+    
+    token = lk_api.<span class="fn">AccessToken</span>(
+        os.<span class="fn">getenv</span>(<span class="st">"LIVEKIT_API_KEY"</span>),
+        os.<span class="fn">getenv</span>(<span class="st">"LIVEKIT_API_SECRET"</span>)
+    )
+    token.<span class="fn">with_identity</span>(user[<span class="st">"sub"</span>])
+    token.<span class="fn">with_grants</span>(lk_api.<span class="fn">VideoGrants</span>(
+        room_join=<span class="kw">True</span>, room=room_name,
+        can_publish=<span class="kw">True</span>, can_subscribe=<span class="kw">True</span>
+    ))
+    <span class="kw">return</span> {<span class="st">"token"</span>: token.<span class="fn">to_jwt</span>(), <span class="st">"room"</span>: room_name}
+
+<span class="cm"># ─── LiveKit webhook (with signature verification) ───</span>
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/webhook/livekit"</span>)
+<span class="kw">async def</span> <span class="fn">livekit_event</span>(request: Request):
+    body = <span class="kw">await</span> request.<span class="fn">body</span>()
+    auth_header = request.headers.<span class="fn">get</span>(<span class="st">"authorization"</span>, <span class="st">""</span>)
+    
+    <span class="cm"># Use LiveKit SDK's built-in webhook receiver</span>
+    receiver = lk_api.<span class="fn">WebhookReceiver</span>(
+        api_key=os.<span class="fn">getenv</span>(<span class="st">"LIVEKIT_API_KEY"</span>),
+        api_secret=os.<span class="fn">getenv</span>(<span class="st">"LIVEKIT_API_SECRET"</span>)
+    )
+    <span class="kw">try</span>:
+        event = receiver.<span class="fn">receive</span>(body.<span class="fn">decode</span>(), auth_header)
+    <span class="kw">except</span> Exception:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">403</span>, detail=<span class="st">"Invalid webhook"</span>)
+    
+    <span class="kw">if</span> event.event == <span class="st">"participant_joined"</span>:
+        <span class="kw">await</span> <span class="fn">handle_participant_joined</span>(event)
+    <span class="kw">return</span> {<span class="st">"status"</span>: <span class="st">"ok"</span>}</div>
+
+  <h2>What to secure specifically</h2>
+  <div class="dd">
+    <div class="do">
+      <h4>Secure this</h4>
+      <li>Generate LiveKit token server-side only</li>
+      <li>Verify webhook with LiveKit SDK signature check</li>
+      <li>Rate limit call start: max 3/min per user</li>
+      <li>Store LIVEKIT_API_SECRET in Azure Key Vault</li>
+      <li>Restrict webhook IP in Nginx to LiveKit's IPs</li>
+      <li>Token expires after 1 hour maximum</li>
+    </div>
+    <div class="dont">
+      <h4>Never do this</h4>
+      <li>Send LIVEKIT_API_SECRET to frontend</li>
+      <li>Accept webhook without signature verification</li>
+      <li>Generate tokens with no expiry</li>
+      <li>Allow any user to join any room</li>
+      <li>Expose /internal/agent/* endpoints publicly</li>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ USE CASE: CHATBOT ═══════════ -->
+<section id="sec-uc-chatbot" class="sec">
+  <div class="uch">
+    <div class="ucico" style="background:rgba(255,159,67,.1);border-color:rgba(255,159,67,.25)">🤖</div>
+    <div class="ucmeta">
+      <div class="uclbl" style="color:var(--orange)">Use Case 2 — Build it securely</div>
+      <div class="uctitle">Chatbot API Security</div>
+      <div class="ucdesc">Securing your LLM-powered chatbot endpoints. The risk: someone finds your /api/chat endpoint and scripts thousands of requests, burning your OpenAI/Anthropic credits overnight.</div>
+    </div>
+  </div>
+
+  <h2>The threat model</h2>
+  <div class="g2">
+    <div class="threat"><div class="threat-icon">💸</div><div class="threat-body"><div class="threat-name">LLM cost abuse</div><div class="threat-desc">Without auth, anyone can call your OpenAI-connected endpoint and spend your credits. A single script can run up $500+ in minutes.</div></div></div>
+    <div class="threat"><div class="threat-icon">🗣️</div><div class="threat-body"><div class="threat-name">Prompt injection</div><div class="threat-desc">Attacker sends carefully crafted messages that manipulate your LLM to reveal system prompts, bypass restrictions, or perform unintended actions.</div></div></div>
+  </div>
+
+  <h2>Complete secure chatbot endpoint</h2>
+  <div class="code"><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Depends, HTTPException, Request
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, validator
+<span class="kw">import</span> openai, os
+
+<span class="kw">class</span> <span class="cl">ChatRequest</span>(BaseModel):
+    message: str
+    conversation_id: str
+
+    <span class="kw">@validator</span>(<span class="st">"message"</span>)
+    <span class="kw">def</span> <span class="fn">validate_message</span>(cls, v):
+        <span class="kw">if</span> <span class="fn">len</span>(v) > <span class="nm">2000</span>:
+            <span class="kw">raise</span> ValueError(<span class="st">"Message too long"</span>)
+        <span class="kw">if</span> <span class="fn">len</span>(v.strip()) == <span class="nm">0</span>:
+            <span class="kw">raise</span> ValueError(<span class="st">"Message cannot be empty"</span>)
+        <span class="kw">return</span> v.<span class="fn">strip</span>()
+
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/api/chat"</span>)
+<span class="kw">@</span>limiter.<span class="fn">limit</span>(<span class="st">"20/minute"</span>)           <span class="cm"># Layer 1: rate limiting</span>
+<span class="kw">async def</span> <span class="fn">chat</span>(
+    request: Request,
+    body: <span class="cl">ChatRequest</span>,               <span class="cm"># Layer 2: input validation</span>
+    user = <span class="fn">Depends</span>(get_current_user)  <span class="cm"># Layer 3: authentication</span>
+):
+    <span class="cm"># Layer 4: per-user daily limit (check DB/Redis)</span>
+    daily_count = <span class="kw">await</span> <span class="fn">get_user_daily_count</span>(user[<span class="st">"sub"</span>])
+    <span class="kw">if</span> daily_count > <span class="nm">100</span>:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">429</span>, detail=<span class="st">"Daily limit reached"</span>)
+    
+    <span class="cm"># Layer 5: authorization — does user own this conversation?</span>
+    conversation = <span class="kw">await</span> <span class="fn">get_conversation</span>(body.conversation_id)
+    <span class="kw">if</span> conversation.user_id != user[<span class="st">"sub"</span>]:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">403</span>)
+    
+    <span class="cm"># Layer 6: call LLM with system prompt protection</span>
+    response = <span class="kw">await</span> openai.ChatCompletion.<span class="fn">acreate</span>(
+        model=<span class="st">"gpt-4"</span>,
+        messages=[
+            {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You are a helpful assistant..."</span>},
+            <span class="cm"># history from DB</span>
+            {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: body.message}
+        ],
+        max_tokens=<span class="nm">1000</span>  <span class="cm"># limit response length = limit cost</span>
+    )
+    
+    <span class="kw">await</span> <span class="fn">increment_user_daily_count</span>(user[<span class="st">"sub"</span>])
+    <span class="kw">return</span> {<span class="st">"reply"</span>: response.choices[<span class="nm">0</span>].message.content}</div>
+</section>
+
+<!-- ═══════════ USE CASE: WEB APP ═══════════ -->
+<section id="sec-uc-webapp" class="sec">
+  <div class="uch">
+    <div class="ucico" style="background:rgba(38,222,129,.1);border-color:rgba(38,222,129,.25)">🌐</div>
+    <div class="ucmeta">
+      <div class="uclbl" style="color:var(--green)">Use Case 3 — Build it securely</div>
+      <div class="uctitle">Web Application Security</div>
+      <div class="ucdesc">Securing a complete web application: login flow, session management, protecting routes, preventing common web vulnerabilities (XSS, CSRF, IDOR).</div>
+    </div>
+  </div>
+
+  <h2>Login and session security</h2>
+  <div class="code"><span class="kw">from</span> fastapi <span class="kw">import</span> Response
+<span class="kw">import</span> bcrypt
+
+<span class="kw">@</span>app.<span class="fn">post</span>(<span class="st">"/api/auth/login"</span>)
+<span class="kw">@</span>limiter.<span class="fn">limit</span>(<span class="st">"5/minute"</span>)  <span class="cm"># critical: strict rate limit on login</span>
+<span class="kw">async def</span> <span class="fn">login</span>(request: Request, body: <span class="cl">LoginRequest</span>, response: Response):
+    <span class="cm"># Always take the same time whether user exists or not</span>
+    <span class="cm"># (prevents user enumeration attacks)</span>
+    user = <span class="kw">await</span> db.<span class="fn">get_user_by_email</span>(body.email)
+    
+    <span class="kw">if not</span> user <span class="kw">or not</span> bcrypt.<span class="fn">checkpw</span>(body.password.<span class="fn">encode</span>(), user.password_hash):
+        <span class="cm"># Same error message whether email not found OR password wrong</span>
+        <span class="cm"># Don't say "email not found" — that reveals registered emails</span>
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">401</span>, detail=<span class="st">"Invalid credentials"</span>)
+    
+    access_token  = <span class="fn">create_access_token</span>(user.id, expires=timedelta(minutes=<span class="nm">15</span>))
+    refresh_token = <span class="fn">create_refresh_token</span>(user.id, expires=timedelta(days=<span class="nm">30</span>))
+    
+    <span class="cm"># Access token in response body</span>
+    <span class="cm"># Refresh token in HttpOnly cookie (JS cannot read it)</span>
+    response.<span class="fn">set_cookie</span>(
+        key=<span class="st">"refresh_token"</span>, value=refresh_token,
+        httponly=<span class="kw">True</span>,   <span class="cm"># JS cannot access</span>
+        secure=<span class="kw">True</span>,     <span class="cm"># HTTPS only</span>
+        samesite=<span class="st">"strict"</span>, <span class="cm"># CSRF protection</span>
+        max_age=<span class="nm">2592000</span>  <span class="cm"># 30 days</span>
+    )
+    <span class="kw">return</span> {<span class="st">"access_token"</span>: access_token}</div>
+
+  <h2>Prevent IDOR — always check ownership</h2>
+  <div class="code"><span class="cm"># ❌ INSECURE — User A can access User B's conversations</span>
+<span class="kw">@</span>app.<span class="fn">get</span>(<span class="st">"/api/conversations/{conv_id}"</span>)
+<span class="kw">async def</span> <span class="fn">get_conversation</span>(conv_id: str):
+    <span class="kw">return await</span> db.conversations.<span class="fn">get</span>(conv_id)  <span class="hl"># ❌ no ownership check</span>
+
+<span class="cm"># ✅ SECURE — Always verify the user owns the resource</span>
+<span class="kw">@</span>app.<span class="fn">get</span>(<span class="st">"/api/conversations/{conv_id}"</span>)
+<span class="kw">async def</span> <span class="fn">get_conversation</span>(conv_id: str, user = <span class="fn">Depends</span>(get_current_user)):
+    conversation = <span class="kw">await</span> db.conversations.<span class="fn">get</span>(conv_id)
+    <span class="kw">if not</span> conversation:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">404</span>)
+    <span class="kw">if</span> conversation.user_id != user[<span class="st">"sub"</span>]:
+        <span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">403</span>)  <span class="cm"># or 404 to not confirm existence</span>
+    <span class="kw">return</span> conversation</div>
+
+  <div class="g2">
+    <div class="card red">
+      <div class="ct">Never expose internal error details</div>
+      <div class="cb">
+        <div class="code" style="margin:8px 0 0;font-size:11px">
+<span class="cm"># ❌ Leaks: file paths, DB schema, library versions</span>
+<span class="hl">raise HTTPException(detail=str(exception))</span>
+
+<span class="cm"># ✅ Generic message to client, log internally</span>
+<span class="fn">logger</span>.<span class="fn">error</span>(<span class="fn">f</span><span class="st">"DB error: {e}"</span>, exc_info=<span class="kw">True</span>)
+<span class="kw">raise</span> <span class="fn">HTTPException</span>(status_code=<span class="nm">500</span>, detail=<span class="st">"Internal error"</span>)
+        </div>
+      </div>
+    </div>
+    <div class="card green">
+      <div class="ct">Use HTTPS everywhere</div>
+      <div class="cb">All tokens, API keys, and user data must travel over HTTPS. Configure SSL in Nginx with Let's Encrypt (free). HTTP should only redirect to HTTPS — never serve real content over HTTP.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ USE CASE: FASTAPI SETUP ═══════════ -->
+<section id="sec-uc-fastapi" class="sec">
+  <div class="uch">
+    <div class="ucico" style="background:rgba(77,138,240,.1);border-color:rgba(77,138,240,.25)">⚡</div>
+    <div class="ucmeta">
+      <div class="uclbl" style="color:var(--blue)">Use Case 4 — Complete setup</div>
+      <div class="uctitle">FastAPI Complete Security Setup</div>
+      <div class="ucdesc">A production-ready FastAPI security setup that combines all layers: auth, rate limiting, CORS, headers, input validation, and error handling — all in one place.</div>
+    </div>
+  </div>
+
+  <h2>Complete main.py with all security layers</h2>
+  <div class="code"><span class="cm"># main.py — production-ready FastAPI security setup</span>
+<span class="kw">import</span> os, secrets, logging
+<span class="kw">from</span> contextlib <span class="kw">import</span> asynccontextmanager
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Request, HTTPException, Depends, Header
+<span class="kw">from</span> fastapi.middleware.cors <span class="kw">import</span> CORSMiddleware
+<span class="kw">from</span> starlette.middleware.base <span class="kw">import</span> BaseHTTPMiddleware
+<span class="kw">from</span> slowapi <span class="kw">import</span> Limiter, _rate_limit_exceeded_handler
+<span class="kw">from</span> slowapi.util <span class="kw">import</span> get_remote_address
+<span class="kw">from</span> slowapi.errors <span class="kw">import</span> RateLimitExceeded
+<span class="kw">from</span> dotenv <span class="kw">import</span> load_dotenv
+
+<span class="fn">load_dotenv</span>()
+logger = logging.<span class="fn">getLogger</span>(__name__)
+
+<span class="cm"># ─── Rate limiter ───</span>
+limiter = <span class="fn">Limiter</span>(key_func=get_remote_address)
+
+<span class="cm"># ─── Security headers middleware ───</span>
+<span class="kw">class</span> <span class="cl">SecurityMiddleware</span>(BaseHTTPMiddleware):
+    <span class="kw">async def</span> <span class="fn">dispatch</span>(self, request, call_next):
+        response = <span class="kw">await</span> <span class="fn">call_next</span>(request)
+        response.headers.update({
+            <span class="st">"X-Content-Type-Options"</span>: <span class="st">"nosniff"</span>,
+            <span class="st">"X-Frame-Options"</span>: <span class="st">"SAMEORIGIN"</span>,
+            <span class="st">"X-XSS-Protection"</span>: <span class="st">"1; mode=block"</span>,
+            <span class="st">"Referrer-Policy"</span>: <span class="st">"strict-origin-when-cross-origin"</span>,
+        })
+        <span class="kw">for</span> h <span class="kw">in</span> [<span class="st">"server"</span>, <span class="st">"x-powered-by"</span>]: response.headers.<span class="fn">pop</span>(h, <span class="kw">None</span>)
+        <span class="kw">return</span> response
+
+<span class="cm"># ─── Request logging middleware ───</span>
+<span class="kw">class</span> <span class="cl">RequestLogMiddleware</span>(BaseHTTPMiddleware):
+    <span class="kw">async def</span> <span class="fn">dispatch</span>(self, request, call_next):
+        logger.<span class="fn">info</span>(<span class="fn">f</span><span class="st">"{request.method} {request.url.path} from {request.client.host}"</span>)
+        response = <span class="kw">await</span> <span class="fn">call_next</span>(request)
+        logger.<span class="fn">info</span>(<span class="fn">f</span><span class="st">"Response: {response.status_code}"</span>)
+        <span class="kw">return</span> response
+
+<span class="cm"># ─── App initialization ───</span>
+app = <span class="fn">FastAPI</span>(
+    title=<span class="st">"Your App API"</span>,
+    docs_url=<span class="kw">None</span>,    <span class="cm"># Disable Swagger docs in production</span>
+    redoc_url=<span class="kw">None</span>,   <span class="cm"># Disable ReDoc in production</span>
+)
+
+<span class="cm"># Add middleware (order matters: outermost first)</span>
+app.<span class="fn">add_middleware</span>(SecurityMiddleware)
+app.<span class="fn">add_middleware</span>(RequestLogMiddleware)
+app.<span class="fn">add_middleware</span>(
+    CORSMiddleware,
+    allow_origins=os.<span class="fn">getenv</span>(<span class="st">"ALLOWED_ORIGINS"</span>, <span class="st">"https://yourapp.com"</span>).<span class="fn">split</span>(<span class="st">","</span>),
+    allow_credentials=<span class="kw">True</span>,
+    allow_methods=[<span class="st">"GET"</span>, <span class="st">"POST"</span>, <span class="st">"PUT"</span>, <span class="st">"DELETE"</span>],
+    allow_headers=[<span class="st">"*"</span>],
+)
+
+app.state.limiter = limiter
+app.<span class="fn">add_exception_handler</span>(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+<span class="cm"># ─── Global error handler — never leak internals ───</span>
+<span class="kw">@</span>app.<span class="fn">exception_handler</span>(Exception)
+<span class="kw">async def</span> <span class="fn">global_error</span>(request: Request, exc: Exception):
+    logger.<span class="fn">error</span>(<span class="fn">f</span><span class="st">"Unhandled error: {exc}"</span>, exc_info=<span class="kw">True</span>)
+    <span class="kw">return</span> <span class="fn">JSONResponse</span>(status_code=<span class="nm">500</span>, content={<span class="st">"error"</span>: <span class="st">"Internal server error"</span>})
+
+<span class="cm"># ─── Health check (no auth needed) ───</span>
+<span class="kw">@</span>app.<span class="fn">get</span>(<span class="st">"/health"</span>)
+<span class="kw">async def</span> <span class="fn">health</span>():
+    <span class="kw">return</span> {<span class="st">"status"</span>: <span class="st">"ok"</span>}  <span class="cm"># minimal — don't expose system info</span></div>
+</section>
+
+<!-- ═══════════ CHECKLIST ═══════════ -->
+<section id="sec-checklist" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(38,222,129,.12);color:var(--green)">Security Checklist</div>
+    <h1 class="htitle">Your complete security checklist</h1>
+    <p class="hsub">Click each item to mark it done. Go through this before every production deployment. Share this with your team.</p>
+  </div>
+
+  <h2 style="color:var(--red)">🔴 Critical — do immediately</h2>
+  <div class="checklist" id="cl-critical">
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(247,92,92,.15);color:var(--red)">NOW</span><div class="ci-text"><strong>Close all unnecessary ports in Azure NSG.</strong> Only allow 80, 443 from internet. SSH (22) only from your IP. Close everything else.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(247,92,92,.15);color:var(--red)">NOW</span><div class="ci-text"><strong>Remove any hardcoded secrets from source code.</strong> Check for API keys, passwords, connection strings. Move to .env files or Azure Key Vault.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(247,92,92,.15);color:var(--red)">NOW</span><div class="ci-text"><strong>Ensure .env is in .gitignore.</strong> Check your git history — if .env was ever committed, rotate ALL secrets in it immediately.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(247,92,92,.15);color:var(--red)">NOW</span><div class="ci-text"><strong>Add API key or JWT authentication to all endpoints.</strong> No endpoint should be accessible without auth (except /health, /auth/login).</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(247,92,92,.15);color:var(--red)">NOW</span><div class="ci-text"><strong>Enable HTTPS with SSL certificate.</strong> Use Let's Encrypt + Certbot. All HTTP traffic must redirect to HTTPS.</div></div>
+  </div>
+
+  <h2 style="color:var(--orange)">🟡 High priority — this week</h2>
+  <div class="checklist">
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,159,67,.15);color:var(--orange)">HIGH</span><div class="ci-text"><strong>Add Nginx rate limiting</strong> on all endpoints. Login: 5/min. Chat: 20/min. Voice call: 3/min.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,159,67,.15);color:var(--orange)">HIGH</span><div class="ci-text"><strong>Lock CORS to your domain.</strong> Replace <code>allow_origins=["*"]</code> with your actual frontend domain.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,159,67,.15);color:var(--orange)">HIGH</span><div class="ci-text"><strong>Add LiveKit webhook signature verification</strong> using their SDK. Accept only signed events.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,159,67,.15);color:var(--orange)">HIGH</span><div class="ci-text"><strong>Block /internal/ endpoints in Nginx.</strong> Any internal-only API path must return 404 to external callers.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,159,67,.15);color:var(--orange)">HIGH</span><div class="ci-text"><strong>Add security headers in Nginx.</strong> Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options minimum.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,159,67,.15);color:var(--orange)">HIGH</span><div class="ci-text"><strong>Add ownership check to all data endpoints.</strong> Every GET/PUT/DELETE must verify the user owns the resource (prevent IDOR).</div></div>
+  </div>
+
+  <h2 style="color:var(--yellow)">🟢 Medium priority — this month</h2>
+  <div class="checklist">
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,211,42,.15);color:var(--yellow)">MED</span><div class="ci-text"><strong>Migrate secrets to Azure Key Vault.</strong> Remove all .env files from production servers.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,211,42,.15);color:var(--yellow)">MED</span><div class="ci-text"><strong>Add per-user daily usage limits</strong> for LLM calls to prevent single-user cost abuse.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,211,42,.15);color:var(--yellow)">MED</span><div class="ci-text"><strong>Set up structured logging.</strong> Log every request with user ID, endpoint, status code, and latency. Ship to Azure Monitor.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,211,42,.15);color:var(--yellow)">MED</span><div class="ci-text"><strong>Add input validation with Pydantic.</strong> Every endpoint parameter validated: length limits, allowed characters, type checks.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,211,42,.15);color:var(--yellow)">MED</span><div class="ci-text"><strong>Disable Swagger/ReDoc docs in production.</strong> Set <code>docs_url=None, redoc_url=None</code> in FastAPI app.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(255,211,42,.15);color:var(--yellow)">MED</span><div class="ci-text"><strong>Add a global error handler</strong> that logs detailed errors internally but returns only "Internal server error" to clients.</div></div>
+  </div>
+
+  <h2 style="color:var(--blue)">🔵 When scaling</h2>
+  <div class="checklist">
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(77,138,240,.15);color:var(--blue)">SCALE</span><div class="ci-text"><strong>Set up Azure Virtual Network (VNet).</strong> Internal services not reachable from internet. Only API Gateway exposed.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(77,138,240,.15);color:var(--blue)">SCALE</span><div class="ci-text"><strong>Add Azure API Management (APIM)</strong> in front of all APIs. Centralized auth, rate limits, and monitoring.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(77,138,240,.15);color:var(--blue)">SCALE</span><div class="ci-text"><strong>Implement Azure AD for internal tools.</strong> Team members login with Microsoft accounts. No password management.</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(77,138,240,.15);color:var(--blue)">SCALE</span><div class="ci-text"><strong>Set up security alerting</strong> in Azure Monitor. Alert on: sudden traffic spikes, 5xx error rate, 403 spikes (brute force).</div></div>
+    <div class="ci" onclick="toggleCheck(this)"><div class="ci-box"></div><span class="ci-pri" style="background:rgba(77,138,240,.15);color:var(--blue)">SCALE</span><div class="ci-text"><strong>Run a penetration test</strong> or security audit. Use OWASP ZAP or hire a security consultant.</div></div>
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  if(event&&event.currentTarget)event.currentTarget.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700)closeSb();
+}
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  const box=el.querySelector('.ci-box');
+  if(el.classList.contains('checked'))box.textContent='✓';
+  else box.textContent='';
+}
+const sb=document.getElementById('sb');
+const ov=document.getElementById('ov');
+const hbg=document.getElementById('hbg');
+function openSb(){sb.classList.add('open');ov.classList.add('open')}
+function closeSb(){sb.classList.remove('open');ov.classList.remove('open')}
+hbg.addEventListener('click',()=>sb.classList.contains('open')?closeSb():openSb());
+ov.addEventListener('click',closeSb);
+</script>
+</body>
+</html>

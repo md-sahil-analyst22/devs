@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Protocols & APIs — Complete Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#090b0f;--bg2:#0d1117;--bg3:#111820;--bg4:#16202c;--bg5:#1b2a38;
+  --bdr:#192433;--bdr2:#1f3044;
+  --t1:#c9d8ec;--t2:#6b8aaa;--t3:#2e4a62;
+  --c1:#06b6d4;--c2:#10b981;--c3:#f59e0b;--c4:#ec4899;--c5:#8b5cf6;
+  --c6:#ef4444;--c7:#3b82f6;--c8:#14b8a6;--c9:#f97316;
+  --sw:272px;--top:52px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;overflow-x:hidden}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:400;height:var(--top);background:var(--bg2);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.tl{display:flex;align-items:center;height:100%;width:var(--sw);padding:0 18px;border-right:1px solid var(--bdr);gap:10px;flex-shrink:0}
+.tlogo{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#fff;background:var(--c1);box-shadow:0 0 12px rgba(6,182,212,.4)}
+.tbrand{font-size:13px;font-weight:600;color:var(--t1)}.tbrand span{display:block;font-size:10px;font-weight:400;color:var(--t3)}
+.tr{display:flex;align-items:center;gap:12px;padding-right:18px}
+.tcnt{font-size:11px;color:var(--t3);font-family:'Space Mono',monospace}
+.tpill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:3px;background:rgba(6,182,212,.12);color:var(--c1);border:1px solid rgba(6,182,212,.22);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.hbg{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px}
+.hbg span{display:block;width:18px;height:1.5px;background:var(--t2);border-radius:1px;transition:.18s}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:var(--top);min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;top:var(--top);left:0;bottom:0;background:var(--bg2);border-right:1px solid var(--bdr);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bdr2) transparent}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--bdr2)}
+.sg{padding:15px 15px 5px;font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--t3);text-transform:uppercase;font-family:'Space Mono',monospace}
+.sg:first-child{padding-top:12px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 15px;cursor:pointer;font-size:12px;color:var(--t2);border-left:2px solid transparent;transition:all .13s;text-decoration:none;user-select:none}
+.ni:hover{background:var(--bg3);color:var(--t1)}.ni.on{color:var(--c1);background:rgba(6,182,212,.07);border-left-color:var(--c1);font-weight:600}
+.nd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nt{margin-left:auto;font-size:9px;font-family:'Space Mono',monospace;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em}
+.n1{background:rgba(6,182,212,.13);color:var(--c1)}.n2{background:rgba(16,185,129,.13);color:var(--c2)}.n3{background:rgba(245,158,11,.13);color:var(--c3)}.n4{background:rgba(236,72,153,.13);color:var(--c4)}.n5{background:rgba(139,92,246,.13);color:var(--c5)}.n6{background:rgba(239,68,68,.13);color:var(--c6)}.n7{background:rgba(59,130,246,.13);color:var(--c7)}.n8{background:rgba(20,184,166,.13);color:var(--c8)}.n9{background:rgba(249,115,22,.13);color:var(--c9)}
+
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;padding:34px 44px 80px;max-width:950px}
+.sec{display:none}.sec.on{display:block;animation:fi .22s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HERO */
+.hero{padding-bottom:22px;margin-bottom:26px;border-bottom:1px solid var(--bdr)}
+.htag{display:inline-flex;align-items:center;gap:6px;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-family:'Space Mono',monospace;padding:4px 10px;border-radius:3px;margin-bottom:12px}
+.htitle{font-size:26px;font-weight:700;color:var(--t1);line-height:1.2;margin-bottom:8px}
+.hsub{font-size:13.5px;color:var(--t2);line-height:1.7;max-width:700px}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
+.stat{background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;padding:10px 14px}
+.sl{font-size:9px;color:var(--t3);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.sv{font-size:12px;font-weight:700;font-family:'Space Mono',monospace}
+
+/* CARDS */
+.card{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:18px 20px;margin-bottom:12px}
+.ca1{border-left:3px solid var(--c1);background:rgba(6,182,212,.04)}.ca2{border-left:3px solid var(--c2);background:rgba(16,185,129,.04)}.ca3{border-left:3px solid var(--c3);background:rgba(245,158,11,.04)}.ca4{border-left:3px solid var(--c4);background:rgba(236,72,153,.04)}.ca5{border-left:3px solid var(--c5);background:rgba(139,92,246,.04)}.ca6{border-left:3px solid var(--c6);background:rgba(239,68,68,.04)}.ca7{border-left:3px solid var(--c7);background:rgba(59,130,246,.04)}.ca8{border-left:3px solid var(--c8);background:rgba(20,184,166,.04)}.ca9{border-left:3px solid var(--c9);background:rgba(249,115,22,.04)}
+.ct{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px}.cb{font-size:12.5px;color:var(--t2);line-height:1.7}
+
+/* CODE */
+.code{background:#05080d;border:1px solid var(--bdr);border-radius:7px;padding:16px 18px;margin:12px 0;font-family:'Space Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;white-space:pre}
+.code .k{color:#8b5cf6}.code .s{color:#10b981}.code .f{color:#06b6d4}.code .c{color:#2e4a62}.code .o{color:#f59e0b}.code .n{color:#fbbf24}.code .p{color:#ec4899}.code .t{color:#14b8a6}.code .r{color:#ef4444}.code .b{color:#3b82f6}
+.codelabel{background:#05080d;border:1px solid var(--bdr);border-bottom:none;border-radius:7px 7px 0 0;padding:7px 18px 0;font-size:9px;font-weight:700;font-family:'Space Mono',monospace;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
+.codelabel+.code{border-top:none;border-radius:0 0 7px 7px;margin-top:0}
+code{font-family:'Space Mono',monospace;font-size:11px;background:rgba(255,255,255,.07);color:var(--c3);padding:1px 5px;border-radius:3px}
+
+/* CALLOUT */
+.callout{border-radius:6px;padding:13px 16px;margin:12px 0;font-size:13px;line-height:1.65}
+.q1{background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.22);color:#7dd3fc}
+.q2{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.22);color:#6ee7b7}
+.q3{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);color:#fde68a}
+.q4{background:rgba(236,72,153,.07);border:1px solid rgba(236,72,153,.22);color:#f9a8d4}
+.q5{background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.22);color:#ddd6fe}
+.q6{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.22);color:#fca5a5}
+.q7{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.22);color:#bfdbfe}
+.q9{background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.22);color:#fed7aa}
+.callout strong{font-weight:700;color:inherit}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mini{background:var(--bg4);border:1px solid var(--bdr);border-radius:6px;padding:13px 15px}
+.mt{font-size:12px;font-weight:700;margin-bottom:3px;font-family:'Space Mono',monospace}
+.mb{font-size:12px;color:var(--t2);line-height:1.55}
+
+/* TABLE */
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{background:var(--bg4)}
+th{text-align:left;padding:9px 14px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--bdr2);font-family:'Space Mono',monospace}
+td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--t2)}
+td:first-child{color:var(--t1);font-weight:600}
+tr:hover td{background:rgba(255,255,255,.018)}tr:last-child td{border-bottom:none}
+
+/* PILL */
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+.p1{background:rgba(6,182,212,.15);color:var(--c1)}.p2{background:rgba(16,185,129,.15);color:var(--c2)}.p3{background:rgba(245,158,11,.15);color:var(--c3)}.p4{background:rgba(236,72,153,.15);color:var(--c4)}.p5{background:rgba(139,92,246,.15);color:var(--c5)}.p6{background:rgba(239,68,68,.15);color:var(--c6)}.p7{background:rgba(59,130,246,.15);color:var(--c7)}.p8{background:rgba(20,184,166,.15);color:var(--c8)}.p9{background:rgba(249,115,22,.15);color:var(--c9)}
+
+/* FLOW */
+.flow{background:#05080d;border:1px solid var(--bdr);border-radius:8px;padding:18px;margin:12px 0;overflow-x:auto}
+.fr{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;min-width:fit-content}
+.fbox{padding:9px 14px;border-radius:5px;font-size:11px;font-family:'Space Mono',monospace;font-weight:700;border:1px solid;text-align:center;white-space:nowrap;line-height:1.4}
+.fa{color:var(--t3);font-size:14px;padding:0 3px;flex-shrink:0}
+
+/* DO DONT */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.do{background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.18);border-radius:7px;padding:13px 15px}
+.dont{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.18);border-radius:7px;padding:13px 15px}
+.do h4{font-size:9px;font-weight:700;color:var(--c2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'Space Mono',monospace}
+.dont h4{font-size:9px;font-weight:700;color:var(--c6);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'Space Mono',monospace}
+.do li,.dont li{font-size:12px;color:var(--t2);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do li::before{content:"✓";position:absolute;left:0;color:var(--c2);font-size:10px;top:4px}.dont li::before{content:"✗";position:absolute;left:0;color:var(--c6);font-size:10px;top:4px}
+
+/* COMPARE BIG */
+.cmp{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin:14px 0}
+.cmpc{padding:16px 18px}.cmpc:first-child{border-right:1px solid var(--bdr);background:rgba(6,182,212,.03)}.cmpc:last-child{background:rgba(16,185,129,.03)}
+.cmpc h3{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.cmpc li{font-size:12px;color:var(--t2);padding:3px 0;list-style:none;display:flex;gap:7px;line-height:1.5}
+.cmpc li::before{content:"·";color:var(--t3);flex-shrink:0}
+
+/* STEPS */
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;margin-bottom:4px}
+.sl2{display:flex;flex-direction:column;align-items:center}
+.sdot{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'Space Mono',monospace;margin-top:2px}
+.sv2{width:2px;flex:1;min-height:18px;margin:3px 0;background:var(--bdr2)}
+.sc{flex:1;padding-bottom:16px}.stitle{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px}.sbody{font-size:12px;color:var(--t2);line-height:1.6}
+
+/* LAYERS */
+.layers{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.layer{border-radius:5px;padding:10px 15px;border-left:3px solid}
+.lname{font-size:12px;font-weight:700;margin-bottom:2px;font-family:'Space Mono',monospace}
+.ldesc{font-size:11.5px;color:var(--t2)}
+
+/* ACCORDION */
+.acc{border:1px solid var(--bdr);border-radius:7px;overflow:hidden;margin-bottom:7px}
+.acc-h{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;background:var(--bg3);font-size:12.5px;font-weight:600;color:var(--t1);transition:background .13s;user-select:none}
+.acc-h:hover{background:var(--bg4)}.acc-ico{color:var(--t3);font-size:17px;transition:transform .18s;font-style:normal}
+.acc-b{display:none;padding:14px 16px;font-size:12px;color:var(--t2);line-height:1.65;background:var(--bg4);border-top:1px solid var(--bdr)}
+.acc.open .acc-b{display:block}.acc.open .acc-ico{transform:rotate(45deg)}
+
+/* HTTP METHOD BADGES */
+.mget{background:rgba(16,185,129,.15);color:var(--c2);border:1px solid rgba(16,185,129,.3);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase}
+.mpost{background:rgba(245,158,11,.15);color:var(--c3);border:1px solid rgba(245,158,11,.3);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase}
+.mput{background:rgba(59,130,246,.15);color:var(--c7);border:1px solid rgba(59,130,246,.3);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase}
+.mpatch{background:rgba(139,92,246,.15);color:var(--c5);border:1px solid rgba(139,92,246,.3);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase}
+.mdel{background:rgba(239,68,68,.15);color:var(--c6);border:1px solid rgba(239,68,68,.3);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase}
+
+/* DIVIDER */
+.div{height:1px;background:var(--bdr);margin:24px 0}
+h2{font-size:18px;font-weight:700;color:var(--t1);margin:24px 0 10px}h2:first-child{margin-top:0}
+h3{font-size:14px;font-weight:700;color:var(--t1);margin:18px 0 8px}
+p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px}p:last-child{margin-bottom:0}
+strong{color:var(--t1);font-weight:700}
+
+/* OVERLAY */
+.overlay{display:none;position:fixed;inset:var(--top) 0 0 0;background:rgba(0,0,0,.68);z-index:100}
+.overlay.open{display:block}
+
+/* RESPONSIVE */
+@media(max-width:900px){.main{padding:24px 20px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:265px}.main{margin-left:0;padding:20px 15px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .22s;z-index:110}.sidebar.open{transform:translateX(0)}
+  .hbg{display:flex}.tl{width:auto;border-right:none}.tcnt{display:none}
+  .stats,.g2,.g3,.g4,.dd,.cmp{grid-template-columns:1fr}
+  .cmpc:first-child{border-right:none;border-bottom:1px solid var(--bdr)}
+}
+@media(max-width:480px){.htitle{font-size:20px}.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tl">
+    <div class="tlogo">{ }</div>
+    <div class="tbrand">WebProtocols<span>API · REST · WebSocket · WebRTC · HTTP</span></div>
+  </div>
+  <div class="tr">
+    <button class="hbg" id="hbg"><span></span><span></span><span></span></button>
+    <span class="tcnt">20 modules · 120+ concepts</span>
+    <span class="tpill">Complete</span>
+  </div>
+</header>
+
+<div class="overlay" id="ov"></div>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sb">
+
+  <div class="sg">Foundations</div>
+  <a class="ni on" onclick="go('overview')"><span class="nd" style="background:var(--c1)"></span>All protocols at a glance<span class="nt n1">Start</span></a>
+  <a class="ni" onclick="go('client-server')"><span class="nd" style="background:var(--c2)"></span>Client-server model<span class="nt n2">Core</span></a>
+
+  <div class="sg">HTTP / HTTPS</div>
+  <a class="ni" onclick="go('http')"><span class="nd" style="background:var(--c1)"></span>HTTP fundamentals<span class="nt n1">Core</span></a>
+  <a class="ni" onclick="go('http-methods')"><span class="nd" style="background:var(--c2)"></span>HTTP methods & status codes<span class="nt n2">Core</span></a>
+  <a class="ni" onclick="go('https')"><span class="nd" style="background:var(--c3)"></span>HTTPS & TLS<span class="nt n3">Mid</span></a>
+  <a class="ni" onclick="go('http-versions')"><span class="nd" style="background:var(--c5)"></span>HTTP/1.1 vs 2 vs 3<span class="nt n5">Adv</span></a>
+
+  <div class="sg">APIs</div>
+  <a class="ni" onclick="go('api-basics')"><span class="nd" style="background:var(--c3)"></span>What is an API?<span class="nt n3">Beginner</span></a>
+  <a class="ni" onclick="go('rest')"><span class="nd" style="background:var(--c2)"></span>REST APIs<span class="nt n2">Core</span></a>
+  <a class="ni" onclick="go('restful')"><span class="nd" style="background:var(--c2)"></span>RESTful principles (6 rules)<span class="nt n2">Core</span></a>
+  <a class="ni" onclick="go('rest-design')"><span class="nd" style="background:var(--c3)"></span>REST API design patterns<span class="nt n3">Mid</span></a>
+  <a class="ni" onclick="go('graphql')"><span class="nd" style="background:var(--c4)"></span>GraphQL vs REST<span class="nt n4">Mid</span></a>
+  <a class="ni" onclick="go('grpc')"><span class="nd" style="background:var(--c5)"></span>gRPC<span class="nt n5">Adv</span></a>
+
+  <div class="sg">Real-time Communication</div>
+  <a class="ni" onclick="go('polling')"><span class="nd" style="background:var(--c3)"></span>Polling & Long-polling<span class="nt n3">Mid</span></a>
+  <a class="ni" onclick="go('sse')"><span class="nd" style="background:var(--c7)"></span>SSE — Server-Sent Events<span class="nt n7">Mid</span></a>
+  <a class="ni" onclick="go('websocket')"><span class="nd" style="background:var(--c1)"></span>WebSocket<span class="nt n1">Mid</span></a>
+  <a class="ni" onclick="go('webhook')"><span class="nd" style="background:var(--c9)"></span>Webhooks<span class="nt n9">Mid</span></a>
+  <a class="ni" onclick="go('webrtc')"><span class="nd" style="background:var(--c4)"></span>WebRTC<span class="nt n4">Adv</span></a>
+
+  <div class="sg">Comparisons</div>
+  <a class="ni" onclick="go('realtime-compare')"><span class="nd" style="background:var(--c5)"></span>Realtime tech comparison<span class="nt n5">Key</span></a>
+  <a class="ni" onclick="go('api-compare')"><span class="nd" style="background:var(--c3)"></span>API styles comparison<span class="nt n3">Key</span></a>
+
+  <div class="sg">Authentication</div>
+  <a class="ni" onclick="go('auth')"><span class="nd" style="background:var(--c6)"></span>API auth patterns<span class="nt n6">Mid</span></a>
+
+  <div class="sg">FastAPI Use Cases</div>
+  <a class="ni" onclick="go('uc-rest')"><span class="nd" style="background:var(--c2)"></span>Build a REST API<span class="nt n2">Build</span></a>
+  <a class="ni" onclick="go('uc-ws')"><span class="nd" style="background:var(--c1)"></span>Build WebSocket server<span class="nt n1">Build</span></a>
+  <a class="ni" onclick="go('uc-webhook')"><span class="nd" style="background:var(--c9)"></span>Build webhook receiver<span class="nt n9">Build</span></a>
+  <a class="ni" onclick="go('uc-streaming')"><span class="nd" style="background:var(--c7)"></span>AI streaming (SSE)<span class="nt n7">Build</span></a>
+  <a class="ni" onclick="go('uc-webrtc')"><span class="nd" style="background:var(--c4)"></span>WebRTC signaling server<span class="nt n4">Build</span></a>
+
+  <div class="sg">Reference</div>
+  <a class="ni" onclick="go('status-codes')"><span class="nd" style="background:var(--c3)"></span>HTTP status codes<span class="nt n3">Ref</span></a>
+  <a class="ni" onclick="go('headers')"><span class="nd" style="background:var(--c8)"></span>HTTP headers reference<span class="nt n8">Ref</span></a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ════ OVERVIEW ════ -->
+<section id="sec-overview" class="sec on">
+  <div class="hero">
+    <div class="htag" style="background:rgba(6,182,212,.1);color:var(--c1)">Module 1 · Start here</div>
+    <h1 class="htitle">Web Protocols & APIs — Complete Map</h1>
+    <p class="hsub">Every modern application is built on communication between computers. This guide covers every protocol and API style you'll encounter — from the foundational HTTP request to real-time WebRTC calls, from simple REST APIs to streaming AI responses.</p>
+  </div>
+
+  <div class="callout q1"><strong>The core question every protocol answers:</strong> "How should two computers talk to each other?" Different situations need different answers — sometimes you need a quick request-response, sometimes a permanent connection, sometimes you want the server to push data, sometimes you need peer-to-peer video.</div>
+
+  <h2>The complete protocol landscape</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Protocol/Style</th><th>Connection type</th><th>Direction</th><th>Use case</th><th>Complexity</th></tr></thead>
+      <tbody>
+        <tr><td>HTTP/REST</td><td>Request → Response (stateless)</td><td>Client → Server</td><td>APIs, web pages, CRUD</td><td><span class="pill p2">Beginner</span></td></tr>
+        <tr><td>HTTPS</td><td>HTTP over TLS (encrypted)</td><td>Client → Server</td><td>All production traffic</td><td><span class="pill p2">Beginner</span></td></tr>
+        <tr><td>Polling</td><td>Repeated HTTP requests</td><td>Client asks repeatedly</td><td>Simple real-time, legacy</td><td><span class="pill p2">Beginner</span></td></tr>
+        <tr><td>Long Polling</td><td>HTTP, held open until data</td><td>Client waits, server responds</td><td>Simple push, chat apps</td><td><span class="pill p3">Mid</span></td></tr>
+        <tr><td>SSE</td><td>Persistent HTTP (one-way stream)</td><td>Server → Client only</td><td>AI tokens, live feeds, news</td><td><span class="pill p3">Mid</span></td></tr>
+        <tr><td>WebSocket</td><td>Persistent TCP (full-duplex)</td><td>Both directions</td><td>Chat, gaming, collaboration</td><td><span class="pill p3">Mid</span></td></tr>
+        <tr><td>Webhook</td><td>HTTP callback (event-driven)</td><td>Server → Your server</td><td>Payment events, CI/CD, alerts</td><td><span class="pill p3">Mid</span></td></tr>
+        <tr><td>GraphQL</td><td>HTTP (flexible queries)</td><td>Client → Server</td><td>Complex data, mobile apps</td><td><span class="pill p3">Mid</span></td></tr>
+        <tr><td>gRPC</td><td>HTTP/2 (binary, streaming)</td><td>Both directions</td><td>Microservices, high performance</td><td><span class="pill p5">Adv</span></td></tr>
+        <tr><td>WebRTC</td><td>P2P (DTLS-SRTP)</td><td>Peer-to-peer</td><td>Video/audio calls, screen share</td><td><span class="pill p5">Adv</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Choosing the right communication pattern</h2>
+  <div class="g2">
+    <div class="card ca2"><div class="ct">Need to fetch or send data once</div><div class="cb">→ <strong>HTTP REST API</strong>. Standard request-response. GET user profile, POST new message, PUT update order. Stateless, cacheable, universally supported.</div></div>
+    <div class="card ca1"><div class="ct">Need real-time bidirectional chat</div><div class="cb">→ <strong>WebSocket</strong>. Persistent connection, both sides send freely. Chat apps, multiplayer games, collaborative editing, live dashboards.</div></div>
+    <div class="card ca7"><div class="ct">Server needs to stream data to browser</div><div class="cb">→ <strong>SSE (Server-Sent Events)</strong>. One-way stream from server. AI token streaming, live scores, stock tickers, progress updates.</div></div>
+    <div class="card ca9"><div class="ct">Get notified when something happens</div><div class="cb">→ <strong>Webhook</strong>. External service calls your endpoint when an event occurs. Payment success, GitHub push, LiveKit call ended.</div></div>
+    <div class="card ca4"><div class="ct">Real-time voice or video calls</div><div class="cb">→ <strong>WebRTC</strong>. Peer-to-peer media. Direct browser-to-browser. Voice agents, video conferencing, screen sharing.</div></div>
+    <div class="card ca5"><div class="ct">High-performance microservices</div><div class="cb">→ <strong>gRPC</strong>. Binary protocol over HTTP/2. 10x faster than REST JSON. Microservice-to-microservice, streaming RPC.</div></div>
+  </div>
+</section>
+
+<!-- ════ CLIENT SERVER ════ -->
+<section id="sec-client-server" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(16,185,129,.1);color:var(--c2)">Module 2 · Foundations</div>
+    <h1 class="htitle">The Client-Server Model</h1>
+    <p class="hsub">Everything on the internet is built on a simple idea: a <em>client</em> asks for something, a <em>server</em> provides it. Understanding this model — and how it extends to APIs, WebSockets, and WebRTC — is the foundation for everything else.</p>
+  </div>
+
+  <h2>The basic model</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--c1)">Client<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Browser / App / Script</span></div>
+      <span class="fa">──── Request ────▶</span>
+      <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--c2)">Server<br><span style="font-size:9px;font-weight:400;color:var(--t3)">FastAPI / Node / Django</span></div>
+      <span class="fa">◀──── Response ────</span>
+      <div class="fbox" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--c1)">Client</div>
+    </div>
+  </div>
+
+  <h2>Synchronous vs Asynchronous communication</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--c1)">Synchronous (blocking)</h3>
+      <li>Client sends request and <strong>waits</strong> for response</li>
+      <li>Nothing else happens until response arrives</li>
+      <li>Simple to reason about</li>
+      <li>Can feel slow for long operations</li>
+      <li>Examples: REST API call, database query</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--c2)">Asynchronous (non-blocking)</h3>
+      <li>Client sends request and <strong>continues</strong> doing other things</li>
+      <li>Gets notified when response is ready (callback/event)</li>
+      <li>More complex but more efficient</li>
+      <li>Essential for real-time and high-performance apps</li>
+      <li>Examples: Webhook, WebSocket message, SSE stream</li>
+    </div>
+  </div>
+
+  <h2>The evolution of client-server communication</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--c2);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--c2)">1990s — Basic HTTP (request/response)</div><div class="ldesc">Browser requests HTML page. Server sends it back. Every interaction = new connection. Static pages only.</div></div>
+    <div class="layer" style="border-color:var(--c3);background:rgba(245,158,11,.04)"><div class="lname" style="color:var(--c3)">2000s — AJAX & REST APIs</div><div class="ldesc">JavaScript fetches data without reloading page. REST APIs return JSON. Dynamic web apps born. Gmail, Google Maps.</div></div>
+    <div class="layer" style="border-color:var(--c1);background:rgba(6,182,212,.04)"><div class="lname" style="color:var(--c1)">2010s — WebSocket & real-time</div><div class="ldesc">Persistent connections. Slack, WhatsApp Web. Server pushes data without client asking. Live dashboards.</div></div>
+    <div class="layer" style="border-color:var(--c4);background:rgba(236,72,153,.04)"><div class="lname" style="color:var(--c4)">2020s — WebRTC, AI streaming, Edge</div><div class="ldesc">P2P video calls in browser. AI responses streamed token-by-token. Edge functions. Real-time everything.</div></div>
+  </div>
+</section>
+
+<!-- ════ HTTP ════ -->
+<section id="sec-http" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(6,182,212,.1);color:var(--c1)">Module 3 · HTTP</div>
+    <h1 class="htitle">HTTP — HyperText Transfer Protocol</h1>
+    <p class="hsub">HTTP is the language of the web. Every time you open a webpage, call an API, or fetch data — HTTP is the protocol carrying that communication. It defines the format of requests and responses between clients and servers.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Created</div><div class="sv" style="color:var(--c1)">1989 by Tim Berners-Lee</div></div>
+    <div class="stat"><div class="sl">Port</div><div class="sv" style="color:var(--c2)">80 (HTTP) / 443 (HTTPS)</div></div>
+    <div class="stat"><div class="sl">Nature</div><div class="sv" style="color:var(--c3)">Stateless, text-based</div></div>
+    <div class="stat"><div class="sl">Transport</div><div class="sv" style="color:var(--c5)">TCP (HTTP/1,2) UDP (HTTP/3)</div></div>
+  </div>
+
+  <h2>Anatomy of an HTTP request</h2>
+  <div class="code"><span class="c"># HTTP Request Structure</span>
+<span class="f">POST</span> <span class="s">/api/chat</span> <span class="o">HTTP/1.1</span>             <span class="c">← Request line: method path version</span>
+
+<span class="c"># Headers (key: value pairs)</span>
+<span class="n">Host:</span> api.yourapp.com              <span class="c">← which server</span>
+<span class="n">Authorization:</span> Bearer eyJhbGci...  <span class="c">← who you are</span>
+<span class="n">Content-Type:</span> application/json    <span class="c">← what format is the body</span>
+<span class="n">Content-Length:</span> 52                <span class="c">← how big is the body</span>
+<span class="n">Accept:</span> application/json          <span class="c">← what format you want back</span>
+<span class="n">User-Agent:</span> Mozilla/5.0...        <span class="c">← who is making the request</span>
+                                   <span class="c">← blank line = end of headers</span>
+<span class="c"># Body (optional for GET, required for POST/PUT)</span>
+{
+  <span class="s">"message"</span>: <span class="s">"Hello, how are you?"</span>,
+  <span class="s">"conversation_id"</span>: <span class="s">"conv_abc123"</span>
+}</div>
+
+  <h2>Anatomy of an HTTP response</h2>
+  <div class="code"><span class="o">HTTP/1.1 200 OK</span>                   <span class="c">← Status line: version status-code reason</span>
+
+<span class="c"># Response headers</span>
+<span class="n">Content-Type:</span> application/json    <span class="c">← format of the body</span>
+<span class="n">Content-Length:</span> 156               <span class="c">← size of body</span>
+<span class="n">Cache-Control:</span> no-cache           <span class="c">← don't cache this</span>
+<span class="n">X-RateLimit-Remaining:</span> 47         <span class="c">← custom header</span>
+<span class="n">Date:</span> Mon, 20 Mar 2026 10:00:00 GMT
+                                   <span class="c">← blank line</span>
+<span class="c"># Body</span>
+{
+  <span class="s">"reply"</span>: <span class="s">"I'm doing well, thanks for asking!"</span>,
+  <span class="s">"conversation_id"</span>: <span class="s">"conv_abc123"</span>,
+  <span class="s">"tokens_used"</span>: 24
+}</div>
+
+  <h2>HTTP is stateless — what that means</h2>
+  <div class="callout q1"><strong>Stateless = every request is independent.</strong> The server has zero memory of previous requests. Request #100 knows nothing about request #99 from the same user. This is why you send an Authorization header with <em>every</em> request — the server doesn't remember you were authenticated in the last one.</div>
+
+  <div class="g2">
+    <div class="card ca2"><div class="ct">Stateless benefits</div><div class="cb">Easy to scale horizontally — any server can handle any request. No need to route the same user to the same server. Highly cacheable. Simple to reason about.</div></div>
+    <div class="card ca9"><div class="ct">How to maintain "state"</div><div class="cb">Client sends identity proof with every request: JWT token, session cookie, or API key. Server verifies it every time. State lives in the token, not on the server.</div></div>
+  </div>
+
+  <h2>HTTP vs HTTPS — the quick difference</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--c6)">HTTP (plain)</h3>
+      <li>Data sent as plain text</li>
+      <li>Anyone on the network can read it</li>
+      <li>No verification the server is real</li>
+      <li>Passwords, tokens, data exposed</li>
+      <li>Port 80</li>
+      <li>Never use for any real app</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--c2)">HTTPS (encrypted)</h3>
+      <li>Data encrypted with TLS</li>
+      <li>Intercepted data is unreadable</li>
+      <li>Certificate proves server identity</li>
+      <li>All data protected in transit</li>
+      <li>Port 443</li>
+      <li>Always use this</li>
+    </div>
+  </div>
+</section>
+
+<!-- ════ HTTP METHODS ════ -->
+<section id="sec-http-methods" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(16,185,129,.1);color:var(--c2)">Module 4 · HTTP</div>
+    <h1 class="htitle">HTTP Methods & Status Codes</h1>
+    <p class="hsub">HTTP methods define the intention of a request — what action you want to perform. Status codes tell you what happened. Together they form the vocabulary of web communication.</p>
+  </div>
+
+  <h2>HTTP Methods (Verbs)</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Method</th><th>Purpose</th><th>Has body?</th><th>Idempotent?</th><th>Safe?</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mget">GET</span></td><td>Retrieve data</td><td>No</td><td>Yes</td><td>Yes</td><td><code>GET /users/123</code></td></tr>
+        <tr><td><span class="mpost">POST</span></td><td>Create new resource</td><td>Yes</td><td>No</td><td>No</td><td><code>POST /messages</code></td></tr>
+        <tr><td><span class="mput">PUT</span></td><td>Replace entire resource</td><td>Yes</td><td>Yes</td><td>No</td><td><code>PUT /users/123</code></td></tr>
+        <tr><td><span class="mpatch">PATCH</span></td><td>Update part of resource</td><td>Yes</td><td>Sometimes</td><td>No</td><td><code>PATCH /users/123</code></td></tr>
+        <tr><td><span class="mdel">DELETE</span></td><td>Delete resource</td><td>Sometimes</td><td>Yes</td><td>No</td><td><code>DELETE /messages/456</code></td></tr>
+        <tr><td><span class="pill p1">HEAD</span></td><td>GET without body (metadata)</td><td>No</td><td>Yes</td><td>Yes</td><td><code>HEAD /files/video.mp4</code></td></tr>
+        <tr><td><span class="pill p5">OPTIONS</span></td><td>Get allowed methods (CORS)</td><td>No</td><td>Yes</td><td>Yes</td><td>Browser pre-flight check</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout q2"><strong>Idempotent</strong> = calling the same request multiple times has the same result as calling it once. DELETE /users/123 called 3 times = same as called once (user is deleted). POST /messages called 3 times = 3 messages created. <strong>Safe</strong> = no side effects, read-only.</div>
+
+  <h2>HTTP Status Codes — the complete story</h2>
+  <div class="g2">
+    <div class="mini"><div class="mt" style="color:var(--c2)">1xx — Informational</div><div class="mb"><strong>100</strong> Continue · <strong>101</strong> Switching Protocols (WebSocket upgrade) · <strong>102</strong> Processing</div></div>
+    <div class="mini"><div class="mt" style="color:var(--c1)">2xx — Success</div><div class="mb"><strong>200</strong> OK · <strong>201</strong> Created · <strong>204</strong> No Content · <strong>206</strong> Partial Content (streaming)</div></div>
+    <div class="mini"><div class="mt" style="color:var(--c3)">3xx — Redirection</div><div class="mb"><strong>301</strong> Moved Permanently · <strong>302</strong> Found (temp redirect) · <strong>304</strong> Not Modified (cache) · <strong>307</strong> Temp Redirect</div></div>
+    <div class="mini"><div class="mt" style="color:var(--c6)">4xx — Client Error</div><div class="mb"><strong>400</strong> Bad Request · <strong>401</strong> Unauthorized · <strong>403</strong> Forbidden · <strong>404</strong> Not Found · <strong>409</strong> Conflict · <strong>422</strong> Unprocessable · <strong>429</strong> Too Many Requests</div></div>
+    <div class="mini"><div class="mt" style="color:var(--c9)">5xx — Server Error</div><div class="mb"><strong>500</strong> Internal Server Error · <strong>502</strong> Bad Gateway · <strong>503</strong> Service Unavailable · <strong>504</strong> Gateway Timeout</div></div>
+    <div class="mini"><div class="mt" style="color:var(--c4)">Key differences</div><div class="mb"><strong>401 vs 403:</strong> 401 = not authenticated (who are you?), 403 = authenticated but not authorized (I know who you are but you can't do this). <strong>400 vs 422:</strong> 400 = malformed, 422 = valid format but invalid content.</div></div>
+  </div>
+</section>
+
+<!-- ════ HTTPS ════ -->
+<section id="sec-https" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(245,158,11,.1);color:var(--c3)">Module 5 · HTTP</div>
+    <h1 class="htitle">HTTPS & TLS — Secure Communication</h1>
+    <p class="hsub">HTTPS = HTTP + TLS encryption. It does two things that matter: <em>authentication</em> (proves the server is who it claims to be) and <em>encryption</em> (makes data unreadable to eavesdroppers). Required for any production application.</p>
+  </div>
+
+  <h2>How TLS works — the handshake</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--c3)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Client Hello — "I want to connect securely"</div><div class="sbody">Browser sends: TLS version it supports, list of cipher suites it accepts, a random number (client random). "I can speak TLS 1.3, here are encryption algorithms I know."</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--c3)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Server Hello — "Here's who I am"</div><div class="sbody">Server picks cipher suite, sends its SSL certificate (signed by a CA like Let's Encrypt), another random number (server random). "I'll use TLS 1.3 with AES-256. Here's my certificate."</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--c3)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Certificate verification</div><div class="sbody">Browser checks: Is cert signed by a trusted CA? Is it for the correct domain? Is it expired? If all pass → server is legitimate. If any fail → browser shows "Not Secure" warning.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--c3)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Key exchange — generating the session key</div><div class="sbody">Using the two randoms and the server's public key, both sides independently derive the same session encryption key. The key is never transmitted — both compute it separately from the same inputs. Diffie-Hellman magic.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--c3)">5</div></div><div class="sc"><div class="stitle">Encrypted channel open</div><div class="sbody">All further HTTP communication is encrypted with the session key. Even if someone captures the packets, they see random bytes. Handshake takes ~50ms. Worth every millisecond.</div></div></div>
+  </div>
+
+  <div class="callout q3"><strong>Symmetric vs Asymmetric encryption in TLS:</strong> The certificate uses asymmetric (public/private key) — slow but allows key exchange without a shared secret. The actual data uses symmetric (session key) — fast. TLS handshake = asymmetric. Ongoing communication = symmetric.</div>
+</section>
+
+<!-- ════ HTTP VERSIONS ════ -->
+<section id="sec-http-versions" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(139,92,246,.1);color:var(--c5)">Module 6 · HTTP</div>
+    <h1 class="htitle">HTTP/1.1 vs HTTP/2 vs HTTP/3</h1>
+    <p class="hsub">HTTP has evolved significantly since its creation. Each version solves the performance problems of the previous one. Understanding the differences helps you configure Nginx correctly and understand why your apps behave the way they do.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Feature</th><th>HTTP/1.1</th><th>HTTP/2</th><th>HTTP/3</th></tr></thead>
+      <tbody>
+        <tr><td>Transport</td><td>TCP</td><td>TCP</td><td>UDP (QUIC)</td></tr>
+        <tr><td>Encryption</td><td>Optional (HTTPS)</td><td>Required in practice</td><td>Required (built in)</td></tr>
+        <tr><td>Multiplexing</td><td>No (one at a time)</td><td>Yes (multiple streams)</td><td>Yes (independent streams)</td></tr>
+        <tr><td>Header compression</td><td>None (repeated every req)</td><td>HPACK compression</td><td>QPACK compression</td></tr>
+        <tr><td>Head-of-line blocking</td><td>Yes — one slow req blocks all</td><td>Partial (TCP level)</td><td>None (per-stream)</td></tr>
+        <tr><td>Server push</td><td>No</td><td>Yes (rarely used)</td><td>Yes</td></tr>
+        <tr><td>Connection setup</td><td>3-way TCP handshake</td><td>TCP + TLS handshakes</td><td>0-RTT (instant reconnect)</td></tr>
+        <tr><td>Year</td><td>1997</td><td>2015</td><td>2022</td></tr>
+        <tr><td>Used by</td><td>~30% of sites</td><td>~60% of sites</td><td>~30% of sites (growing)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>HTTP/1.1 — the bottleneck</h2>
+  <div class="code"><span class="c"># HTTP/1.1 Problem: HOL (Head-of-Line) blocking</span>
+<span class="c"># Only 1 request at a time per connection</span>
+<span class="c"># Browser opens 6 parallel connections to work around this</span>
+
+Request 1: GET /app.js   → waits for response
+Request 2: GET /style.css → CAN'T START until Request 1 finishes
+Request 3: GET /logo.png → waits in queue...
+
+<span class="c"># Each request resends all headers:</span>
+Host: yourapp.com          <span class="c"># sent again</span>
+Authorization: Bearer ...  <span class="c"># sent again</span>
+Accept: application/json   <span class="c"># sent again</span>
+<span class="c"># (adds 400-800 bytes of overhead per request)</span></div>
+
+  <h2>HTTP/2 — multiplexing</h2>
+  <div class="code"><span class="c"># HTTP/2 sends multiple requests over ONE connection</span>
+<span class="c"># Streams are interleaved — no waiting</span>
+
+Stream 1: GET /app.js    ─────────────▶ response chunk ─▶ done
+Stream 2: GET /style.css  ──────────▶ response chunk ──▶ done
+Stream 3: GET /logo.png    ────────▶ response chunk ───▶ done
+<span class="c"># All 3 run simultaneously on one TCP connection</span>
+
+<span class="c"># In Nginx — enable HTTP/2:</span>
+listen 443 ssl http2;  <span class="c"># that's all you need</span></div>
+
+  <h2>HTTP/3 — QUIC eliminates TCP problems</h2>
+  <div class="callout q5"><strong>HTTP/2's remaining problem:</strong> It still uses TCP. If one TCP packet is lost, ALL streams wait for retransmission (TCP head-of-line blocking). HTTP/3 uses QUIC (UDP-based), where streams are independent — a lost packet for stream 1 doesn't affect stream 2. Critical for mobile users on lossy connections.</div>
+</section>
+
+<!-- ════ API BASICS ════ -->
+<section id="sec-api-basics" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(245,158,11,.1);color:var(--c3)">Module 7 · APIs</div>
+    <h1 class="htitle">What is an API?</h1>
+    <p class="hsub">API stands for Application Programming Interface. It's a defined contract that specifies how software components communicate. An API says: "send me this, I'll return that." The web, your OS, and every library you use have APIs.</p>
+  </div>
+
+  <div class="callout q3"><strong>One-line definition:</strong> An API is a waiter at a restaurant. You (the client) don't go into the kitchen (the server) to cook your food. You tell the waiter (the API) what you want, the waiter takes your order to the kitchen, and brings back the result.</div>
+
+  <h2>Types of APIs</h2>
+  <div class="g3">
+    <div class="card ca1"><div class="ct">Web APIs (HTTP)</div><div class="cb">The most common. Send HTTP requests, get JSON back. REST, GraphQL, gRPC. Used to connect frontend to backend, or services to each other.</div></div>
+    <div class="card ca3"><div class="ct">Library APIs</div><div class="cb">Function calls within code. <code>numpy.array()</code>, <code>pandas.read_csv()</code>. The library exposes a defined interface. You call functions, get results.</div></div>
+    <div class="card ca5"><div class="ct">OS APIs (Syscalls)</div><div class="cb">Programs talk to the operating system. <code>open()</code> to open a file, <code>socket()</code> to create a network connection. The OS exposes these through system calls.</div></div>
+    <div class="card ca2"><div class="ct">Hardware APIs</div><div class="cb">Browser APIs for hardware: <code>getUserMedia()</code> for camera/microphone, <code>navigator.geolocation</code> for GPS. JavaScript accesses hardware through browser-provided APIs.</div></div>
+    <div class="card ca7"><div class="ct">Public APIs</div><div class="cb">Third-party services: OpenAI API, Stripe API, Twilio API, LiveKit API. You call their HTTP endpoints, get results. Pay per use.</div></div>
+    <div class="card ca4"><div class="ct">Private APIs</div><div class="cb">Internal to your organization. Your frontend calls your own backend. Microservice A calls microservice B. Not exposed to the public.</div></div>
+  </div>
+
+  <h2>API key concepts</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Term</th><th>Definition</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Endpoint</td><td>A specific URL that the API exposes</td><td><code>POST /api/v1/chat</code></td></tr>
+        <tr><td>Request</td><td>What you send to the endpoint</td><td>JSON body + headers</td></tr>
+        <tr><td>Response</td><td>What the API sends back</td><td>JSON data + status code</td></tr>
+        <tr><td>Payload</td><td>The data in the request/response body</td><td><code>{"message": "hello"}</code></td></tr>
+        <tr><td>API key</td><td>Secret token that identifies your app</td><td><code>X-API-Key: sk-abc123</code></td></tr>
+        <tr><td>Rate limit</td><td>Max requests allowed per time window</td><td>100 requests/minute</td></tr>
+        <tr><td>Versioning</td><td>Version prefix to avoid breaking changes</td><td><code>/api/v1/</code>, <code>/api/v2/</code></td></tr>
+        <tr><td>Pagination</td><td>Split large results into pages</td><td><code>?page=2&limit=20</code></td></tr>
+        <tr><td>SDK</td><td>Client library that wraps the API</td><td><code>import openai; openai.chat()</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════ REST ════ -->
+<section id="sec-rest" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(16,185,129,.1);color:var(--c2)">Module 8 · REST APIs</div>
+    <h1 class="htitle">REST APIs</h1>
+    <p class="hsub">REST (Representational State Transfer) is an architectural style for designing APIs over HTTP. It defines a set of conventions for how to structure URLs, use HTTP methods, and format responses. The dominant API style on the web.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Created by</div><div class="sv" style="color:var(--c2)">Roy Fielding, 2000</div></div>
+    <div class="stat"><div class="sl">Protocol</div><div class="sv" style="color:var(--c1)">HTTP (uses it as is)</div></div>
+    <div class="stat"><div class="sl">Data format</div><div class="sv" style="color:var(--c3)">JSON (usually)</div></div>
+    <div class="stat"><div class="sl">Market share</div><div class="sv" style="color:var(--c2)">~80% of public APIs</div></div>
+  </div>
+
+  <h2>REST = nouns (resources) + verbs (HTTP methods)</h2>
+  <div class="callout q2"><strong>The core idea:</strong> Everything is a resource (a noun). Resources have URLs. You perform operations on them using HTTP methods (verbs). <code>GET /users/123</code> = "fetch the user with id 123". Clean, predictable, standard.</div>
+
+  <h2>CRUD operations with REST</h2>
+  <div class="code"><span class="c"># CRUD = Create, Read, Update, Delete</span>
+<span class="c"># Resource: /api/messages</span>
+
+<span class="c"># CREATE — POST to the collection</span>
+<span class="f">POST</span>   /api/messages              <span class="c"># create new message</span>
+<span class="k">Body:</span> { "text": "Hello!", "chat_id": "abc" }
+<span class="k">→ 201 Created:</span> { "id": "msg_789", "text": "Hello!" }
+
+<span class="c"># READ — GET individual or collection</span>
+<span class="f">GET</span>    /api/messages              <span class="c"># list all messages</span>
+<span class="f">GET</span>    /api/messages/msg_789      <span class="c"># get specific message</span>
+<span class="k">→ 200 OK:</span> { "id": "msg_789", "text": "Hello!" }
+
+<span class="c"># UPDATE — PUT (replace all) or PATCH (update some)</span>
+<span class="f">PUT</span>    /api/messages/msg_789      <span class="c"># replace entire message</span>
+<span class="f">PATCH</span>  /api/messages/msg_789      <span class="c"># update specific fields</span>
+<span class="k">Body:</span> { "text": "Updated text" }
+<span class="k">→ 200 OK:</span> { "id": "msg_789", "text": "Updated text" }
+
+<span class="c"># DELETE</span>
+<span class="f">DELETE</span> /api/messages/msg_789      <span class="c"># delete message</span>
+<span class="k">→ 204 No Content</span>                 <span class="c"># success, no body</span>
+
+<span class="c"># Nested resources (relationships)</span>
+<span class="f">GET</span>    /api/chats/abc/messages     <span class="c"># messages IN chat abc</span>
+<span class="f">POST</span>   /api/chats/abc/messages     <span class="c"># create message IN chat abc</span></div>
+
+  <h2>URL design conventions</h2>
+  <div class="code"><span class="c"># ✅ Good REST URL design</span>
+GET  /api/v1/users              <span class="c"># plural nouns</span>
+GET  /api/v1/users/123          <span class="c"># ID in path</span>
+GET  /api/v1/users/123/orders   <span class="c"># nested resource</span>
+GET  /api/v1/orders?status=pending&limit=20  <span class="c"># filtering in query string</span>
+GET  /api/v1/orders?sort=created_at&order=desc
+
+<span class="c"># ❌ Bad REST URL design</span>
+GET  /api/getUser?id=123        <span class="c"># verb in URL (use HTTP method!)</span>
+POST /api/deleteOrder/456       <span class="c"># delete via POST? No.</span>
+GET  /api/user                  <span class="c"># singular noun</span>
+GET  /API/V1/Users              <span class="c"># uppercase (use lowercase)</span>
+GET  /api/v1/getUserOrders/123  <span class="c"># camelCase in URL (use hyphens)</span>
+
+<span class="c"># ✅ URL for non-CRUD actions (exceptions are OK)</span>
+POST /api/v1/orders/123/cancel  <span class="c"># action on resource</span>
+POST /api/v1/auth/login         <span class="c"># auth actions</span>
+POST /api/v1/emails/send        <span class="c"># action that isn't CRUD</span></div>
+
+  <h2>REST response design</h2>
+  <div class="code"><span class="c"># Consistent response structure (envelope pattern)</span>
+<span class="c"># Success response:</span>
+{
+  <span class="s">"success"</span>: <span class="k">true</span>,
+  <span class="s">"data"</span>: {
+    <span class="s">"id"</span>: <span class="s">"user_123"</span>,
+    <span class="s">"email"</span>: <span class="s">"user@example.com"</span>,
+    <span class="s">"name"</span>: <span class="s">"Jane Doe"</span>
+  },
+  <span class="s">"meta"</span>: {
+    <span class="s">"timestamp"</span>: <span class="s">"2026-03-20T10:00:00Z"</span>
+  }
+}
+
+<span class="c"># Error response:</span>
+{
+  <span class="s">"success"</span>: <span class="k">false</span>,
+  <span class="s">"error"</span>: {
+    <span class="s">"code"</span>: <span class="s">"VALIDATION_ERROR"</span>,
+    <span class="s">"message"</span>: <span class="s">"Email is required"</span>,
+    <span class="s">"field"</span>: <span class="s">"email"</span>       <span class="c"># which field failed</span>
+  }
+}
+
+<span class="c"># Paginated list response:</span>
+{
+  <span class="s">"data"</span>: [...],
+  <span class="s">"pagination"</span>: {
+    <span class="s">"page"</span>: <span class="n">2</span>,
+    <span class="s">"limit"</span>: <span class="n">20</span>,
+    <span class="s">"total"</span>: <span class="n">148</span>,
+    <span class="s">"pages"</span>: <span class="n">8</span>,
+    <span class="s">"next"</span>: <span class="s">"/api/v1/messages?page=3&limit=20"</span>
+  }
+}</div>
+</section>
+
+<!-- ════ RESTFUL PRINCIPLES ════ -->
+<section id="sec-restful" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(16,185,129,.1);color:var(--c2)">Module 9 · REST APIs</div>
+    <h1 class="htitle">RESTful — The 6 Architectural Constraints</h1>
+    <p class="hsub">"REST" is an architectural style defined by Roy Fielding's 2000 dissertation. A "RESTful API" follows all 6 constraints he defined. Most APIs called "REST" follow some but not all — and that's usually fine for practical purposes.</p>
+  </div>
+
+  <div class="callout q2"><strong>REST vs RESTful:</strong> REST is the set of architectural principles. RESTful means strictly following all 6 constraints. In practice, developers use "REST API" and "RESTful API" interchangeably. The principles are a guide, not a religion.</div>
+
+  <h2>The 6 constraints</h2>
+
+  <div class="card ca2">
+    <div class="ct">1. Client-Server separation</div>
+    <div class="cb">The UI (client) and data storage (server) are completely separate concerns. The client doesn't know how data is stored. The server doesn't know anything about the UI. This enables each to evolve independently.<br><br>
+    <strong>In practice:</strong> Your React frontend and FastAPI backend are separate. The frontend doesn't connect to PostgreSQL directly. The backend doesn't render HTML.</div>
+  </div>
+
+  <div class="card ca1">
+    <div class="ct">2. Statelessness</div>
+    <div class="cb">Every request must contain all information needed to process it. The server stores no client session state. Each request is complete and independent.<br><br>
+    <strong>In practice:</strong> Your JWT token is sent with every request — the server doesn't remember your previous requests. No server-side sessions. Enables horizontal scaling.</div>
+  </div>
+
+  <div class="card ca3">
+    <div class="ct">3. Cacheability</div>
+    <div class="cb">Responses must define themselves as cacheable or non-cacheable. If cacheable, clients can reuse responses for equivalent future requests. Improves performance and reduces server load.<br><br>
+    <strong>In practice:</strong> <code>Cache-Control: max-age=3600</code> on GET responses. CDN caches your static assets. Never cache sensitive data.</div>
+  </div>
+
+  <div class="card ca5">
+    <div class="ct">4. Layered system</div>
+    <div class="cb">Client doesn't know if it's talking directly to the end server, or through intermediaries (proxies, load balancers, CDNs). Each layer only knows about the adjacent layers.<br><br>
+    <strong>In practice:</strong> Your client hits Cloudflare → Nginx → FastAPI. Client only knows about Cloudflare. This enables caching, load balancing, security layers.</div>
+  </div>
+
+  <div class="card ca7">
+    <div class="ct">5. Uniform interface (the most important)</div>
+    <div class="cb">The API follows a consistent set of rules: resources identified by URLs, manipulation through representations, self-descriptive messages, HATEOAS (links to related resources in responses).<br><br>
+    <strong>In practice:</strong> Consistent URL patterns (<code>/resource/id</code>), standard HTTP methods, JSON responses with clear structure. Predictability.</div>
+  </div>
+
+  <div class="card ca4">
+    <div class="ct">6. Code on demand (optional)</div>
+    <div class="cb">Servers can extend client functionality by transferring executable code. The only optional constraint.<br><br>
+    <strong>In practice:</strong> JavaScript served from your backend and executed in the browser. Used when serving full HTML pages with embedded scripts.</div>
+  </div>
+</section>
+
+<!-- ════ REST DESIGN ════ -->
+<section id="sec-rest-design" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(245,158,11,.1);color:var(--c3)">Module 10 · REST APIs</div>
+    <h1 class="htitle">REST API Design Patterns</h1>
+    <p class="hsub">Good API design is one of the hardest things in software engineering — you can't easily change APIs once clients depend on them. These patterns solve the most common design challenges.</p>
+  </div>
+
+  <h2>Versioning — never break existing clients</h2>
+  <div class="code"><span class="c"># Strategy 1: URL versioning (most common, most explicit)</span>
+/api/v1/users
+/api/v2/users    <span class="c"># v2 can completely change the response shape</span>
+
+<span class="c"># Strategy 2: Header versioning</span>
+Accept: application/vnd.yourapp.v2+json
+
+<span class="c"># Strategy 3: Query parameter</span>
+/api/users?version=2
+
+<span class="c"># FastAPI: maintain both versions simultaneously</span>
+<span class="f">@</span>app.get(<span class="s">"/api/v1/users/{user_id}"</span>)
+<span class="k">async def</span> <span class="f">get_user_v1</span>(user_id: str):
+    <span class="k">return</span> {<span class="s">"id"</span>: user_id, <span class="s">"username"</span>: ...}  <span class="c"># old format</span>
+
+<span class="f">@</span>app.get(<span class="s">"/api/v2/users/{user_id}"</span>)
+<span class="k">async def</span> <span class="f">get_user_v2</span>(user_id: str):
+    <span class="k">return</span> {<span class="s">"id"</span>: user_id, <span class="s">"profile"</span>: {...}}  <span class="c"># new format</span></div>
+
+  <h2>Filtering, sorting, pagination</h2>
+  <div class="code"><span class="c"># Filtering with query params</span>
+GET /api/v1/messages?conversation_id=abc&status=sent
+GET /api/v1/users?role=admin&created_after=2024-01-01
+
+<span class="c"># Sorting</span>
+GET /api/v1/messages?sort=created_at&order=desc
+GET /api/v1/users?sort=name&order=asc
+
+<span class="c"># Cursor-based pagination (better for large datasets)</span>
+GET /api/v1/messages?cursor=msg_500&limit=20
+<span class="c"># Response includes next cursor:</span>
+{ <span class="s">"data"</span>: [...], <span class="s">"next_cursor"</span>: <span class="s">"msg_480"</span> }
+
+<span class="c"># Page-based pagination (simpler)</span>
+GET /api/v1/messages?page=3&per_page=20
+
+<span class="c"># Field selection — only return fields you need</span>
+GET /api/v1/users?fields=id,email,name   <span class="c"># reduce payload size</span></div>
+
+  <h2>Error handling — be specific and helpful</h2>
+  <div class="code"><span class="c"># Don't:</span>
+<span class="r">HTTP 400: "Bad request"</span>                <span class="c"># useless</span>
+<span class="r">HTTP 500: "Internal Server Error: PostgreSQL: ..."</span>  <span class="c"># leaks internals</span>
+
+<span class="c"># Do: specific, actionable error codes</span>
+HTTP 422: {
+  <span class="s">"error"</span>: {
+    <span class="s">"code"</span>: <span class="s">"VALIDATION_ERROR"</span>,
+    <span class="s">"message"</span>: <span class="s">"Email address is already registered"</span>,
+    <span class="s">"field"</span>: <span class="s">"email"</span>,
+    <span class="s">"hint"</span>: <span class="s">"Use POST /api/v1/auth/forgot-password if you forgot your password"</span>
+  }
+}
+
+HTTP 429: {
+  <span class="s">"error"</span>: {
+    <span class="s">"code"</span>: <span class="s">"RATE_LIMIT_EXCEEDED"</span>,
+    <span class="s">"message"</span>: <span class="s">"Too many requests"</span>,
+    <span class="s">"retry_after_seconds"</span>: <span class="n">42</span>          <span class="c"># tell client when to retry</span>
+  }
+}</div>
+
+  <div class="dd">
+    <div class="do"><h4>Good REST design</h4>
+      <li>Use plural nouns: <code>/users</code> not <code>/user</code></li>
+      <li>Version your API from day one</li>
+      <li>Return consistent error shapes</li>
+      <li>Use proper HTTP status codes</li>
+      <li>Include pagination on list endpoints</li>
+      <li>Document with OpenAPI/Swagger</li>
+    </div>
+    <div class="dont"><h4>Avoid these patterns</h4>
+      <li>Verbs in URLs: <code>/getUser</code>, <code>/createOrder</code></li>
+      <li>Using GET for operations with side effects</li>
+      <li>Inconsistent naming (camelCase vs snake_case)</li>
+      <li>Returning 200 for errors</li>
+      <li>No versioning — impossible to evolve safely</li>
+      <li>Exposing internal implementation details in errors</li>
+    </div>
+  </div>
+</section>
+
+<!-- ════ GRAPHQL ════ -->
+<section id="sec-graphql" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(236,72,153,.1);color:var(--c4)">Module 11 · APIs</div>
+    <h1 class="htitle">GraphQL vs REST</h1>
+    <p class="hsub">GraphQL is a query language for APIs invented by Facebook in 2012. Instead of hitting many specific endpoints, you send one flexible query describing exactly the data you need. The server returns exactly that — no more, no less.</p>
+  </div>
+
+  <h2>The core difference — REST vs GraphQL request</h2>
+  <div class="g2">
+    <div>
+      <div class="codelabel">REST — multiple requests, fixed responses</div>
+      <div class="code"><span class="c"># To get user + their last 5 messages + each message's chat name:</span>
+GET /api/users/123                     <span class="c"># 1st request</span>
+GET /api/users/123/messages?limit=5    <span class="c"># 2nd request</span>
+GET /api/chats/abc/details             <span class="c"># 3rd request (for chat name)</span>
+<span class="c"># 3 HTTP round trips, potentially over-fetching each time</span></div>
+    </div>
+    <div>
+      <div class="codelabel">GraphQL — one request, exact data</div>
+      <div class="code"><span class="c"># Single POST to /graphql:</span>
+query {
+  user(id: <span class="s">"123"</span>) {
+    name
+    email
+    messages(last: <span class="n">5</span>) {
+      text
+      createdAt
+      chat {
+        name      <span class="c"># only the chat name, nothing else</span>
+      }
+    }
+  }
+}
+<span class="c"># 1 request, exactly the data needed</span></div>
+    </div>
+  </div>
+
+  <div class="tw" style="margin-top:16px">
+    <table>
+      <thead><tr><th>Aspect</th><th>REST</th><th>GraphQL</th></tr></thead>
+      <tbody>
+        <tr><td>Endpoints</td><td>Many (one per resource)</td><td>One (<code>/graphql</code>)</td></tr>
+        <tr><td>Over-fetching</td><td>Common — gets all fields even if not needed</td><td>Never — request only what you need</td></tr>
+        <tr><td>Under-fetching</td><td>Common — need N+1 requests</td><td>Never — nested queries in one request</td></tr>
+        <tr><td>Type system</td><td>Not built-in (use OpenAPI)</td><td>Strongly typed schema built-in</td></tr>
+        <tr><td>Caching</td><td>Easy — HTTP caching works natively</td><td>Complex — all via POST, no URL caching</td></tr>
+        <tr><td>Learning curve</td><td>Low — HTTP is universal</td><td>Higher — new query language to learn</td></tr>
+        <tr><td>Best for</td><td>Simple CRUD, public APIs</td><td>Complex data, mobile (save bandwidth)</td></tr>
+        <tr><td>Used by</td><td>Everyone (default)</td><td>GitHub, Shopify, Twitter, Facebook</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout q4"><strong>When to pick GraphQL:</strong> Mobile apps where bandwidth matters, complex relational data with many joins, teams where frontend and backend evolve at different speeds, when clients need very different subsets of the same data.</div>
+</section>
+
+<!-- ════ GRPC ════ -->
+<section id="sec-grpc" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(139,92,246,.1);color:var(--c5)">Module 12 · APIs</div>
+    <h1 class="htitle">gRPC — High-Performance RPC</h1>
+    <p class="hsub">gRPC (Google Remote Procedure Call) is a framework for service-to-service communication. Unlike REST's text-based JSON, gRPC uses binary Protocol Buffers over HTTP/2. It's 5–10x faster and supports bidirectional streaming natively.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Aspect</th><th>REST / JSON</th><th>gRPC / Protobuf</th></tr></thead>
+      <tbody>
+        <tr><td>Data format</td><td>JSON (text, human-readable)</td><td>Protocol Buffers (binary, compact)</td></tr>
+        <tr><td>Size</td><td>100% baseline</td><td>~10x smaller</td></tr>
+        <tr><td>Speed</td><td>Baseline</td><td>5–10x faster serialization</td></tr>
+        <tr><td>Schema</td><td>Optional (OpenAPI)</td><td>Required (.proto file)</td></tr>
+        <tr><td>Code generation</td><td>Manual or generated</td><td>Auto-generated in any language</td></tr>
+        <tr><td>Streaming</td><td>Limited (SSE for server push)</td><td>Client, server, and bidirectional streaming built-in</td></tr>
+        <tr><td>Browser support</td><td>Native</td><td>Needs grpc-web proxy</td></tr>
+        <tr><td>Best for</td><td>Public APIs, frontend communication</td><td>Microservice-to-microservice, ML models, IoT</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><span class="c"># gRPC service definition (.proto file)</span>
+<span class="k">syntax</span> = <span class="s">"proto3"</span>;
+
+<span class="k">service</span> <span class="o">ChatService</span> {
+  <span class="k">rpc</span> SendMessage (MessageRequest) <span class="k">returns</span> (MessageResponse);
+  <span class="k">rpc</span> StreamMessages (StreamRequest) <span class="k">returns</span> (<span class="k">stream</span> Message); <span class="c"># server streaming</span>
+  <span class="k">rpc</span> Chat (<span class="k">stream</span> Message) <span class="k">returns</span> (<span class="k">stream</span> Message);          <span class="c"># bidirectional</span>
+}
+
+<span class="k">message</span> <span class="o">MessageRequest</span> {
+  <span class="k">string</span> text = <span class="n">1</span>;
+  <span class="k">string</span> conversation_id = <span class="n">2</span>;
+}
+<span class="c"># Protocol Buffers compile to client/server code in Python, Go, Java, etc.</span></div>
+</section>
+
+<!-- ════ POLLING ════ -->
+<section id="sec-polling" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(245,158,11,.1);color:var(--c3)">Module 13 · Real-time</div>
+    <h1 class="htitle">Polling & Long Polling</h1>
+    <p class="hsub">Before WebSockets existed, polling was how web apps got "real-time" updates. The client repeatedly asked "any new data?" Even today it's sometimes the right choice for simplicity.</p>
+  </div>
+
+  <h2>Regular polling</h2>
+  <div class="code"><span class="c">// Frontend: ask every 5 seconds</span>
+<span class="k">setInterval</span>(<span class="k">async</span> () => {
+  <span class="k">const</span> messages = <span class="k">await</span> <span class="f">fetch</span>(<span class="s">'/api/messages?since=lastId'</span>);
+  <span class="f">updateUI</span>(messages);
+}, <span class="n">5000</span>);  <span class="c">// poll every 5 seconds</span>
+
+<span class="c"># Problem: 12 requests/min even when nothing changes
+# Wastes bandwidth, adds server load, data can be 5s stale</span></div>
+
+  <h2>Long polling</h2>
+  <div class="code"><span class="c">// Long polling: server HOLDS the request until new data arrives</span>
+<span class="k">async function</span> <span class="f">longPoll</span>() {
+  <span class="k">const</span> response = <span class="k">await</span> <span class="f">fetch</span>(<span class="s">'/api/messages/wait'</span>);  <span class="c">// hangs here...</span>
+  <span class="c">// ...server responds ONLY when there's a new message</span>
+  <span class="f">handleNewMessages</span>(response);
+  <span class="f">longPoll</span>();  <span class="c">// immediately start the next wait</span>
+}
+
+<span class="c"># FastAPI: hold and wait for new data</span>
+<span class="f">@</span>app.get(<span class="s">"/api/messages/wait"</span>)
+<span class="k">async def</span> <span class="f">wait_for_messages</span>(last_id: str):
+    deadline = time.time() + <span class="n">30</span>  <span class="c"># wait max 30 seconds</span>
+    <span class="k">while</span> time.time() < deadline:
+        messages = <span class="k">await</span> <span class="f">get_new_messages</span>(after=last_id)
+        <span class="k">if</span> messages: <span class="k">return</span> messages
+        <span class="k">await</span> asyncio.<span class="f">sleep</span>(<span class="n">0.5</span>)
+    <span class="k">return</span> []  <span class="c"># timeout — client will reconnect</span></div>
+
+  <h2>When to use polling</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Technique</th><th>Latency</th><th>Server load</th><th>Use when</th></tr></thead>
+      <tbody>
+        <tr><td>Short polling (every Ns)</td><td>Up to N seconds</td><td>High (constant requests)</td><td>Update frequency is predictable, simplicity needed</td></tr>
+        <tr><td>Long polling</td><td>Near real-time</td><td>Medium (connections held open)</td><td>Can't use WebSocket, need better than polling</td></tr>
+        <tr><td>SSE</td><td>Real-time</td><td>Low (one connection, server pushes)</td><td>Server → client streaming, AI responses</td></tr>
+        <tr><td>WebSocket</td><td>Real-time</td><td>Low (persistent connection)</td><td>Bidirectional, chat, games</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════ SSE ════ -->
+<section id="sec-sse" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(59,130,246,.1);color:var(--c7)">Module 14 · Real-time</div>
+    <h1 class="htitle">SSE — Server-Sent Events</h1>
+    <p class="hsub">SSE is a one-way persistent HTTP connection where the server can push any number of events to the client over time. Perfect for AI token streaming, live dashboards, progress bars, and notifications — anywhere the server needs to push data continuously.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Direction</div><div class="sv" style="color:var(--c7)">Server → Client only</div></div>
+    <div class="stat"><div class="sl">Protocol</div><div class="sv" style="color:var(--c2)">HTTP (not new protocol)</div></div>
+    <div class="stat"><div class="sl">Auto-reconnect</div><div class="sv" style="color:var(--c2)">Built into browser</div></div>
+    <div class="stat"><div class="sl">Best for</div><div class="sv" style="color:var(--c3)">AI streaming, live feeds</div></div>
+  </div>
+
+  <h2>How SSE works</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:var(--c7)">Browser<br><span style="font-size:9px;font-weight:400;color:var(--t3)">EventSource API</span></div>
+      <span class="fa">──── GET /stream ────▶</span>
+      <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--c2)">Server<br><span style="font-size:9px;font-weight:400;color:var(--t3)">FastAPI</span></div>
+    </div>
+    <div style="margin:6px 0;color:var(--t3);font-size:11px;font-family:'Space Mono',monospace;text-align:center">◀─── data: token1\n\n ─── keeps sending ─── data: token2\n\n ───</div>
+    <div style="font-size:10px;color:var(--t3);font-family:'Space Mono',monospace;text-align:center">Connection stays open until server ends stream or client disconnects</div>
+  </div>
+
+  <h2>SSE message format</h2>
+  <div class="code"><span class="c"># SSE wire format — very simple</span>
+data: Hello, this is the first chunk\n\n   <span class="c">← \n\n = end of event</span>
+
+data: And this is the second\n\n
+
+id: 42\n                                   <span class="c">← optional event ID</span>
+event: message\n                           <span class="c">← optional event type</span>
+data: {"type": "token", "text": "hi"}\n\n  <span class="c">← JSON works too</span>
+
+retry: 3000\n                              <span class="c">← reconnect delay in ms</span>
+data: still sending\n\n</div>
+
+  <h2>FastAPI SSE implementation</h2>
+  <div class="code"><span class="k">from</span> fastapi.responses <span class="k">import</span> StreamingResponse
+<span class="k">import</span> asyncio, json
+
+<span class="c"># AI token streaming endpoint</span>
+<span class="f">@</span>app.get(<span class="s">"/api/chat/stream"</span>)
+<span class="k">async def</span> <span class="f">stream_chat</span>(message: str, user = <span class="f">Depends</span>(get_current_user)):
+    <span class="k">async def</span> <span class="f">event_generator</span>():
+        <span class="c"># Stream tokens from OpenAI</span>
+        <span class="k">async for</span> chunk <span class="k">in</span> <span class="f">openai_stream</span>(message):
+            token = chunk.choices[<span class="n">0</span>].delta.content
+            <span class="k">if</span> token:
+                data = json.<span class="f">dumps</span>({<span class="s">"token"</span>: token})
+                <span class="k">yield</span> <span class="s">f"data: {data}\n\n"</span>  <span class="c"># SSE format</span>
+
+        <span class="c"># Signal completion</span>
+        <span class="k">yield</span> <span class="s">"data: [DONE]\n\n"</span>
+
+    <span class="k">return</span> StreamingResponse(
+        <span class="f">event_generator</span>(),
+        media_type=<span class="s">"text/event-stream"</span>,
+        headers={
+            <span class="s">"Cache-Control"</span>: <span class="s">"no-cache"</span>,
+            <span class="s">"X-Accel-Buffering"</span>: <span class="s">"no"</span>,  <span class="c"># disable Nginx buffering</span>
+        }
+    )</div>
+
+  <div class="code"><span class="c">// Frontend: EventSource API</span>
+<span class="k">const</span> eventSource = <span class="k">new</span> <span class="f">EventSource</span>(<span class="s">`/api/chat/stream?message=${encodeURIComponent(msg)}`</span>);
+
+eventSource.onmessage = (event) => {
+  <span class="k">if</span> (event.data === <span class="s">'[DONE]'</span>) {
+    eventSource.<span class="f">close</span>();  <span class="c">// stream ended</span>
+    <span class="k">return</span>;
+  }
+  <span class="k">const</span> { token } = JSON.<span class="f">parse</span>(event.data);
+  <span class="f">appendToken</span>(token);  <span class="c">// show token in UI as it arrives</span>
+};
+
+eventSource.onerror = () => eventSource.<span class="f">close</span>();
+<span class="c">// Browser auto-reconnects on error (unless you close it)</span></div>
+</section>
+
+<!-- ════ WEBSOCKET ════ -->
+<section id="sec-websocket" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(6,182,212,.1);color:var(--c1)">Module 15 · Real-time</div>
+    <h1 class="htitle">WebSocket</h1>
+    <p class="hsub">WebSocket is a protocol that provides full-duplex (bidirectional) communication over a single persistent TCP connection. Once established, both client and server can send messages at any time — no request-response cycle needed.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Direction</div><div class="sv" style="color:var(--c1)">Both ways (full-duplex)</div></div>
+    <div class="stat"><div class="sl">Protocol</div><div class="sv" style="color:var(--c2)">ws:// or wss://</div></div>
+    <div class="stat"><div class="sl">Starts as</div><div class="sv" style="color:var(--c3)">HTTP → upgrades to WS</div></div>
+    <div class="stat"><div class="sl">Best for</div><div class="sv" style="color:var(--c5)">Chat, games, collab</div></div>
+  </div>
+
+  <h2>HTTP → WebSocket upgrade handshake</h2>
+  <div class="code"><span class="c"># Step 1: Client sends HTTP upgrade request</span>
+GET /ws/chat HTTP/1.1
+Host: yourapp.com
+<span class="n">Upgrade:</span> websocket                     <span class="c">← "I want to switch protocols"</span>
+<span class="n">Connection:</span> Upgrade
+<span class="n">Sec-WebSocket-Key:</span> dGhlIHNhbXBsZQ==   <span class="c">← random key for verification</span>
+<span class="n">Sec-WebSocket-Version:</span> 13
+
+<span class="c"># Step 2: Server responds 101 Switching Protocols</span>
+HTTP/1.1 <span class="n">101</span> Switching Protocols
+<span class="n">Upgrade:</span> websocket
+<span class="n">Connection:</span> Upgrade
+<span class="n">Sec-WebSocket-Accept:</span> s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+
+<span class="c"># Step 3: Connection is now WebSocket — HTTP is done
+# Both sides can now send frames at any time</span></div>
+
+  <h2>FastAPI WebSocket server</h2>
+  <div class="code"><span class="k">from</span> fastapi <span class="k">import</span> WebSocket, WebSocketDisconnect
+<span class="k">from</span> typing <span class="k">import</span> Dict, Set
+<span class="k">import</span> json
+
+<span class="c"># Connection manager for multiple clients</span>
+<span class="k">class</span> <span class="o">ConnectionManager</span>:
+    <span class="k">def</span> <span class="f">__init__</span>(self):
+        self.rooms: Dict[str, Set[WebSocket]] = {}
+
+    <span class="k">async def</span> <span class="f">connect</span>(self, ws: WebSocket, room_id: str):
+        <span class="k">await</span> ws.<span class="f">accept</span>()
+        <span class="k">if</span> room_id <span class="k">not in</span> self.rooms:
+            self.rooms[room_id] = set()
+        self.rooms[room_id].<span class="f">add</span>(ws)
+
+    <span class="k">def</span> <span class="f">disconnect</span>(self, ws: WebSocket, room_id: str):
+        self.rooms.<span class="f">get</span>(room_id, set()).<span class="f">discard</span>(ws)
+
+    <span class="k">async def</span> <span class="f">broadcast</span>(self, room_id: str, message: dict, sender: WebSocket = <span class="k">None</span>):
+        <span class="k">for</span> ws <span class="k">in</span> self.rooms.<span class="f">get</span>(room_id, set()).<span class="f">copy</span>():
+            <span class="k">if</span> ws != sender:  <span class="c"># don't send back to sender</span>
+                <span class="k">try</span>:
+                    <span class="k">await</span> ws.<span class="f">send_json</span>(message)
+                <span class="k">except</span>:
+                    self.<span class="f">disconnect</span>(ws, room_id)
+
+manager = <span class="o">ConnectionManager</span>()
+
+<span class="f">@</span>app.websocket(<span class="s">"/ws/{room_id}"</span>)
+<span class="k">async def</span> <span class="f">websocket_room</span>(websocket: WebSocket, room_id: str, token: str):
+    <span class="c"># Authenticate before accepting</span>
+    user = <span class="f">verify_token</span>(token)
+    <span class="k">if not</span> user:
+        <span class="k">await</span> websocket.<span class="f">close</span>(code=<span class="n">1008</span>)
+        <span class="k">return</span>
+
+    <span class="k">await</span> manager.<span class="f">connect</span>(websocket, room_id)
+    <span class="k">try</span>:
+        <span class="k">while</span> <span class="k">True</span>:
+            data = <span class="k">await</span> websocket.<span class="f">receive_json</span>()
+            <span class="c"># Broadcast to everyone else in the room</span>
+            <span class="k">await</span> manager.<span class="f">broadcast</span>(room_id, {
+                <span class="s">"user"</span>: user[<span class="s">"name"</span>],
+                <span class="s">"text"</span>: data[<span class="s">"text"</span>],
+                <span class="s">"timestamp"</span>: <span class="f">now_iso</span>()
+            }, sender=websocket)
+    <span class="k">except</span> WebSocketDisconnect:
+        manager.<span class="f">disconnect</span>(websocket, room_id)</div>
+
+  <div class="code"><span class="c">// Browser WebSocket client</span>
+<span class="k">const</span> ws = <span class="k">new</span> <span class="f">WebSocket</span>(<span class="s">`wss://yourapp.com/ws/room-123?token=${token}`</span>);
+
+ws.onopen    = ()    => { ws.<span class="f">send</span>(JSON.<span class="f">stringify</span>({ type: <span class="s">'join'</span> })); };
+ws.onmessage = (e)   => { <span class="f">renderMessage</span>(JSON.<span class="f">parse</span>(e.data)); };
+ws.onclose   = (e)   => { <span class="f">reconnect</span>(); };  <span class="c">// handle disconnects</span>
+ws.onerror   = (err) => { console.<span class="f">error</span>(<span class="s">'WS error:'</span>, err); };
+
+<span class="c">// Send a message</span>
+ws.<span class="f">send</span>(JSON.<span class="f">stringify</span>({ text: <span class="s">'Hello everyone!'</span> }));</div>
+</section>
+
+<!-- ════ WEBHOOK ════ -->
+<section id="sec-webhook" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(249,115,22,.1);color:var(--c9)">Module 16 · Real-time</div>
+    <h1 class="htitle">Webhooks</h1>
+    <p class="hsub">A webhook is a "reverse API call." Instead of your app asking a service "did anything happen?", the service calls YOUR endpoint when something happens. Event-driven, efficient, and the standard for integrating with external platforms.</p>
+  </div>
+
+  <div class="callout q9"><strong>Polling vs Webhook analogy:</strong> Polling = checking your mailbox every 5 minutes. Webhook = the postal worker rings your doorbell when mail arrives. One is wasteful, one is efficient.</div>
+
+  <h2>How webhooks work</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);color:var(--c9)">Event happens<br><span style="font-size:9px;font-weight:400;color:var(--t3)">payment charged</span></div>
+      <span class="fa">─▶</span>
+      <div class="fbox" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--c3)">Stripe<br><span style="font-size:9px;font-weight:400;color:var(--t3)">external service</span></div>
+      <span class="fa">── POST ──▶</span>
+      <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--c2)">Your server<br><span style="font-size:9px;font-weight:400;color:var(--t3)">/webhook/stripe</span></div>
+      <span class="fa">─▶</span>
+      <div class="fbox" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:var(--c5)">Process event<br><span style="font-size:9px;font-weight:400;color:var(--t3)">update DB</span></div>
+    </div>
+  </div>
+
+  <h2>Webhook vs API call</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--c1)">Regular API (polling)</h3>
+      <li>YOUR server calls THEIR server</li>
+      <li>You initiate: "did anything happen?"</li>
+      <li>Repeated requests even if nothing changed</li>
+      <li>Near real-time requires aggressive polling</li>
+      <li>You control the timing</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--c9)">Webhook (event-driven)</h3>
+      <li>THEIR server calls YOUR server</li>
+      <li>They notify: "this thing just happened"</li>
+      <li>Only fires when events actually occur</li>
+      <li>Instant notification</li>
+      <li>They control the timing</li>
+    </div>
+  </div>
+
+  <h2>Webhook security — signature verification</h2>
+  <div class="code"><span class="c"># How Stripe signs webhooks:</span>
+<span class="c"># 1. Stripe creates: timestamp + "." + payload</span>
+<span class="c"># 2. HMAC-SHA256 with your webhook secret</span>
+<span class="c"># 3. Sends in: Stripe-Signature: t=timestamp,v1=signature</span>
+
+<span class="c"># Your FastAPI endpoint:</span>
+<span class="k">import</span> hmac, hashlib, secrets
+
+<span class="f">@</span>app.post(<span class="s">"/webhook/stripe"</span>)
+<span class="k">async def</span> <span class="f">stripe_webhook</span>(request: Request):
+    payload = <span class="k">await</span> request.<span class="f">body</span>()          <span class="c"># raw bytes (not parsed JSON)</span>
+    sig_header = request.headers.<span class="f">get</span>(<span class="s">"stripe-signature"</span>)
+    webhook_secret = os.<span class="f">getenv</span>(<span class="s">"STRIPE_WEBHOOK_SECRET"</span>)
+
+    <span class="c"># Parse the signature header: t=...,v1=...</span>
+    parts = dict(<span class="f">kv.split</span>(<span class="s">"="</span>, <span class="n">1</span>) <span class="k">for</span> kv <span class="k">in</span> sig_header.<span class="f">split</span>(<span class="s">","</span>))
+    timestamp = parts.<span class="f">get</span>(<span class="s">"t"</span>)
+    v1_sig    = parts.<span class="f">get</span>(<span class="s">"v1"</span>)
+
+    <span class="c"># Recompute expected signature</span>
+    signed_payload = <span class="f">f</span><span class="s">"{timestamp}.{payload.decode()}"</span>
+    expected = hmac.<span class="f">new</span>(
+        webhook_secret.<span class="f">encode</span>(),
+        signed_payload.<span class="f">encode</span>(),
+        hashlib.sha256
+    ).<span class="f">hexdigest</span>()
+
+    <span class="c"># Constant-time comparison (prevents timing attacks)</span>
+    <span class="k">if not</span> secrets.<span class="f">compare_digest</span>(expected, v1_sig):
+        <span class="k">raise</span> <span class="f">HTTPException</span>(<span class="n">403</span>, <span class="s">"Invalid signature"</span>)
+
+    <span class="c"># Parse and handle the event</span>
+    event = json.<span class="f">loads</span>(payload)
+    <span class="k">if</span> event[<span class="s">"type"</span>] == <span class="s">"payment_intent.succeeded"</span>:
+        <span class="k">await</span> <span class="f">handle_payment_success</span>(event[<span class="s">"data"</span>][<span class="s">"object"</span>])
+
+    <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"received"</span>}  <span class="c"># always return 200 quickly</span></div>
+
+  <div class="callout q9">
+    <strong>Critical webhook rules:</strong><br>
+    1. Always verify the signature — never trust a webhook without it<br>
+    2. Return 200 immediately — do heavy processing async (queue it)<br>
+    3. Handle duplicate events — services retry on failure (make handlers idempotent)<br>
+    4. Parse raw bytes for verification — not parsed JSON (serialization may differ)
+  </div>
+</section>
+
+<!-- ════ WEBRTC ════ -->
+<section id="sec-webrtc" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(236,72,153,.1);color:var(--c4)">Module 17 · Real-time</div>
+    <h1 class="htitle">WebRTC — Real-Time Communication</h1>
+    <p class="hsub">WebRTC (Web Real-Time Communication) enables browsers and apps to communicate audio, video, and data directly peer-to-peer — without a relay server for media. It's the technology behind Google Meet, Discord, and LiveKit voice agents.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Media path</div><div class="sv" style="color:var(--c4)">Peer-to-peer direct</div></div>
+    <div class="stat"><div class="sl">Encryption</div><div class="sv" style="color:var(--c2)">DTLS-SRTP (mandatory)</div></div>
+    <div class="stat"><div class="sl">Server needed</div><div class="sv" style="color:var(--c3)">Signaling + TURN</div></div>
+    <div class="stat"><div class="sl">Use case</div><div class="sv" style="color:var(--c1)">Voice, video, screen share</div></div>
+  </div>
+
+  <h2>WebRTC architecture — 3 components</h2>
+  <div class="flow">
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center">
+      <div class="fbox" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--c1);text-align:center">Browser A<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Peer 1</span></div>
+      <div style="text-align:center">
+        <div style="font-size:10px;color:var(--t3);font-family:'Space Mono',monospace;margin-bottom:6px">Signaling (WebSocket)</div>
+        <div class="fbox" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--c3)">Your Server<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Signaling only</span></div>
+        <div style="font-size:10px;color:var(--t3);font-family:'Space Mono',monospace;margin-top:6px">TURN relay (if NAT fails)</div>
+      </div>
+      <div class="fbox" style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--c4);text-align:center">Browser B<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Peer 2</span></div>
+    </div>
+    <div style="text-align:center;margin-top:10px;font-size:10px;font-family:'Space Mono',monospace;color:var(--c2)">◄──────── Direct P2P media stream (audio/video) — bypasses server ────────►</div>
+  </div>
+
+  <h2>The WebRTC connection process (ICE negotiation)</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(236,72,153,.2);color:var(--c4)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">SDP Offer — "Here's what I can do"</div><div class="sbody">Browser A creates an SDP (Session Description Protocol) offer: what codecs it supports (H.264, VP8), what audio formats, what resolutions. Sends to your signaling server.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(236,72,153,.2);color:var(--c4)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">SDP Answer — "Here's what I can do too"</div><div class="sbody">Your server forwards the offer to Browser B. B creates an SDP answer with its capabilities. Sends back through your server to A.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(236,72,153,.2);color:var(--c4)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">ICE candidates — "Here's how to reach me"</div><div class="sbody">Both browsers gather ICE (Interactive Connectivity Establishment) candidates — possible network paths (local IP, public IP via STUN, TURN relay). Exchange them through signaling server.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(236,72,153,.2);color:var(--c4)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">DTLS handshake — encryption key exchange</div><div class="sbody">Once a network path is found, DTLS (Datagram TLS) handshake occurs directly between peers. Encryption keys are established.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(236,72,153,.2);color:var(--c4)">5</div></div><div class="sc"><div class="stitle">SRTP stream — encrypted media flows</div><div class="sbody">Audio and video flow directly peer-to-peer encrypted with SRTP. Your server sees none of the media — only handled the initial signaling.</div></div></div>
+  </div>
+
+  <h2>STUN vs TURN servers</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--c2)">STUN server</h3>
+      <li>Helps a peer discover its public IP</li>
+      <li>Used during ICE candidate gathering</li>
+      <li>Lightweight — just reflects your IP back</li>
+      <li>Free: <code>stun.l.google.com:19302</code></li>
+      <li>Doesn't relay media — peers still direct</li>
+      <li>Fails if both peers are behind symmetric NAT</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--c9)">TURN server</h3>
+      <li>Relays media when direct connection fails</li>
+      <li>Required for corporate NAT, strict firewalls (~15% of calls)</li>
+      <li>Media flows through TURN server (adds latency)</li>
+      <li>Costs bandwidth to operate</li>
+      <li>LiveKit Cloud provides TURN automatically</li>
+      <li>Essential for reliable production WebRTC</li>
+    </div>
+  </div>
+
+  <div class="callout q4"><strong>LiveKit handles all of this for you.</strong> LiveKit Cloud provides STUN, TURN, SFU (Selective Forwarding Unit for multi-party), SDP negotiation, ICE, encryption, and SDKs. You call <code>room.connect()</code> and it just works. Only need to understand the internals for debugging or if self-hosting.</div>
+</section>
+
+<!-- ════ REALTIME COMPARE ════ -->
+<section id="sec-realtime-compare" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(139,92,246,.1);color:var(--c5)">Comparison · Key section</div>
+    <h1 class="htitle">Real-time Technologies — Head to Head</h1>
+    <p class="hsub">This is the most important comparison in this guide. When building a real-time feature, choosing the wrong technology creates painful refactors later. Here's the complete decision framework.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th></th><th>Short Polling</th><th>Long Polling</th><th>SSE</th><th>WebSocket</th><th>Webhook</th><th>WebRTC</th></tr></thead>
+      <tbody>
+        <tr><td>Connection</td><td>New per req</td><td>Held HTTP</td><td>Persistent HTTP</td><td>Persistent WS</td><td>HTTP callback</td><td>P2P / TURN</td></tr>
+        <tr><td>Direction</td><td>C→S, S→C</td><td>C→S, S→C</td><td>S→C only</td><td>Both ways</td><td>S→C (server→your server)</td><td>Both ways P2P</td></tr>
+        <tr><td>Latency</td><td>Interval delay</td><td>~100ms</td><td>&lt;50ms</td><td>&lt;50ms</td><td>~100ms</td><td>&lt;50ms</td></tr>
+        <tr><td>Server load</td><td>High</td><td>Medium</td><td>Low</td><td>Low</td><td>Very low</td><td>Low (signaling only)</td></tr>
+        <tr><td>Complexity</td><td>Very low</td><td>Low</td><td>Low-Med</td><td>Medium</td><td>Low</td><td>High</td></tr>
+        <tr><td>Browser support</td><td>Universal</td><td>Universal</td><td>All modern</td><td>All modern</td><td>N/A (server-side)</td><td>All modern</td></tr>
+        <tr><td>Works through proxies</td><td>Yes</td><td>Yes</td><td>Yes (if buffering off)</td><td>With upgrade headers</td><td>Yes</td><td>TURN needed</td></tr>
+        <tr><td>Auto reconnect</td><td>Manual</td><td>Manual</td><td>Built-in</td><td>Manual</td><td>N/A</td><td>Manual</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Decision flowchart</h2>
+  <div class="flow">
+    <div style="font-family:'Space Mono',monospace;font-size:11px;line-height:2">
+      <div style="color:var(--c3)">Do you need to send data TO a browser in real-time?</div>
+      <div style="padding-left:20px;color:var(--t3)">├── No, notify YOUR server when external event happens → <span style="color:var(--c9)">Webhook</span></div>
+      <div style="padding-left:20px;color:var(--t3)">└── Yes...</div>
+      <div style="padding-left:40px;color:var(--c3)">Is it ONLY server → browser (one way)?</div>
+      <div style="padding-left:60px;color:var(--t3)">├── Yes → <span style="color:var(--c7)">SSE</span> (AI streaming, live feeds, progress bars)</div>
+      <div style="padding-left:60px;color:var(--t3)">└── No, browser also sends to server...</div>
+      <div style="padding-left:80px;color:var(--c3)">Is it real-time voice or video?</div>
+      <div style="padding-left:100px;color:var(--t3)">├── Yes → <span style="color:var(--c4)">WebRTC</span> (or LiveKit)</div>
+      <div style="padding-left:100px;color:var(--t3)">└── No, text/data → <span style="color:var(--c1)">WebSocket</span> (chat, games, collab)</div>
+    </div>
+  </div>
+
+  <h2>Real-world usage examples</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Application</th><th>Technology used</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>ChatGPT token streaming</td><td><span class="pill p7">SSE</span></td><td>Server pushes AI tokens one-by-one to browser. One-way. Perfect SSE use case.</td></tr>
+        <tr><td>Slack / Discord messaging</td><td><span class="pill p1">WebSocket</span></td><td>Both sides send messages. Presence updates. Typing indicators. Full-duplex.</td></tr>
+        <tr><td>Google Meet / Zoom</td><td><span class="pill p4">WebRTC</span></td><td>Audio/video peer-to-peer. Media doesn't route through their servers (mostly).</td></tr>
+        <tr><td>Stripe payment events</td><td><span class="pill p9">Webhook</span></td><td>Stripe calls your server when payment succeeds. You don't poll Stripe.</td></tr>
+        <tr><td>GitHub Actions trigger</td><td><span class="pill p9">Webhook</span></td><td>GitHub calls your CI/CD server when code is pushed.</td></tr>
+        <tr><td>Stock price ticker</td><td><span class="pill p7">SSE</span> or <span class="pill p1">WebSocket</span></td><td>SSE if display-only. WebSocket if users can also place orders in same connection.</td></tr>
+        <tr><td>Multiplayer game state</td><td><span class="pill p1">WebSocket</span></td><td>Players send moves, receive opponent moves. Constant bidirectional flow.</td></tr>
+        <tr><td>Simple notifications</td><td><span class="pill p7">SSE</span></td><td>Server pushes "you got a message" to browser. Browser doesn't need to reply.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════ API COMPARE ════ -->
+<section id="sec-api-compare" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(245,158,11,.1);color:var(--c3)">Comparison · Key section</div>
+    <h1 class="htitle">API Styles — REST vs GraphQL vs gRPC vs WebSocket</h1>
+    <p class="hsub">Different API styles exist because different problems have different optimal solutions. No single API style wins at everything. Here's how to choose — and why most systems use more than one.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Aspect</th><th>REST/HTTP</th><th>GraphQL</th><th>gRPC</th><th>WebSocket API</th></tr></thead>
+      <tbody>
+        <tr><td>Request style</td><td>Predefined endpoints</td><td>Flexible queries</td><td>Method calls</td><td>Message passing</td></tr>
+        <tr><td>Data format</td><td>JSON (text)</td><td>JSON (text)</td><td>Protobuf (binary)</td><td>JSON or binary</td></tr>
+        <tr><td>Type safety</td><td>Optional (OpenAPI)</td><td>Built-in schema</td><td>Strict protobuf</td><td>None built-in</td></tr>
+        <tr><td>Learning curve</td><td>Low (everyone knows it)</td><td>Medium</td><td>High</td><td>Medium</td></tr>
+        <tr><td>Caching</td><td>Excellent (HTTP native)</td><td>Complex</td><td>Not built-in</td><td>None</td></tr>
+        <tr><td>Tooling ecosystem</td><td>Massive</td><td>Good</td><td>Growing</td><td>Limited</td></tr>
+        <tr><td>Browser support</td><td>Native</td><td>Native (via HTTP)</td><td>Needs proxy</td><td>Native</td></tr>
+        <tr><td>Streaming</td><td>Limited (SSE)</td><td>Subscriptions</td><td>First-class</td><td>First-class</td></tr>
+        <tr><td>Best for</td><td>Most APIs</td><td>Complex data, mobile</td><td>Microservices</td><td>Real-time apps</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout q3"><strong>Most production systems use multiple:</strong> REST for public API + WebSocket for real-time chat + gRPC between internal services + Webhooks for external event integration. Pick the right tool for each communication need.</div>
+</section>
+
+<!-- ════ AUTH ════ -->
+<section id="sec-auth" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(239,68,68,.1);color:var(--c6)">Module 18 · Authentication</div>
+    <h1 class="htitle">API Authentication Patterns</h1>
+    <p class="hsub">Authentication answers "who are you?" Authorization answers "what can you do?" Every API endpoint needs to answer both questions. Here are the standard patterns used in production systems.</p>
+  </div>
+
+  <h2>Pattern comparison</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Pattern</th><th>How it works</th><th>Best for</th><th>Risk</th></tr></thead>
+      <tbody>
+        <tr><td>API Key</td><td>Static secret in header: <code>X-API-Key: sk-abc</code></td><td>Service-to-service, simple integrations</td><td>Doesn't expire unless rotated</td></tr>
+        <tr><td>Bearer Token (JWT)</td><td><code>Authorization: Bearer eyJ...</code></td><td>User authentication, stateless APIs</td><td>Can't revoke before expiry without blacklist</td></tr>
+        <tr><td>OAuth2</td><td>Exchange code for token via auth server</td><td>Third-party access, "Login with Google"</td><td>Complex flow, more moving parts</td></tr>
+        <tr><td>Session Cookie</td><td>Server stores session, browser sends cookie</td><td>Traditional web apps</td><td>Requires sticky sessions, CSRF attacks</td></tr>
+        <tr><td>Basic Auth</td><td>Base64(username:password) in header</td><td>Internal tools, testing</td><td>Password sent every request (need HTTPS)</td></tr>
+        <tr><td>HMAC Signature</td><td>Request signed with shared secret</td><td>Webhooks, AWS-style APIs</td><td>Shared secret must be kept safe</td></tr>
+        <tr><td>mTLS</td><td>Both client and server present certificates</td><td>Microservice-to-microservice</td><td>Complex certificate management</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>JWT — how it works in an API flow</h2>
+  <div class="code"><span class="c"># JWT structure: header.payload.signature (base64 encoded)</span>
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9           <span class="c"># header</span>
+.eyJzdWIiOiJ1c2VyXzEyMyIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA1MDAwMDAwfQ==  <span class="c"># payload</span>
+.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c   <span class="c"># signature</span>
+
+<span class="c"># Decoded payload:</span>
+{ <span class="s">"sub"</span>: <span class="s">"user_123"</span>, <span class="s">"role"</span>: <span class="s">"admin"</span>, <span class="s">"exp"</span>: <span class="n">1705000000</span> }
+
+<span class="c"># FastAPI flow:</span>
+<span class="c"># 1. User posts credentials</span>
+<span class="f">@</span>app.post(<span class="s">"/api/auth/login"</span>)
+<span class="k">async def</span> <span class="f">login</span>(email: str, password: str):
+    user = <span class="k">await</span> <span class="f">verify_credentials</span>(email, password)
+    access_token = <span class="f">create_jwt</span>(user_id=user.id, role=user.role, expires_in=<span class="n">3600</span>)
+    <span class="k">return</span> {<span class="s">"access_token"</span>: access_token, <span class="s">"token_type"</span>: <span class="s">"bearer"</span>}
+
+<span class="c"># 2. Every protected request verifies JWT</span>
+<span class="f">@</span>app.get(<span class="s">"/api/profile"</span>)
+<span class="k">async def</span> <span class="f">profile</span>(user = <span class="f">Depends</span>(verify_jwt)):
+    <span class="k">return</span> user  <span class="c"># decoded from token — no DB lookup needed</span></div>
+</section>
+
+<!-- ════ UC: REST API ════ -->
+<section id="sec-uc-rest" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(16,185,129,.1);color:var(--c2)">Use Case 1 — Build it</div>
+    <h1 class="htitle">Build a production-ready REST API with FastAPI</h1>
+    <p class="hsub">Complete FastAPI REST API with versioning, pagination, auth, validation, and proper error handling — the full production pattern.</p>
+  </div>
+
+  <div class="code"><span class="k">from</span> fastapi <span class="k">import</span> FastAPI, Depends, HTTPException, Query, Path
+<span class="k">from</span> pydantic <span class="k">import</span> BaseModel, validator
+<span class="k">from</span> typing <span class="k">import</span> Optional, List
+<span class="k">import</span> uuid
+
+app = <span class="f">FastAPI</span>(title=<span class="s">"Chat API"</span>, version=<span class="s">"1.0.0"</span>)
+
+<span class="c"># ─── Models ───</span>
+<span class="k">class</span> <span class="o">MessageCreate</span>(BaseModel):
+    text: str
+    conversation_id: str
+
+    <span class="f">@validator</span>(<span class="s">"text"</span>)
+    <span class="k">def</span> <span class="f">text_must_not_be_empty</span>(cls, v):
+        <span class="k">if not</span> v.<span class="f">strip</span>(): <span class="k">raise</span> ValueError(<span class="s">"Text cannot be empty"</span>)
+        <span class="k">if len</span>(v) > <span class="n">2000</span>: <span class="k">raise</span> ValueError(<span class="s">"Max 2000 characters"</span>)
+        <span class="k">return</span> v.<span class="f">strip</span>()
+
+<span class="c"># ─── GET /api/v1/messages ───</span>
+<span class="f">@</span>app.get(<span class="s">"/api/v1/messages"</span>)
+<span class="k">async def</span> <span class="f">list_messages</span>(
+    conversation_id: str,
+    page: int = <span class="f">Query</span>(<span class="n">1</span>, ge=<span class="n">1</span>),
+    per_page: int = <span class="f">Query</span>(<span class="n">20</span>, ge=<span class="n">1</span>, le=<span class="n">100</span>),
+    sort: str = <span class="f">Query</span>(<span class="s">"created_at"</span>, regex=<span class="s">"^(created_at|updated_at)$"</span>),
+    user = <span class="f">Depends</span>(get_current_user)
+):
+    messages, total = <span class="k">await</span> db.<span class="f">get_messages</span>(conversation_id, page, per_page, sort)
+    <span class="k">return</span> {
+        <span class="s">"data"</span>: messages,
+        <span class="s">"pagination"</span>: {
+            <span class="s">"page"</span>: page, <span class="s">"per_page"</span>: per_page, <span class="s">"total"</span>: total,
+            <span class="s">"pages"</span>: (total + per_page - <span class="n">1</span>) // per_page
+        }
+    }
+
+<span class="c"># ─── POST /api/v1/messages ───</span>
+<span class="f">@</span>app.post(<span class="s">"/api/v1/messages"</span>, status_code=<span class="n">201</span>)
+<span class="k">async def</span> <span class="f">create_message</span>(body: <span class="o">MessageCreate</span>, user = <span class="f">Depends</span>(get_current_user)):
+    <span class="c"># Ownership check — user must own the conversation</span>
+    conv = <span class="k">await</span> db.<span class="f">get_conversation</span>(body.conversation_id)
+    <span class="k">if not</span> conv <span class="k">or</span> conv.user_id != user[<span class="s">"id"</span>]:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(<span class="n">403</span>)
+    message = <span class="k">await</span> db.messages.<span class="f">create</span>({<span class="s">"id"</span>: str(uuid.<span class="f">uuid4</span>()), **body.<span class="f">dict</span>()})
+    <span class="k">return</span> {<span class="s">"data"</span>: message}
+
+<span class="c"># ─── PATCH /api/v1/messages/{id} ───</span>
+<span class="f">@</span>app.patch(<span class="s">"/api/v1/messages/{message_id}"</span>)
+<span class="k">async def</span> <span class="f">update_message</span>(
+    message_id: str = <span class="f">Path</span>(..., regex=<span class="s">"^msg_[a-zA-Z0-9]+$"</span>),
+    updates: dict = {},
+    user = <span class="f">Depends</span>(get_current_user)
+):
+    msg = <span class="k">await</span> db.messages.<span class="f">get</span>(message_id)
+    <span class="k">if not</span> msg: <span class="k">raise</span> <span class="f">HTTPException</span>(<span class="n">404</span>)
+    <span class="k">if</span> msg.user_id != user[<span class="s">"id"</span>]: <span class="k">raise</span> <span class="f">HTTPException</span>(<span class="n">403</span>)
+    updated = <span class="k">await</span> db.messages.<span class="f">update</span>(message_id, updates)
+    <span class="k">return</span> {<span class="s">"data"</span>: updated}</div>
+</section>
+
+<!-- ════ UC: WEBSOCKET ════ -->
+<section id="sec-uc-ws" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(6,182,212,.1);color:var(--c1)">Use Case 2 — Build it</div>
+    <h1 class="htitle">Build a real-time chat with WebSocket</h1>
+    <p class="hsub">Complete WebSocket chat server with room support, authentication, and graceful disconnect handling.</p>
+  </div>
+
+  <div class="code"><span class="k">from</span> fastapi <span class="k">import</span> WebSocket, WebSocketDisconnect
+<span class="k">from</span> collections <span class="k">import</span> defaultdict
+<span class="k">from</span> datetime <span class="k">import</span> datetime
+<span class="k">import</span> json
+
+<span class="c"># Room-based connection manager</span>
+rooms: dict[str, set] = defaultdict(set)
+
+<span class="f">@</span>app.websocket(<span class="s">"/ws/chat/{room_id}"</span>)
+<span class="k">async def</span> <span class="f">chat_room</span>(websocket: WebSocket, room_id: str, token: str):
+    <span class="c"># Step 1: authenticate BEFORE accepting</span>
+    user = <span class="f">verify_token</span>(token)
+    <span class="k">if not</span> user:
+        <span class="k">await</span> websocket.<span class="f">close</span>(<span class="n">1008</span>)  <span class="c"># policy violation</span>
+        <span class="k">return</span>
+
+    <span class="c"># Step 2: accept the connection</span>
+    <span class="k">await</span> websocket.<span class="f">accept</span>()
+    rooms[room_id].<span class="f">add</span>(websocket)
+
+    <span class="c"># Step 3: notify others</span>
+    <span class="k">await</span> <span class="f">broadcast</span>(room_id, {
+        <span class="s">"type"</span>: <span class="s">"system"</span>, <span class="s">"text"</span>: <span class="s">f"{user['name']} joined"</span>
+    }, exclude=websocket)
+
+    <span class="k">try</span>:
+        <span class="k">while</span> <span class="k">True</span>:
+            raw = <span class="k">await</span> websocket.<span class="f">receive_text</span>()
+            data = json.<span class="f">loads</span>(raw)
+
+            <span class="c"># Handle different message types</span>
+            <span class="k">if</span> data[<span class="s">"type"</span>] == <span class="s">"message"</span>:
+                msg = {
+                    <span class="s">"type"</span>: <span class="s">"message"</span>,
+                    <span class="s">"user"</span>: user[<span class="s">"name"</span>],
+                    <span class="s">"text"</span>: data[<span class="s">"text"</span>],
+                    <span class="s">"ts"</span>: datetime.<span class="f">utcnow</span>().<span class="f">isoformat</span>()
+                }
+                <span class="k">await</span> <span class="f">broadcast</span>(room_id, msg)  <span class="c"># to everyone including sender</span>
+                <span class="k">await</span> db.<span class="f">save_message</span>(room_id, msg)
+
+            <span class="k">elif</span> data[<span class="s">"type"</span>] == <span class="s">"typing"</span>:
+                <span class="c"># Only broadcast typing, don't save</span>
+                <span class="k">await</span> <span class="f">broadcast</span>(room_id, {
+                    <span class="s">"type"</span>: <span class="s">"typing"</span>, <span class="s">"user"</span>: user[<span class="s">"name"</span>]
+                }, exclude=websocket)
+
+    <span class="k">except</span> WebSocketDisconnect:
+        rooms[room_id].<span class="f">discard</span>(websocket)
+        <span class="k">await</span> <span class="f">broadcast</span>(room_id, {
+            <span class="s">"type"</span>: <span class="s">"system"</span>, <span class="s">"text"</span>: <span class="s">f"{user['name']} left"</span>
+        })
+
+<span class="k">async def</span> <span class="f">broadcast</span>(room_id: str, msg: dict, exclude=<span class="k">None</span>):
+    dead = set()
+    <span class="k">for</span> ws <span class="k">in</span> rooms[room_id]:
+        <span class="k">if</span> ws == exclude: <span class="k">continue</span>
+        <span class="k">try</span>: <span class="k">await</span> ws.<span class="f">send_json</span>(msg)
+        <span class="k">except</span>: dead.<span class="f">add</span>(ws)
+    rooms[room_id] -= dead</div>
+</section>
+
+<!-- ════ UC: WEBHOOK ════ -->
+<section id="sec-uc-webhook" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(249,115,22,.1);color:var(--c9)">Use Case 3 — Build it</div>
+    <h1 class="htitle">Build a production webhook receiver</h1>
+    <p class="hsub">A webhook handler that verifies signatures, processes events idempotently, and handles retries correctly — for LiveKit and Stripe.</p>
+  </div>
+
+  <div class="code"><span class="k">import</span> hmac, hashlib, secrets, json
+<span class="k">from</span> fastapi <span class="k">import</span> Request, HTTPException, BackgroundTasks
+
+<span class="c"># Generic HMAC verifier (works for any platform)</span>
+<span class="k">def</span> <span class="f">verify_hmac</span>(body: bytes, signature: str, secret: str) -> bool:
+    expected = hmac.<span class="f">new</span>(secret.<span class="f">encode</span>(), body, hashlib.sha256).<span class="f">hexdigest</span>()
+    <span class="k">return</span> secrets.<span class="f">compare_digest</span>(<span class="f">f"sha256={expected}"</span>, signature)
+
+<span class="c"># Idempotency store (use Redis in production)</span>
+processed_events = set()
+
+<span class="c"># ─── LiveKit Webhook ───</span>
+<span class="f">@</span>app.post(<span class="s">"/webhook/livekit"</span>)
+<span class="k">async def</span> <span class="f">livekit_webhook</span>(request: Request, bg: BackgroundTasks):
+    body = <span class="k">await</span> request.<span class="f">body</span>()
+    auth = request.headers.<span class="f">get</span>(<span class="s">"Authorization"</span>, <span class="s">""</span>)
+
+    <span class="k">from</span> livekit <span class="k">import</span> api <span class="k">as</span> lk_api
+    receiver = lk_api.<span class="f">WebhookReceiver</span>(
+        os.<span class="f">getenv</span>(<span class="s">"LK_API_KEY"</span>), os.<span class="f">getenv</span>(<span class="s">"LK_API_SECRET"</span>)
+    )
+    <span class="k">try</span>:
+        event = receiver.<span class="f">receive</span>(body.<span class="f">decode</span>(), auth)
+    <span class="k">except Exception as</span> e:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(<span class="n">403</span>, <span class="s">"Invalid signature"</span>)
+
+    <span class="c"># Idempotency check</span>
+    event_id = event.id
+    <span class="k">if</span> event_id <span class="k">in</span> processed_events:
+        <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"already_processed"</span>}
+    processed_events.<span class="f">add</span>(event_id)
+
+    <span class="c"># Process in background — return 200 immediately</span>
+    bg.<span class="f">add_task</span>(<span class="f">handle_livekit_event</span>, event)
+    <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"ok"</span>}
+
+<span class="k">async def</span> <span class="f">handle_livekit_event</span>(event):
+    <span class="k">match</span> event.event:
+        <span class="k">case</span> <span class="s">"room_started"</span>:   <span class="k">await</span> <span class="f">on_room_started</span>(event.room)
+        <span class="k">case</span> <span class="s">"room_finished"</span>:  <span class="k">await</span> <span class="f">on_room_finished</span>(event.room)
+        <span class="k">case</span> <span class="s">"participant_joined"</span>: <span class="k">await</span> <span class="f">on_participant_joined</span>(event)
+        <span class="k">case</span> _: logger.<span class="f">debug</span>(<span class="s">f"Unhandled event: {event.event}"</span>)
+
+<span class="c"># ─── Stripe Webhook ───</span>
+<span class="f">@</span>app.post(<span class="s">"/webhook/stripe"</span>)
+<span class="k">async def</span> <span class="f">stripe_webhook</span>(request: Request, bg: BackgroundTasks):
+    body    = <span class="k">await</span> request.<span class="f">body</span>()
+    sig     = request.headers.<span class="f">get</span>(<span class="s">"Stripe-Signature"</span>, <span class="s">""</span>)
+    secret  = os.<span class="f">getenv</span>(<span class="s">"STRIPE_WEBHOOK_SECRET"</span>)
+
+    <span class="k">try</span>:
+        <span class="k">import</span> stripe
+        event = stripe.Webhook.<span class="f">construct_event</span>(body, sig, secret)
+    <span class="k">except Exception</span>:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(<span class="n">400</span>, <span class="s">"Invalid webhook"</span>)
+
+    bg.<span class="f">add_task</span>(<span class="f">handle_stripe_event</span>, event)
+    <span class="k">return</span> {<span class="s">"received"</span>: <span class="k">True</span>}</div>
+</section>
+
+<!-- ════ UC: STREAMING ════ -->
+<section id="sec-uc-streaming" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(59,130,246,.1);color:var(--c7)">Use Case 4 — Build it</div>
+    <h1 class="htitle">AI Response Streaming with SSE</h1>
+    <p class="hsub">Stream AI tokens from OpenAI/Anthropic to the browser token-by-token using SSE — the pattern used by ChatGPT, Claude.ai, and every modern AI chat interface.</p>
+  </div>
+
+  <div class="code"><span class="k">from</span> fastapi.responses <span class="k">import</span> StreamingResponse
+<span class="k">import</span> openai, json, asyncio
+
+<span class="c"># ─── FastAPI streaming endpoint ───</span>
+<span class="f">@</span>app.post(<span class="s">"/api/chat/stream"</span>)
+<span class="k">async def</span> <span class="f">stream_chat</span>(body: <span class="o">ChatRequest</span>, user = <span class="f">Depends</span>(get_current_user)):
+    <span class="c"># Ownership check</span>
+    conv = <span class="k">await</span> db.<span class="f">get_conversation</span>(body.conversation_id, user_id=user[<span class="s">"id"</span>])
+    <span class="k">if not</span> conv: <span class="k">raise</span> <span class="f">HTTPException</span>(<span class="n">403</span>)
+
+    history = <span class="k">await</span> db.<span class="f">get_recent_messages</span>(body.conversation_id, limit=<span class="n">20</span>)
+
+    <span class="k">async def</span> <span class="f">generate</span>():
+        full_response = <span class="s">""</span>
+        <span class="k">try</span>:
+            <span class="c"># Signal stream start</span>
+            <span class="k">yield</span> <span class="s">f"data: {json.dumps({'type': 'start'})}\n\n"</span>
+
+            <span class="c"># Stream from OpenAI</span>
+            client = openai.<span class="f">AsyncOpenAI</span>()
+            stream = <span class="k">await</span> client.chat.completions.<span class="f">create</span>(
+                model=<span class="s">"gpt-4"</span>,
+                messages=[
+                    {<span class="s">"role"</span>: <span class="s">"system"</span>, <span class="s">"content"</span>: <span class="s">"You are a helpful assistant."</span>},
+                    *history,
+                    {<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: body.message}
+                ],
+                stream=<span class="k">True</span>,
+                max_tokens=<span class="n">1000</span>
+            )
+
+            <span class="k">async for</span> chunk <span class="k">in</span> stream:
+                token = chunk.choices[<span class="n">0</span>].delta.content <span class="k">or</span> <span class="s">""</span>
+                <span class="k">if</span> token:
+                    full_response += token
+                    <span class="k">yield</span> <span class="s">f"data: {json.dumps({'type': 'token', 'text': token})}\n\n"</span>
+
+            <span class="c"># Signal completion</span>
+            <span class="k">yield</span> <span class="s">f"data: {json.dumps({'type': 'done', 'total': len(full_response)})}\n\n"</span>
+
+            <span class="c"># Save to DB after streaming completes</span>
+            <span class="k">await</span> db.<span class="f">save_assistant_message</span>(body.conversation_id, full_response)
+
+        <span class="k">except Exception as</span> e:
+            <span class="k">yield</span> <span class="s">f"data: {json.dumps({'type': 'error', 'msg': str(e)})}\n\n"</span>
+
+    <span class="k">return</span> StreamingResponse(<span class="f">generate</span>(), media_type=<span class="s">"text/event-stream"</span>,
+        headers={<span class="s">"Cache-Control"</span>: <span class="s">"no-cache"</span>, <span class="s">"X-Accel-Buffering"</span>: <span class="s">"no"</span>})</div>
+
+  <div class="code"><span class="c">// React hook for SSE streaming</span>
+<span class="k">function</span> <span class="f">useStreamingChat</span>() {
+  <span class="k">const</span> [tokens, setTokens] = <span class="f">useState</span>(<span class="s">''</span>);
+  <span class="k">const</span> [streaming, setStreaming] = <span class="f">useState</span>(<span class="k">false</span>);
+
+  <span class="k">const</span> <span class="f">sendMessage</span> = <span class="k">async</span> (message, conversationId) => {
+    setTokens(<span class="s">''</span>);
+    setStreaming(<span class="k">true</span>);
+
+    <span class="k">const</span> response = <span class="k">await</span> <span class="f">fetch</span>(<span class="s">'/api/chat/stream'</span>, {
+      method: <span class="s">'POST'</span>,
+      headers: { <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>, <span class="s">'Authorization'</span>: <span class="s">`Bearer ${token}`</span> },
+      body: <span class="f">JSON.stringify</span>({ message, conversation_id: conversationId })
+    });
+
+    <span class="k">const</span> reader = response.body.<span class="f">getReader</span>();
+    <span class="k">const</span> decoder = <span class="k">new</span> TextDecoder();
+
+    <span class="k">while</span> (<span class="k">true</span>) {
+      <span class="k">const</span> { done, value } = <span class="k">await</span> reader.<span class="f">read</span>();
+      <span class="k">if</span> (done) { setStreaming(<span class="k">false</span>); <span class="k">break</span>; }
+
+      <span class="k">const</span> lines = decoder.<span class="f">decode</span>(value).<span class="f">split</span>(<span class="s">'\n'</span>);
+      <span class="k">for</span> (<span class="k">const</span> line <span class="k">of</span> lines) {
+        <span class="k">if</span> (!line.<span class="f">startsWith</span>(<span class="s">'data: '</span>)) <span class="k">continue</span>;
+        <span class="k">const</span> data = <span class="f">JSON.parse</span>(line.<span class="f">slice</span>(<span class="n">6</span>));
+        <span class="k">if</span> (data.type === <span class="s">'token'</span>) setTokens(t => t + data.text);
+      }
+    }
+  };
+  <span class="k">return</span> { tokens, streaming, sendMessage };
+}</div>
+</section>
+
+<!-- ════ UC: WEBRTC SIGNALING ════ -->
+<section id="sec-uc-webrtc" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(236,72,153,.1);color:var(--c4)">Use Case 5 — Build it</div>
+    <h1 class="htitle">WebRTC Signaling Server</h1>
+    <p class="hsub">The signaling server is the matchmaker for WebRTC — it helps two peers exchange the information needed to connect directly. Once connected, media flows peer-to-peer and your server is not involved.</p>
+  </div>
+
+  <div class="code"><span class="c"># WebSocket-based signaling server for WebRTC</span>
+<span class="c"># Peers exchange SDP offers/answers and ICE candidates through here</span>
+
+peer_rooms: dict = {}  <span class="c"># room_id → {user_id: websocket}</span>
+
+<span class="f">@</span>app.websocket(<span class="s">"/signal/{room_id}"</span>)
+<span class="k">async def</span> <span class="f">signal</span>(ws: WebSocket, room_id: str, token: str):
+    user = <span class="f">verify_token</span>(token)
+    <span class="k">if not</span> user: <span class="k">await</span> ws.<span class="f">close</span>(<span class="n">1008</span>); <span class="k">return</span>
+
+    <span class="k">await</span> ws.<span class="f">accept</span>()
+    <span class="k">if</span> room_id <span class="k">not in</span> peer_rooms: peer_rooms[room_id] = {}
+    peer_rooms[room_id][user[<span class="s">"id"</span>]] = ws
+
+    <span class="c"># Tell other peers a new peer joined</span>
+    <span class="k">await</span> <span class="f">signal_others</span>(room_id, user[<span class="s">"id"</span>], {
+        <span class="s">"type"</span>: <span class="s">"peer_joined"</span>, <span class="s">"peer_id"</span>: user[<span class="s">"id"</span>]
+    })
+
+    <span class="k">try</span>:
+        <span class="k">while</span> <span class="k">True</span>:
+            msg = <span class="k">await</span> ws.<span class="f">receive_json</span>()
+
+            <span class="k">match</span> msg[<span class="s">"type"</span>]:
+                <span class="k">case</span> <span class="s">"offer"</span>:
+                    <span class="c"># Forward SDP offer to target peer</span>
+                    target = peer_rooms[room_id].<span class="f">get</span>(msg[<span class="s">"target_id"</span>])
+                    <span class="k">if</span> target: <span class="k">await</span> target.<span class="f">send_json</span>({
+                        <span class="s">"type"</span>: <span class="s">"offer"</span>, <span class="s">"sdp"</span>: msg[<span class="s">"sdp"</span>], <span class="s">"from"</span>: user[<span class="s">"id"</span>]
+                    })
+                <span class="k">case</span> <span class="s">"answer"</span>:
+                    <span class="c"># Forward SDP answer back to offerer</span>
+                    target = peer_rooms[room_id].<span class="f">get</span>(msg[<span class="s">"target_id"</span>])
+                    <span class="k">if</span> target: <span class="k">await</span> target.<span class="f">send_json</span>({
+                        <span class="s">"type"</span>: <span class="s">"answer"</span>, <span class="s">"sdp"</span>: msg[<span class="s">"sdp"</span>], <span class="s">"from"</span>: user[<span class="s">"id"</span>]
+                    })
+                <span class="k">case</span> <span class="s">"ice_candidate"</span>:
+                    <span class="c"># Forward ICE candidates to help punch through NAT</span>
+                    target = peer_rooms[room_id].<span class="f">get</span>(msg[<span class="s">"target_id"</span>])
+                    <span class="k">if</span> target: <span class="k">await</span> target.<span class="f">send_json</span>({
+                        <span class="s">"type"</span>: <span class="s">"ice_candidate"</span>,
+                        <span class="s">"candidate"</span>: msg[<span class="s">"candidate"</span>], <span class="s">"from"</span>: user[<span class="s">"id"</span>]
+                    })
+
+    <span class="k">except</span> WebSocketDisconnect:
+        peer_rooms[room_id].<span class="f">pop</span>(user[<span class="s">"id"</span>], <span class="k">None</span>)
+        <span class="k">await</span> <span class="f">signal_others</span>(room_id, user[<span class="s">"id"</span>], {
+            <span class="s">"type"</span>: <span class="s">"peer_left"</span>, <span class="s">"peer_id"</span>: user[<span class="s">"id"</span>]
+        })
+
+<span class="k">async def</span> <span class="f">signal_others</span>(room_id, sender_id, msg):
+    <span class="k">for</span> uid, ws <span class="k">in</span> peer_rooms.<span class="f">get</span>(room_id, {}).<span class="f">items</span>():
+        <span class="k">if</span> uid != sender_id:
+            <span class="k">try</span>: <span class="k">await</span> ws.<span class="f">send_json</span>(msg)
+            <span class="k">except</span>: <span class="k">pass</span></div>
+</section>
+
+<!-- ════ STATUS CODES ════ -->
+<section id="sec-status-codes" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(245,158,11,.1);color:var(--c3)">Reference</div>
+    <h1 class="htitle">HTTP Status Codes — Complete Reference</h1>
+    <p class="hsub">Every HTTP status code you'll encounter, with what they mean and when to use them.</p>
+  </div>
+
+  <h2>2xx — Success</h2>
+  <div class="tw"><table><thead><tr><th>Code</th><th>Name</th><th>Use when</th></tr></thead><tbody>
+    <tr><td><span class="pill p2">200</span> OK</td><td>General success</td><td>GET retrieved data, PUT/PATCH updated</td></tr>
+    <tr><td><span class="pill p2">201</span> Created</td><td>Resource created</td><td>POST created a new resource. Include Location header with new URL.</td></tr>
+    <tr><td><span class="pill p2">202</span> Accepted</td><td>Processing async</td><td>Request accepted, processing will happen later (queue, background task)</td></tr>
+    <tr><td><span class="pill p2">204</span> No Content</td><td>Success, no body</td><td>DELETE succeeded. PUT/PATCH with no return value.</td></tr>
+    <tr><td><span class="pill p2">206</span> Partial Content</td><td>Range response</td><td>Sending part of a file (video streaming, large file download)</td></tr>
+  </tbody></table></div>
+
+  <h2>3xx — Redirection</h2>
+  <div class="tw"><table><thead><tr><th>Code</th><th>Name</th><th>Use when</th></tr></thead><tbody>
+    <tr><td><span class="pill p3">301</span> Moved Permanently</td><td>Permanent redirect</td><td>URL permanently changed. Browsers cache this. SEO passes to new URL.</td></tr>
+    <tr><td><span class="pill p3">302</span> Found</td><td>Temporary redirect</td><td>Temporarily at different URL. Not cached. Old URL still valid.</td></tr>
+    <tr><td><span class="pill p3">304</span> Not Modified</td><td>Use cache</td><td>Client has cached version, server confirms it's still current</td></tr>
+  </tbody></table></div>
+
+  <h2>4xx — Client errors</h2>
+  <div class="tw"><table><thead><tr><th>Code</th><th>Name</th><th>Use when</th></tr></thead><tbody>
+    <tr><td><span class="pill p6">400</span> Bad Request</td><td>Malformed request</td><td>Invalid JSON, missing required field, wrong data type</td></tr>
+    <tr><td><span class="pill p6">401</span> Unauthorized</td><td>Not authenticated</td><td>No token, invalid token, expired token. "Who are you?"</td></tr>
+    <tr><td><span class="pill p6">403</span> Forbidden</td><td>Not authorized</td><td>Valid token, but no permission. "I know who you are, but you can't do this."</td></tr>
+    <tr><td><span class="pill p6">404</span> Not Found</td><td>Resource doesn't exist</td><td>User/message/resource with that ID not in DB</td></tr>
+    <tr><td><span class="pill p6">405</span> Method Not Allowed</td><td>Wrong HTTP method</td><td>DELETE sent to read-only endpoint</td></tr>
+    <tr><td><span class="pill p6">409</span> Conflict</td><td>State conflict</td><td>Email already registered, duplicate key, version conflict</td></tr>
+    <tr><td><span class="pill p6">410</span> Gone</td><td>Permanently deleted</td><td>Resource existed but was deleted (stronger than 404)</td></tr>
+    <tr><td><span class="pill p6">422</span> Unprocessable</td><td>Validation failed</td><td>Valid format but invalid content (FastAPI's default for Pydantic errors)</td></tr>
+    <tr><td><span class="pill p6">429</span> Too Many Requests</td><td>Rate limited</td><td>Client exceeded rate limit. Include Retry-After header.</td></tr>
+  </tbody></table></div>
+
+  <h2>5xx — Server errors</h2>
+  <div class="tw"><table><thead><tr><th>Code</th><th>Name</th><th>Cause</th></tr></thead><tbody>
+    <tr><td><span class="pill p9">500</span> Internal Server Error</td><td>Unhandled exception</td><td>Unexpected error in your code. Never expose stack trace to clients.</td></tr>
+    <tr><td><span class="pill p9">502</span> Bad Gateway</td><td>Upstream failed</td><td>Nginx can't reach FastAPI. FastAPI crashed or wrong port.</td></tr>
+    <tr><td><span class="pill p9">503</span> Service Unavailable</td><td>Server overloaded</td><td>Server too busy, maintenance mode, circuit breaker open</td></tr>
+    <tr><td><span class="pill p9">504</span> Gateway Timeout</td><td>Upstream too slow</td><td>FastAPI took too long. Increase proxy_read_timeout in Nginx.</td></tr>
+  </tbody></table></div>
+</section>
+
+<!-- ════ HEADERS ════ -->
+<section id="sec-headers" class="sec">
+  <div class="hero">
+    <div class="htag" style="background:rgba(20,184,166,.1);color:var(--c8)">Reference</div>
+    <h1 class="htitle">HTTP Headers Reference</h1>
+    <p class="hsub">Headers are key-value pairs sent with every request and response. They control caching, authentication, content type, CORS, security, and much more.</p>
+  </div>
+
+  <h2>Request headers — sent by client</h2>
+  <div class="tw"><table><thead><tr><th>Header</th><th>Purpose</th><th>Example</th></tr></thead><tbody>
+    <tr><td><code>Authorization</code></td><td>Authentication token</td><td><code>Bearer eyJhbGci...</code> or <code>Basic dXNlcjpwYXNz</code></td></tr>
+    <tr><td><code>Content-Type</code></td><td>Format of request body</td><td><code>application/json</code>, <code>multipart/form-data</code></td></tr>
+    <tr><td><code>Accept</code></td><td>Expected response format</td><td><code>application/json</code>, <code>text/html</code></td></tr>
+    <tr><td><code>X-API-Key</code></td><td>Custom API key header</td><td><code>sk-abc123def456</code></td></tr>
+    <tr><td><code>User-Agent</code></td><td>Client identifier</td><td><code>Mozilla/5.0</code>, <code>MyApp/1.0</code></td></tr>
+    <tr><td><code>If-None-Match</code></td><td>Conditional GET (ETag)</td><td><code>"abc123"</code> — get only if changed</td></tr>
+    <tr><td><code>Origin</code></td><td>Where request came from</td><td><code>https://yourapp.com</code></td></tr>
+  </tbody></table></div>
+
+  <h2>Response headers — sent by server</h2>
+  <div class="tw"><table><thead><tr><th>Header</th><th>Purpose</th><th>Example</th></tr></thead><tbody>
+    <tr><td><code>Content-Type</code></td><td>Format of response body</td><td><code>application/json; charset=utf-8</code></td></tr>
+    <tr><td><code>Cache-Control</code></td><td>Caching instructions</td><td><code>max-age=3600</code>, <code>no-cache</code>, <code>no-store</code></td></tr>
+    <tr><td><code>ETag</code></td><td>Resource version identifier</td><td><code>"5d8c72a5e9e"</code></td></tr>
+    <tr><td><code>Location</code></td><td>Redirect URL or new resource</td><td><code>/api/v1/users/123</code> (after 201 Created)</td></tr>
+    <tr><td><code>Retry-After</code></td><td>When to retry (rate limit)</td><td><code>60</code> (seconds) or date</td></tr>
+    <tr><td><code>X-RateLimit-Limit</code></td><td>Rate limit window</td><td><code>100</code></td></tr>
+    <tr><td><code>X-RateLimit-Remaining</code></td><td>Requests left in window</td><td><code>47</code></td></tr>
+    <tr><td><code>Access-Control-Allow-Origin</code></td><td>CORS allowed origin</td><td><code>https://yourapp.com</code></td></tr>
+  </tbody></table></div>
+
+  <h2>Security response headers</h2>
+  <div class="tw"><table><thead><tr><th>Header</th><th>Purpose</th><th>Recommended value</th></tr></thead><tbody>
+    <tr><td><code>Strict-Transport-Security</code></td><td>Force HTTPS</td><td><code>max-age=31536000; includeSubDomains</code></td></tr>
+    <tr><td><code>Content-Security-Policy</code></td><td>Prevent XSS</td><td><code>default-src 'self'; script-src 'self'</code></td></tr>
+    <tr><td><code>X-Content-Type-Options</code></td><td>Prevent MIME sniffing</td><td><code>nosniff</code></td></tr>
+    <tr><td><code>X-Frame-Options</code></td><td>Prevent clickjacking</td><td><code>SAMEORIGIN</code></td></tr>
+    <tr><td><code>Referrer-Policy</code></td><td>Control referrer info</td><td><code>strict-origin-when-cross-origin</code></td></tr>
+    <tr><td><code>Permissions-Policy</code></td><td>Browser feature control</td><td><code>camera=(), microphone=(), geolocation=()</code></td></tr>
+  </tbody></table></div>
+</section>
+
+</main>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  if(event&&event.currentTarget)event.currentTarget.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700)closeSb();
+}
+function toggleAcc(el){el.classList.toggle('open')}
+const sb=document.getElementById('sb'),ov=document.getElementById('ov'),hbg=document.getElementById('hbg');
+function openSb(){sb.classList.add('open');ov.classList.add('open')}
+function closeSb(){sb.classList.remove('open');ov.classList.remove('open')}
+hbg.addEventListener('click',()=>sb.classList.contains('open')?closeSb():openSb());
+ov.addEventListener('click',closeSb);
+</script>
+</body>
+</html>

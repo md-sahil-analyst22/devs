@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Architecture Patterns — Complete Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117;
+  --bg2: #13181f;
+  --bg3: #181e28;
+  --bg4: #1c2333;
+  --bg5: #212840;
+  --border: #21293a;
+  --border2: #2a3449;
+  --text1: #e2e8f4;
+  --text2: #8b98b4;
+  --text3: #4e5d7a;
+  --c1: #38bdf8;   /* sky blue */
+  --c2: #34d399;   /* emerald */
+  --c3: #fb923c;   /* orange */
+  --c4: #f472b6;   /* pink */
+  --c5: #a78bfa;   /* violet */
+  --c6: #fbbf24;   /* amber */
+  --c7: #f87171;   /* red */
+  --c8: #2dd4bf;   /* teal */
+  --sw: 270px;
+  --topbar: 54px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text1);line-height:1.6;overflow-x:hidden}
+
+/* ─── TOPBAR ─── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:200;height:var(--topbar);
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.tb-left{display:flex;align-items:center;height:100%;width:var(--sw);padding:0 20px;border-right:1px solid var(--border);gap:10px;flex-shrink:0}
+.tb-logo{width:30px;height:30px;border-radius:6px;background:linear-gradient(135deg,var(--c1),var(--c5));display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:#fff;letter-spacing:-.5px}
+.tb-brand{font-size:13px;font-weight:600;color:var(--text1)}
+.tb-brand span{display:block;font-size:10px;font-weight:400;color:var(--text3)}
+.tb-right{display:flex;align-items:center;gap:12px;padding-right:20px}
+.tb-count{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace}
+.tb-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:4px;background:rgba(56,189,248,.12);color:var(--c1);border:1px solid rgba(56,189,248,.2);font-family:'IBM Plex Mono',monospace}
+.hamburger{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:18px;height:1.5px;background:var(--text2);transition:.2s}
+
+/* ─── LAYOUT ─── */
+.layout{display:flex;padding-top:var(--topbar);min-height:100vh}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:var(--sw);flex-shrink:0;
+  position:fixed;top:var(--topbar);left:0;bottom:0;
+  background:var(--bg2);border-right:1px solid var(--border);
+  overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2)}
+
+.sb-group{padding:18px 16px 6px;font-size:10px;font-weight:600;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.sb-group:first-child{padding-top:14px}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 16px;cursor:pointer;font-size:12.5px;
+  color:var(--text2);border-left:2px solid transparent;
+  transition:all .14s;text-decoration:none;user-select:none;
+}
+.nav-item:hover{background:var(--bg3);color:var(--text1)}
+.nav-item.active{color:var(--c1);background:rgba(56,189,248,.07);border-left-color:var(--c1);font-weight:500}
+.nb{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.tag{margin-left:auto;font-size:9px;font-family:'IBM Plex Mono',monospace;font-weight:600;padding:2px 6px;border-radius:3px}
+.tag-mono{background:rgba(56,189,248,.12);color:var(--c1)}
+.tag-micro{background:rgba(52,211,153,.12);color:var(--c2)}
+.tag-event{background:rgba(251,146,60,.12);color:var(--c3)}
+.tag-server{background:rgba(244,114,182,.12);color:var(--c4)}
+.tag-adv{background:rgba(167,139,250,.12);color:var(--c5)}
+.tag-cqrs{background:rgba(251,191,36,.12);color:var(--c6)}
+
+/* ─── MAIN ─── */
+.main{margin-left:var(--sw);flex:1;padding:36px 44px 80px;max-width:940px}
+
+/* ─── SECTIONS ─── */
+.section{display:none}
+.section.active{display:block;animation:fadein .25s ease both}
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── HERO ─── */
+.hero{padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;padding:4px 10px;border-radius:4px;margin-bottom:12px}
+.hero-title{font-size:26px;font-weight:600;color:var(--text1);line-height:1.25;margin-bottom:8px}
+.hero-sub{font-size:14px;color:var(--text2);line-height:1.7;max-width:700px}
+
+/* ─── STAT BAR ─── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
+.stat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:11px 14px}
+.stat-label{font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em}
+.stat-val{font-size:13px;font-weight:600;color:var(--text1);font-family:'IBM Plex Mono',monospace}
+
+/* ─── CARDS ─── */
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:20px 22px;margin-bottom:14px}
+.card.accent1{border-left:3px solid var(--c1);background:rgba(56,189,248,.04)}
+.card.accent2{border-left:3px solid var(--c2);background:rgba(52,211,153,.04)}
+.card.accent3{border-left:3px solid var(--c3);background:rgba(251,146,60,.04)}
+.card.accent4{border-left:3px solid var(--c4);background:rgba(244,114,182,.04)}
+.card.accent5{border-left:3px solid var(--c5);background:rgba(167,139,250,.04)}
+.card.accent6{border-left:3px solid var(--c6);background:rgba(251,191,36,.04)}
+.card.accent7{border-left:3px solid var(--c7);background:rgba(248,113,113,.04)}
+.card.accent8{border-left:3px solid var(--c8);background:rgba(45,212,191,.04)}
+.card-title{font-size:14px;font-weight:600;color:var(--text1);margin-bottom:6px}
+.card-body{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* ─── CODE ─── */
+.code{background:#090d14;border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin:12px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.8;overflow-x:auto;white-space:pre}
+.code .d{color:#38bdf8}   /* dir / keyword */
+.code .g{color:#34d399}   /* string / good */
+.code .o{color:#fb923c}   /* orange / class */
+.code .v{color:#a78bfa}   /* violet / var */
+.code .c{color:#4e5d7a}   /* comment */
+.code .p{color:#f472b6}   /* pink / func */
+
+code{font-family:'IBM Plex Mono',monospace;font-size:12px;background:rgba(255,255,255,.06);color:var(--c1);padding:1px 5px;border-radius:3px}
+
+/* ─── DIAGRAM ─── */
+.diagram{background:#090d14;border:1px solid var(--border);border-radius:8px;padding:20px;margin:14px 0;overflow-x:auto}
+.diagram-inner{display:flex;align-items:center;gap:0;min-width:fit-content}
+.dbox{border-radius:6px;padding:10px 16px;text-align:center;font-size:12px;font-weight:600;font-family:'IBM Plex Mono',monospace;white-space:nowrap;border:1px solid}
+.darrow{color:var(--text3);font-size:16px;padding:0 8px;flex-shrink:0}
+.dgroup{display:flex;flex-direction:column;gap:6px;align-items:center}
+.dlabel{font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;text-align:center;margin-top:4px;letter-spacing:.04em}
+
+/* ─── GRID ─── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mini{background:var(--bg4);border:1px solid var(--border);border-radius:6px;padding:14px 16px}
+.mini-title{font-size:12px;font-weight:600;margin-bottom:4px;font-family:'IBM Plex Mono',monospace}
+.mini-body{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* ─── TABLE ─── */
+.tbl-wrap{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{background:var(--bg4)}
+th{text-align:left;padding:9px 14px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border2);font-family:'IBM Plex Mono',monospace}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2)}
+td:first-child{color:var(--text1);font-weight:500}
+tr:hover td{background:rgba(255,255,255,.02)}
+tr:last-child td{border-bottom:none}
+
+/* ─── CALLOUT ─── */
+.callout{border-radius:6px;padding:13px 16px;margin:13px 0;font-size:13px;line-height:1.65}
+.cg{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:#86efac}
+.cb{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#7dd3fc}
+.co{background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);color:#fdba74}
+.cv{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);color:#c4b5fd}
+.cr{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#fca5a5}
+.callout strong{font-weight:600;color:inherit}
+
+/* ─── LAYERS ─── */
+.layers{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.layer{border-radius:5px;padding:11px 15px;border-left:3px solid}
+.layer-name{font-size:12.5px;font-weight:600;margin-bottom:2px;font-family:'IBM Plex Mono',monospace}
+.layer-desc{font-size:11.5px;color:var(--text2)}
+
+/* ─── TIMELINE / STEPS ─── */
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;margin-bottom:4px}
+.step-line{display:flex;flex-direction:column;align-items:center}
+.step-dot{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin-top:2px}
+.step-vline{width:2px;flex:1;min-height:20px;margin:3px 0;background:var(--border2)}
+.step-content{flex:1;padding-bottom:18px}
+.step-title{font-size:13px;font-weight:600;color:var(--text1);margin-bottom:3px}
+.step-body{font-size:12.5px;color:var(--text2);line-height:1.6}
+
+/* ─── DO / DON'T ─── */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:13px 0}
+.do-box{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.18);border-radius:6px;padding:13px 15px}
+.dont-box{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.18);border-radius:6px;padding:13px 15px}
+.do-box h4{font-size:10px;font-weight:700;color:var(--c2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;font-family:'IBM Plex Mono',monospace}
+.dont-box h4{font-size:10px;font-weight:700;color:var(--c7);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;font-family:'IBM Plex Mono',monospace}
+.do-box li,.dont-box li{font-size:12px;color:var(--text2);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do-box li::before{content:"✓";position:absolute;left:0;color:var(--c2);font-size:10px;top:5px}
+.dont-box li::before{content:"✗";position:absolute;left:0;color:var(--c7);font-size:10px;top:5px}
+
+/* ─── PILL ─── */
+.pill{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:3px;font-family:'IBM Plex Mono',monospace}
+
+/* ─── COMPARISON BIG ─── */
+.comp-big{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:14px 0}
+.comp-col{padding:18px 20px}
+.comp-col:first-child{border-right:1px solid var(--border);background:rgba(56,189,248,.04)}
+.comp-col:last-child{background:rgba(52,211,153,.04)}
+.comp-col h3{font-size:14px;font-weight:600;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.comp-col li{font-size:12px;color:var(--text2);padding:4px 0;list-style:none;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.comp-col li::before{content:"—";color:var(--text3);flex-shrink:0;margin-top:1px}
+
+/* ─── DIVIDER ─── */
+.div{height:1px;background:var(--border);margin:26px 0}
+
+/* ─── HEADINGS ─── */
+h2{font-size:18px;font-weight:600;color:var(--text1);margin:24px 0 10px}
+h2:first-child{margin-top:0}
+h3{font-size:14px;font-weight:600;color:var(--text1);margin:18px 0 8px}
+p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:11px}
+p:last-child{margin-bottom:0}
+strong{color:var(--text1);font-weight:600}
+
+/* ─── COMPARISON OVERVIEW SECTION ─── */
+.arch-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  padding:16px 18px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;
+  cursor:pointer;transition:border-color .15s;
+}
+.arch-card:hover{border-color:var(--border2)}
+.arch-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid}
+.arch-info{flex:1}
+.arch-name{font-size:14px;font-weight:600;color:var(--text1);margin-bottom:3px}
+.arch-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.arch-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+
+/* ─── MOBILE ─── */
+.overlay{display:none;position:fixed;inset:var(--topbar) 0 0 0;background:rgba(0,0,0,.6);z-index:100}
+.overlay.open{display:block}
+@media(max-width:900px){.main{padding:24px 22px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:260px}
+  .main{margin-left:0;padding:20px 16px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .22s;z-index:110}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:flex}
+  .tb-left{width:auto;border-right:none}
+  .tb-count{display:none}
+  .stats{grid-template-columns:1fr 1fr}
+  .g2,.comp-big,.dd{grid-template-columns:1fr}
+  .g3{grid-template-columns:1fr 1fr}
+  .g4{grid-template-columns:1fr 1fr}
+  .comp-col:first-child{border-right:none;border-bottom:1px solid var(--border)}
+}
+@media(max-width:480px){
+  .g3,.g4{grid-template-columns:1fr}
+  .hero-title{font-size:20px}
+  .stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">Ar</div>
+    <div class="tb-brand">ArchPatterns<span>Software Architecture Guide</span></div>
+  </div>
+  <div class="tb-right">
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    <span class="tb-count">12 architectures · 60+ concepts</span>
+    <span class="tb-badge">v2.0</span>
+  </div>
+</header>
+
+<div class="overlay" id="overlay"></div>
+<div class="layout">
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sb-group">Overview</div>
+  <a class="nav-item active" onclick="go('overview')">
+    <span class="nb" style="background:var(--c1)"></span>All architectures map
+    <span class="tag tag-mono">Start</span>
+  </a>
+  <a class="nav-item" onclick="go('compare')">
+    <span class="nb" style="background:var(--c2)"></span>Monolith vs Microservices
+  </a>
+
+  <div class="sb-group">Core Architectures</div>
+  <a class="nav-item" onclick="go('monolith')">
+    <span class="nb" style="background:var(--c1)"></span>Monolithic
+    <span class="tag tag-mono">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="go('microservices')">
+    <span class="nb" style="background:var(--c2)"></span>Microservices
+    <span class="tag tag-micro">Mid</span>
+  </a>
+  <a class="nav-item" onclick="go('layered')">
+    <span class="nb" style="background:var(--c5)"></span>Layered (N-Tier)
+    <span class="tag tag-mono">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="go('serverless')">
+    <span class="nb" style="background:var(--c4)"></span>Serverless / FaaS
+    <span class="tag tag-server">Mid</span>
+  </a>
+
+  <div class="sb-group">Event & Messaging</div>
+  <a class="nav-item" onclick="go('event-driven')">
+    <span class="nb" style="background:var(--c3)"></span>Event-Driven
+    <span class="tag tag-event">Mid</span>
+  </a>
+  <a class="nav-item" onclick="go('cqrs')">
+    <span class="nb" style="background:var(--c6)"></span>CQRS + Event Sourcing
+    <span class="tag tag-cqrs">Adv</span>
+  </a>
+  <a class="nav-item" onclick="go('pub-sub')">
+    <span class="nb" style="background:var(--c3)"></span>Pub/Sub Messaging
+    <span class="tag tag-event">Mid</span>
+  </a>
+
+  <div class="sb-group">Service Patterns</div>
+  <a class="nav-item" onclick="go('soa')">
+    <span class="nb" style="background:var(--c8)"></span>SOA (Service-Oriented)
+    <span class="tag tag-adv">Mid</span>
+  </a>
+  <a class="nav-item" onclick="go('hexagonal')">
+    <span class="nb" style="background:var(--c5)"></span>Hexagonal (Ports & Adapters)
+    <span class="tag tag-adv">Adv</span>
+  </a>
+  <a class="nav-item" onclick="go('service-mesh')">
+    <span class="nb" style="background:var(--c2)"></span>Service Mesh
+    <span class="tag tag-adv">Adv</span>
+  </a>
+
+  <div class="sb-group">Specialized</div>
+  <a class="nav-item" onclick="go('pipe-filter')">
+    <span class="nb" style="background:var(--c6)"></span>Pipe & Filter
+    <span class="tag tag-mono">Mid</span>
+  </a>
+  <a class="nav-item" onclick="go('space-based')">
+    <span class="nb" style="background:var(--c7)"></span>Space-Based
+    <span class="tag tag-adv">Adv</span>
+  </a>
+
+  <div class="sb-group">Decision Guide</div>
+  <a class="nav-item" onclick="go('when-to-use')">
+    <span class="nb" style="background:var(--c2)"></span>When to use what
+  </a>
+  <a class="nav-item" onclick="go('migration')">
+    <span class="nb" style="background:var(--c5)"></span>Migration paths
+  </a>
+
+</nav>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main class="main">
+
+<!-- ══════════ OVERVIEW ══════════ -->
+<section id="sec-overview" class="section active">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(56,189,248,.1);color:var(--c1)">All architectures · Overview</div>
+    <h1 class="hero-title">Software Architecture Patterns</h1>
+    <p class="hero-sub">Architecture is how you divide a system into parts and define the rules for how those parts communicate. Every architecture answers the same question differently: <em>how do we split the work so the system can grow, survive failure, and be understood by humans?</em></p>
+  </div>
+
+  <div class="callout cb">
+    <strong>One sentence definition:</strong> Software architecture is the high-level structure of a system — what the major components are, how they communicate, and which constraints govern their interactions. Everything else (folder structure, patterns, tech stack) is a consequence of this decision.
+  </div>
+
+  <h2>All 12 architectures at a glance</h2>
+
+  <div class="arch-card" onclick="go('monolith')">
+    <div class="arch-icon" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.25)">🧱</div>
+    <div class="arch-info">
+      <div class="arch-name">Monolithic</div>
+      <div class="arch-desc">Entire application deployed as a single unit. All modules share one codebase, one database, one deployment pipeline. The default starting point.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(56,189,248,.12);color:var(--c1)">Beginner</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Single deploy</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Fast start</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('microservices')">
+    <div class="arch-icon" style="background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.25)">⚙️</div>
+    <div class="arch-info">
+      <div class="arch-name">Microservices</div>
+      <div class="arch-desc">Application split into small independent services. Each owns its data, deploys independently, communicates over network (HTTP/gRPC/events). Netflix, Uber, Amazon.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(52,211,153,.12);color:var(--c2)">Intermediate</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Independent deploy</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Scale per service</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('layered')">
+    <div class="arch-icon" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.25)">🥞</div>
+    <div class="arch-info">
+      <div class="arch-name">Layered (N-Tier)</div>
+      <div class="arch-desc">Code organized in horizontal layers: Presentation → Business Logic → Data Access → Database. Each layer only communicates with the one directly below it.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(167,139,250,.12);color:var(--c5)">Beginner</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">MVC foundation</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Most common</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('serverless')">
+    <div class="arch-icon" style="background:rgba(244,114,182,.1);border-color:rgba(244,114,182,.25)">⚡</div>
+    <div class="arch-info">
+      <div class="arch-name">Serverless / FaaS</div>
+      <div class="arch-desc">Functions deployed individually, executed on demand, billed per invocation. No servers to manage. AWS Lambda, Vercel Edge Functions, Cloudflare Workers.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(244,114,182,.12);color:var(--c4)">Intermediate</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Zero infra ops</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Pay per use</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('event-driven')">
+    <div class="arch-icon" style="background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.25)">📡</div>
+    <div class="arch-info">
+      <div class="arch-name">Event-Driven</div>
+      <div class="arch-desc">Components communicate by emitting and consuming events asynchronously. Producer doesn't know about consumers. Loose coupling, high scalability, real-time systems.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(251,146,60,.12);color:var(--c3)">Intermediate</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Async</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Loose coupling</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('cqrs')">
+    <div class="arch-icon" style="background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.25)">🔀</div>
+    <div class="arch-info">
+      <div class="arch-name">CQRS + Event Sourcing</div>
+      <div class="arch-desc">Separate read models from write models. Store every state change as an immutable event, reconstruct state by replaying events. Audit trail, time travel, high read performance.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(251,191,36,.12);color:var(--c6)">Advanced</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Audit trail</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Time travel</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('pub-sub')">
+    <div class="arch-icon" style="background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.25)">📬</div>
+    <div class="arch-info">
+      <div class="arch-name">Pub/Sub Messaging</div>
+      <div class="arch-desc">Publishers send messages to topics/queues. Subscribers consume independently. Kafka, RabbitMQ, AWS SQS. Foundation of distributed system communication.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(251,146,60,.12);color:var(--c3)">Intermediate</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Decoupled</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Reliable delivery</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('soa')">
+    <div class="arch-icon" style="background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.25)">🔗</div>
+    <div class="arch-info">
+      <div class="arch-name">Service-Oriented Architecture (SOA)</div>
+      <div class="arch-desc">Large, coarse-grained services connected through an Enterprise Service Bus (ESB). Predecessor to microservices. Still dominant in large enterprises and banks.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(45,212,191,.12);color:var(--c8)">Enterprise</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">ESB</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">SOAP/WSDL</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('hexagonal')">
+    <div class="arch-icon" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.25)">🔌</div>
+    <div class="arch-info">
+      <div class="arch-name">Hexagonal (Ports & Adapters)</div>
+      <div class="arch-desc">Application core defines ports (interfaces). External adapters implement them. Swap databases, LLMs, APIs without touching business logic. Highly testable.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(167,139,250,.12);color:var(--c5)">Advanced</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Swappable</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Testable</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('service-mesh')">
+    <div class="arch-icon" style="background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.25)">🕸️</div>
+    <div class="arch-info">
+      <div class="arch-name">Service Mesh</div>
+      <div class="arch-desc">Infrastructure layer for microservices. Handles service discovery, load balancing, encryption, observability via sidecar proxies. Istio, Linkerd, Consul.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(52,211,153,.12);color:var(--c2)">Advanced</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Kubernetes</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">mTLS</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('pipe-filter')">
+    <div class="arch-icon" style="background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.25)">🔧</div>
+    <div class="arch-info">
+      <div class="arch-name">Pipe & Filter</div>
+      <div class="arch-desc">Data flows through a series of processing steps (filters), connected by pipes. Each filter transforms data independently. ETL pipelines, CI/CD, compiler toolchains.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(251,191,36,.12);color:var(--c6)">Intermediate</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Data pipelines</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">Composable</span></div>
+    </div>
+  </div>
+
+  <div class="arch-card" onclick="go('space-based')">
+    <div class="arch-icon" style="background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.25)">🚀</div>
+    <div class="arch-info">
+      <div class="arch-name">Space-Based Architecture</div>
+      <div class="arch-desc">Eliminates the database as a central bottleneck. Data lives in distributed in-memory grids. All processing units share a tuple space. Extreme scalability, millisecond latency.</div>
+      <div class="arch-tags"><span class="pill" style="background:rgba(248,113,113,.12);color:var(--c7)">Advanced</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">In-memory</span><span class="pill" style="background:rgba(255,255,255,.06);color:var(--text2)">High throughput</span></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════ COMPARE SECTION ══════════ -->
+<section id="sec-compare" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(56,189,248,.1);color:var(--c1)">Head to Head</div>
+    <h1 class="hero-title">Monolith vs Microservices</h1>
+    <p class="hero-sub">The most important architectural decision you'll make. Both are valid. The wrong choice depends entirely on your team size, traffic, and stage of product. Start with the wrong one and you'll pay for it for years.</p>
+  </div>
+
+  <div class="comp-big">
+    <div class="comp-col">
+      <h3 style="color:var(--c1)">🧱 Monolithic</h3>
+      <li>One codebase, one deployment</li>
+      <li>Simple local function calls between modules</li>
+      <li>One shared database</li>
+      <li>Easy to debug and trace requests end-to-end</li>
+      <li>Fast to build and iterate at the start</li>
+      <li>Entire app redeploys on every change</li>
+      <li>Scale entire app even if only one module is hot</li>
+      <li>One module's bug can crash everything</li>
+      <li>Technology lock-in across all modules</li>
+      <li>Gets harder to change as codebase grows</li>
+    </div>
+    <div class="comp-col">
+      <h3 style="color:var(--c2)">⚙️ Microservices</h3>
+      <li>Many codebases, independent deployments</li>
+      <li>Network calls (HTTP / gRPC / events) between services</li>
+      <li>Each service owns its own database</li>
+      <li>Distributed tracing required (Jaeger, Zipkin)</li>
+      <li>Massive upfront infrastructure investment</li>
+      <li>Deploy only the service that changed</li>
+      <li>Scale only the service under load</li>
+      <li>Isolated failure — one service down doesn't crash all</li>
+      <li>Each service can use the best language/DB for the job</li>
+      <li>Hard: network failures, distributed transactions, latency</li>
+    </div>
+  </div>
+
+  <h2>The decision framework</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Signal</th><th>Use Monolith</th><th>Use Microservices</th></tr></thead>
+      <tbody>
+        <tr><td>Team size</td><td>&lt; 10 engineers</td><td>&gt; 50 engineers (multiple teams)</td></tr>
+        <tr><td>Product stage</td><td>Pre-product-market fit, MVP</td><td>Proven product, scaling pains</td></tr>
+        <tr><td>Traffic</td><td>Uniform load or low scale</td><td>Different modules at very different scales</td></tr>
+        <tr><td>Deployment frequency</td><td>Deploy everything together is fine</td><td>Teams need to deploy independently</td></tr>
+        <tr><td>Failure tolerance</td><td>Some downtime acceptable</td><td>No single point of failure allowed</td></tr>
+        <tr><td>Tech diversity needed</td><td>One language / DB is fine</td><td>Payment team needs Java, ML team needs Python</td></tr>
+        <tr><td>Ops maturity</td><td>No dedicated DevOps/platform team</td><td>Strong DevOps, Kubernetes experience</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout co">
+    <strong>The startup trap:</strong> Most startups build microservices too early, drowning in infrastructure complexity before finding product-market fit. Start monolith. When you hit real scale pain — and you'll feel it clearly — extract services one at a time. This is exactly what Shopify, Stack Overflow, and Basecamp did.
+  </div>
+
+  <h2>The hybrid: Modular Monolith</h2>
+  <div class="card accent1">
+    <div class="card-title">Best of both worlds for most teams</div>
+    <div class="card-body">A modular monolith has clear module boundaries inside a single deployment. Modules have strict APIs (no direct DB cross-access), enforced dependencies, and independent test suites. It deploys as one unit but is architected to be split later. When you hit scale on one module, extract it as a service without rewriting the whole app.</div>
+  </div>
+  <div class="code" style="margin-top:0">
+<span class="c"># Modular monolith — one codebase, hard module boundaries</span>
+<span class="d">src/</span>
+├── <span class="d">modules/</span>
+│   ├── <span class="d">orders/</span>       <span class="c"># owns its DB tables — other modules CANNOT query these</span>
+│   │   ├── order.service.ts
+│   │   └── index.ts      <span class="c"># public API — only exports to other modules</span>
+│   ├── <span class="d">payments/</span>     <span class="c"># calls orders only through orders/index.ts</span>
+│   └── <span class="d">notifications/</span>
+└── <span class="d">shared/</span>           <span class="c"># truly shared utilities only</span>
+</div>
+</section>
+
+<!-- ══════════ MONOLITH ══════════ -->
+<section id="sec-monolith" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(56,189,248,.1);color:var(--c1)">Architecture 1 · Beginner</div>
+    <h1 class="hero-title">🧱 Monolithic Architecture</h1>
+    <p class="hero-sub">The entire application is built and deployed as a single, indivisible unit. All features, all modules, all business logic lives in one codebase and runs as one process.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Deploy model</div><div class="stat-val" style="color:var(--c1)">Single unit</div></div>
+    <div class="stat"><div class="stat-label">Communication</div><div class="stat-val" style="color:var(--c2)">Function calls</div></div>
+    <div class="stat"><div class="stat-label">Database</div><div class="stat-val" style="color:var(--c3)">Shared single DB</div></div>
+    <div class="stat"><div class="stat-label">Complexity</div><div class="stat-val" style="color:var(--c2)">Low upfront</div></div>
+  </div>
+
+  <h2>Definition & Concept</h2>
+  <p>In a monolithic architecture, all components of the application — the user interface layer, business logic, data access layer, and database connection — are combined into a single program from a single platform. It's one codebase, one build, one deployment artifact (JAR, executable, Docker container).</p>
+
+  <div class="callout cb">
+    <strong>Mental model:</strong> A monolith is like a single apartment. Everything you need lives under one roof — bedroom, kitchen, bathroom. Easy to manage, no commute. But if you want to expand, you're constrained by the building's structure.
+  </div>
+
+  <h2>How it works — the process</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--c1);background:rgba(56,189,248,.05)">
+      <div class="layer-name" style="color:var(--c1)">Presentation layer</div>
+      <div class="layer-desc">UI rendering, HTTP route handling, request/response. Controllers, views, API endpoints.</div>
+    </div>
+    <div style="text-align:center;color:var(--text3);padding:2px;font-size:14px">↕ direct function call</div>
+    <div class="layer" style="border-color:var(--c5);background:rgba(167,139,250,.05)">
+      <div class="layer-name" style="color:var(--c5)">Business logic layer</div>
+      <div class="layer-desc">Services, use cases, domain rules. The application's "brain" — validates, transforms, decides.</div>
+    </div>
+    <div style="text-align:center;color:var(--text3);padding:2px;font-size:14px">↕ direct function call</div>
+    <div class="layer" style="border-color:var(--c2);background:rgba(52,211,153,.05)">
+      <div class="layer-name" style="color:var(--c2)">Data access layer</div>
+      <div class="layer-desc">Repository classes, ORM models, raw SQL. Abstracts the database from the business logic.</div>
+    </div>
+    <div style="text-align:center;color:var(--text3);padding:2px;font-size:14px">↕ SQL / ORM</div>
+    <div class="layer" style="border-color:var(--text3);background:rgba(255,255,255,.02)">
+      <div class="layer-name">Database</div>
+      <div class="layer-desc">Single relational database (PostgreSQL, MySQL). All modules share one DB instance.</div>
+    </div>
+  </div>
+
+  <h2>Visual structure</h2>
+  <div class="diagram">
+    <div style="display:flex;align-items:center;gap:0;justify-content:center">
+      <div style="border:1px solid rgba(56,189,248,.3);background:rgba(56,189,248,.08);border-radius:8px;padding:20px 24px">
+        <div style="font-size:11px;font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--c1);text-align:center;margin-bottom:14px;letter-spacing:.06em">MONOLITH — single process</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">
+          <div class="dbox" style="background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--c1)">User<br>Module</div>
+          <div class="dbox" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3);color:var(--c5)">Order<br>Module</div>
+          <div class="dbox" style="background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.3);color:var(--c2)">Payment<br>Module</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">
+          <div class="dbox" style="background:rgba(251,146,60,.12);border-color:rgba(251,146,60,.3);color:var(--c3)">Auth<br>Module</div>
+          <div class="dbox" style="background:rgba(244,114,182,.12);border-color:rgba(244,114,182,.3);color:var(--c4)">Email<br>Module</div>
+          <div class="dbox" style="background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:var(--c6)">Report<br>Module</div>
+        </div>
+        <div class="dbox" style="background:rgba(255,255,255,.05);border-color:var(--border2);color:var(--text2);width:100%;text-align:center">Shared Database (PostgreSQL)</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Real-world examples</h2>
+  <div class="g3">
+    <div class="mini"><div class="mini-title" style="color:var(--c1)">Ruby on Rails apps</div><div class="mini-body">GitHub started as a monolith. Basecamp is still a monolith. Rails MVC is the textbook monolith structure.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c2)">Django applications</div><div class="mini-body">Most Django startups begin as monoliths. One codebase, one <code>manage.py</code>, one database.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c5)">Spring Boot Java</div><div class="mini-body">Enterprise Java apps shipped as a single WAR/JAR. One build artifact deployed to application servers.</div></div>
+  </div>
+
+  <h2>Use cases — when to use monolith</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th>Why monolith fits</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Startup / MVP</td><td>Speed to market. No infrastructure overhead. Iterate fast.</td><td>New SaaS, prototype, hackathon project</td></tr>
+        <tr><td>Small team (1–8 engineers)</td><td>Team can hold entire codebase in their heads. No coordination overhead.</td><td>Early stage companies</td></tr>
+        <tr><td>Unclear domain boundaries</td><td>You don't know where to split yet. Monolith lets you discover natural seams first.</td><td>New product, unexplored domain</td></tr>
+        <tr><td>Simple business logic</td><td>No need for independent scaling. Layers are sufficient.</td><td>Blog, CMS, internal tool, admin panel</td></tr>
+        <tr><td>Budget constrained</td><td>Microservices need Kubernetes, service mesh, monitoring — expensive to operate.</td><td>Solo developer, bootstrapped startup</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Pros and cons</h2>
+  <div class="dd">
+    <div class="do-box">
+      <h4>Advantages</h4>
+      <li>Simple to develop and deploy — one command</li>
+      <li>Easy to test end-to-end — everything in one place</li>
+      <li>No network latency between modules</li>
+      <li>Simple debugging — one log stream, one stack trace</li>
+      <li>Low infrastructure cost — one server, one DB</li>
+      <li>Fast local development — no docker-compose orchestra</li>
+    </div>
+    <div class="dont-box">
+      <h4>Disadvantages</h4>
+      <li>Entire app redeploys on every change</li>
+      <li>One bug can crash everything</li>
+      <li>Scaling is all-or-nothing (can't scale just the AI module)</li>
+      <li>Technology lock-in — whole app must use same language</li>
+      <li>Code becomes entangled over time ("big ball of mud")</li>
+      <li>Long build times as app grows</li>
+    </div>
+  </div>
+
+  <div class="callout cg">
+    <strong>Famous monoliths you use daily:</strong> Shopify (Rails monolith that handles millions of stores), Stack Overflow (C# monolith on 9 servers), Basecamp, eBay (started as a Perl monolith). Don't be embarrassed to start as a monolith.
+  </div>
+</section>
+
+<!-- ══════════ MICROSERVICES ══════════ -->
+<section id="sec-microservices" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(52,211,153,.1);color:var(--c2)">Architecture 2 · Intermediate</div>
+    <h1 class="hero-title">⚙️ Microservices Architecture</h1>
+    <p class="hero-sub">The application is decomposed into small, independently deployable services. Each service owns a single business capability, its own database, and communicates with others over the network. The architecture of Netflix, Uber, Amazon.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Deploy model</div><div class="stat-val" style="color:var(--c2)">Independent</div></div>
+    <div class="stat"><div class="stat-label">Communication</div><div class="stat-val" style="color:var(--c3)">HTTP/gRPC/Events</div></div>
+    <div class="stat"><div class="stat-label">Database</div><div class="stat-val" style="color:var(--c4)">Per-service DB</div></div>
+    <div class="stat"><div class="stat-label">Complexity</div><div class="stat-val" style="color:var(--c7)">Very High</div></div>
+  </div>
+
+  <h2>Definition & Concept</h2>
+  <p>Microservices architecture structures an application as a collection of loosely coupled, independently deployable services, each with a narrow, well-defined responsibility. Each service runs its own process, manages its own data, and communicates via lightweight protocols (REST, gRPC, or message queues).</p>
+
+  <div class="callout cb">
+    <strong>Mental model:</strong> Microservices is like a city. The auth service is the post office, the payment service is the bank, the notification service is the telephone exchange. Each has its own building, staff, and hours. When the bank is busy, you expand the bank — you don't expand the post office.
+  </div>
+
+  <h2>Visual structure</h2>
+  <div class="diagram">
+    <div style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text3);margin-bottom:14px;text-align:center">CLIENT → API GATEWAY → (routes to) → INDIVIDUAL SERVICES</div>
+    <div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;justify-content:center">
+      <div class="dbox" style="background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--c1)">Client<br><span style="font-size:10px;font-weight:400;color:var(--text3)">Browser/App</span></div>
+      <div class="darrow">→</div>
+      <div class="dbox" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3);color:var(--c5)">API<br>Gateway<br><span style="font-size:10px;font-weight:400;color:var(--text3)">nginx/Kong</span></div>
+      <div class="darrow">→</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="dbox" style="background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.3);color:var(--c2)">User Service<br><span style="font-size:10px;font-weight:400;color:var(--text3)">:3001 · PostgreSQL</span></div>
+        <div class="dbox" style="background:rgba(251,146,60,.12);border-color:rgba(251,146,60,.3);color:var(--c3)">Order Service<br><span style="font-size:10px;font-weight:400;color:var(--text3)">:3002 · MySQL</span></div>
+        <div class="dbox" style="background:rgba(244,114,182,.12);border-color:rgba(244,114,182,.3);color:var(--c4)">Payment Service<br><span style="font-size:10px;font-weight:400;color:var(--text3)">:3003 · PostgreSQL</span></div>
+        <div class="dbox" style="background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:var(--c6)">Notification Svc<br><span style="font-size:10px;font-weight:400;color:var(--text3)">:3004 · Redis</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>The 8 core principles of microservices</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(52,211,153,.2);color:var(--c2)">1</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Single Responsibility</div><div class="step-body">Each service does one thing well. User service handles users. Payment service handles payments. They do not overlap.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(52,211,153,.2);color:var(--c2)">2</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Own your database</div><div class="step-body">No service queries another service's database directly. If Order Service needs user info, it calls the User Service API. Database-per-service = hard enforcement of boundaries.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(52,211,153,.2);color:var(--c2)">3</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Independent deployment</div><div class="step-body">Deploy the Payment Service on a Friday without touching User Service. Each has its own CI/CD pipeline, its own Docker image, its own release cycle.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(52,211,153,.2);color:var(--c2)">4</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Decentralized data management</div><div class="step-body">Different services can use different databases. Payment Service uses PostgreSQL for ACID guarantees. Product Catalog uses MongoDB for flexible schema. Notification Service uses Redis.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(52,211,153,.2);color:var(--c2)">5</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Failure isolation</div><div class="step-body">A crashing Recommendation Service shouldn't prevent users from checking out. Services are designed to handle downstream failures gracefully (circuit breakers, fallbacks).</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(52,211,153,.2);color:var(--c2)">6</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">API contracts</div><div class="step-body">Services communicate only through defined APIs (REST, gRPC, event schemas). Internals are hidden. Changing internal DB schema doesn't break other services.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(52,211,153,.2);color:var(--c2)">7</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Designed for failure</div><div class="step-body">Network calls fail. Services go down. Design every inter-service call with retries, timeouts, and circuit breakers. Assume any downstream call can fail at any time.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(52,211,153,.2);color:var(--c2)">8</div></div>
+      <div class="step-content"><div class="step-title">Observable by design</div><div class="step-body">Every service emits structured logs, metrics, and traces. Distributed tracing (Jaeger, Zipkin) shows you the path of a request across 10 services. You cannot debug microservices without this.</div></div>
+    </div>
+  </div>
+
+  <h2>The hard problems with microservices</h2>
+  <div class="g2">
+    <div class="card accent7">
+      <div class="card-title">Distributed transactions</div>
+      <div class="card-body">Placing an order requires: creating an order record AND charging a payment AND reducing inventory. Across 3 services. If payment succeeds but inventory fails — what do you do? Solution: <strong>Saga pattern</strong> — compensating transactions.</div>
+    </div>
+    <div class="card accent3">
+      <div class="card-title">Data consistency</div>
+      <div class="card-body">In a monolith, a DB transaction keeps data consistent. In microservices, there's no global transaction. You get <strong>eventual consistency</strong>: the system will be consistent… eventually. Requires designing for this explicitly.</div>
+    </div>
+    <div class="card accent4">
+      <div class="card-title">Service discovery</div>
+      <div class="card-body">Service A needs to call Service B. But B's IP changes on every deploy. Solution: service registry (Consul, Kubernetes DNS) — services register themselves and others look them up by name.</div>
+    </div>
+    <div class="card accent5">
+      <div class="card-title">Latency & network overhead</div>
+      <div class="card-body">What was a microsecond function call is now a network hop with serialization, DNS lookup, and TCP overhead. A request touching 10 services compounds this. Use gRPC (binary protocol) over REST where latency matters.</div>
+    </div>
+  </div>
+
+  <h2>Use cases — when microservices make sense</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th>Why microservices fit</th><th>Real example</th></tr></thead>
+      <tbody>
+        <tr><td>Large engineering org</td><td>Teams can own services independently. No merge conflicts across teams.</td><td>Amazon (one service per team)</td></tr>
+        <tr><td>Extreme scale differences</td><td>Video encoding at Netflix needs 1000x more compute than billing.</td><td>Netflix, YouTube</td></tr>
+        <tr><td>Polyglot requirements</td><td>ML team needs Python, Core team needs Java, Frontend team needs Node.</td><td>Uber's tech stack</td></tr>
+        <tr><td>Zero-downtime requirements</td><td>Deploy individual services with rolling updates, no full system restart.</td><td>Banking, e-commerce at peak</td></tr>
+        <tr><td>Regulatory isolation</td><td>Payment service must be PCI-DSS certified in isolation. Easier if it's separate.</td><td>Fintech, healthcare</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dd">
+    <div class="do-box">
+      <h4>Do with microservices</h4>
+      <li>Start with a modular monolith, extract later</li>
+      <li>One database per service (hard boundary)</li>
+      <li>Use an API Gateway for all external traffic</li>
+      <li>Implement circuit breakers (resilience4j, Hystrix)</li>
+      <li>Distributed tracing from day one</li>
+      <li>Define service contracts with OpenAPI/Protobuf</li>
+    </div>
+    <div class="dont-box">
+      <h4>Don't with microservices</h4>
+      <li>Share a database between two services</li>
+      <li>Start microservices on day 1 of a startup</li>
+      <li>Skip observability tooling</li>
+      <li>Create services smaller than a sprint's worth of work</li>
+      <li>Synchronous calls for non-critical events</li>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ LAYERED ══════════ -->
+<section id="sec-layered" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(167,139,250,.1);color:var(--c5)">Architecture 3 · Beginner</div>
+    <h1 class="hero-title">🥞 Layered (N-Tier) Architecture</h1>
+    <p class="hero-sub">The most widely used architectural pattern in enterprise software. Code is organized in horizontal layers where each layer serves the one above it and depends on the one below. The foundation of MVC and Clean Architecture.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Pattern</div><div class="stat-val" style="color:var(--c5)">Horizontal layers</div></div>
+    <div class="stat"><div class="stat-label">Communication</div><div class="stat-val" style="color:var(--c2)">Top-down only</div></div>
+    <div class="stat"><div class="stat-label">Variants</div><div class="stat-val" style="color:var(--c3)">2-tier, 3-tier, N-tier</div></div>
+    <div class="stat"><div class="stat-label">Used in</div><div class="stat-val" style="color:var(--c1)">90% of apps</div></div>
+  </div>
+
+  <h2>The tiers explained</h2>
+  <div class="g3">
+    <div class="card accent1">
+      <div class="card-title">2-tier (Client-Server)</div>
+      <div class="card-body">Client (UI) talks directly to Database. No middle layer. Old desktop apps, simple tools. Never build web apps this way — no security layer.</div>
+    </div>
+    <div class="card accent5">
+      <div class="card-title">3-tier (Most common)</div>
+      <div class="card-body">Presentation → Business Logic → Data. Standard for web apps. What MVC implements. What you likely build every day.</div>
+    </div>
+    <div class="card accent2">
+      <div class="card-title">N-tier (Enterprise)</div>
+      <div class="card-body">Adds more layers: caching tier, message queue tier, CDN tier, microservice tier. Each layer isolated and scalable independently.</div>
+    </div>
+  </div>
+
+  <h2>The strict rule: dependencies point down only</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--c1);background:rgba(56,189,248,.05)">
+      <div class="layer-name" style="color:var(--c1)">Layer 1 — Presentation / UI</div>
+      <div class="layer-desc">Renders HTML, handles HTTP requests, returns JSON. Controllers, views, React components. Can call Layer 2. Cannot call Layer 3 or 4 directly.</div>
+    </div>
+    <div style="text-align:center;color:var(--text3);font-size:11px;padding:2px;font-family:'IBM Plex Mono',monospace">↓ calls only the layer below</div>
+    <div class="layer" style="border-color:var(--c5);background:rgba(167,139,250,.05)">
+      <div class="layer-name" style="color:var(--c5)">Layer 2 — Business Logic / Application</div>
+      <div class="layer-desc">Services, use cases, domain rules. The "what" of the application. Validates inputs, applies rules, orchestrates data operations. Calls Layer 3.</div>
+    </div>
+    <div style="text-align:center;color:var(--text3);font-size:11px;padding:2px;font-family:'IBM Plex Mono',monospace">↓ calls only the layer below</div>
+    <div class="layer" style="border-color:var(--c2);background:rgba(52,211,153,.05)">
+      <div class="layer-name" style="color:var(--c2)">Layer 3 — Data Access / Persistence</div>
+      <div class="layer-desc">Repositories, ORM models, raw SQL queries. Translates between business objects and database rows. Knows about the DB, not about HTTP.</div>
+    </div>
+    <div style="text-align:center;color:var(--text3);font-size:11px;padding:2px;font-family:'IBM Plex Mono',monospace">↓ SQL / ORM queries</div>
+    <div class="layer" style="border-color:var(--text3);background:rgba(255,255,255,.02)">
+      <div class="layer-name">Layer 4 — Database</div>
+      <div class="layer-desc">PostgreSQL, MongoDB, Redis. Stores and retrieves data. Knows nothing about any layer above it.</div>
+    </div>
+  </div>
+
+  <h2>Use cases</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Application type</th><th>How layers map</th></tr></thead>
+      <tbody>
+        <tr><td>REST API (Express/Fastify)</td><td>Routes → Controllers → Services → Repositories → PostgreSQL</td></tr>
+        <tr><td>Web app (Django)</td><td>Views (routes) → Views (logic) → Models → Database</td></tr>
+        <tr><td>Enterprise Java (Spring)</td><td>Controller → Service → Repository → Entity/DB</td></tr>
+        <tr><td>Mobile backend</td><td>API Layer → Business Layer → Cache Layer → DB Layer</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════ SERVERLESS ══════════ -->
+<section id="sec-serverless" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(244,114,182,.1);color:var(--c4)">Architecture 4 · Intermediate</div>
+    <h1 class="hero-title">⚡ Serverless / FaaS Architecture</h1>
+    <p class="hero-sub">You write functions. The cloud provider manages the servers. Functions execute on demand, scale automatically to zero when idle, and you pay only for actual execution time — not idle server capacity.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Deploy unit</div><div class="stat-val" style="color:var(--c4)">Function</div></div>
+    <div class="stat"><div class="stat-label">Scaling</div><div class="stat-val" style="color:var(--c2)">Auto, to zero</div></div>
+    <div class="stat"><div class="stat-label">Billing</div><div class="stat-val" style="color:var(--c3)">Per invocation</div></div>
+    <div class="stat"><div class="stat-label">Cold start</div><div class="stat-val" style="color:var(--c7)">100ms–3s</div></div>
+  </div>
+
+  <h2>How it works</h2>
+  <div class="diagram">
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center">
+      <div class="dbox" style="background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--c1)">HTTP Request<br><span style="font-size:10px;font-weight:400">trigger</span></div>
+      <div class="darrow">→</div>
+      <div class="dbox" style="background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3);color:var(--c5)">API Gateway<br><span style="font-size:10px;font-weight:400">AWS/Vercel</span></div>
+      <div class="darrow">→</div>
+      <div class="dbox" style="background:rgba(244,114,182,.12);border-color:rgba(244,114,182,.3);color:var(--c4)">Lambda Function<br><span style="font-size:10px;font-weight:400">runs &amp; dies</span></div>
+      <div class="darrow">→</div>
+      <div class="dbox" style="background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.3);color:var(--c2)">Response<br><span style="font-size:10px;font-weight:400">+ billed</span></div>
+    </div>
+  </div>
+
+  <h2>Trigger types</h2>
+  <div class="g3">
+    <div class="mini"><div class="mini-title" style="color:var(--c1)">HTTP triggers</div><div class="mini-body">Function runs when an API endpoint is hit. Next.js API routes, Vercel functions, AWS Lambda + API Gateway.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c3)">Event triggers</div><div class="mini-body">S3 file uploaded → function runs. Database record changed → function runs. Message in queue → function runs.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c5)">Scheduled triggers</div><div class="mini-body">Cron jobs as functions. Run at 2am every night, process batch data, send digest emails. No always-on server needed.</div></div>
+  </div>
+
+  <h2>Use cases</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Use case</th><th>Why serverless fits</th><th>Platform</th></tr></thead>
+      <tbody>
+        <tr><td>Image/video processing</td><td>Resize images on upload. Burst to thousands of parallel executions instantly.</td><td>AWS Lambda + S3</td></tr>
+        <tr><td>API backends with spiky traffic</td><td>Scale to zero at night, handle 10,000 req/s during peak — pay for neither idle nor capacity planning.</td><td>Vercel, Netlify, Cloudflare Workers</td></tr>
+        <tr><td>Cron jobs / batch processing</td><td>No always-on server for nightly jobs. Pay only while it runs.</td><td>AWS EventBridge + Lambda</td></tr>
+        <tr><td>Webhook handlers</td><td>Stripe sends a webhook once in a while. No need for a dedicated server to sit waiting.</td><td>Any FaaS platform</td></tr>
+        <tr><td>Edge functions</td><td>Auth checks, A/B testing, redirects — run at the CDN edge, sub-millisecond globally.</td><td>Cloudflare Workers, Vercel Edge</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout cr">
+    <strong>Cold start problem:</strong> When a function hasn't run recently, the provider must spin up a new container — taking 100ms–3s. For user-facing APIs this is unacceptable. Solutions: keep-warm pings, provisioned concurrency (AWS), or use Cloudflare Workers (V8 isolates, no cold starts).
+  </div>
+
+  <div class="dd">
+    <div class="do-box">
+      <h4>Good fits</h4>
+      <li>Stateless request/response functions</li>
+      <li>Event-triggered processing (uploads, webhooks)</li>
+      <li>Irregular or spiky traffic patterns</li>
+      <li>Background jobs and cron tasks</li>
+      <li>Microservices where you want zero ops</li>
+    </div>
+    <div class="dont-box">
+      <h4>Bad fits</h4>
+      <li>Long-running processes (&gt;15 min)</li>
+      <li>WebSocket connections (stateful)</li>
+      <li>Latency-sensitive APIs (cold starts)</li>
+      <li>Heavy compute (ML training, video encoding)</li>
+      <li>Complex state that needs shared memory</li>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ EVENT-DRIVEN ══════════ -->
+<section id="sec-event-driven" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(251,146,60,.1);color:var(--c3)">Architecture 5 · Intermediate</div>
+    <h1 class="hero-title">📡 Event-Driven Architecture</h1>
+    <p class="hero-sub">Components communicate exclusively by emitting and consuming events. Producers fire events and forget. Consumers react to events they care about. No direct coupling between them. The backbone of real-time systems, agent pipelines, and modern distributed platforms.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Coupling</div><div class="stat-val" style="color:var(--c2)">Very loose</div></div>
+    <div class="stat"><div class="stat-label">Consistency</div><div class="stat-val" style="color:var(--c3)">Eventual</div></div>
+    <div class="stat"><div class="stat-label">Scaling</div><div class="stat-val" style="color:var(--c2)">Excellent</div></div>
+    <div class="stat"><div class="stat-label">Debugging</div><div class="stat-val" style="color:var(--c7)">Hard</div></div>
+  </div>
+
+  <h2>Definition & Core concept</h2>
+  <p>In event-driven architecture, a component doesn't call another component directly. Instead it emits an event — "something happened" — and moves on. Zero, one, or many other components may react to that event. The emitter doesn't know or care about them.</p>
+
+  <div class="callout co">
+    <strong>Real world analogy:</strong> A news broadcaster doesn't call each viewer individually. It broadcasts. Whoever is tuned in receives the broadcast. Event-driven architecture works exactly this way — components subscribe to what they care about.
+  </div>
+
+  <h2>The 3 event patterns</h2>
+  <div class="g3">
+    <div class="card accent3">
+      <div class="card-title">Event notification</div>
+      <div class="card-body"><strong>"Something happened."</strong> Minimal payload. Consumer fetches details separately. e.g., <code>order.placed: { orderId: "123" }</code> — consumer then calls Order API for full details.</div>
+    </div>
+    <div class="card accent6">
+      <div class="card-title">Event-carried state transfer</div>
+      <div class="card-body"><strong>"Something happened, here's everything."</strong> Full state in the event. Consumer doesn't need to call back. e.g., <code>user.updated: { id, email, name, plan, ...all fields }</code></div>
+    </div>
+    <div class="card accent2">
+      <div class="card-title">Event sourcing</div>
+      <div class="card-body"><strong>"The event IS the source of truth."</strong> You never update records — you append events. State is computed by replaying all events. Covered in the CQRS section.</div>
+    </div>
+  </div>
+
+  <h2>How it flows</h2>
+  <div class="code">
+<span class="c">// Order placed — emit event (fire and forget)</span>
+<span class="d">class</span> <span class="o">OrderService</span> {
+  <span class="d">async</span> <span class="p">placeOrder</span>(cartId) {
+    <span class="d">const</span> order = <span class="d">await</span> orderRepo.<span class="p">create</span>(cartId);
+    eventBus.<span class="p">emit</span>(<span class="g">'order.placed'</span>, { orderId: order.id, userId: order.userId, total: order.total });
+    <span class="c">// OrderService has no idea who reacts to this. It just moves on.</span>
+    <span class="d">return</span> order;
+  }
+}
+
+<span class="c">// EmailService subscribes — independently</span>
+eventBus.<span class="p">on</span>(<span class="g">'order.placed'</span>, <span class="d">async</span> ({ orderId, userId }) => {
+  <span class="d">const</span> user = <span class="d">await</span> userService.<span class="p">getById</span>(userId);
+  <span class="d">await</span> emailService.<span class="p">sendConfirmation</span>(user.email, orderId);
+});
+
+<span class="c">// InventoryService subscribes — independently</span>
+eventBus.<span class="p">on</span>(<span class="g">'order.placed'</span>, <span class="d">async</span> ({ orderId }) => {
+  <span class="d">await</span> inventoryService.<span class="p">reserveStock</span>(orderId);
+});
+
+<span class="c">// Adding analytics? Just add another subscriber. Zero code changes to OrderService.</span>
+eventBus.<span class="p">on</span>(<span class="g">'order.placed'</span>, ({ total }) => analytics.<span class="p">track</span>(<span class="g">'revenue'</span>, total));
+</div>
+
+  <h2>Use cases</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Use case</th><th>Events involved</th><th>Systems</th></tr></thead>
+      <tbody>
+        <tr><td>AI token streaming</td><td>token.generated, stream.completed</td><td>LLM → SSE → Browser</td></tr>
+        <tr><td>E-commerce order flow</td><td>order.placed, payment.captured, stock.reserved</td><td>Kafka + multiple consumers</td></tr>
+        <tr><td>Real-time notifications</td><td>user.mentioned, task.assigned, message.received</td><td>Redis Pub/Sub + WebSocket</td></tr>
+        <tr><td>IoT sensor data</td><td>temperature.recorded, threshold.exceeded</td><td>MQTT + event processors</td></tr>
+        <tr><td>Audit logging</td><td>Every mutation emits an event captured by audit service</td><td>Event bus + append-only log</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════ CQRS ══════════ -->
+<section id="sec-cqrs" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(251,191,36,.1);color:var(--c6)">Architecture 6 · Advanced</div>
+    <h1 class="hero-title">🔀 CQRS + Event Sourcing</h1>
+    <p class="hero-sub">Two complementary patterns. CQRS separates reads and writes into different models. Event Sourcing stores state as a sequence of immutable events rather than a current snapshot. Together they give you infinite audit trails, time travel debugging, and extreme read performance.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">CQRS stands for</div><div class="stat-val" style="color:var(--c6)">Command Query<br>Responsibility Segregation</div></div>
+    <div class="stat"><div class="stat-label">Read model</div><div class="stat-val" style="color:var(--c2)">Optimized for queries</div></div>
+    <div class="stat"><div class="stat-label">Write model</div><div class="stat-val" style="color:var(--c3)">Optimized for commands</div></div>
+    <div class="stat"><div class="stat-label">Complexity</div><div class="stat-val" style="color:var(--c7)">Very high</div></div>
+  </div>
+
+  <h2>CQRS — Separate reads from writes</h2>
+  <p>Traditional CRUD: one model for both reading and writing data. CQRS says: reading and writing have fundamentally different requirements — separate them into two models.</p>
+  <div class="comp-big">
+    <div class="comp-col">
+      <h3 style="color:var(--c3)">Command side (Writes)</h3>
+      <li>Handles mutations: CreateOrder, CancelOrder, UpdateUser</li>
+      <li>Enforces business rules and invariants</li>
+      <li>Optimized for consistency and correctness</li>
+      <li>Returns success/failure, not data</li>
+      <li>Writes to the write store (event store)</li>
+    </div>
+    <div class="comp-col">
+      <h3 style="color:var(--c2)">Query side (Reads)</h3>
+      <li>Handles queries: GetOrderById, ListUserOrders</li>
+      <li>No business rules — just data retrieval</li>
+      <li>Optimized for query performance (denormalized)</li>
+      <li>Returns exactly the shape the UI needs</li>
+      <li>Reads from projections (read-optimized views)</li>
+    </div>
+  </div>
+
+  <h2>Event Sourcing — store events, not state</h2>
+  <div class="callout cv">
+    <strong>The paradigm shift:</strong> Instead of storing "order status = cancelled", you store the entire history: OrderPlaced → PaymentCaptured → ItemShipped → OrderCancelled → RefundIssued. Current state = replay all events. You never lose history.
+  </div>
+  <div class="code">
+<span class="c">// Traditional: store current state (you lose history)</span>
+UPDATE orders SET status = <span class="g">'cancelled'</span>, refund_amount = 50 WHERE id = <span class="g">'ord-123'</span>;
+
+<span class="c">// Event Sourcing: append events (history is sacred)</span>
+INSERT INTO events (stream_id, type, data, timestamp) VALUES
+  (<span class="g">'ord-123'</span>, <span class="g">'OrderPlaced'</span>,       { total: 100, items: [...] },  <span class="g">'2024-01-01 10:00'</span>),
+  (<span class="g">'ord-123'</span>, <span class="g">'PaymentCaptured'</span>,    { amount: 100 },               <span class="g">'2024-01-01 10:01'</span>),
+  (<span class="g">'ord-123'</span>, <span class="g">'OrderCancelled'</span>,     { reason: <span class="g">'out of stock'</span> },    <span class="g">'2024-01-02 09:15'</span>),
+  (<span class="g">'ord-123'</span>, <span class="g">'RefundIssued'</span>,       { amount: 100 },               <span class="g">'2024-01-02 09:20'</span>);
+
+<span class="c">// Current state = replay: fold all events into the latest snapshot</span>
+<span class="d">const</span> order = events.<span class="p">reduce</span>((state, event) => applyEvent(state, event), {});
+</div>
+
+  <h2>Use cases</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Domain</th><th>Why CQRS + ES fits</th></tr></thead>
+      <tbody>
+        <tr><td>Banking / Fintech</td><td>Every transaction is an event. Regulators need full audit trail. Balance = replay of all debits/credits.</td></tr>
+        <tr><td>Healthcare records</td><td>Medical history must never be deleted or modified. Every update is an append.</td></tr>
+        <tr><td>Collaborative editing</td><td>Each keypress / edit is an event. "Undo" = replay minus last event.</td></tr>
+        <tr><td>Supply chain / inventory</td><td>Track every stock movement. Debug discrepancies by replaying history.</td></tr>
+        <tr><td>E-commerce with complex orders</td><td>Full order lifecycle in events. Rebuild any past state for customer disputes.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════ PUB/SUB ══════════ -->
+<section id="sec-pub-sub" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(251,146,60,.1);color:var(--c3)">Architecture 7 · Intermediate</div>
+    <h1 class="hero-title">📬 Pub/Sub Messaging Architecture</h1>
+    <p class="hero-sub">Publishers send messages to named channels (topics/queues). Subscribers receive messages from channels they care about. They never interact directly. The plumbing of distributed systems — Kafka, RabbitMQ, AWS SQS, Redis Pub/Sub.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Brokers</div><div class="stat-val" style="color:var(--c3)">Kafka, RabbitMQ</div></div>
+    <div class="stat"><div class="stat-label">Delivery</div><div class="stat-val" style="color:var(--c2)">At-least-once</div></div>
+    <div class="stat"><div class="stat-label">Ordering</div><div class="stat-val" style="color:var(--c6)">Per partition</div></div>
+    <div class="stat"><div class="stat-label">Replay</div><div class="stat-val" style="color:var(--c5)">Kafka: yes. SQS: no</div></div>
+  </div>
+
+  <h2>Kafka vs RabbitMQ vs SQS</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>Apache Kafka</th><th>RabbitMQ</th><th>AWS SQS</th></tr></thead>
+      <tbody>
+        <tr><td>Model</td><td>Log-based (topics with offsets)</td><td>Queue-based (push)</td><td>Queue-based (poll)</td></tr>
+        <tr><td>Message replay</td><td>Yes — replay from any offset</td><td>No — consumed = gone</td><td>No</td></tr>
+        <tr><td>Throughput</td><td>Millions/sec</td><td>Tens of thousands/sec</td><td>Managed, auto-scales</td></tr>
+        <tr><td>Retention</td><td>Days/weeks/forever</td><td>Until consumed</td><td>Up to 14 days</td></tr>
+        <tr><td>Complexity</td><td>High to operate</td><td>Medium</td><td>Zero (managed)</td></tr>
+        <tr><td>Best for</td><td>Event sourcing, analytics, audit logs</td><td>Task queues, RPC patterns</td><td>Serverless integrations, simple queues</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Use cases</h2>
+  <div class="g2">
+    <div class="card accent3"><div class="card-title">Background job processing</div><div class="card-body">User uploads a video → publish to <code>video.processing</code> queue → worker picks it up → transcodes → publishes <code>video.ready</code>. HTTP request returns immediately. Processing is async.</div></div>
+    <div class="card accent2"><div class="card-title">Cross-service communication</div><div class="card-body">Order Service publishes <code>order.placed</code> to Kafka. Inventory, Email, Analytics, and Billing services each consume independently at their own pace. Kafka buffers spikes.</div></div>
+    <div class="card accent6"><div class="card-title">Real-time data pipelines</div><div class="card-body">Clickstream data from millions of users → Kafka → Flink / Spark for stream processing → aggregated metrics → dashboards. LinkedIn, LinkedIn, and Twitter are all built on this.</div></div>
+    <div class="card accent5"><div class="card-title">Microservice choreography</div><div class="card-body">Replace synchronous REST calls between services with async events. Order Service never waits for Email Service to respond. Services are decoupled in time as well as in code.</div></div>
+  </div>
+</section>
+
+<!-- ══════════ SOA ══════════ -->
+<section id="sec-soa" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(45,212,191,.1);color:var(--c8)">Architecture 8 · Enterprise</div>
+    <h1 class="hero-title">🔗 Service-Oriented Architecture (SOA)</h1>
+    <p class="hero-sub">The enterprise predecessor to microservices. Large services (not micro!) communicate through a centralized Enterprise Service Bus (ESB). Standard in banks, telecom companies, government systems, and large enterprises built in the 2000s–2010s.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Service size</div><div class="stat-val" style="color:var(--c8)">Large / coarse-grained</div></div>
+    <div class="stat"><div class="stat-label">Protocol</div><div class="stat-val" style="color:var(--c3)">SOAP, WSDL, XML</div></div>
+    <div class="stat"><div class="stat-label">Hub</div><div class="stat-val" style="color:var(--c5)">ESB (centralized)</div></div>
+    <div class="stat"><div class="stat-label">Era</div><div class="stat-val" style="color:var(--text2)">2000–2015</div></div>
+  </div>
+
+  <h2>SOA vs Microservices: key differences</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Aspect</th><th>SOA</th><th>Microservices</th></tr></thead>
+      <tbody>
+        <tr><td>Service size</td><td>Large — "Customer Service" handles all customer operations</td><td>Small — "Customer Profile", "Customer Auth", "Customer Billing" are separate</td></tr>
+        <tr><td>Communication hub</td><td>Centralized ESB — all services route through it</td><td>Decentralized — services talk directly or via lightweight message brokers</td></tr>
+        <tr><td>Data sharing</td><td>Services often share a central data store</td><td>Each service has its own database</td></tr>
+        <tr><td>Protocol</td><td>SOAP/XML, heavyweight WSDL contracts</td><td>REST/JSON, gRPC, async events</td></tr>
+        <tr><td>Deploy unit</td><td>Service is a large application module</td><td>Service is a small focused process</td></tr>
+        <tr><td>Still used?</td><td>Yes — banks, telecom, government</td><td>Yes — tech companies, startups</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout cb">
+    <strong>SOA is not dead:</strong> The vast majority of financial institutions (banks, insurance, payments) still run SOA-based systems. If you ever work at a bank, you'll encounter SOAP endpoints and ESBs. Understanding SOA is essential for enterprise software careers.
+  </div>
+
+  <h2>The ESB problem</h2>
+  <div class="card accent7">
+    <div class="card-title">Why SOA fell out of favour with tech companies</div>
+    <div class="card-body">The ESB becomes a "smart pipe" — routing, transformation, orchestration logic piles up in the bus. It becomes a bottleneck, a single point of failure, and the hardest thing to change in the whole system. Microservices moved intelligence back into the services and made the communication layer ("pipe") dumb.</div>
+  </div>
+</section>
+
+<!-- ══════════ HEXAGONAL ══════════ -->
+<section id="sec-hexagonal" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(167,139,250,.1);color:var(--c5)">Architecture 9 · Advanced</div>
+    <h1 class="hero-title">🔌 Hexagonal Architecture (Ports &amp; Adapters)</h1>
+    <p class="hero-sub">Your application core defines abstract ports — interfaces that describe what it needs. Concrete adapters plug in to implement those ports. Swap PostgreSQL for MongoDB, OpenAI for Anthropic, HTTP for CLI — without touching a single line of business logic.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Also known as</div><div class="stat-val" style="color:var(--c5)">Ports &amp; Adapters</div></div>
+    <div class="stat"><div class="stat-label">Created by</div><div class="stat-val" style="color:var(--c1)">Alistair Cockburn</div></div>
+    <div class="stat"><div class="stat-label">Key benefit</div><div class="stat-val" style="color:var(--c2)">Swap anything</div></div>
+    <div class="stat"><div class="stat-label">Testability</div><div class="stat-val" style="color:var(--c2)">Excellent</div></div>
+  </div>
+
+  <h2>The hexagonal shape explained</h2>
+  <div class="diagram">
+    <div style="display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <div class="dbox" style="background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--c1)">HTTP API<br><span style="font-size:9px">driving adapter</span></div>
+        <div class="dbox" style="background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--c1)">CLI<br><span style="font-size:9px">driving adapter</span></div>
+        <div class="dbox" style="background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--c1)">Test runner<br><span style="font-size:9px">driving adapter</span></div>
+      </div>
+      <div class="darrow">→</div>
+      <div style="border:2px solid rgba(167,139,250,.4);background:rgba(167,139,250,.08);border-radius:12px;padding:18px 22px;text-align:center">
+        <div style="font-size:11px;font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--c5);margin-bottom:6px">APPLICATION CORE</div>
+        <div style="font-size:10px;color:var(--text3)">Business logic</div>
+        <div style="font-size:10px;color:var(--text3)">Domain rules</div>
+        <div style="font-size:10px;color:var(--text3)">Use cases</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px;font-style:italic">No framework deps</div>
+      </div>
+      <div class="darrow">→</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="dbox" style="background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.3);color:var(--c2)">Postgres<br><span style="font-size:9px">driven adapter</span></div>
+        <div class="dbox" style="background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.3);color:var(--c2)">OpenAI SDK<br><span style="font-size:9px">driven adapter</span></div>
+        <div class="dbox" style="background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.3);color:var(--c2)">Redis cache<br><span style="font-size:9px">driven adapter</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Port vs Adapter</h2>
+  <div class="code">
+<span class="c">// PORT — defined by the core. An interface. An abstract promise.</span>
+<span class="d">interface</span> <span class="o">ILLMPort</span> {
+  <span class="p">complete</span>(messages: Message[]): Promise&lt;<span class="d">string</span>&gt;;
+  <span class="p">stream</span>(messages: Message[]): AsyncGenerator&lt;<span class="d">string</span>&gt;;
+}
+
+<span class="c">// ADAPTER 1 — OpenAI implements the port</span>
+<span class="d">class</span> <span class="o">OpenAIAdapter</span> <span class="d">implements</span> <span class="o">ILLMPort</span> {
+  <span class="d">async</span> <span class="p">complete</span>(messages) { <span class="d">return</span> openai.chat.completions.<span class="p">create</span>({messages}); }
+}
+
+<span class="c">// ADAPTER 2 — Anthropic. Same port. Drop-in replacement.</span>
+<span class="d">class</span> <span class="o">AnthropicAdapter</span> <span class="d">implements</span> <span class="o">ILLMPort</span> {
+  <span class="d">async</span> <span class="p">complete</span>(messages) { <span class="d">return</span> anthropic.messages.<span class="p">create</span>({messages}); }
+}
+
+<span class="c">// ADAPTER 3 — Mock for testing. No API calls, no cost.</span>
+<span class="d">class</span> <span class="o">MockLLMAdapter</span> <span class="d">implements</span> <span class="o">ILLMPort</span> {
+  <span class="d">async</span> <span class="p">complete</span>() { <span class="d">return</span> <span class="g">"mock response"</span>; }
+}
+
+<span class="c">// CORE — never changes when you swap providers</span>
+<span class="d">class</span> <span class="o">ChatService</span> {
+  <span class="d">constructor</span>(<span class="d">private</span> llm: <span class="o">ILLMPort</span>) {} <span class="c">// inject any adapter</span>
+  <span class="d">async</span> <span class="p">respond</span>(input: <span class="d">string</span>) { <span class="d">return</span> <span class="d">this</span>.llm.<span class="p">complete</span>([{role:<span class="g">'user'</span>, content: input}]); }
+}
+</div>
+
+  <h2>Why this matters for AI projects specifically</h2>
+  <div class="callout cv">
+    <strong>LLM providers change monthly.</strong> OpenAI releases GPT-5, Anthropic releases Claude 4, Google releases Gemini Ultra 2 — all within 3 months. If your business logic imports the OpenAI SDK directly, every model upgrade requires touching production code. With hexagonal architecture, you write one new adapter file. Your entire application: untouched.
+  </div>
+</section>
+
+<!-- ══════════ SERVICE MESH ══════════ -->
+<section id="sec-service-mesh" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(52,211,153,.1);color:var(--c2)">Architecture 10 · Advanced</div>
+    <h1 class="hero-title">🕸️ Service Mesh Architecture</h1>
+    <p class="hero-sub">An infrastructure layer for microservices. Instead of each service implementing retries, load balancing, encryption, and tracing itself, a sidecar proxy (like Envoy) handles all of it transparently. Istio, Linkerd, Consul Connect. Used at scale with Kubernetes.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Sidecar proxy</div><div class="stat-val" style="color:var(--c2)">Envoy, Linkerd2</div></div>
+    <div class="stat"><div class="stat-label">Control plane</div><div class="stat-val" style="color:var(--c5)">Istio, Consul</div></div>
+    <div class="stat"><div class="stat-label">Protocol</div><div class="stat-val" style="color:var(--c1)">mTLS encrypted</div></div>
+    <div class="stat"><div class="stat-label">Requires</div><div class="stat-val" style="color:var(--c3)">Kubernetes</div></div>
+  </div>
+
+  <h2>The sidecar pattern</h2>
+  <p>Every service pod in Kubernetes gets an Envoy proxy injected alongside it automatically. All inbound and outbound traffic flows through the proxy. The service code never knows about retries, circuit breaking, mTLS — the proxy handles it all.</p>
+
+  <div class="diagram">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:500px;margin:0 auto">
+      <div style="border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:12px;background:rgba(52,211,153,.05)">
+        <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--c2);margin-bottom:8px;font-weight:600">SERVICE A POD</div>
+        <div class="dbox" style="background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--c1);margin-bottom:6px;width:100%">App Container</div>
+        <div class="dbox" style="background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.3);color:var(--c2);width:100%">Envoy Sidecar</div>
+      </div>
+      <div style="border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:12px;background:rgba(52,211,153,.05)">
+        <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--c2);margin-bottom:8px;font-weight:600">SERVICE B POD</div>
+        <div class="dbox" style="background:rgba(167,139,248,.12);border-color:rgba(167,139,250,.3);color:var(--c5);margin-bottom:6px;width:100%">App Container</div>
+        <div class="dbox" style="background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.3);color:var(--c2);width:100%">Envoy Sidecar</div>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text3);margin-top:10px">All traffic: A's Envoy → mTLS encrypted → B's Envoy → B's app</div>
+  </div>
+
+  <h2>What the mesh handles automatically</h2>
+  <div class="g2">
+    <div class="mini"><div class="mini-title" style="color:var(--c2)">Traffic management</div><div class="mini-body">Load balancing, canary deployments, traffic splitting (10% to v2), retries, timeouts, circuit breaking — all via config, not code.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c1)">Security (mTLS)</div><div class="mini-body">Every service-to-service call is automatically mutually-authenticated and encrypted. Zero-trust networking without code changes.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c5)">Observability</div><div class="mini-body">Every request traced, timed, and logged by the proxy. Distributed traces in Jaeger. Metrics in Prometheus. No instrumentation needed in app code.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c3)">Policy enforcement</div><div class="mini-body">Service A is not allowed to call Service B — enforced at mesh level. Rate limits, authorization policies — without touching service code.</div></div>
+  </div>
+
+  <div class="callout co">
+    <strong>When to use it:</strong> Only when you have 20+ microservices on Kubernetes and are experiencing real pain around security, observability, or traffic management. Adding a service mesh to 3 services is massive over-engineering. At 100 services, it becomes essential.
+  </div>
+</section>
+
+<!-- ══════════ PIPE & FILTER ══════════ -->
+<section id="sec-pipe-filter" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(251,191,36,.1);color:var(--c6)">Architecture 11 · Intermediate</div>
+    <h1 class="hero-title">🔧 Pipe &amp; Filter Architecture</h1>
+    <p class="hero-sub">Data flows through a sequence of independent processing steps (filters), connected by channels (pipes). Each filter transforms the data and passes it on. Classic in ETL pipelines, compilers, CI/CD, and AI data processing.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Data flow</div><div class="stat-val" style="color:var(--c6)">Unidirectional</div></div>
+    <div class="stat"><div class="stat-label">Filters</div><div class="stat-val" style="color:var(--c2)">Independent, composable</div></div>
+    <div class="stat"><div class="stat-label">Pipes</div><div class="stat-val" style="color:var(--c1)">Connectors between steps</div></div>
+    <div class="stat"><div class="stat-label">Processing</div><div class="stat-val" style="color:var(--c3)">Stream or batch</div></div>
+  </div>
+
+  <h2>The concept</h2>
+  <div class="diagram">
+    <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center">
+      <div class="dbox" style="background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--c1)">Raw<br>Data</div>
+      <div class="darrow">─▶</div>
+      <div class="dbox" style="background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:var(--c6)">Filter 1<br><span style="font-size:9px">Validate</span></div>
+      <div class="darrow">─▶</div>
+      <div class="dbox" style="background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:var(--c6)">Filter 2<br><span style="font-size:9px">Transform</span></div>
+      <div class="darrow">─▶</div>
+      <div class="dbox" style="background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:var(--c6)">Filter 3<br><span style="font-size:9px">Enrich</span></div>
+      <div class="darrow">─▶</div>
+      <div class="dbox" style="background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:var(--c6)">Filter 4<br><span style="font-size:9px">Load</span></div>
+      <div class="darrow">─▶</div>
+      <div class="dbox" style="background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.3);color:var(--c2)">Output<br><span style="font-size:9px">Result</span></div>
+    </div>
+  </div>
+
+  <h2>Real examples</h2>
+  <div class="g2">
+    <div class="card accent6"><div class="card-title">Unix shell pipeline</div><div class="card-body"><code>cat logs.txt | grep ERROR | awk '{print $3}' | sort | uniq -c</code> — every <code>|</code> is a pipe, every command is a filter. This IS pipe and filter architecture. You use it every day.</div></div>
+    <div class="card accent2"><div class="card-title">CI/CD pipeline</div><div class="card-body">Code push → Lint filter → Test filter → Build filter → Security scan filter → Deploy filter. Each step is independent. Fail at any filter = stop the pipeline.</div></div>
+    <div class="card accent1"><div class="card-title">ETL data pipeline</div><div class="card-body">Extract from 5 sources → Validate data → Normalize schema → Remove duplicates → Aggregate → Load into data warehouse. Apache Airflow, Apache Beam, AWS Glue.</div></div>
+    <div class="card accent3"><div class="card-title">AI document processing</div><div class="card-body">Raw PDF → Extract text → Chunk text → Generate embeddings → Score relevance → Rerank → Return top K. LangChain chains work exactly this way.</div></div>
+  </div>
+
+  <h2>Use cases</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Domain</th><th>Pipeline</th><th>Tool</th></tr></thead>
+      <tbody>
+        <tr><td>Data engineering</td><td>Ingest → clean → transform → aggregate → store</td><td>Apache Spark, Airflow, dbt</td></tr>
+        <tr><td>Compiler design</td><td>Source → Lexer → Parser → AST → Optimizer → Code gen</td><td>LLVM, Babel, tsc</td></tr>
+        <tr><td>API middleware</td><td>Request → Auth → Rate limit → Validate → Route → Respond</td><td>Express middleware chain</td></tr>
+        <tr><td>AI RAG pipeline</td><td>Query → Embed → Retrieve → Rerank → Augment → Generate</td><td>LangChain, LlamaIndex</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════ SPACE-BASED ══════════ -->
+<section id="sec-space-based" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(248,113,113,.1);color:var(--c7)">Architecture 12 · Advanced</div>
+    <h1 class="hero-title">🚀 Space-Based Architecture</h1>
+    <p class="hero-sub">Designed to eliminate the database bottleneck at extreme scale. Processing units share an in-memory distributed data grid (the "tuple space"). Data replicates across all units. No central database for hot paths. Millisecond latency at millions of transactions per second.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Data store</div><div class="stat-val" style="color:var(--c7)">In-memory grid</div></div>
+    <div class="stat"><div class="stat-label">Latency</div><div class="stat-val" style="color:var(--c2)">&lt; 1ms</div></div>
+    <div class="stat"><div class="stat-label">Throughput</div><div class="stat-val" style="color:var(--c2)">Millions TPS</div></div>
+    <div class="stat"><div class="stat-label">Complexity</div><div class="stat-val" style="color:var(--c7)">Very high</div></div>
+  </div>
+
+  <h2>The core concept</h2>
+  <p>Traditional architectures hit a wall when the database becomes the bottleneck. Space-based architecture removes the DB from the hot path entirely. Processing Units (PUs) read/write to an in-memory distributed grid. An async replication engine persists to disk in the background.</p>
+
+  <div class="callout cr">
+    <strong>The problem it solves:</strong> A ticket sales site releases tickets for a major concert. 500,000 users hit the site simultaneously. No database can handle 500k concurrent writes/reads. Space-based keeps everything in memory, distributed across 100 PUs, each holding a replica of the data.
+  </div>
+
+  <h2>Components</h2>
+  <div class="g2">
+    <div class="mini"><div class="mini-title" style="color:var(--c7)">Processing Units (PU)</div><div class="mini-body">Identical application instances. Each holds a copy of the relevant data in memory. Scale horizontally by adding more PUs. Handle requests without DB calls.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c3)">In-memory data grid</div><div class="mini-body">Hazelcast, Apache Ignite, Redis Cluster. Partitions data across nodes, replicates for fault tolerance. Sub-millisecond reads and writes.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c5)">Virtualized middleware</div><div class="mini-body">Messaging grid routes requests to available PUs. Data grid syncs state between PUs. Processing grid manages execution.</div></div>
+    <div class="mini"><div class="mini-title" style="color:var(--c2)">Async persistence</div><div class="mini-body">A separate service asynchronously writes from the in-memory grid to PostgreSQL/Cassandra. Not on the hot path — DB is for durability, not performance.</div></div>
+  </div>
+
+  <h2>Use cases — only at extreme scale</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Use case</th><th>Scale requirement</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Online ticket sales</td><td>500k concurrent users in 30 seconds</td><td>Ticketmaster concert releases</td></tr>
+        <tr><td>Online betting / trading</td><td>100k+ bets/trades per second</td><td>Sports betting, stock exchanges</td></tr>
+        <tr><td>Online gaming</td><td>Millions of concurrent game state updates</td><td>MMO game state, leaderboards</td></tr>
+        <tr><td>Ad serving</td><td>Sub-5ms decision for billions of daily impressions</td><td>Real-time bidding platforms</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════ WHEN TO USE ══════════ -->
+<section id="sec-when-to-use" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(52,211,153,.1);color:var(--c2)">Decision Guide</div>
+    <h1 class="hero-title">When to use which architecture</h1>
+    <p class="hero-sub">The most important skill: choosing the right architecture for the right context. Over-engineering is as dangerous as under-engineering. Here's the decision map.</p>
+  </div>
+
+  <h2>By application type</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>You are building...</th><th>Primary architecture</th><th>Supporting patterns</th><th>Avoid</th></tr></thead>
+      <tbody>
+        <tr><td>Startup MVP / prototype</td><td><span class="pill" style="background:rgba(56,189,248,.15);color:var(--c1)">Monolith + Layered</span></td><td>MVC, basic layering</td><td>Microservices, SOA</td></tr>
+        <tr><td>SaaS web application</td><td><span class="pill" style="background:rgba(167,139,250,.15);color:var(--c5)">Monolith → Modular Monolith</span></td><td>Layered, Event-driven (for async)</td><td>Microservices until &gt;20 engineers</td></tr>
+        <tr><td>Simple chatbot</td><td><span class="pill" style="background:rgba(56,189,248,.15);color:var(--c1)">Layered + Hexagonal</span></td><td>Hexagonal (for LLM ports)</td><td>Complex event sourcing</td></tr>
+        <tr><td>AI agent platform</td><td><span class="pill" style="background:rgba(244,114,182,.15);color:var(--c4)">Layered + Hexagonal + Event-driven</span></td><td>Pub/Sub for tool events, Pipe &amp; Filter for processing</td><td>Space-based (overkill)</td></tr>
+        <tr><td>E-commerce at scale</td><td><span class="pill" style="background:rgba(52,211,153,.15);color:var(--c2)">Microservices</span></td><td>Event-driven, CQRS for orders</td><td>Monolith if &gt; 5M users</td></tr>
+        <tr><td>Data pipeline / ETL</td><td><span class="pill" style="background:rgba(251,191,36,.15);color:var(--c6)">Pipe &amp; Filter</span></td><td>Event-driven, Pub/Sub</td><td>Layered (wrong fit)</td></tr>
+        <tr><td>Banking / Fintech</td><td><span class="pill" style="background:rgba(251,191,36,.15);color:var(--c6)">Layered + CQRS + Event Sourcing</span></td><td>SOA (for legacy integration), Hexagonal</td><td>Serverless for core banking</td></tr>
+        <tr><td>Content site / blog</td><td><span class="pill" style="background:rgba(244,114,182,.15);color:var(--c4)">Serverless / Monolith</span></td><td>Layered, CDN</td><td>Microservices, Event sourcing</td></tr>
+        <tr><td>High-traffic ticketing</td><td><span class="pill" style="background:rgba(248,113,113,.15);color:var(--c7)">Space-Based</span></td><td>Event-driven, Pub/Sub</td><td>Layered monolith (can't handle it)</td></tr>
+        <tr><td>Enterprise integration</td><td><span class="pill" style="background:rgba(45,212,191,.15);color:var(--c8)">SOA / Microservices</span></td><td>Event-driven, Service Mesh</td><td>Serverless (stateful requirements)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="div"></div>
+
+  <h2>By team size and maturity</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Team size</th><th>Recommended architecture</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>1–3 engineers</td><td>Monolith, Layered</td><td>Speed, simplicity, shared context</td></tr>
+        <tr><td>4–10 engineers</td><td>Modular Monolith or small services</td><td>Feature teams can own modules</td></tr>
+        <tr><td>10–30 engineers</td><td>Microservices (carefully)</td><td>Teams need deployment independence</td></tr>
+        <tr><td>30–100 engineers</td><td>Microservices + Service Mesh</td><td>Observability and security at scale</td></tr>
+        <tr><td>100+ engineers</td><td>Full microservices + CQRS + Event Sourcing</td><td>Audit, compliance, independent scaling</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout cg">
+    <strong>The evolution rule:</strong> Don't choose the architecture you'll need in 3 years. Choose the simplest architecture that solves your problems today. You'll feel when you've outgrown it — and that feeling is the right time to upgrade.
+  </div>
+
+  <h2>The architect's checklist</h2>
+  <div class="g2">
+    <div class="card accent1">
+      <div class="card-title">Questions to ask first</div>
+      <div class="card-body">
+        How many engineers will work on this? <br>
+        Do different parts need to scale differently? <br>
+        Do teams need independent deployments? <br>
+        What's the failure tolerance? <br>
+        Do you have the ops maturity to run it?
+      </div>
+    </div>
+    <div class="card accent2">
+      <div class="card-title">Red flags for over-engineering</div>
+      <div class="card-body">
+        Building microservices before finding PMF<br>
+        Adding CQRS to a simple CRUD app<br>
+        Using Kafka when Redis queues suffice<br>
+        Service mesh for 3 services<br>
+        Event sourcing "because it's cool"
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ MIGRATION ══════════ -->
+<section id="sec-migration" class="section">
+  <div class="hero">
+    <div class="hero-tag" style="background:rgba(167,139,250,.1);color:var(--c5)">Migration Paths</div>
+    <h1 class="hero-title">How to migrate between architectures</h1>
+    <p class="hero-sub">You never start with the right architecture. Real systems evolve. Here's how to migrate from one architecture to another without rewriting everything from scratch.</p>
+  </div>
+
+  <h2>Monolith → Microservices (the Strangler Fig pattern)</h2>
+  <div class="callout cv">
+    <strong>The Strangler Fig pattern:</strong> Named after a vine that slowly wraps around a tree. New functionality is built as a microservice. Old monolith code is replaced piece by piece. The monolith "dies" gradually — never a big-bang rewrite. Used by Netflix, Amazon, and Shopify.
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(56,189,248,.2);color:var(--c1)">1</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Add a proxy / API gateway in front of the monolith</div><div class="step-body">All traffic goes through it. Initially it routes everything to the monolith unchanged. This is your seam for the migration.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(56,189,248,.2);color:var(--c1)">2</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Identify the seam: find the most independent module</div><div class="step-body">Look for a module with a clear boundary, its own data, and minimal coupling. User Auth, Notifications, and Payments are common first extractions. Never start with the core domain.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(56,189,248,.2);color:var(--c1)">3</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Build the new service in parallel (don't delete yet)</div><div class="step-body">Build the new microservice. It has its own database. Test it thoroughly. The monolith still handles all traffic.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(56,189,248,.2);color:var(--c1)">4</div><div class="step-vline"></div></div>
+      <div class="step-content"><div class="step-title">Route traffic gradually (canary deploy)</div><div class="step-body">Start with 1% of traffic to new service. Watch metrics. 10% → 50% → 100%. Rollback is easy — just re-route to monolith.</div></div>
+    </div>
+    <div class="step">
+      <div class="step-line"><div class="step-dot" style="background:rgba(56,189,248,.2);color:var(--c1)">5</div></div>
+      <div class="step-content"><div class="step-title">Delete the module from the monolith</div><div class="step-body">100% of traffic on new service. Remove the old module. Repeat for the next module. The monolith shrinks. New services grow.</div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <h2>Monolith → Modular Monolith (safest upgrade)</h2>
+  <div class="code">
+<span class="c"># Before: a mess — modules reach into each other</span>
+<span class="d">import</span> { getUserById }   <span class="d">from</span> <span class="g">'../users/UserRepository'</span>;  <span class="c">// ❌ reaching into internals</span>
+<span class="d">import</span> { sendEmail }     <span class="d">from</span> <span class="g">'../email/SmtpClient'</span>;      <span class="c">// ❌ wrong layer</span>
+<span class="d">import</span> { OrderModel }    <span class="d">from</span> <span class="g">'../database/models/order'</span>;  <span class="c">// ❌ DB details exposed</span>
+
+<span class="c"># After: modular — only import through public index.ts contracts</span>
+<span class="d">import</span> { getUser }       <span class="d">from</span> <span class="g">'@modules/users'</span>;           <span class="c">// ✅ public API only</span>
+<span class="d">import</span> { sendEmail }     <span class="d">from</span> <span class="g">'@modules/notifications'</span>;    <span class="c">// ✅ through module contract</span>
+<span class="d">import</span> { createOrder }   <span class="d">from</span> <span class="g">'@modules/orders'</span>;           <span class="c">// ✅ clean boundary</span>
+</div>
+
+  <h2>Adding Event Sourcing to an existing app</h2>
+  <div class="callout co">
+    <strong>Don't migrate everything at once.</strong> Identify one high-value domain (orders, transactions, patient records). Apply event sourcing there first. Run the event-sourced model alongside the existing model (dual-write). Validate correctness for weeks. Then cut over. Never replace the whole DB at once.
+  </div>
+
+  <h2>Architecture evolution timeline</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Stage</th><th>Architecture</th><th>Trigger to evolve</th></tr></thead>
+      <tbody>
+        <tr><td>0 → 1 (pre-launch)</td><td>Layered monolith</td><td>Ship the product</td></tr>
+        <tr><td>1 → PMF</td><td>Layered monolith</td><td>Deploy takes too long, tests too slow</td></tr>
+        <tr><td>PMF → growth</td><td>Modular monolith</td><td>Teams stepping on each other's code</td></tr>
+        <tr><td>Growth → scale</td><td>Microservices (1–2 services extracted)</td><td>One module needs 10x more resources</td></tr>
+        <tr><td>Scale → enterprise</td><td>Full microservices + Service Mesh</td><td>Security, compliance, 50+ services</td></tr>
+        <tr><td>Enterprise → audit-critical</td><td>CQRS + Event Sourcing for key domains</td><td>Regulators, audit trail requirements</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(event&&event.currentTarget) event.currentTarget.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700) closeSidebar();
+}
+
+const sidebar=document.getElementById('sidebar');
+const overlay=document.getElementById('overlay');
+const hamburger=document.getElementById('hamburger');
+
+function openSidebar(){sidebar.classList.add('open');overlay.classList.add('open')}
+function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('open')}
+
+hamburger.addEventListener('click',()=>sidebar.classList.contains('open')?closeSidebar():openSidebar());
+overlay.addEventListener('click',closeSidebar);
+</script>
+</body>
+</html>

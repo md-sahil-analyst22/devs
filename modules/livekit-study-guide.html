@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiveKit — Complete Study Guide · Beginner to Advanced</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090f;--bg2:#0c1018;--bg3:#101622;--bg4:#141c2e;--bg5:#19243a;
+  --bdr:#1a2540;--bdr2:#22304e;
+  --t1:#d6e4ff;--t2:#6b84b0;--t3:#2e4060;
+  --a1:#00d4ff;--a2:#7c3aed;--a3:#10b981;--a4:#f59e0b;--a5:#f43f5e;--a6:#06b6d4;--a7:#8b5cf6;
+  --sw:278px;--top:54px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;overflow-x:hidden}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:400;height:var(--top);background:rgba(7,9,15,.95);border-bottom:1px solid var(--bdr);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between}
+.tl{display:flex;align-items:center;height:100%;width:var(--sw);padding:0 20px;border-right:1px solid var(--bdr);gap:12px;flex-shrink:0}
+.tlogo{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#000;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 0 20px rgba(0,212,255,.3)}
+.tbrand{font-size:14px;font-weight:800;color:var(--t1);letter-spacing:-.3px}.tbrand span{display:block;font-size:10px;font-weight:400;color:var(--t3)}
+.tr{display:flex;align-items:center;gap:14px;padding-right:20px}
+.tcnt{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.tpill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;background:rgba(0,212,255,.12);color:var(--a1);border:1px solid rgba(0,212,255,.25);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.hbg{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px}
+.hbg span{display:block;width:18px;height:1.5px;background:var(--t2);border-radius:1px}
+
+/* SIDEBAR */
+.layout{display:flex;padding-top:var(--top);min-height:100vh}
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;top:var(--top);left:0;bottom:0;background:var(--bg2);border-right:1px solid var(--bdr);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bdr2) transparent}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--bdr2)}
+.sg{padding:16px 16px 5px;font-size:9px;font-weight:700;letter-spacing:.16em;color:var(--t3);text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.sg:first-child{padding-top:13px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;font-size:12px;color:var(--t2);border-left:2px solid transparent;transition:all .13s;text-decoration:none;user-select:none}
+.ni:hover{background:var(--bg3);color:var(--t1)}.ni.on{color:var(--a1);background:rgba(0,212,255,.07);border-left-color:var(--a1);font-weight:600}
+.nd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nt{margin-left:auto;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em}
+.n1{background:rgba(0,212,255,.13);color:var(--a1)}.n2{background:rgba(124,58,237,.13);color:var(--a2)}.n3{background:rgba(16,185,129,.13);color:var(--a3)}.n4{background:rgba(245,158,11,.13);color:var(--a4)}.n5{background:rgba(244,63,94,.13);color:var(--a5)}.n6{background:rgba(6,182,212,.13);color:var(--a6)}.n7{background:rgba(139,92,246,.13);color:var(--a7)}
+
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;padding:36px 46px 80px;max-width:950px}
+.sec{display:none}.sec.on{display:block;animation:fi .22s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HERO */
+.hero{padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid var(--bdr)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:100px;padding:5px 14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);font-weight:700;margin-bottom:14px;font-family:'JetBrains Mono',monospace}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:var(--a1);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.htitle{font-size:26px;font-weight:800;color:var(--t1);line-height:1.2;margin-bottom:8px;letter-spacing:-.5px}
+.htitle span{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{font-size:13.5px;color:var(--t2);line-height:1.7;max-width:700px}
+
+/* STAT BAR */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
+.stat{background:var(--bg3);border:1px solid var(--bdr);border-radius:7px;padding:11px 14px}
+.sl{font-size:9px;color:var(--t3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.sv{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace}
+
+/* CARDS */
+.card{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:18px 20px;margin-bottom:12px}
+.ca1{border-left:3px solid var(--a1);background:rgba(0,212,255,.04)}.ca2{border-left:3px solid var(--a2);background:rgba(124,58,237,.04)}.ca3{border-left:3px solid var(--a3);background:rgba(16,185,129,.04)}.ca4{border-left:3px solid var(--a4);background:rgba(245,158,11,.04)}.ca5{border-left:3px solid var(--a5);background:rgba(244,63,94,.04)}.ca6{border-left:3px solid var(--a6);background:rgba(6,182,212,.04)}.ca7{border-left:3px solid var(--a7);background:rgba(139,92,246,.04)}
+.ct{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px}.cb{font-size:12.5px;color:var(--t2);line-height:1.7}
+
+/* CODE */
+.code{background:#04060c;border:1px solid var(--bdr);border-radius:7px;padding:16px 18px;margin:12px 0;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;white-space:pre}
+.code .k{color:#a78bfa}.code .s{color:#10b981}.code .f{color:#00d4ff}.code .c{color:#2e4060}.code .o{color:#f59e0b}.code .n{color:#fbbf24}.code .p{color:#f43f5e}.code .t{color:#06b6d4}.code .b{color:#60a5fa}.code .g{color:#34d399}
+.clabel{background:#04060c;border:1px solid var(--bdr);border-bottom:none;border-radius:7px 7px 0 0;padding:7px 18px 0;font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
+.clabel+.code{border-top:none;border-radius:0 0 7px 7px;margin-top:0}
+code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(255,255,255,.07);color:var(--a4);padding:1px 5px;border-radius:3px}
+
+/* CALLOUT */
+.callout{border-radius:7px;padding:13px 16px;margin:12px 0;font-size:13px;line-height:1.65}
+.q1{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:#93d4f8}
+.q2{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.22);color:#c4b5fd}
+.q3{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.22);color:#6ee7b7}
+.q4{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);color:#fde68a}
+.q5{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.22);color:#fca5a5}
+.q7{background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.22);color:#ddd6fe}
+.callout strong{font-weight:700;color:inherit}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mini{background:var(--bg4);border:1px solid var(--bdr);border-radius:6px;padding:13px 15px}
+.mt{font-size:12px;font-weight:700;margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.mb{font-size:12px;color:var(--t2);line-height:1.55}
+
+/* TABLE */
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{background:var(--bg4)}
+th{text-align:left;padding:9px 14px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--bdr2);font-family:'JetBrains Mono',monospace}
+td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--t2)}
+td:first-child{color:var(--t1);font-weight:600}
+tr:hover td{background:rgba(255,255,255,.018)}tr:last-child td{border-bottom:none}
+
+/* PILL */
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+.p1{background:rgba(0,212,255,.15);color:var(--a1)}.p2{background:rgba(124,58,237,.15);color:var(--a2)}.p3{background:rgba(16,185,129,.15);color:var(--a3)}.p4{background:rgba(245,158,11,.15);color:var(--a4)}.p5{background:rgba(244,63,94,.15);color:var(--a5)}.p6{background:rgba(6,182,212,.15);color:var(--a6)}.p7{background:rgba(139,92,246,.15);color:var(--a7)}
+
+/* FLOW DIAGRAM */
+.flow{background:#04060c;border:1px solid var(--bdr);border-radius:8px;padding:20px;margin:12px 0;overflow-x:auto}
+.fr{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;min-width:fit-content}
+.fbox{padding:10px 14px;border-radius:6px;font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:700;border:1px solid;text-align:center;white-space:nowrap;line-height:1.4}
+.fa{color:var(--t3);font-size:14px;padding:0 4px;flex-shrink:0}
+
+/* STEPS */
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;margin-bottom:4px}
+.sl2{display:flex;flex-direction:column;align-items:center}
+.sdot{width:27px;height:27px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-top:2px}
+.sv2{width:2px;flex:1;min-height:18px;margin:3px 0;background:var(--bdr2)}
+.sc{flex:1;padding-bottom:16px}.stitle{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px}.sbody{font-size:12px;color:var(--t2);line-height:1.6}
+
+/* COMPARE */
+.cmp{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin:14px 0}
+.cmpc{padding:16px 18px}.cmpc:first-child{border-right:1px solid var(--bdr);background:rgba(0,212,255,.03)}.cmpc:last-child{background:rgba(16,185,129,.03)}
+.cmpc h3{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.cmpc li{font-size:12px;color:var(--t2);padding:3px 0;list-style:none;display:flex;gap:7px;line-height:1.5}
+.cmpc li::before{content:"·";color:var(--t3);flex-shrink:0}
+
+/* LAYERS */
+.layers{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.layer{border-radius:5px;padding:10px 15px;border-left:3px solid}
+.lname{font-size:12px;font-weight:700;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
+.ldesc{font-size:11.5px;color:var(--t2)}
+
+/* DO DONT */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.do{background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.18);border-radius:7px;padding:13px 15px}
+.dont{background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.18);border-radius:7px;padding:13px 15px}
+.do h4,.dont h4{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.do h4{color:var(--a3)}.dont h4{color:var(--a5)}
+.do li,.dont li{font-size:12px;color:var(--t2);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do li::before{content:"✓";position:absolute;left:0;color:var(--a3);font-size:10px;top:4px}.dont li::before{content:"✗";position:absolute;left:0;color:var(--a5);font-size:10px;top:4px}
+
+/* ACCORDION */
+.acc{border:1px solid var(--bdr);border-radius:7px;overflow:hidden;margin-bottom:7px}
+.acc-h{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;background:var(--bg3);font-size:12.5px;font-weight:600;color:var(--t1);transition:background .13s;user-select:none}
+.acc-h:hover{background:var(--bg4)}.acc-ico{color:var(--t3);font-size:17px;transition:transform .18s;font-style:normal}
+.acc-b{display:none;padding:14px 16px;font-size:12px;color:var(--t2);line-height:1.65;background:var(--bg4);border-top:1px solid var(--bdr)}
+.acc.open .acc-b{display:block}.acc.open .acc-ico{transform:rotate(45deg)}
+
+/* PROVIDER CARDS */
+.providers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.pcard{background:var(--bg4);border:1px solid var(--bdr);border-radius:8px;padding:14px;transition:border-color .15s}
+.pcard:hover{border-color:var(--bdr2)}
+.pname{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.ptag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.pbody{font-size:11.5px;color:var(--t2);line-height:1.5}
+
+/* SFU DIAGRAM */
+.sfu-wrap{background:#04060c;border:1px solid var(--bdr);border-radius:8px;padding:24px;margin:14px 0}
+.sfu-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center}
+.sfu-peers{display:flex;flex-direction:column;gap:8px}
+.sfu-peer{background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;padding:10px 14px;font-size:12px;font-family:'JetBrains Mono',monospace;text-align:center}
+.sfu-center{background:rgba(0,212,255,.07);border:2px solid rgba(0,212,255,.3);border-radius:10px;padding:20px;text-align:center}
+.sfu-arrows{color:var(--t3);font-size:14px;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:center}
+
+/* DIVIDER */
+.div{height:1px;background:var(--bdr);margin:24px 0}
+h2{font-size:18px;font-weight:700;color:var(--t1);margin:24px 0 10px}h2:first-child{margin-top:0}
+h3{font-size:14px;font-weight:700;color:var(--t1);margin:18px 0 8px}
+p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px}p:last-child{margin-bottom:0}
+strong{color:var(--t1);font-weight:700}
+
+/* OVERLAY + RESPONSIVE */
+.overlay{display:none;position:fixed;inset:var(--top) 0 0 0;background:rgba(0,0,0,.7);z-index:100}
+.overlay.open{display:block}
+@media(max-width:900px){.main{padding:24px 22px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:268px}.main{margin-left:0;padding:20px 15px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .22s;z-index:110}.sidebar.open{transform:translateX(0)}
+  .hbg{display:flex}.tl{width:auto;border-right:none}.tcnt{display:none}
+  .stats,.g2,.g3,.g4,.dd,.cmp{grid-template-columns:1fr}
+  .providers{grid-template-columns:1fr 1fr}
+  .sfu-grid{grid-template-columns:1fr}
+  .cmpc:first-child{border-right:none;border-bottom:1px solid var(--bdr)}
+}
+@media(max-width:480px){.htitle{font-size:20px}.stats{grid-template-columns:1fr 1fr}.providers{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tl">
+    <div class="tlogo">LK</div>
+    <div class="tbrand">LiveKit Mastery<span>Complete Study Guide — Beginner to Advanced</span></div>
+  </div>
+  <div class="tr">
+    <button class="hbg" id="hbg"><span></span><span></span><span></span></button>
+    <span class="tcnt">25 modules · 150+ concepts</span>
+    <span class="tpill">v2.0</span>
+  </div>
+</header>
+
+<div class="overlay" id="ov"></div>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sb">
+  <div class="sg">Introduction</div>
+  <a class="ni on" onclick="go('what')"><span class="nd" style="background:var(--a1)"></span>What is LiveKit?<span class="nt n1">Start</span></a>
+  <a class="ni" onclick="go('why')"><span class="nd" style="background:var(--a3)"></span>Why LiveKit?<span class="nt n3">Core</span></a>
+  <a class="ni" onclick="go('usecases')"><span class="nd" style="background:var(--a4)"></span>Use cases<span class="nt n4">Core</span></a>
+  <a class="ni" onclick="go('compare-platforms')"><span class="nd" style="background:var(--a5)"></span>LiveKit vs alternatives<span class="nt n5">Key</span></a>
+
+  <div class="sg">WebRTC Foundations</div>
+  <a class="ni" onclick="go('webrtc-basics')"><span class="nd" style="background:var(--a1)"></span>WebRTC fundamentals<span class="nt n1">Beginner</span></a>
+  <a class="ni" onclick="go('sfu-mcu')"><span class="nd" style="background:var(--a6)"></span>SFU vs MCU vs P2P<span class="nt n6">Mid</span></a>
+  <a class="ni" onclick="go('ice-stun-turn')"><span class="nd" style="background:var(--a7)"></span>ICE, STUN, TURN<span class="nt n7">Mid</span></a>
+  <a class="ni" onclick="go('sdp')"><span class="nd" style="background:var(--a2)"></span>SDP & Signaling<span class="nt n2">Mid</span></a>
+
+  <div class="sg">LiveKit Core Concepts</div>
+  <a class="ni" onclick="go('rooms')"><span class="nd" style="background:var(--a1)"></span>Rooms<span class="nt n1">Core</span></a>
+  <a class="ni" onclick="go('participants')"><span class="nd" style="background:var(--a3)"></span>Participants<span class="nt n3">Core</span></a>
+  <a class="ni" onclick="go('tracks')"><span class="nd" style="background:var(--a4)"></span>Tracks & media<span class="nt n4">Core</span></a>
+  <a class="ni" onclick="go('tokens')"><span class="nd" style="background:var(--a5)"></span>Tokens & auth<span class="nt n5">Core</span></a>
+  <a class="ni" onclick="go('events-webhooks')"><span class="nd" style="background:var(--a2)"></span>Events & webhooks<span class="nt n2">Mid</span></a>
+
+  <div class="sg">Agents Framework</div>
+  <a class="ni" onclick="go('agents-overview')"><span class="nd" style="background:var(--a1)"></span>Agents overview<span class="nt n1">Key</span></a>
+  <a class="ni" onclick="go('voice-pipeline')"><span class="nd" style="background:var(--a2)"></span>VoicePipelineAgent<span class="nt n2">Mid</span></a>
+  <a class="ni" onclick="go('multimodal')"><span class="nd" style="background:var(--a7)"></span>MultimodalAgent<span class="nt n7">Adv</span></a>
+  <a class="ni" onclick="go('agent-lifecycle')"><span class="nd" style="background:var(--a3)"></span>Agent lifecycle<span class="nt n3">Mid</span></a>
+  <a class="ni" onclick="go('turn-vad')"><span class="nd" style="background:var(--a4)"></span>VAD & Turn detection<span class="nt n4">Mid</span></a>
+
+  <div class="sg">AI Providers</div>
+  <a class="ni" onclick="go('stt')"><span class="nd" style="background:var(--a1)"></span>STT providers<span class="nt n1">Mid</span></a>
+  <a class="ni" onclick="go('llm')"><span class="nd" style="background:var(--a2)"></span>LLM providers<span class="nt n2">Mid</span></a>
+  <a class="ni" onclick="go('tts')"><span class="nd" style="background:var(--a3)"></span>TTS providers<span class="nt n3">Mid</span></a>
+  <a class="ni" onclick="go('noise')"><span class="nd" style="background:var(--a6)"></span>Noise cancellation<span class="nt n6">Mid</span></a>
+
+  <div class="sg">Features</div>
+  <a class="ni" onclick="go('egress')"><span class="nd" style="background:var(--a4)"></span>Recording & Egress<span class="nt n4">Mid</span></a>
+  <a class="ni" onclick="go('ingress')"><span class="nd" style="background:var(--a5)"></span>Ingress<span class="nt n5">Mid</span></a>
+  <a class="ni" onclick="go('sip')"><span class="nd" style="background:var(--a7)"></span>SIP & PSTN telephony<span class="nt n7">Adv</span></a>
+  <a class="ni" onclick="go('sdks')"><span class="nd" style="background:var(--a3)"></span>SDKs & platforms<span class="nt n3">Ref</span></a>
+
+  <div class="sg">Build It</div>
+  <a class="ni" onclick="go('quickstart')"><span class="nd" style="background:var(--a1)"></span>Quick start (5 min)<span class="nt n1">Build</span></a>
+  <a class="ni" onclick="go('uc-voice-agent')"><span class="nd" style="background:var(--a2)"></span>Voice agent (Python)<span class="nt n2">Build</span></a>
+  <a class="ni" onclick="go('uc-frontend')"><span class="nd" style="background:var(--a3)"></span>Browser frontend<span class="nt n3">Build</span></a>
+  <a class="ni" onclick="go('uc-fastapi')"><span class="nd" style="background:var(--a4)"></span>FastAPI integration<span class="nt n4">Build</span></a>
+  <a class="ni" onclick="go('uc-multiagent')"><span class="nd" style="background:var(--a7)"></span>Multi-agent system<span class="nt n7">Adv</span></a>
+
+  <div class="sg">Operations</div>
+  <a class="ni" onclick="go('deployment')"><span class="nd" style="background:var(--a3)"></span>Deployment (Cloud vs Self-host)<span class="nt n3">Ops</span></a>
+  <a class="ni" onclick="go('security')"><span class="nd" style="background:var(--a5)"></span>Security best practices<span class="nt n5">Ops</span></a>
+  <a class="ni" onclick="go('monitoring')"><span class="nd" style="background:var(--a6)"></span>Monitoring & debug<span class="nt n6">Ops</span></a>
+  <a class="ni" onclick="go('troubleshoot')"><span class="nd" style="background:var(--a4)"></span>Troubleshooting<span class="nt n4">Fix</span></a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══ WHAT IS LIVEKIT ═══ -->
+<section id="sec-what" class="sec on">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>LiveKit Mastery · Module 1</div>
+    <h1 class="htitle">What is <span>LiveKit</span>?</h1>
+    <p class="hsub">LiveKit is an open-source, full-stack real-time communication platform built for the AI era. It wraps WebRTC — the browser-native protocol for real-time audio/video — into a manageable, scalable abstraction that works across every platform and powers AI voice agents, video calls, and everything in between.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">License</div><div class="sv" style="color:var(--a3)">Apache 2.0</div></div>
+    <div class="stat"><div class="sl">Server language</div><div class="sv" style="color:var(--a1)">Go</div></div>
+    <div class="stat"><div class="sl">Agent SDK</div><div class="sv" style="color:var(--a2)">Python / Node.js</div></div>
+    <div class="stat"><div class="sl">Latency target</div><div class="sv" style="color:var(--a4)">&lt; 300ms E2E</div></div>
+  </div>
+
+  <h2>The two things LiveKit is</h2>
+  <div class="g2">
+    <div class="card ca1">
+      <div class="ct">1. A real-time media server (SFU)</div>
+      <div class="cb">LiveKit Server is a Selective Forwarding Unit — it routes audio/video between participants in a room. Built in Go for extreme performance. Handles WebRTC signaling, ICE negotiation, NAT traversal, codec negotiation, simulcast, adaptive bitrate, and QoS so you don't have to.</div>
+    </div>
+    <div class="card ca2">
+      <div class="ct">2. An AI agents framework</div>
+      <div class="cb">LiveKit Agents is a Python/Node.js framework for building AI participants that join rooms. Agents can speak, listen, process video, and connect to any AI provider. The framework handles the STT→LLM→TTS pipeline, turn detection, interruption, and multi-agent coordination.</div>
+    </div>
+  </div>
+
+  <div class="callout q1"><strong>The core insight:</strong> Traditional HTTP was never designed for real-time media. WebRTC solves that but is extremely complex to operate. LiveKit wraps WebRTC into an abstraction as simple as joining a "room" — and adds AI-first capabilities that no other platform offers out of the box.</div>
+
+  <h2>The complete LiveKit ecosystem</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a1);background:rgba(0,212,255,.04)"><div class="lname" style="color:var(--a1)">Frontend SDKs (JavaScript, iOS, Android, Flutter, Unity, C++)</div><div class="ldesc">Client libraries that join rooms, publish/subscribe to tracks, handle media devices, and display video. Used by human participants.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:2px;font-family:'JetBrains Mono',monospace">↕ WebRTC (media) + WebSocket (signaling)</div>
+    <div class="layer" style="border-color:var(--a6);background:rgba(6,182,212,.04)"><div class="lname" style="color:var(--a6)">LiveKit Server (SFU) — self-hosted or LiveKit Cloud</div><div class="ldesc">The media router. Routes audio/video between all participants. Manages rooms, handles ICE/STUN/TURN, scales horizontally.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:2px;font-family:'JetBrains Mono',monospace">↕ WebRTC (media) + gRPC (server SDK)</div>
+    <div class="layer" style="border-color:var(--a2);background:rgba(124,58,237,.04)"><div class="lname" style="color:var(--a2)">LiveKit Agents (Python/Node) + AI providers</div><div class="ldesc">AI participants that join rooms as programmatic agents. Connect to STT, LLM, TTS providers. Handle the entire AI pipeline.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:2px;font-family:'JetBrains Mono',monospace">↕ REST API + Webhooks</div>
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--a3)">Your backend (FastAPI, Node.js, etc.)</div><div class="ldesc">Issues access tokens, manages rooms via REST API, receives webhook events from LiveKit, handles business logic.</div></div>
+  </div>
+
+  <h2>Everything LiveKit handles for you</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a1)">WebRTC complexity</div><div class="mb">ICE negotiation, STUN/TURN, SDP offer/answer, DTLS handshake — all abstracted. You call <code>room.connect()</code>.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">NAT traversal</div><div class="mb">STUN and TURN servers built-in. Works even through corporate firewalls. ~99% connectivity without custom TURN.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Codec negotiation</div><div class="mb">Opus for audio, VP8/VP9/H.264/AV1 for video. Automatic codec selection based on device and network capability.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Simulcast</div><div class="mb">Publish multiple quality layers simultaneously. Subscribers receive the layer that matches their bandwidth — no manual quality switching.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Adaptive bitrate</div><div class="mb">Automatically adjusts video quality based on available bandwidth. Users on bad networks get lower quality, not disconnected.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a6)">Scalability</div><div class="mb">SFU scales to hundreds of participants per room. LiveKit Cloud scales globally. Self-hosted scales horizontally with Redis.</div></div>
+  </div>
+</section>
+
+<!-- ═══ WHY LIVEKIT ═══ -->
+<section id="sec-why" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 2</div>
+    <h1 class="htitle">Why <span>LiveKit</span>?</h1>
+    <p class="hsub">There are many ways to build real-time applications. Why choose LiveKit specifically? What does it do that alternatives can't — especially for AI applications?</p>
+  </div>
+
+  <h2>The problem LiveKit solves</h2>
+  <div class="callout q4"><strong>The raw WebRTC problem:</strong> WebRTC requires ICE, STUN/TURN, SDP offer/answer exchanges, DTLS handshake, SRTP encryption, codec negotiation, simulcast, bandwidth estimation, and packet loss concealment — before you've written a single line of product code. Most teams spend months building infrastructure before building features.</div>
+
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">AI-first by design (no competitor matches this)</div><div class="sbody">The Agents framework is built specifically for AI voice/video participants. STT→LLM→TTS pipeline, turn detection, interruption handling, end-of-speech detection — all provided. Other platforms treat AI as an afterthought.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Open source (Apache 2.0) — no vendor lock-in</div><div class="sbody">The entire server is open source. Self-host on your own infrastructure with zero per-minute costs. Twilio/Agora/Daily.co are all proprietary with vendor lock-in.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Write once, deploy everywhere</div><div class="sbody">Same SDK and API model for Web, iOS, Android, Flutter, Unity, C++, and backend agents. An agent written once works with every client SDK without modification.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Composable AI provider ecosystem</div><div class="sbody">Plug in any STT (Deepgram, Whisper, AssemblyAI), any LLM (OpenAI, Anthropic, Google, Llama), any TTS (ElevenLabs, Cartesia, OpenAI TTS). Switch providers in one line of code.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">5</div></div><div class="sc"><div class="stitle">Production proven at scale</div><div class="sbody">Powers thousands of production apps including healthcare platforms, AI customer service, live streaming, and video conferencing at scale. LiveKit Cloud offers 99.9%+ SLA with global PoPs.</div></div></div>
+  </div>
+</section>
+
+<!-- ═══ USE CASES ═══ -->
+<section id="sec-usecases" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 3</div>
+    <h1 class="htitle">What Can You <span>Build</span>?</h1>
+    <p class="hsub">LiveKit is the foundation for a wide range of real-time products — from AI voice agents to enterprise video conferencing.</p>
+  </div>
+
+  <div class="g2">
+    <div class="card ca1"><div class="ct">🤖 AI Voice & Video Agents</div><div class="cb">Conversational AI that speaks and listens in real time. Customer service bots, virtual assistants, AI tutors, interview coaches. The #1 use case for LiveKit Agents. Sub-500ms end-to-end latency.</div></div>
+    <div class="card ca2"><div class="ct">📹 Video Conferencing</div><div class="cb">Custom video meetings like Zoom/Google Meet but on your infrastructure. Full control over UX, recording, layouts, participant limits, and pricing.</div></div>
+    <div class="card ca3"><div class="ct">📞 AI Phone Calls (SIP/PSTN)</div><div class="cb">AI agents that make and receive actual phone calls via SIP trunking. Connect your agent to the public telephone network. Inbound IVR replacement, outbound sales calls.</div></div>
+    <div class="card ca4"><div class="ct">🎙️ Interactive Livestreaming</div><div class="cb">Broadcast to thousands with real-time interaction. Guests join as WebRTC participants; viewers watch the stream. Live shopping, concerts, sports commentary.</div></div>
+    <div class="card ca5"><div class="ct">🏥 Telehealth</div><div class="cb">HIPAA-ready telemedicine with AI in the loop. AI takes notes, patients join from phone/web, doctors get transcripts. End-to-end encrypted.</div></div>
+    <div class="card ca7"><div class="ct">🤖 Physical AI / Robotics</div><div class="cb">Put your robot's brain in the cloud. Stream camera feeds to powerful cloud models, receive control signals back in real time. Drones, delivery robots, telepresence.</div></div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Use case</th><th>Key components</th><th>Typical stack</th><th>Complexity</th></tr></thead>
+      <tbody>
+        <tr><td>Voice AI agent</td><td>Agents + STT + LLM + TTS</td><td>Python + Deepgram + GPT-4o + ElevenLabs</td><td><span class="pill p4">Medium</span></td></tr>
+        <tr><td>Video conferencing</td><td>LiveKit Server + JS SDK</td><td>Next.js + LiveKit Cloud</td><td><span class="pill p3">Low-Med</span></td></tr>
+        <tr><td>AI phone calls</td><td>Agents + SIP + STT + LLM + TTS</td><td>Python + Twilio SIP + GPT-4</td><td><span class="pill p5">High</span></td></tr>
+        <tr><td>Livestreaming</td><td>Egress + RTMP + CDN</td><td>LiveKit Cloud + Mux/Cloudflare Stream</td><td><span class="pill p4">Medium</span></td></tr>
+        <tr><td>Telehealth</td><td>LiveKit Server + Recording + Transcription</td><td>Self-hosted + Deepgram</td><td><span class="pill p4">Medium</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ COMPARE PLATFORMS ═══ -->
+<section id="sec-compare-platforms" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 4 · Key Comparison</div>
+    <h1 class="htitle">LiveKit vs <span>Alternatives</span></h1>
+    <p class="hsub">How does LiveKit compare to Twilio Video, Daily.co, Agora, and building raw WebRTC? This is the most important decision before starting a real-time project.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Feature</th><th>LiveKit</th><th>Twilio Video</th><th>Daily.co</th><th>Agora</th><th>Raw WebRTC</th></tr></thead>
+      <tbody>
+        <tr><td>Open source</td><td><span class="pill p3">Yes (Apache 2.0)</span></td><td><span class="pill p5">No</span></td><td><span class="pill p5">No</span></td><td><span class="pill p5">No</span></td><td><span class="pill p3">Yes</span></td></tr>
+        <tr><td>Self-hostable</td><td><span class="pill p3">Yes</span></td><td><span class="pill p5">No</span></td><td><span class="pill p5">No</span></td><td><span class="pill p5">No</span></td><td><span class="pill p3">Yes</span></td></tr>
+        <tr><td>AI agents built-in</td><td><span class="pill p3">Yes (first-class)</span></td><td><span class="pill p5">No</span></td><td><span class="pill p5">No</span></td><td><span class="pill p5">No</span></td><td><span class="pill p5">No</span></td></tr>
+        <tr><td>Pricing model</td><td>Free (self-host) / per-min (cloud)</td><td>Per-minute (expensive)</td><td>Per-minute</td><td>Per-minute</td><td>Infra cost only</td></tr>
+        <tr><td>SFU architecture</td><td><span class="pill p3">Go SFU</span></td><td>Proprietary</td><td>WebRTC SFU</td><td>Proprietary SD-RTN</td><td>You build it</td></tr>
+        <tr><td>SIP/PSTN</td><td><span class="pill p3">Yes</span></td><td><span class="pill p3">Yes</span></td><td><span class="pill p4">Limited</span></td><td><span class="pill p3">Yes</span></td><td><span class="pill p5">No</span></td></tr>
+        <tr><td>Recording</td><td><span class="pill p3">Yes (Egress)</span></td><td><span class="pill p3">Yes</span></td><td><span class="pill p3">Yes</span></td><td><span class="pill p3">Yes</span></td><td><span class="pill p5">Build yourself</span></td></tr>
+        <tr><td>SDK coverage</td><td>Web, iOS, Android, Flutter, Unity, C++</td><td>Web, iOS, Android</td><td>Web, iOS, Android</td><td>Web, iOS, Android, Unity</td><td>Web only (native)</td></tr>
+        <tr><td>Vendor lock-in</td><td><span class="pill p3">None</span></td><td><span class="pill p5">High</span></td><td><span class="pill p5">High</span></td><td><span class="pill p5">High</span></td><td><span class="pill p3">None</span></td></tr>
+        <tr><td>Best for</td><td>AI apps, cost-sensitive, full control</td><td>Quick integration, enterprise budget</td><td>Simple video calls</td><td>Global coverage, gaming</td><td>Maximum control, learning</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout q3"><strong>Choose LiveKit when:</strong> building AI voice/video agents, need to self-host for cost or compliance reasons, want open-source flexibility, or need the Agents framework. The combination of open source + AI-first is unique to LiveKit.</div>
+  <div class="callout q5"><strong>Consider alternatives when:</strong> you need minimal code and maximum managed services (Twilio), need global ultra-low latency for gaming (Agora), or are building a simple video call widget with no AI (Daily.co).</div>
+</section>
+
+<!-- ═══ WEBRTC BASICS ═══ -->
+<section id="sec-webrtc-basics" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 5 · WebRTC Foundations</div>
+    <h1 class="htitle">WebRTC <span>Fundamentals</span></h1>
+    <p class="hsub">WebRTC (Web Real-Time Communication) is the browser-native technology for peer-to-peer audio, video, and data. LiveKit is built on top of it. Understanding WebRTC helps you understand why LiveKit exists and how it works.</p>
+  </div>
+
+  <div class="callout q1"><strong>The WebRTC stack does 4 things:</strong> (1) Discovers a network path between peers (ICE), (2) Negotiates media capabilities (SDP), (3) Encrypts the connection (DTLS), (4) Transmits encrypted media (SRTP). Each step has significant complexity — LiveKit automates all of it.</div>
+
+  <h2>WebRTC connection establishment process</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">SDP Offer — "Here's what I can do"</div><div class="sbody">Peer A creates an SDP (Session Description Protocol) document listing: which codecs it supports (Opus, VP8, H264), what audio/video formats, bitrate constraints, and its ICE credentials. Sends to Peer B via signaling (WebSocket).</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">SDP Answer — "Here's what I can do too"</div><div class="sbody">Peer B creates an SDP answer with its capabilities. The intersection of both SDPs defines what will actually be used. Sends back to Peer A via signaling. Now both know what to send.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">ICE candidate gathering — "Here's how to reach me"</div><div class="sbody">Each peer gathers ICE candidates — possible network addresses: local IP (host), public IP via STUN (server-reflexive), TURN relay address (relayed). Exchange via signaling. Try each until one works.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">DTLS handshake — encrypted channel</div><div class="sbody">Once a working ICE candidate pair is found, DTLS (Datagram TLS) handshake establishes encryption. Certificates are exchanged and verified. Shared secret established for SRTP.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">5</div></div><div class="sc"><div class="stitle">SRTP streams — media flows</div><div class="sbody">Audio and video encrypted with SRTP (Secure Real-time Transport Protocol) flow between peers. In LiveKit's case, all peers send to the SFU server, which routes to other participants.</div></div></div>
+  </div>
+
+  <h2>WebRTC architecture in LiveKit</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1)">Browser / App<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Publisher</span></div>
+      <span class="fa">──SRTP──▶</span>
+      <div class="fbox" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--a6)">LiveKit SFU<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Routes media</span></div>
+      <span class="fa">──SRTP──▶</span>
+      <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3)">Subscriber 1<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Receives</span></div>
+    </div>
+    <div style="text-align:center;margin:8px 0;color:var(--t3);font-size:11px;font-family:'JetBrains Mono',monospace">WebSocket signaling (parallel channel) ←→ LiveKit Server ←→ All participants</div>
+  </div>
+</section>
+
+<!-- ═══ SFU MCU P2P ═══ -->
+<section id="sec-sfu-mcu" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 6 · WebRTC Foundations</div>
+    <h1 class="htitle">SFU vs MCU vs <span>P2P</span></h1>
+    <p class="hsub">Three architectures for multi-party real-time communication. LiveKit uses SFU. Understanding the difference explains why SFU is the right choice for most production applications.</p>
+  </div>
+
+  <h2>P2P — Peer-to-Peer (mesh)</h2>
+  <div class="card ca5">
+    <div class="ct">Direct browser-to-browser connections</div>
+    <div class="cb">Each participant connects to every other participant directly. 4 participants = 6 connections. 10 participants = 45 connections. N participants = N*(N-1)/2 connections.<br><br>
+    <strong>Upload bandwidth grows exponentially.</strong> With 5 people, each browser uploads 4 streams. At HD video (2 Mbps each), that's 8 Mbps upload — impossible on most home connections. P2P breaks at ~4 participants.</div>
+  </div>
+
+  <h2>SFU — Selective Forwarding Unit (LiveKit)</h2>
+  <div class="sfu-wrap">
+    <div class="sfu-grid">
+      <div class="sfu-peers">
+        <div class="sfu-peer" style="border-color:rgba(0,212,255,.3)">👤 Browser A<br><span style="font-size:10px;color:var(--t3)">uploads 1 stream</span></div>
+        <div class="sfu-peer" style="border-color:rgba(0,212,255,.3)">📱 Mobile B<br><span style="font-size:10px;color:var(--t3)">uploads 1 stream</span></div>
+        <div class="sfu-peer" style="border-color:rgba(16,185,129,.3)">🤖 AI Agent<br><span style="font-size:10px;color:var(--t3)">uploads audio</span></div>
+      </div>
+      <div class="sfu-arrows">
+        <span style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace">← encrypted →</span>
+        <div class="sfu-center">
+          <div style="font-size:11px;font-weight:700;color:var(--a1);font-family:'JetBrains Mono',monospace;margin-bottom:4px">LiveKit SFU</div>
+          <div style="font-size:10px;color:var(--t3)">Forwards packets<br>without decoding<br>No transcoding cost</div>
+        </div>
+        <span style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace">← encrypted →</span>
+      </div>
+      <div class="sfu-peers">
+        <div class="sfu-peer" style="border-color:rgba(139,92,246,.3)">💻 Desktop C<br><span style="font-size:10px;color:var(--t3)">downloads 2 streams</span></div>
+        <div class="sfu-peer" style="border-color:rgba(139,92,246,.3)">📺 Viewer D<br><span style="font-size:10px;color:var(--t3)">downloads 3 streams</span></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t3)">Each participant uploads ONCE. SFU forwards to all others. Bandwidth scales linearly, not exponentially.</div>
+  </div>
+
+  <h2>MCU — Multipoint Control Unit</h2>
+  <div class="card ca7">
+    <div class="ct">Server mixes all streams into one</div>
+    <div class="cb">The server receives all streams, decodes them, mixes video/audio into a single composite stream, and sends one stream to each participant — just like a Zoom gallery view rendered on the server.<br><br>
+    <strong>Pros:</strong> Each participant downloads only 1 stream regardless of participant count. Works on very slow connections.<br>
+    <strong>Cons:</strong> Massive server-side compute (decoding + re-encoding all streams). High latency from transcoding. Very expensive to run.</div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Architecture</th><th>How it works</th><th>Participant limit</th><th>Server load</th><th>Latency</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill p5">P2P Mesh</span></td><td>Direct browser connections</td><td>~4 practical</td><td>None</td><td>Lowest</td><td>2-3 person calls only</td></tr>
+        <tr><td><span class="pill p3">SFU (LiveKit)</span></td><td>Server forwards encrypted packets</td><td>Hundreds+</td><td>Low (no transcoding)</td><td>Low</td><td>Most use cases</td></tr>
+        <tr><td><span class="pill p7">MCU</span></td><td>Server decodes + mixes + re-encodes</td><td>Unlimited (server-bound)</td><td>Very high</td><td>Higher</td><td>Ultra-low-bandwidth subscribers</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ ICE STUN TURN ═══ -->
+<section id="sec-ice-stun-turn" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 7 · WebRTC Foundations</div>
+    <h1 class="htitle">ICE, STUN & <span>TURN</span></h1>
+    <p class="hsub">The network traversal layer of WebRTC. The hardest part. LiveKit handles all of this for you — but understanding it helps you debug connectivity issues.</p>
+  </div>
+
+  <h2>The NAT problem</h2>
+  <div class="callout q4"><strong>Why NAT traversal is hard:</strong> Most devices are behind NAT routers — they have a private IP (192.168.x.x) but share a public IP. Direct connections are impossible without knowing the public IP and the mapped port. This is what ICE, STUN, and TURN solve.</div>
+
+  <h2>ICE — Interactive Connectivity Establishment</h2>
+  <p>ICE is the overall framework. It gathers all possible ways to reach a peer (candidates) and tries them in priority order until one works. Types of ICE candidates:</p>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--a3)">Host candidate (best)</div><div class="ldesc">Direct local IP address. Works when both peers are on the same network. No external server needed.</div></div>
+    <div class="layer" style="border-color:var(--a4);background:rgba(245,158,11,.04)"><div class="lname" style="color:var(--a4)">Server-reflexive candidate (STUN)</div><div class="ldesc">Public IP + port as seen by a STUN server. Works in ~85% of cases. Requires outbound UDP.</div></div>
+    <div class="layer" style="border-color:var(--a5);background:rgba(244,63,94,.04)"><div class="lname" style="color:var(--a5)">Relayed candidate (TURN) — last resort</div><div class="ldesc">All media relayed through TURN server. Works in all cases including symmetric NAT and corporate firewalls. Adds latency and cost.</div></div>
+  </div>
+
+  <h2>STUN vs TURN comparison</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--a3)">STUN (Session Traversal Utilities for NAT)</h3>
+      <li>Helps peer discover its public IP and port</li>
+      <li>Server just reflects your IP back ("here's your public address")</li>
+      <li>Minimal bandwidth — just for discovery</li>
+      <li>Free: <code>stun.l.google.com:19302</code></li>
+      <li>Fails with symmetric NAT (strict corporate firewalls)</li>
+      <li>Works for ~85% of connections</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--a5)">TURN (Traversal Using Relays around NAT)</h3>
+      <li>Relay server — all media flows through it</li>
+      <li>Required when direct path fails (~15% of connections)</li>
+      <li>High bandwidth cost — relays all audio/video</li>
+      <li>Works in every network environment</li>
+      <li>LiveKit Cloud provides TURN automatically</li>
+      <li>Self-hosting: needs coturn or Pion TURN</li>
+    </div>
+  </div>
+
+  <div class="callout q3"><strong>LiveKit Cloud = free STUN + TURN included.</strong> You never configure STUN/TURN manually. When self-hosting, LiveKit bundles a TURN server or you can point it to your own. The <code>LIVEKIT_TURN_*</code> env vars configure this.</div>
+</section>
+
+<!-- ═══ SDP ═══ -->
+<section id="sec-sdp" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 8 · WebRTC Foundations</div>
+    <h1 class="htitle">SDP & <span>Signaling</span></h1>
+    <p class="hsub">SDP is the document that describes what a peer wants to send and receive. Signaling is the exchange of SDPs and ICE candidates. LiveKit uses a custom signaling protocol over WebSocket — you never write SDP directly.</p>
+  </div>
+
+  <h2>What SDP looks like (simplified)</h2>
+  <div class="code"><span class="c"># SDP offer from LiveKit client (simplified for clarity)</span>
+v=0
+o=- 1234567890 1 IN IP4 0.0.0.0
+s=-
+t=0 0
+
+<span class="c"># Audio section</span>
+m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104
+a=rtpmap:111 opus/48000/2      <span class="c">← prefer Opus codec</span>
+a=fmtp:111 minptime=10;useinbandfec=1
+a=ice-ufrag:abc123              <span class="c">← ICE credentials</span>
+a=ice-pwd:verylongpassword
+a=fingerprint:sha-256 ...       <span class="c">← DTLS certificate fingerprint</span>
+a=sendrecv                      <span class="c">← can send AND receive</span>
+
+<span class="c"># Video section</span>
+m=video 9 UDP/TLS/RTP/SAVPF 96 97 98
+a=rtpmap:96 VP8/90000
+a=rtpmap:97 VP9/90000
+a=rtpmap:98 H264/90000
+a=simulcast:send h;m;l          <span class="c">← send 3 quality layers (high/medium/low)</span></div>
+
+  <h2>LiveKit's signaling protocol</h2>
+  <p>LiveKit uses a custom protobuf-encoded WebSocket protocol for signaling — not raw SDP exchange. The SDK abstracts this completely. Under the hood:</p>
+  <div class="code"><span class="c"># What happens when you call room.connect():</span>
+<span class="k">1.</span> Client opens WebSocket to wss://your-livekit-server/rtc
+<span class="k">2.</span> Sends JoinRequest with access token
+<span class="k">3.</span> Server validates token → returns JoinResponse (room state, participant list)
+<span class="k">4.</span> Client creates RTCPeerConnection, generates SDP offer
+<span class="k">5.</span> Sends AddTrackRequest + SDP via WebSocket
+<span class="k">6.</span> Server sends SDP answer back
+<span class="k">7.</span> ICE candidates exchanged via Trickle ICE (as found, not all at once)
+<span class="k">8.</span> DTLS handshake → SRTP streams begin
+
+<span class="c"># The client SDK wraps ALL of this into:</span>
+<span class="k">await</span> room.<span class="f">connect</span>(<span class="s">'wss://your-server.livekit.cloud'</span>, token)
+<span class="c"># That's it. SDP is gone. ICE is gone. DTLS is gone.</span></div>
+</section>
+
+<!-- ═══ ROOMS ═══ -->
+<section id="sec-rooms" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 9 · Core Concepts</div>
+    <h1 class="htitle">LiveKit <span>Rooms</span></h1>
+    <p class="hsub">A Room is the fundamental unit of LiveKit. It's a virtual space where participants communicate. Rooms are created on demand, expire when empty, and are identified by a unique name within your LiveKit project.</p>
+  </div>
+
+  <h2>Room lifecycle</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Room creation (explicit or implicit)</div><div class="sbody">Rooms can be pre-created via REST API with specific settings, or they're created automatically when the first participant joins. Pre-creating allows you to configure max participants, codec preferences, and recording.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Participants join with access tokens</div><div class="sbody">Each participant joins with a JWT access token that specifies their identity, permissions (can publish audio/video?), and the room name. The token is generated server-side and sent to the client.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Media flows between participants via SFU</div><div class="sbody">Published tracks are forwarded to all subscribers. Events propagate to all participants (participant joined, track published, metadata updated).</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">4</div></div><div class="sc"><div class="stitle">Room expires when last participant leaves</div><div class="sbody">By default, rooms auto-delete when empty. You can configure <code>empty_timeout</code> to keep rooms alive for a period after all participants leave (useful for recordings to complete).</div></div></div>
+  </div>
+
+  <h2>Creating and managing rooms via API</h2>
+  <div class="code"><span class="c"># Python Server SDK — room management</span>
+<span class="k">from</span> livekit <span class="k">import</span> api
+<span class="k">import</span> asyncio
+
+<span class="k">async def</span> <span class="f">manage_rooms</span>():
+    lk = api.<span class="f">LiveKitAPI</span>(
+        url=<span class="s">"https://your-project.livekit.cloud"</span>,
+        api_key=<span class="s">"your_api_key"</span>,
+        api_secret=<span class="s">"your_api_secret"</span>
+    )
+
+    <span class="c"># Create room with configuration</span>
+    room = <span class="k">await</span> lk.room.<span class="f">create_room</span>(api.<span class="f">CreateRoomRequest</span>(
+        name=<span class="s">"meeting-room-123"</span>,
+        max_participants=<span class="n">20</span>,
+        empty_timeout=<span class="n">300</span>,       <span class="c"># 5 min before auto-delete when empty</span>
+        metadata=<span class="s">'{"type": "customer_call"}'</span>
+    ))
+
+    <span class="c"># List active rooms</span>
+    rooms = <span class="k">await</span> lk.room.<span class="f">list_rooms</span>(api.<span class="f">ListRoomsRequest</span>())
+
+    <span class="c"># Get participants in a room</span>
+    participants = <span class="k">await</span> lk.room.<span class="f">list_participants</span>(
+        api.<span class="f">ListParticipantsRequest</span>(room=<span class="s">"meeting-room-123"</span>)
+    )
+
+    <span class="c"># Remove a participant</span>
+    <span class="k">await</span> lk.room.<span class="f">remove_participant</span>(api.<span class="f">RoomParticipantIdentity</span>(
+        room=<span class="s">"meeting-room-123"</span>, identity=<span class="s">"user_456"</span>
+    ))
+
+    <span class="c"># Delete a room (disconnects all participants)</span>
+    <span class="k">await</span> lk.room.<span class="f">delete_room</span>(api.<span class="f">DeleteRoomRequest</span>(room=<span class="s">"meeting-room-123"</span>))
+
+    <span class="k">await</span> lk.<span class="f">aclose</span>()</div>
+
+  <h2>Room state — what a room knows</h2>
+  <div class="g2">
+    <div class="mini"><div class="mt" style="color:var(--a1)">Room properties</div><div class="mb">Name, SID (unique ID), creation time, participant count, metadata (your custom JSON string), active recording flag, active egress flag.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">Room settings</div><div class="mb">Max participants, empty_timeout, codec preferences (force VP8, H264, etc.), audio/video presets, DTLS certificate, egress settings.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Participants list</div><div class="mb">All connected participants (human + agents). Each has identity, name, metadata, permissions, published tracks, connection quality.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Data channels</div><div class="mb">Reliable (TCP-like) and lossy data channels for custom messages. Used for chat, cursor positions, state sync — any non-media data.</div></div>
+  </div>
+</section>
+
+<!-- ═══ PARTICIPANTS ═══ -->
+<section id="sec-participants" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 10 · Core Concepts</div>
+    <h1 class="htitle">Participants — <span>Who's in the Room</span></h1>
+    <p class="hsub">A participant is anyone (human or AI agent) connected to a room. LiveKit distinguishes between local participants (you), remote participants (others), and tracks they publish or subscribe to.</p>
+  </div>
+
+  <h2>Participant types</h2>
+  <div class="g3">
+    <div class="card ca1"><div class="ct">Human participant</div><div class="cb">A browser, mobile app, or desktop app connected via a client SDK. Has a camera, microphone, and screen share. Receives video/audio from others. Controlled by the user.</div></div>
+    <div class="card ca2"><div class="ct">AI Agent participant</div><div class="cb">A programmatic participant running on your server. Publishes synthesized speech (TTS), subscribes to user audio (for STT), processes video, and sends data messages.</div></div>
+    <div class="card ca7"><div class="ct">Egress participant</div><div class="cb">A virtual participant that joins only to record or stream. Subscribes to all tracks and sends to S3, YouTube, Mux, etc. No publishing.</div></div>
+  </div>
+
+  <h2>Participant permissions (access token claims)</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Permission</th><th>Default</th><th>What it controls</th></tr></thead>
+      <tbody>
+        <tr><td><code>canPublish</code></td><td>true</td><td>Can publish audio/video tracks to the room</td></tr>
+        <tr><td><code>canSubscribe</code></td><td>true</td><td>Can receive/subscribe to other participants' tracks</td></tr>
+        <tr><td><code>canPublishData</code></td><td>true</td><td>Can send data messages to other participants</td></tr>
+        <tr><td><code>canUpdateMetadata</code></td><td>false</td><td>Can update own participant metadata</td></tr>
+        <tr><td><code>canPublishSources</code></td><td>all</td><td>Which track sources allowed (camera, microphone, screen_share)</td></tr>
+        <tr><td><code>hidden</code></td><td>false</td><td>If true, not visible to other participants in the list</td></tr>
+        <tr><td><code>recorder</code></td><td>false</td><td>Mark as a recording participant (affects client behavior)</td></tr>
+        <tr><td><code>agent</code></td><td>false</td><td>Mark as an AI agent participant</td></tr>
+        <tr><td><code>roomAdmin</code></td><td>false</td><td>Can manage the room (mute others, remove participants)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Participant metadata — custom state</h2>
+  <div class="code"><span class="c"># Any JSON string can be stored as participant metadata</span>
+<span class="c"># Set via token when joining:</span>
+token = api.<span class="f">AccessToken</span>(api_key, api_secret)
+token.<span class="f">with_metadata</span>(json.<span class="f">dumps</span>({
+    <span class="s">"user_id"</span>: <span class="s">"user_abc"</span>,
+    <span class="s">"display_name"</span>: <span class="s">"Alice"</span>,
+    <span class="s">"role"</span>: <span class="s">"host"</span>,
+    <span class="s">"avatar_url"</span>: <span class="s">"https://..."</span>
+}))
+
+<span class="c"># Update metadata during a call (from agent or server):</span>
+<span class="k">await</span> lk.room.<span class="f">update_participant</span>(api.<span class="f">UpdateParticipantRequest</span>(
+    room=<span class="s">"room-id"</span>,
+    identity=<span class="s">"user_abc"</span>,
+    metadata=json.<span class="f">dumps</span>({<span class="s">"status"</span>: <span class="s">"speaking"</span>})
+))
+
+<span class="c"># In agent: update own attributes</span>
+<span class="k">await</span> ctx.room.<span class="f">local_participant</span>.<span class="f">set_attributes</span>({
+    <span class="s">"agent_state"</span>: <span class="s">"listening"</span>
+})</div>
+</section>
+
+<!-- ═══ TRACKS ═══ -->
+<section id="sec-tracks" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 11 · Core Concepts</div>
+    <h1 class="htitle">Tracks & <span>Media</span></h1>
+    <p class="hsub">A Track is a single media stream — one audio stream, one video stream, or one data channel. Participants publish tracks (send) and subscribe to tracks (receive). Tracks are the core media primitive in LiveKit.</p>
+  </div>
+
+  <h2>Track types</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Track type</th><th>Source</th><th>Codec</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill p1">Audio</span></td><td>Microphone, TTS synthesizer, file</td><td>Opus (48kHz, stereo)</td><td>Always low latency, noise-cancelled optionally</td></tr>
+        <tr><td><span class="pill p3">Video — Camera</span></td><td>Camera device</td><td>VP8, VP9, H.264, AV1</td><td>Simulcast support — multiple quality layers</td></tr>
+        <tr><td><span class="pill p4">Video — Screen share</span></td><td>Screen capture API</td><td>VP9, H.264</td><td>Higher resolution, lower frame rate</td></tr>
+        <tr><td><span class="pill p7">Data</span></td><td>Application code</td><td>SCTP over DTLS</td><td>Reliable (ordered) or lossy (unordered) modes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Simulcast — multiple quality layers</h2>
+  <div class="callout q1"><strong>Simulcast:</strong> Publishers send 3 video streams simultaneously (high/medium/low quality). The SFU delivers the layer that matches each subscriber's available bandwidth. A viewer on WiFi gets HD; one on 3G gets low-res. The publisher's bandwidth increases, but all subscribers only receive what they can handle.</div>
+
+  <h2>Track publishing from an agent</h2>
+  <div class="code"><span class="c"># Agent publishing audio (TTS output)</span>
+<span class="k">from</span> livekit <span class="k">import</span> rtc
+<span class="k">import</span> asyncio
+
+<span class="c"># Create audio source with sample rate + channels</span>
+audio_source = rtc.<span class="f">AudioSource</span>(sample_rate=<span class="n">24000</span>, num_channels=<span class="n">1</span>)
+
+<span class="c"># Create local audio track from the source</span>
+local_audio_track = rtc.LocalAudioTrack.<span class="f">create_audio_track</span>(
+    <span class="s">"agent-voice"</span>, audio_source
+)
+
+<span class="c"># Publish to the room</span>
+<span class="k">await</span> room.local_participant.<span class="f">publish_track</span>(
+    local_audio_track,
+    rtc.<span class="f">TrackPublishOptions</span>(source=rtc.TrackSource.SOURCE_MICROPHONE)
+)
+
+<span class="c"># Push audio frames to the source</span>
+<span class="k">async def</span> <span class="f">push_audio</span>(pcm_bytes: bytes):
+    audio_frame = rtc.<span class="f">AudioFrame</span>(
+        data=pcm_bytes,
+        sample_rate=<span class="n">24000</span>,
+        num_channels=<span class="n">1</span>,
+        samples_per_channel=<span class="n">len</span>(pcm_bytes) // <span class="n">2</span>
+    )
+    <span class="k">await</span> audio_source.<span class="f">capture_frame</span>(audio_frame)</div>
+</section>
+
+<!-- ═══ TOKENS ═══ -->
+<section id="sec-tokens" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 12 · Core Concepts</div>
+    <h1 class="htitle">Tokens & <span>Authentication</span></h1>
+    <p class="hsub">LiveKit uses JWT access tokens for authentication. Every participant joining a room must present a valid token signed with your API secret. Tokens are always generated server-side — never in client code.</p>
+  </div>
+
+  <h2>Token structure — what's inside</h2>
+  <div class="code"><span class="c"># JWT payload claims (decoded)</span>
+{
+  <span class="c"># Standard JWT claims</span>
+  <span class="s">"iss"</span>: <span class="s">"your_api_key"</span>,         <span class="c">← your API key (issuer)</span>
+  <span class="s">"sub"</span>: <span class="s">"user_alice"</span>,           <span class="c">← participant identity</span>
+  <span class="s">"iat"</span>: <span class="n">1705000000</span>,            <span class="c">← issued at (unix timestamp)</span>
+  <span class="s">"exp"</span>: <span class="n">1705006000</span>,            <span class="c">← expires (1 hour later)</span>
+  <span class="s">"nbf"</span>: <span class="n">1705000000</span>,            <span class="c">← not valid before</span>
+
+  <span class="c"># LiveKit-specific claims</span>
+  <span class="s">"name"</span>: <span class="s">"Alice Smith"</span>,         <span class="c">← display name</span>
+  <span class="s">"metadata"</span>: <span class="s">"{...json...}"</span>,   <span class="c">← custom JSON metadata</span>
+  <span class="s">"sha256"</span>: <span class="s">"..."</span>,               <span class="c">← metadata hash (integrity)</span>
+
+  <span class="c"># Video grants (permissions)</span>
+  <span class="s">"video"</span>: {
+    <span class="s">"roomCreate"</span>: <span class="k">false</span>,          <span class="c">← can create rooms</span>
+    <span class="s">"roomJoin"</span>: <span class="k">true</span>,             <span class="c">← can join this room</span>
+    <span class="s">"room"</span>: <span class="s">"meeting-room-123"</span>,  <span class="c">← which room</span>
+    <span class="s">"canPublish"</span>: <span class="k">true</span>,
+    <span class="s">"canSubscribe"</span>: <span class="k">true</span>,
+    <span class="s">"canPublishData"</span>: <span class="k">true</span>,
+    <span class="s">"canUpdateMetadata"</span>: <span class="k">false</span>,
+    <span class="s">"hidden"</span>: <span class="k">false</span>,
+    <span class="s">"recorder"</span>: <span class="k">false</span>,
+    <span class="s">"agent"</span>: <span class="k">false</span>
+  }
+}</div>
+
+  <h2>Token generation (Python)</h2>
+  <div class="code"><span class="k">from</span> livekit <span class="k">import</span> api
+<span class="k">from</span> datetime <span class="k">import</span> timedelta
+<span class="k">import</span> os
+
+<span class="k">def</span> <span class="f">create_room_token</span>(
+    room_name: str,
+    identity: str,
+    display_name: str = <span class="s">""</span>,
+    is_admin: bool = <span class="k">False</span>,
+    can_publish: bool = <span class="k">True</span>,
+    metadata: dict = <span class="k">None</span>
+) -> str:
+    token = api.<span class="f">AccessToken</span>(
+        api_key=os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_KEY"</span>),
+        api_secret=os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_SECRET"</span>)
+    )
+    token.<span class="f">with_identity</span>(identity)
+    token.<span class="f">with_name</span>(display_name <span class="k">or</span> identity)
+    token.<span class="f">with_ttl</span>(timedelta(hours=<span class="n">1</span>))
+
+    <span class="k">if</span> metadata:
+        token.<span class="f">with_metadata</span>(json.<span class="f">dumps</span>(metadata))
+
+    token.<span class="f">with_grants</span>(api.<span class="f">VideoGrants</span>(
+        room_join=<span class="k">True</span>,
+        room=room_name,
+        can_publish=can_publish,
+        can_subscribe=<span class="k">True</span>,
+        can_publish_data=<span class="k">True</span>,
+        room_admin=is_admin,
+        hidden=<span class="k">False</span>,
+    ))
+    <span class="k">return</span> token.<span class="f">to_jwt</span>()
+
+<span class="c"># FastAPI endpoint that generates tokens</span>
+<span class="f">@</span>app.post(<span class="s">"/api/livekit/token"</span>)
+<span class="k">async def</span> <span class="f">get_room_token</span>(room_name: str, user = <span class="f">Depends</span>(get_current_user)):
+    token = <span class="f">create_room_token</span>(
+        room_name=room_name,
+        identity=user.id,
+        display_name=user.name,
+        metadata={<span class="s">"user_id"</span>: user.id}
+    )
+    <span class="k">return</span> {<span class="s">"token"</span>: token, <span class="s">"ws_url"</span>: os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_URL"</span>)}</div>
+
+  <div class="callout q5"><strong>Security rule:</strong> Never generate tokens in frontend code. The API secret must never leave your server. The token is the only thing sent to the client — it contains just enough permissions for that specific user in that specific room.</div>
+</section>
+
+<!-- ═══ EVENTS & WEBHOOKS ═══ -->
+<section id="sec-events-webhooks" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 13 · Core Concepts</div>
+    <h1 class="htitle">Events & <span>Webhooks</span></h1>
+    <p class="hsub">LiveKit fires events when things happen in rooms. Client-side events are handled in SDK callbacks. Server-side, LiveKit sends webhook HTTP POST requests to your backend — signed with HMAC so you can verify they're authentic.</p>
+  </div>
+
+  <h2>Client-side events (JavaScript SDK)</h2>
+  <div class="code"><span class="k">import</span> { Room, RoomEvent, Track } <span class="k">from</span> <span class="s">'livekit-client'</span>;
+
+<span class="k">const</span> room = <span class="k">new</span> Room();
+
+room
+  .<span class="f">on</span>(RoomEvent.Connected, () => console.<span class="f">log</span>(<span class="s">'joined room'</span>))
+  .<span class="f">on</span>(RoomEvent.Disconnected, (reason) => console.<span class="f">log</span>(<span class="s">'left room:'</span>, reason))
+  .<span class="f">on</span>(RoomEvent.ParticipantConnected, (participant) => {
+    console.<span class="f">log</span>(<span class="s">'joined:'</span>, participant.identity);
+  })
+  .<span class="f">on</span>(RoomEvent.ParticipantDisconnected, (participant) => {
+    console.<span class="f">log</span>(<span class="s">'left:'</span>, participant.identity);
+  })
+  .<span class="f">on</span>(RoomEvent.TrackSubscribed, (track, publication, participant) => {
+    <span class="k">if</span> (track.kind === Track.Kind.Video) {
+      <span class="k">const</span> el = track.<span class="f">attach</span>();  <span class="c">// creates &lt;video&gt; element</span>
+      document.body.<span class="f">appendChild</span>(el);
+    }
+  })
+  .<span class="f">on</span>(RoomEvent.DataReceived, (payload, participant) => {
+    <span class="k">const</span> msg = <span class="k">new</span> TextDecoder().<span class="f">decode</span>(payload);
+    console.<span class="f">log</span>(<span class="s">'data from'</span>, participant?.identity, msg);
+  })
+  .<span class="f">on</span>(RoomEvent.ConnectionQualityChanged, (quality, participant) => {
+    console.<span class="f">log</span>(participant.identity, <span class="s">'quality:'</span>, quality); <span class="c">// excellent/good/poor</span>
+  });</div>
+
+  <h2>Webhook events — server-side notifications</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Event type</th><th>When it fires</th><th>Key data in payload</th></tr></thead>
+      <tbody>
+        <tr><td><code>room_started</code></td><td>First participant joins</td><td>room name, SID, creation time</td></tr>
+        <tr><td><code>room_finished</code></td><td>Last participant leaves</td><td>room name, duration</td></tr>
+        <tr><td><code>participant_joined</code></td><td>Any participant connects</td><td>identity, name, metadata, joinedAt</td></tr>
+        <tr><td><code>participant_left</code></td><td>Any participant disconnects</td><td>identity, duration, reason</td></tr>
+        <tr><td><code>track_published</code></td><td>Participant publishes a track</td><td>track SID, kind (audio/video), source</td></tr>
+        <tr><td><code>track_unpublished</code></td><td>Participant stops publishing</td><td>track SID</td></tr>
+        <tr><td><code>egress_started</code></td><td>Recording/streaming begins</td><td>egress ID, type (file/rtmp)</td></tr>
+        <tr><td><code>egress_ended</code></td><td>Recording/streaming stops</td><td>egress ID, file location</td></tr>
+        <tr><td><code>ingress_started</code></td><td>External media source starts</td><td>ingress ID, source URL</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Webhook handler in FastAPI</h2>
+  <div class="code"><span class="k">from</span> livekit <span class="k">import</span> api
+<span class="k">from</span> fastapi <span class="k">import</span> Request, HTTPException, BackgroundTasks
+
+<span class="f">@</span>app.post(<span class="s">"/webhook/livekit"</span>)
+<span class="k">async def</span> <span class="f">livekit_webhook</span>(request: Request, bg: BackgroundTasks):
+    body = <span class="k">await</span> request.<span class="f">body</span>()
+    auth_header = request.headers.<span class="f">get</span>(<span class="s">"Authorization"</span>, <span class="s">""</span>)
+
+    <span class="c"># Verify signature using LiveKit SDK (handles HMAC)</span>
+    receiver = api.<span class="f">WebhookReceiver</span>(
+        api_key=os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_KEY"</span>),
+        api_secret=os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_SECRET"</span>)
+    )
+    <span class="k">try</span>:
+        event = receiver.<span class="f">receive</span>(body.<span class="f">decode</span>(), auth_header)
+    <span class="k">except Exception as</span> e:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(<span class="n">403</span>, <span class="s">"Invalid webhook signature"</span>)
+
+    <span class="c"># Handle events asynchronously</span>
+    bg.<span class="f">add_task</span>(<span class="f">process_event</span>, event)
+    <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"ok"</span>}
+
+<span class="k">async def</span> <span class="f">process_event</span>(event):
+    <span class="k">match</span> event.event:
+        <span class="k">case</span> <span class="s">"room_started"</span>:
+            <span class="k">await</span> db.<span class="f">create_call_record</span>(event.room.name)
+        <span class="k">case</span> <span class="s">"room_finished"</span>:
+            <span class="k">await</span> db.<span class="f">close_call_record</span>(event.room.name)
+        <span class="k">case</span> <span class="s">"participant_joined"</span>:
+            <span class="k">await</span> db.<span class="f">log_join</span>(event.participant.identity, event.room.name)
+        <span class="k">case</span> <span class="s">"egress_ended"</span>:
+            <span class="k">await</span> <span class="f">process_recording</span>(event.egress_info)</div>
+</section>
+
+<!-- ═══ AGENTS OVERVIEW ═══ -->
+<section id="sec-agents-overview" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 14 · Agents Framework</div>
+    <h1 class="htitle">LiveKit <span>Agents Framework</span></h1>
+    <p class="hsub">The Agents framework is LiveKit's most powerful feature. It lets you build AI participants that join rooms and interact with humans using voice, video, and data. It handles all the complexity of real-time AI pipelines.</p>
+  </div>
+
+  <div class="callout q2"><strong>What makes Agents special:</strong> An agent is a LiveKit participant that runs Python/Node.js code server-side. It hears what humans say (via STT), thinks (via LLM), speaks back (via TTS), and can process video — all with built-in turn detection, interruption handling, and sub-500ms end-to-end latency.</div>
+
+  <h2>Agent types</h2>
+  <div class="g2">
+    <div class="card ca2"><div class="ct">VoicePipelineAgent</div><div class="cb">The standard voice agent. Orchestrates the STT → VAD → LLM → TTS pipeline explicitly. You configure each component separately. Full control over each step. Best for production voice agents where you need custom behavior.</div></div>
+    <div class="card ca7"><div class="ct">MultimodalAgent</div><div class="cb">Uses a multimodal model (like GPT-4o Realtime) that natively handles audio without separate STT/TTS steps. Lower latency, more natural conversation. The model does everything — audio in, audio out. Best for cutting-edge conversational AI.</div></div>
+  </div>
+
+  <h2>Agent worker — the deployment unit</h2>
+  <div class="code"><span class="k">from</span> livekit.agents <span class="k">import</span> AutoSubscribe, JobContext, WorkerOptions, cli, llm
+<span class="k">from</span> livekit.agents.voice_assistant <span class="k">import</span> VoicePipelineAgent
+<span class="k">from</span> livekit.plugins <span class="k">import</span> deepgram, openai, silero
+
+<span class="c"># The entrypoint function — called once per room the agent joins</span>
+<span class="k">async def</span> <span class="f">entrypoint</span>(ctx: JobContext):
+    <span class="k">await</span> ctx.<span class="f">connect</span>(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+    <span class="k">await</span> ctx.room.<span class="f">wait_for_participant</span>()  <span class="c"># wait for human to join</span>
+
+    agent = <span class="f">VoicePipelineAgent</span>(
+        vad=silero.<span class="f">VAD.load</span>(),
+        stt=deepgram.<span class="f">STT</span>(),
+        llm=openai.<span class="f">LLM</span>(model=<span class="s">"gpt-4o"</span>),
+        tts=openai.<span class="f">TTS</span>(voice=<span class="s">"alloy"</span>),
+        chat_ctx=llm.<span class="f">ChatContext</span>().<span class="f">append</span>(
+            role=<span class="s">"system"</span>,
+            text=<span class="s">"You are a helpful voice assistant."</span>
+        ),
+    )
+    agent.<span class="f">start</span>(ctx.room)
+
+<span class="c"># Worker processes the job queue from LiveKit</span>
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    cli.<span class="f">run_app</span>(<span class="f">WorkerOptions</span>(entrypoint_fnc=entrypoint))</div>
+
+  <h2>How job dispatching works</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Worker connects to LiveKit Server</div><div class="sbody">Your agent process connects to LiveKit Server and registers as a worker. It's idle, waiting for jobs. Multiple workers can register for load balancing.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Job dispatch triggered</div><div class="sbody">When a participant joins a room (or you manually dispatch via API), LiveKit sends a job to an available worker. Default: trigger on first participant join. Custom: trigger via dispatch API.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Worker spawns agent process</div><div class="sbody">Worker spawns a subprocess (or async task) running your <code>entrypoint</code> function. The agent connects to the room as a participant with its own identity and token.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">4</div></div><div class="sc"><div class="stitle">Agent runs, handles the conversation</div><div class="sbody">Agent subscribes to audio, runs the pipeline, publishes responses. When the room is empty or job ends, agent cleans up and worker becomes available for new jobs.</div></div></div>
+  </div>
+</section>
+
+<!-- ═══ VOICE PIPELINE ═══ -->
+<section id="sec-voice-pipeline" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 15 · Agents</div>
+    <h1 class="htitle">VoicePipelineAgent — <span>Deep Dive</span></h1>
+    <p class="hsub">VoicePipelineAgent orchestrates the classic STT→LLM→TTS pipeline. Each stage is pluggable. Understanding each stage helps you tune for latency, accuracy, and cost.</p>
+  </div>
+
+  <h2>The pipeline flow</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1)">Human speaks<br><span style="font-size:9px;font-weight:400;color:var(--t3)">audio stream</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--a6)">VAD<br><span style="font-size:9px;font-weight:400;color:var(--t3)">voice activity</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--a4)">STT<br><span style="font-size:9px;font-weight:400;color:var(--t3)">transcription</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:var(--a2)">Turn detection<br><span style="font-size:9px;font-weight:400;color:var(--t3)">end of speech?</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:var(--a7)">LLM<br><span style="font-size:9px;font-weight:400;color:var(--t3)">thinking</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--a3)">TTS<br><span style="font-size:9px;font-weight:400;color:var(--t3)">speak</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1)">Human hears<br><span style="font-size:9px;font-weight:400;color:var(--t3)">audio out</span></div>
+    </div>
+  </div>
+
+  <h2>Full VoicePipelineAgent configuration</h2>
+  <div class="code"><span class="k">from</span> livekit.agents <span class="k">import</span> AutoSubscribe, JobContext, WorkerOptions, cli, llm
+<span class="k">from</span> livekit.agents.voice_assistant <span class="k">import</span> VoicePipelineAgent
+<span class="k">from</span> livekit.agents.llm <span class="k">import</span> ChatContext, ChatMessage, FunctionContext
+<span class="k">from</span> livekit.plugins <span class="k">import</span> deepgram, openai, silero, elevenlabs
+
+<span class="k">async def</span> <span class="f">entrypoint</span>(ctx: JobContext):
+    <span class="k">await</span> ctx.<span class="f">connect</span>(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+
+    initial_ctx = ChatContext(
+        messages=[
+            ChatMessage(
+                role=<span class="s">"system"</span>,
+                content=<span class="s">"""You are a helpful customer support agent for Acme Corp.
+                Be concise — 2-3 sentences max per response.
+                Be friendly but professional."""</span>
+            )
+        ]
+    )
+
+    agent = <span class="f">VoicePipelineAgent</span>(
+        <span class="c"># Voice Activity Detection — when is someone speaking?</span>
+        vad=silero.<span class="f">VAD.load</span>(
+            min_speech_duration=<span class="n">0.1</span>,     <span class="c"># 100ms minimum to be speech</span>
+            min_silence_duration=<span class="n">0.3</span>,    <span class="c"># 300ms silence = speech ended</span>
+        ),
+
+        <span class="c"># Speech-to-Text</span>
+        stt=deepgram.<span class="f">STT</span>(
+            model=<span class="s">"nova-2"</span>,
+            language=<span class="s">"en-US"</span>,
+            smart_format=<span class="k">True</span>,
+        ),
+
+        <span class="c"># Large Language Model</span>
+        llm=openai.<span class="f">LLM</span>(
+            model=<span class="s">"gpt-4o"</span>,
+            temperature=<span class="n">0.7</span>,
+        ),
+
+        <span class="c"># Text-to-Speech</span>
+        tts=elevenlabs.<span class="f">TTS</span>(
+            voice_id=<span class="s">"21m00Tcm4TlvDq8ikWAM"</span>,  <span class="c"># Rachel</span>
+            model=<span class="s">"eleven_turbo_v2"</span>,           <span class="c"># fastest model</span>
+        ),
+
+        <span class="c"># Chat context with history</span>
+        chat_ctx=initial_ctx,
+
+        <span class="c"># Behavior tuning</span>
+        allow_interruptions=<span class="k">True</span>,         <span class="c"># user can interrupt agent</span>
+        interrupt_speech_duration=<span class="n">0.5</span>,   <span class="c"># 500ms of user speech = interrupt</span>
+        interrupt_min_words=<span class="n">0</span>,            <span class="c"># any words = interrupt</span>
+        min_endpointing_delay=<span class="n">0.5</span>,        <span class="c"># wait 500ms after silence before responding</span>
+        preemptive_synthesis=<span class="k">True</span>,        <span class="c"># start TTS before LLM finishes (reduces latency)</span>
+    )
+
+    agent.<span class="f">start</span>(ctx.room)
+
+    <span class="c"># Say something when agent starts</span>
+    <span class="k">await</span> agent.<span class="f">say</span>(<span class="s">"Hello! I'm your assistant. How can I help you today?"</span>,
+                   allow_interruptions=<span class="k">True</span>)</div>
+
+  <h2>Adding LLM function tools</h2>
+  <div class="code"><span class="k">from</span> livekit.agents <span class="k">import</span> llm
+<span class="k">import</span> json
+
+<span class="c"># Define functions the LLM can call</span>
+<span class="f">@</span>llm.<span class="f">ai_callable</span>(description=<span class="s">"Look up order status by order ID"</span>)
+<span class="k">async def</span> <span class="f">get_order_status</span>(order_id: <span class="o">Annotated</span>[str, llm.<span class="f">TypeInfo</span>(description=<span class="s">"The order ID"</span>)]):
+    <span class="c"># Call your actual backend</span>
+    status = <span class="k">await</span> db.<span class="f">get_order</span>(order_id)
+    <span class="k">return</span> json.<span class="f">dumps</span>({<span class="s">"order_id"</span>: order_id, <span class="s">"status"</span>: status})
+
+<span class="f">@</span>llm.<span class="f">ai_callable</span>(description=<span class="s">"Transfer call to human agent"</span>)
+<span class="k">async def</span> <span class="f">transfer_to_human</span>():
+    <span class="k">await</span> ctx.room.local_participant.<span class="f">send_data</span>(
+        json.<span class="f">dumps</span>({<span class="s">"action"</span>: <span class="s">"transfer_requested"</span>}).<span class="f">encode</span>(),
+        topic=<span class="s">"control"</span>
+    )
+    <span class="k">return</span> <span class="s">"Transferring you now"</span>
+
+<span class="c"># Add functions to agent</span>
+fnc_ctx = llm.<span class="f">FunctionContext</span>()
+fnc_ctx.<span class="f">ai_callable</span>(get_order_status)
+fnc_ctx.<span class="f">ai_callable</span>(transfer_to_human)
+
+agent = <span class="f">VoicePipelineAgent</span>(..., fnc_ctx=fnc_ctx)</div>
+</section>
+
+<!-- ═══ MULTIMODAL ═══ -->
+<section id="sec-multimodal" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 16 · Agents</div>
+    <h1 class="htitle">MultimodalAgent — <span>Native Audio AI</span></h1>
+    <p class="hsub">MultimodalAgent uses models like GPT-4o Realtime that accept audio directly and respond in audio — no separate STT or TTS steps. This is the future of voice AI: lower latency, more natural prosody, true emotional intelligence.</p>
+  </div>
+
+  <h2>VoicePipeline vs Multimodal</h2>
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--a4)">VoicePipelineAgent</h3>
+      <li>STT → text → LLM → text → TTS</li>
+      <li>Works with any STT + any LLM + any TTS</li>
+      <li>~300-800ms latency (3 network round trips)</li>
+      <li>Full control over each step</li>
+      <li>Function calling well supported</li>
+      <li>Use: production apps, custom providers, cost optimization</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--a2)">MultimodalAgent</h3>
+      <li>Audio → multimodal model → audio</li>
+      <li>Model handles everything (GPT-4o Realtime, Gemini)</li>
+      <li>~150-250ms latency (1 round trip)</li>
+      <li>Natural tone/emotion/prosody preserved</li>
+      <li>Function calling supported</li>
+      <li>Use: bleeding-edge voice apps, demos, highest quality</li>
+    </div>
+  </div>
+
+  <h2>MultimodalAgent implementation</h2>
+  <div class="code"><span class="k">from</span> livekit.agents <span class="k">import</span> AutoSubscribe, JobContext, WorkerOptions, cli
+<span class="k">from</span> livekit.agents.multimodal <span class="k">import</span> MultimodalAgent
+<span class="k">from</span> livekit.plugins <span class="k">import</span> openai
+
+<span class="k">async def</span> <span class="f">entrypoint</span>(ctx: JobContext):
+    <span class="k">await</span> ctx.<span class="f">connect</span>(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+
+    <span class="c"># GPT-4o Realtime — audio in, audio out natively</span>
+    model = openai.<span class="f">realtime.RealtimeModel</span>(
+        instructions=<span class="s">"You are a helpful voice assistant. Be concise."</span>,
+        voice=<span class="s">"alloy"</span>,                     <span class="c"># built-in voice</span>
+        temperature=<span class="n">0.8</span>,
+        modalities=[<span class="s">"audio"</span>, <span class="s">"text"</span>],       <span class="c"># use both audio + text</span>
+        turn_detection=openai.realtime.<span class="f">ServerVAD</span>(
+            threshold=<span class="n">0.5</span>,
+            prefix_padding_ms=<span class="n">300</span>,
+            silence_duration_ms=<span class="n">200</span>
+        ),
+    )
+
+    agent = <span class="f">MultimodalAgent</span>(model=model)
+    agent.<span class="f">start</span>(ctx.room)
+
+    <span class="c"># The session handles back-and-forth automatically</span>
+    session = model.<span class="f">sessions</span>[<span class="n">0</span>]
+    session.conversation.item.<span class="f">create</span>(
+        llm.<span class="f">ChatMessage</span>(role=<span class="s">"assistant"</span>, content=<span class="s">"Hello! How can I help?"</span>)
+    )
+    session.response.<span class="f">create</span>()  <span class="c"># triggers initial greeting</span>
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    cli.<span class="f">run_app</span>(<span class="f">WorkerOptions</span>(entrypoint_fnc=entrypoint))</div>
+</section>
+
+<!-- ═══ AGENT LIFECYCLE ═══ -->
+<section id="sec-agent-lifecycle" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 17 · Agents</div>
+    <h1 class="htitle">Agent <span>Lifecycle</span></h1>
+    <p class="hsub">Understanding the full lifecycle of an agent — from dispatch to cleanup — is essential for building reliable production agents.</p>
+  </div>
+
+  <h2>Complete lifecycle with all hooks</h2>
+  <div class="code"><span class="k">from</span> livekit.agents <span class="k">import</span> AutoSubscribe, JobContext, WorkerOptions, cli
+<span class="k">from</span> livekit.agents.voice_assistant <span class="k">import</span> AssistantCallContext, VoicePipelineAgent
+
+<span class="k">async def</span> <span class="f">entrypoint</span>(ctx: JobContext):
+    logger.<span class="f">info</span>(<span class="s">f"Agent starting for room: {ctx.room.name}"</span>)
+
+    <span class="c"># Connect to room</span>
+    <span class="k">await</span> ctx.<span class="f">connect</span>(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+
+    <span class="c"># Wait for a human participant (with timeout)</span>
+    participant = <span class="k">await</span> ctx.room.<span class="f">wait_for_participant</span>(timeout=<span class="n">30</span>)
+    <span class="k">if not</span> participant:
+        logger.<span class="f">warning</span>(<span class="s">"No participant joined in 30s, shutting down"</span>)
+        <span class="k">return</span>
+
+    agent = <span class="f">VoicePipelineAgent</span>(...)
+
+    <span class="c"># ── Lifecycle hooks ──────────────────────────</span>
+    <span class="f">@</span>agent.on(<span class="s">"user_speech_committed"</span>)      <span class="c"># full utterance received</span>
+    <span class="k">def</span> <span class="f">on_speech</span>(msg):
+        logger.<span class="f">info</span>(<span class="s">f"User said: {msg.content}"</span>)
+
+    <span class="f">@</span>agent.on(<span class="s">"agent_speech_committed"</span>)     <span class="c"># agent finished speaking</span>
+    <span class="k">def</span> <span class="f">on_agent_speech</span>(msg):
+        logger.<span class="f">info</span>(<span class="s">f"Agent said: {msg.content}"</span>)
+
+    <span class="f">@</span>agent.on(<span class="s">"agent_speech_interrupted"</span>)   <span class="c"># user interrupted agent</span>
+    <span class="k">def</span> <span class="f">on_interrupt</span>():
+        logger.<span class="f">info</span>(<span class="s">"Interrupted by user"</span>)
+
+    <span class="f">@</span>agent.on(<span class="s">"function_calls_finished"</span>)    <span class="c"># LLM tool call completed</span>
+    <span class="k">def</span> <span class="f">on_tools_done</span>(calls):
+        <span class="k">for</span> call <span class="k">in</span> calls:
+            logger.<span class="f">info</span>(<span class="s">f"Tool {call.call_info.function_info.name} finished"</span>)
+
+    <span class="f">@</span>agent.on(<span class="s">"user_started_speaking"</span>)      <span class="c"># VAD detected speech start</span>
+    <span class="k">def</span> <span class="f">on_user_start</span>():
+        logger.<span class="f">info</span>(<span class="s">"User started speaking"</span>)
+
+    <span class="f">@</span>agent.on(<span class="s">"user_stopped_speaking"</span>)      <span class="c"># VAD detected speech end</span>
+    <span class="k">def</span> <span class="f">on_user_stop</span>():
+        logger.<span class="f">info</span>(<span class="s">"User stopped speaking"</span>)
+
+    agent.<span class="f">start</span>(ctx.room, participant)
+
+    <span class="c"># Keep running until room is empty</span>
+    <span class="k">async def</span> <span class="f">on_disconnect</span>():
+        logger.<span class="f">info</span>(<span class="s">"Room empty, shutting down"</span>)
+        <span class="k">await</span> agent.<span class="f">aclose</span>()
+
+    ctx.room.<span class="f">on</span>(<span class="s">"disconnected"</span>, <span class="k">lambda</span>: asyncio.ensure_future(on_disconnect()))</div>
+</section>
+
+<!-- ═══ VAD & TURN DETECTION ═══ -->
+<section id="sec-turn-vad" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 18 · Agents</div>
+    <h1 class="htitle">VAD & <span>Turn Detection</span></h1>
+    <p class="hsub">Voice Activity Detection (VAD) determines when a user is speaking. Turn detection determines when they've <em>finished</em> speaking and the agent should respond. Getting this right is critical for natural conversation flow.</p>
+  </div>
+
+  <h2>VAD — Voice Activity Detection</h2>
+  <div class="card ca6">
+    <div class="ct">What VAD does</div>
+    <div class="cb">VAD analyzes the incoming audio stream and classifies each frame as "speech" or "silence/noise." This controls when the STT model processes audio and when the agent should start responding. LiveKit uses <strong>Silero VAD</strong> — a small, fast neural network that runs locally (no API calls).</div>
+  </div>
+  <div class="code"><span class="c"># Silero VAD configuration</span>
+vad = silero.<span class="f">VAD.load</span>(
+    min_speech_duration=<span class="n">0.05</span>,   <span class="c"># 50ms - how long before classifying as speech</span>
+    min_silence_duration=<span class="n">0.55</span>,  <span class="c"># 550ms of silence = speech ended</span>
+    prefix_padding_duration=<span class="n">0.5</span>, <span class="c"># include 500ms before speech start</span>
+    max_buffered_speech=<span class="n">60</span>,      <span class="c"># max 60 seconds of buffered speech</span>
+    activation_threshold=<span class="n">0.5</span>,   <span class="c"># 0-1, higher = less sensitive</span>
+)</div>
+
+  <h2>Turn detection — when to respond</h2>
+  <p>Turn detection goes beyond VAD — it uses semantic understanding to know if the user is done with their thought, or just pausing mid-sentence.</p>
+  <div class="g2">
+    <div class="card ca4"><div class="ct">Silence-based (VAD only)</div><div class="cb">Respond after N seconds of silence. Simple but can be wrong. "I want to book a... um... flight to London" — the agent responds at the pause. Too aggressive.</div></div>
+    <div class="card ca3"><div class="ct">Turn detection model</div><div class="cb">A small model that reads the transcription and predicts "done speaking" vs "mid-thought." More accurate. LiveKit provides a trained turn detector plugin. Reduces false positives significantly.</div></div>
+  </div>
+  <div class="code"><span class="c"># Using the built-in turn detector</span>
+<span class="k">from</span> livekit.plugins <span class="k">import</span> turn_detector
+
+agent = <span class="f">VoicePipelineAgent</span>(
+    vad=silero.<span class="f">VAD.load</span>(),
+    stt=deepgram.<span class="f">STT</span>(),
+    llm=openai.<span class="f">LLM</span>(),
+    tts=openai.<span class="f">TTS</span>(),
+    turn_detector=turn_detector.<span class="f">EOUModel</span>(),  <span class="c"># End-of-utterance model</span>
+    min_endpointing_delay=<span class="n">0.5</span>,               <span class="c"># wait 500ms after VAD silence</span>
+    max_endpointing_delay=<span class="n">6.0</span>,               <span class="c"># max 6s even if model unsure</span>
+)</div>
+</section>
+
+<!-- ═══ STT PROVIDERS ═══ -->
+<section id="sec-stt" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 19 · AI Providers</div>
+    <h1 class="htitle">STT — Speech-to-Text <span>Providers</span></h1>
+    <p class="hsub">STT converts spoken audio to text. The choice of STT provider affects transcription accuracy, latency (streaming vs batch), language support, and cost. LiveKit Agents supports all major providers via plugins.</p>
+  </div>
+
+  <div class="providers">
+    <div class="pcard"><div class="pname">Deepgram</div><div class="ptag" style="background:rgba(0,212,255,.12);color:var(--a1)">Recommended</div><div class="pbody">Best for real-time streaming. Nova-2 model is highly accurate for conversational speech. Streaming transcription with word-level timestamps. ~100ms latency. Most popular for voice agents.</div></div>
+    <div class="pcard"><div class="pname">AssemblyAI</div><div class="ptag" style="background:rgba(16,185,129,.12);color:var(--a3)">Good</div><div class="pbody">Strong accuracy, good streaming support. Lemur LLM integration for post-processing. Good for transcription + analysis workflows.</div></div>
+    <div class="pcard"><div class="pname">OpenAI Whisper</div><div class="ptag" style="background:rgba(245,158,11,.12);color:var(--a4)">Good</div><div class="pbody">Best-in-class accuracy for many languages. Batch processing (not streaming). Higher latency. Good for post-call transcription. Open source model can self-host.</div></div>
+    <div class="pcard"><div class="pname">Google Speech</div><div class="ptag" style="background:rgba(139,92,246,.12);color:var(--a7)">Good</div><div class="pbody">Strong multilingual support. Streaming and batch. Good for non-English languages. GCP integration friendly.</div></div>
+    <div class="pcard"><div class="pname">Azure Speech</div><div class="ptag" style="background:rgba(6,182,212,.12);color:var(--a6)">Good</div><div class="pbody">Part of Azure Cognitive Services. Good for Microsoft/enterprise stacks. Custom model training available.</div></div>
+    <div class="pcard"><div class="pname">Speechmatics</div><div class="ptag" style="background:rgba(244,63,94,.12);color:var(--a5)">Niche</div><div class="pbody">Excellent accuracy for accented speech and technical vocabulary. Best speaker diarization. Good for call center analytics.</div></div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Provider</th><th>Plugin</th><th>Streaming?</th><th>Best language</th><th>Latency</th><th>Cost (approx)</th></tr></thead>
+      <tbody>
+        <tr><td>Deepgram</td><td><code>livekit.plugins.deepgram</code></td><td><span class="pill p3">Yes</span></td><td>English</td><td>~100ms</td><td>$0.0043/min</td></tr>
+        <tr><td>AssemblyAI</td><td><code>livekit.plugins.assemblyai</code></td><td><span class="pill p3">Yes</span></td><td>English</td><td>~150ms</td><td>$0.0062/min</td></tr>
+        <tr><td>OpenAI Whisper</td><td><code>livekit.plugins.openai</code></td><td><span class="pill p5">Batch</span></td><td>Multilingual</td><td>~500ms</td><td>$0.006/min</td></tr>
+        <tr><td>Google Speech</td><td><code>livekit.plugins.google</code></td><td><span class="pill p3">Yes</span></td><td>Multilingual</td><td>~200ms</td><td>$0.009/min</td></tr>
+        <tr><td>Azure Speech</td><td><code>livekit.plugins.azure</code></td><td><span class="pill p3">Yes</span></td><td>Multilingual</td><td>~150ms</td><td>$0.010/min</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ LLM PROVIDERS ═══ -->
+<section id="sec-llm" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 20 · AI Providers</div>
+    <h1 class="htitle">LLM <span>Providers</span></h1>
+    <p class="hsub">The LLM is the brain of your voice agent — it processes the transcribed text and generates the response text that TTS will speak. The choice of LLM affects response quality, latency, cost, and function-calling capabilities.</p>
+  </div>
+
+  <div class="providers">
+    <div class="pcard"><div class="pname">OpenAI GPT-4o</div><div class="ptag" style="background:rgba(0,212,255,.12);color:var(--a1)">Most Popular</div><div class="pbody">Best overall for voice agents. Streaming support, excellent function calling, fast responses. GPT-4o mini for lower cost. GPT-4o Realtime for MultimodalAgent.</div></div>
+    <div class="pcard"><div class="pname">Anthropic Claude</div><div class="ptag" style="background:rgba(16,185,129,.12);color:var(--a3)">Excellent</div><div class="pbody">Superior instruction following and safety. Haiku for speed + cost. Sonnet for balance. Excellent for customer service where safety matters.</div></div>
+    <div class="pcard"><div class="pname">Google Gemini</div><div class="ptag" style="background:rgba(245,158,11,.12);color:var(--a4)">Growing</div><div class="pbody">Gemini 1.5 Pro/Flash. Gemini Live for native audio (like GPT-4o Realtime). Strong multimodal. Good for GCP stacks.</div></div>
+    <div class="pcard"><div class="pname">Meta Llama / Groq</div><div class="ptag" style="background:rgba(139,92,246,.12);color:var(--a7)">Fast/Cheap</div><div class="pbody">Groq runs Llama at 500+ tokens/second. Ultra-low latency for voice. Privacy: data stays on-prem with self-hosted Llama.</div></div>
+    <div class="pcard"><div class="pname">Ollama (local)</div><div class="ptag" style="background:rgba(244,63,94,.12);color:var(--a5)">Private</div><div class="pbody">Run any open-source model locally. No API cost after hardware. Required for HIPAA/air-gap environments. Higher latency without GPU.</div></div>
+    <div class="pcard"><div class="pname">Custom / OpenAI-compat</div><div class="ptag" style="background:rgba(6,182,212,.12);color:var(--a6)">Flexible</div><div class="pbody">LiveKit supports any OpenAI-compatible API endpoint. Use Together AI, Fireworks, Anyscale, or your own fine-tuned model.</div></div>
+  </div>
+
+  <h2>LLM plugin usage</h2>
+  <div class="code"><span class="c"># OpenAI</span>
+<span class="k">from</span> livekit.plugins <span class="k">import</span> openai
+llm = openai.<span class="f">LLM</span>(model=<span class="s">"gpt-4o"</span>, temperature=<span class="n">0.7</span>)
+llm = openai.<span class="f">LLM</span>(model=<span class="s">"gpt-4o-mini"</span>)  <span class="c"># cheaper, faster</span>
+
+<span class="c"># Anthropic Claude</span>
+<span class="k">from</span> livekit.plugins <span class="k">import</span> anthropic
+llm = anthropic.<span class="f">LLM</span>(model=<span class="s">"claude-3-5-sonnet-20241022"</span>)
+llm = anthropic.<span class="f">LLM</span>(model=<span class="s">"claude-3-haiku-20240307"</span>)  <span class="c"># fastest Claude</span>
+
+<span class="c"># Ollama (local)</span>
+<span class="k">from</span> livekit.plugins <span class="k">import</span> ollama
+llm = ollama.<span class="f">LLM</span>(model=<span class="s">"llama3.2"</span>, base_url=<span class="s">"http://localhost:11434"</span>)
+
+<span class="c"># Any OpenAI-compatible API</span>
+llm = openai.<span class="f">LLM</span>(
+    model=<span class="s">"llama-3.1-70b-versatile"</span>,
+    base_url=<span class="s">"https://api.groq.com/openai/v1"</span>,
+    api_key=os.<span class="f">getenv</span>(<span class="s">"GROQ_API_KEY"</span>)
+)</div>
+</section>
+
+<!-- ═══ TTS PROVIDERS ═══ -->
+<section id="sec-tts" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 21 · AI Providers</div>
+    <h1 class="htitle">TTS — Text-to-Speech <span>Providers</span></h1>
+    <p class="hsub">TTS converts the LLM's text response into spoken audio. Voice quality, latency (time to first audio), and naturalness vary significantly between providers. For voice agents, TTS latency directly affects perceived responsiveness.</p>
+  </div>
+
+  <div class="providers">
+    <div class="pcard"><div class="pname">ElevenLabs</div><div class="ptag" style="background:rgba(0,212,255,.12);color:var(--a1)">Best Quality</div><div class="pbody">Most natural human-like voices. Emotion control, voice cloning. Turbo v2 model for low latency streaming. Best for premium voice experiences. Mid-range cost.</div></div>
+    <div class="pcard"><div class="pname">Cartesia</div><div class="ptag" style="background:rgba(16,185,129,.12);color:var(--a3)">Fastest</div><div class="pbody">Sonic model is fastest streaming TTS available. ~50ms first audio chunk. Good quality. Competitive pricing. Best for latency-critical applications.</div></div>
+    <div class="pcard"><div class="pname">OpenAI TTS</div><div class="ptag" style="background:rgba(245,158,11,.12);color:var(--a4)">Balanced</div><div class="pbody">Good quality, simple API, reasonable latency. 6 built-in voices. Easy integration if already using OpenAI. Streaming supported.</div></div>
+    <div class="pcard"><div class="pname">Google Cloud TTS</div><div class="ptag" style="background:rgba(139,92,246,.12);color:var(--a7)">Reliable</div><div class="pbody">WaveNet and Neural2 voices. Many languages. SSML support for pronunciation control. Good for multilingual applications.</div></div>
+    <div class="pcard"><div class="pname">Azure Speech</div><div class="ptag" style="background:rgba(6,182,212,.12);color:var(--a6)">Enterprise</div><div class="pbody">SSML, custom neural voices. Good Azure ecosystem integration. Enterprise SLA available.</div></div>
+    <div class="pcard"><div class="pname">XTTS / Coqui (local)</div><div class="ptag" style="background:rgba(244,63,94,.12);color:var(--a5)">Open Source</div><div class="pbody">Self-hosted TTS. No API cost. Voice cloning from samples. Requires GPU for reasonable latency. For privacy-sensitive deployments.</div></div>
+  </div>
+
+  <div class="callout q1"><strong>TTS latency tip — streaming matters:</strong> Use TTS providers that support streaming (first audio chunk before full text is synthesized). Combine with <code>preemptive_synthesis=True</code> in VoicePipelineAgent to start TTS while LLM is still generating. Reduces perceived latency by 200-400ms.</div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Provider</th><th>Plugin</th><th>Streaming</th><th>First audio</th><th>Quality</th><th>$/1M chars</th></tr></thead>
+      <tbody>
+        <tr><td>Cartesia Sonic</td><td><code>livekit.plugins.cartesia</code></td><td>Yes</td><td>~50ms</td><td>Very good</td><td>$65</td></tr>
+        <tr><td>ElevenLabs Turbo</td><td><code>livekit.plugins.elevenlabs</code></td><td>Yes</td><td>~150ms</td><td>Excellent</td><td>$180</td></tr>
+        <tr><td>OpenAI TTS</td><td><code>livekit.plugins.openai</code></td><td>Yes</td><td>~200ms</td><td>Good</td><td>$15</td></tr>
+        <tr><td>Google TTS</td><td><code>livekit.plugins.google</code></td><td>Yes</td><td>~200ms</td><td>Good</td><td>$16</td></tr>
+        <tr><td>Azure TTS</td><td><code>livekit.plugins.azure</code></td><td>Yes</td><td>~150ms</td><td>Good</td><td>$15</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ NOISE CANCELLATION ═══ -->
+<section id="sec-noise" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 22 · AI Providers</div>
+    <h1 class="htitle">Noise Cancellation & <span>Audio Processing</span></h1>
+    <p class="hsub">Background noise is the enemy of voice AI. A user in a coffee shop, with a noisy keyboard, or on a bad connection sends audio that confuses STT and wastes tokens. LiveKit integrates noise cancellation plugins to clean up audio before STT.</p>
+  </div>
+
+  <h2>Krisp — AI noise cancellation</h2>
+  <div class="code"><span class="k">from</span> livekit.plugins.krisp <span class="k">import</span> NoiseCancellation
+
+agent = <span class="f">VoicePipelineAgent</span>(
+    vad=silero.<span class="f">VAD.load</span>(),
+    stt=deepgram.<span class="f">STT</span>(),
+    llm=openai.<span class="f">LLM</span>(),
+    tts=openai.<span class="f">TTS</span>(),
+    noise_cancellation=NoiseCancellation.<span class="f">BVC</span>(),  <span class="c"># Background Voice Cancellation</span>
+)</div>
+
+  <h2>Audio quality settings in client</h2>
+  <div class="code"><span class="c">// JavaScript: request high-quality mic with echo cancellation</span>
+<span class="k">const</span> localTrack = <span class="k">await</span> createLocalAudioTrack({
+  echoCancellation: <span class="k">true</span>,       <span class="c">// browser built-in echo cancellation</span>
+  noiseSuppression: <span class="k">true</span>,       <span class="c">// browser built-in noise suppression</span>
+  autoGainControl: <span class="k">true</span>,        <span class="c">// normalize volume levels</span>
+  sampleRate: <span class="n">48000</span>,            <span class="c">// high quality audio</span>
+  channelCount: <span class="n">1</span>,              <span class="c">// mono for voice (less bandwidth)</span>
+});</div>
+</section>
+
+<!-- ═══ EGRESS / RECORDING ═══ -->
+<section id="sec-egress" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 23 · Features</div>
+    <h1 class="htitle">Recording & <span>Egress</span></h1>
+    <p class="hsub">Egress is LiveKit's recording and streaming system. It captures the content of a room (audio/video) and sends it somewhere — an S3 bucket, an RTMP stream (YouTube Live), or a WebRTC output. A virtual participant joins and records everything.</p>
+  </div>
+
+  <h2>Egress types</h2>
+  <div class="g2">
+    <div class="card ca1"><div class="ct">Room Composite Egress</div><div class="cb">Records the entire room as a composed view — like what participants see on screen. Configurable grid layouts. Outputs to MP4/OGG/WebM. Best for meeting recordings.</div></div>
+    <div class="card ca3"><div class="ct">Track Egress</div><div class="cb">Records individual tracks (one participant's audio, one participant's video) as separate files. Best for post-processing, transcription, or analysis pipelines.</div></div>
+    <div class="card ca4"><div class="ct">Web Egress</div><div class="cb">Takes a screenshot/recording of any URL in a headless browser and injects it into a room. Use for recording any web-based view or custom layout.</div></div>
+    <div class="card ca2"><div class="ct">RTMP Egress</div><div class="cb">Streams the room live to YouTube, Twitch, Mux, Cloudflare Stream, or any RTMP destination. For interactive livestreaming.</div></div>
+  </div>
+
+  <h2>Starting a recording</h2>
+  <div class="code"><span class="k">from</span> livekit <span class="k">import</span> api
+
+lk = api.<span class="f">LiveKitAPI</span>(url, api_key, api_secret)
+
+<span class="c"># Record room as a video file → upload to S3</span>
+res = <span class="k">await</span> lk.egress.<span class="f">start_room_composite_egress</span>(
+    api.<span class="f">RoomCompositeEgressRequest</span>(
+        room_name=<span class="s">"meeting-room-123"</span>,
+        layout=<span class="s">"grid"</span>,                 <span class="c"># grid, speaker, single-speaker</span>
+        audio_only=<span class="k">False</span>,
+        video_only=<span class="k">False</span>,
+        file=api.<span class="f">EncodedFileOutput</span>(
+            file_type=api.EncodedFileType.MP4,
+            filepath=<span class="s">"recordings/{room_name}/{room_id}-{time}.mp4"</span>,
+            s3=api.<span class="f">S3Upload</span>(
+                access_key=os.<span class="f">getenv</span>(<span class="s">"AWS_ACCESS_KEY"</span>),
+                secret=os.<span class="f">getenv</span>(<span class="s">"AWS_SECRET"</span>),
+                region=<span class="s">"us-east-1"</span>,
+                bucket=<span class="s">"my-recordings"</span>
+            )
+        )
+    )
+)
+
+<span class="c"># Stream to YouTube Live</span>
+res = <span class="k">await</span> lk.egress.<span class="f">start_room_composite_egress</span>(
+    api.<span class="f">RoomCompositeEgressRequest</span>(
+        room_name=<span class="s">"my-stream"</span>,
+        stream=api.<span class="f">StreamOutput</span>(
+            protocol=api.StreamProtocol.RTMP,
+            urls=[<span class="s">"rtmp://a.rtmp.youtube.com/live2/YOUR_STREAM_KEY"</span>]
+        )
+    )
+)
+
+<span class="c"># Stop an egress</span>
+<span class="k">await</span> lk.egress.<span class="f">stop_egress</span>(api.<span class="f">StopEgressRequest</span>(egress_id=res.egress_id))</div>
+</section>
+
+<!-- ═══ INGRESS ═══ -->
+<section id="sec-ingress" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 24 · Features</div>
+    <h1 class="htitle"><span>Ingress</span> — Bring External Media In</h1>
+    <p class="hsub">Ingress is the reverse of Egress. It takes external media sources — RTMP streams, WHIP, SRT, URL files — and injects them into a LiveKit room as a participant track. Useful for OBS broadcasting, video file playback, and external camera feeds.</p>
+  </div>
+
+  <div class="g2">
+    <div class="card ca1"><div class="ct">RTMP Ingress</div><div class="cb">OBS Studio, Streamlabs, hardware encoders push RTMP to LiveKit. The stream appears as a participant in the room. Great for professional broadcasting setups where creators use OBS.</div></div>
+    <div class="card ca3"><div class="ct">WHIP Ingress</div><div class="cb">WebRTC-based ingest (HTTP signaling). Lower latency than RTMP. Supported by OBS 30+, Zoom, and some browsers. The future of WebRTC ingest.</div></div>
+    <div class="card ca4"><div class="ct">URL Ingress</div><div class="cb">Pull media from an HTTP URL (MP4, HLS, DASH). Play a video file into a room. Good for pre-recorded content, intros, or background media.</div></div>
+    <div class="card ca2"><div class="ct">SRT Ingress</div><div class="cb">Secure Reliable Transport. Used by broadcast-grade equipment. Low latency, high reliability for professional video production.</div></div>
+  </div>
+</section>
+
+<!-- ═══ SIP ═══ -->
+<section id="sec-sip" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 25 · Features</div>
+    <h1 class="htitle">SIP & PSTN <span>Telephony</span></h1>
+    <p class="hsub">LiveKit's SIP integration bridges the WebRTC world with the public telephone network (PSTN). Your AI agent can make and receive actual phone calls. A user calls a regular phone number and talks to your LiveKit AI agent.</p>
+  </div>
+
+  <h2>How SIP bridging works</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--a4)">User calls<br><span style="font-size:9px;font-weight:400;color:var(--t3)">+1 (800) 555-0100</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:var(--a7)">SIP Trunk<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Twilio/Telnyx</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--a6)">LiveKit SIP server<br><span style="font-size:9px;font-weight:400;color:var(--t3)">translates SIP→WebRTC</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--a1)">LiveKit Room<br><span style="font-size:9px;font-weight:400;color:var(--t3)">Agent joins</span></div>
+      <span class="fa">→</span>
+      <div class="fbox" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:var(--a2)">AI Agent<br><span style="font-size:9px;font-weight:400;color:var(--t3)">STT+LLM+TTS</span></div>
+    </div>
+  </div>
+
+  <h2>SIP configuration</h2>
+  <div class="code"><span class="k">from</span> livekit <span class="k">import</span> api
+
+lk = api.<span class="f">LiveKitAPI</span>(url, api_key, api_secret)
+
+<span class="c"># 1. Create a SIP Trunk (connect to Twilio/Telnyx)</span>
+trunk = <span class="k">await</span> lk.sip.<span class="f">create_sip_inbound_trunk</span>(
+    api.<span class="f">CreateSIPInboundTrunkRequest</span>(
+        trunk=api.<span class="f">SIPInboundTrunkInfo</span>(
+            name=<span class="s">"Twilio Trunk"</span>,
+            numbers=[<span class="s">"+18005550100"</span>],         <span class="c"># your phone number</span>
+            auth_username=<span class="s">"livekit"</span>,
+            auth_password=<span class="s">"your-sip-password"</span>
+        )
+    )
+)
+
+<span class="c"># 2. Create a dispatch rule (route calls to rooms)</span>
+rule = <span class="k">await</span> lk.sip.<span class="f">create_sip_dispatch_rule</span>(
+    api.<span class="f">CreateSIPDispatchRuleRequest</span>(
+        rule=api.<span class="f">SIPDispatchRule</span>(
+            dispatch_rule_direct=api.<span class="f">SIPDispatchRuleIndividual</span>(
+                room_prefix=<span class="s">"call-"</span>,           <span class="c"># room name = call-{caller_number}</span>
+                pin=<span class="s">""</span>                          <span class="c"># no PIN required</span>
+            ),
+            trunk_ids=[trunk.sip_trunk_id],
+        )
+    )
+)
+
+<span class="c"># 3. Outbound call — agent calls a user's phone</span>
+outbound = <span class="k">await</span> lk.sip.<span class="f">create_sip_participant</span>(
+    api.<span class="f">CreateSIPParticipantRequest</span>(
+        sip_trunk_id=trunk.sip_trunk_id,
+        sip_call_to=<span class="s">"+14155550101"</span>,        <span class="c"># call this number</span>
+        room_name=<span class="s">"outbound-call-room"</span>,
+        participant_identity=<span class="s">"phone-user"</span>,
+        wait_until_answered=<span class="k">True</span>             <span class="c"># wait for pickup</span>
+    )
+)</div>
+</section>
+
+<!-- ═══ SDKs ═══ -->
+<section id="sec-sdks" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 26 · SDKs</div>
+    <h1 class="htitle">SDKs & <span>Platforms</span></h1>
+    <p class="hsub">LiveKit provides official SDKs for every major platform. All SDKs share the same concepts (rooms, participants, tracks) with platform-appropriate APIs.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Platform</th><th>Package</th><th>Use case</th><th>Key features</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill p1">JavaScript/TypeScript</span></td><td><code>livekit-client</code></td><td>Web browser, Electron</td><td>React hooks, auto device management, SimulCast</td></tr>
+        <tr><td><span class="pill p3">React Components</span></td><td><code>@livekit/components-react</code></td><td>React apps</td><td>Pre-built UI: VideoConference, AudioConference, ControlBar</td></tr>
+        <tr><td><span class="pill p4">iOS (Swift)</span></td><td><code>LiveKit-Swift</code> (SPM)</td><td>Native iOS apps</td><td>Background audio, CallKit integration, broadcast extension</td></tr>
+        <tr><td><span class="pill p2">Android (Kotlin)</span></td><td><code>io.livekit:livekit-android</code></td><td>Native Android apps</td><td>Foreground service, audio focus management</td></tr>
+        <tr><td><span class="pill p7">Flutter</span></td><td><code>livekit_client</code></td><td>Cross-platform mobile</td><td>iOS + Android from one codebase</td></tr>
+        <tr><td><span class="pill p5">Unity</span></td><td>LiveKit Unity SDK</td><td>Games, VR/AR</td><td>Spatial audio, avatar lip sync</td></tr>
+        <tr><td><span class="pill p6">Python (Agents)</span></td><td><code>livekit-agents</code></td><td>AI agents</td><td>VoicePipelineAgent, MultimodalAgent, all AI plugins</td></tr>
+        <tr><td><span class="pill p1">Python (Server)</span></td><td><code>livekit</code></td><td>Backend, token gen</td><td>Room API, Egress, Ingress, SIP, webhook receiver</td></tr>
+        <tr><td><span class="pill p3">Node.js (Server)</span></td><td><code>livekit-server-sdk</code></td><td>Backend</td><td>Token generation, REST API wrapper</td></tr>
+        <tr><td><span class="pill p4">Go</span></td><td><code>livekit/server-sdk-go</code></td><td>High-performance backend</td><td>Same feature set as Python server SDK</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ QUICKSTART ═══ -->
+<section id="sec-quickstart" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Build It · 5 Minutes</div>
+    <h1 class="htitle">Quick Start — <span>Hello Voice Agent</span></h1>
+    <p class="hsub">Get a working voice agent in under 5 minutes using LiveKit Cloud (free tier). You'll have a Python agent that joins a room, listens, and speaks back.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Create LiveKit Cloud account + project</div><div class="sbody">Go to <code>cloud.livekit.io</code> → New Project → copy your API Key, API Secret, and WebSocket URL. Free tier includes 100 minutes/month.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Install packages</div><div class="sbody"><div class="code" style="margin:4px 0">pip install "livekit-agents[openai,silero,deepgram]~=0.8"</div></div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Create agent.py</div><div class="sbody">
+      <div class="code">
+<span class="k">from</span> livekit.agents <span class="k">import</span> AutoSubscribe, JobContext, WorkerOptions, cli
+<span class="k">from</span> livekit.agents.voice_assistant <span class="k">import</span> VoicePipelineAgent
+<span class="k">from</span> livekit.agents.llm <span class="k">import</span> ChatContext, ChatMessage
+<span class="k">from</span> livekit.plugins <span class="k">import</span> openai, deepgram, silero
+
+<span class="k">async def</span> <span class="f">entrypoint</span>(ctx: JobContext):
+    <span class="k">await</span> ctx.<span class="f">connect</span>(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+    initial_ctx = ChatContext(messages=[
+        ChatMessage(role=<span class="s">"system"</span>, content=<span class="s">"You are a helpful voice assistant."</span>)
+    ])
+    agent = <span class="f">VoicePipelineAgent</span>(
+        vad=silero.<span class="f">VAD.load</span>(),
+        stt=deepgram.<span class="f">STT</span>(),
+        llm=openai.<span class="f">LLM</span>(model=<span class="s">"gpt-4o-mini"</span>),
+        tts=openai.<span class="f">TTS</span>(),
+        chat_ctx=initial_ctx,
+    )
+    agent.<span class="f">start</span>(ctx.room)
+    <span class="k">await</span> agent.<span class="f">say</span>(<span class="s">"Hello! How can I help you today?"</span>)
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    cli.<span class="f">run_app</span>(<span class="f">WorkerOptions</span>(entrypoint_fnc=entrypoint))
+      </div>
+    </div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Set env vars and run</div><div class="sbody"><div class="code" style="margin:4px 0">
+export LIVEKIT_URL=wss://your-project.livekit.cloud
+export LIVEKIT_API_KEY=your_api_key
+export LIVEKIT_API_SECRET=your_api_secret
+export DEEPGRAM_API_KEY=your_deepgram_key
+export OPENAI_API_KEY=your_openai_key
+
+python agent.py dev  # dev mode: auto-creates token + opens browser</div>
+    </div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">5</div></div><div class="sc"><div class="stitle">Talk to your agent!</div><div class="sbody">A browser window opens with LiveKit Playground. Click "Connect" and start talking. Your agent hears you and responds in real time.</div></div></div>
+  </div>
+</section>
+
+<!-- ═══ UC: VOICE AGENT ═══ -->
+<section id="sec-uc-voice-agent" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Build It · Voice Agent</div>
+    <h1 class="htitle">Production Voice Agent — <span>Complete Code</span></h1>
+    <p class="hsub">A production-ready voice agent with error handling, logging, function tools, and conversation memory.</p>
+  </div>
+
+  <div class="code"><span class="k">import</span> asyncio, logging, json, os
+<span class="k">from</span> livekit.agents <span class="k">import</span> AutoSubscribe, JobContext, WorkerOptions, cli, llm
+<span class="k">from</span> livekit.agents.voice_assistant <span class="k">import</span> VoicePipelineAgent
+<span class="k">from</span> livekit.agents.llm <span class="k">import</span> ChatContext, ChatMessage, FunctionContext
+<span class="k">from</span> livekit.plugins <span class="k">import</span> deepgram, openai, silero, elevenlabs
+<span class="k">from</span> typing <span class="k">import</span> Annotated
+
+logger = logging.<span class="f">getLogger</span>(__name__)
+
+<span class="c"># ── AI Function Tools ──────────────────────────────────</span>
+<span class="f">@</span>llm.<span class="f">ai_callable</span>(description=<span class="s">"Get current weather for a city"</span>)
+<span class="k">async def</span> <span class="f">get_weather</span>(city: Annotated[str, llm.<span class="f">TypeInfo</span>(description=<span class="s">"City name"</span>)]):
+    <span class="c"># Call real weather API in production</span>
+    <span class="k">return</span> json.<span class="f">dumps</span>({<span class="s">"city"</span>: city, <span class="s">"temp"</span>: <span class="s">"22°C"</span>, <span class="s">"condition"</span>: <span class="s">"Sunny"</span>})
+
+<span class="f">@</span>llm.<span class="f">ai_callable</span>(description=<span class="s">"End the call politely"</span>)
+<span class="k">async def</span> <span class="f">end_call</span>():
+    <span class="k">return</span> <span class="s">"Goodbye! Have a great day."</span>
+
+<span class="c"># ── Main Entrypoint ────────────────────────────────────</span>
+<span class="k">async def</span> <span class="f">entrypoint</span>(ctx: JobContext):
+    logger.<span class="f">info</span>(<span class="s">f"Agent starting: room={ctx.room.name}"</span>)
+
+    <span class="k">await</span> ctx.<span class="f">connect</span>(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+
+    <span class="c"># Wait for a human (max 30 sec)</span>
+    participant = <span class="k">await</span> ctx.room.<span class="f">wait_for_participant</span>(timeout=<span class="n">30</span>)
+    <span class="k">if not</span> participant:
+        logger.<span class="f">warning</span>(<span class="s">"No participant, exiting"</span>)
+        <span class="k">return</span>
+
+    <span class="c"># Setup context + tools</span>
+    chat_ctx = ChatContext(messages=[
+        ChatMessage(role=<span class="s">"system"</span>, content=<span class="s">"""
+You are Alex, a helpful assistant for Acme Corp.
+Be concise — 1-3 sentences max. Be warm and professional.
+Use the available tools when needed."""</span>)
+    ])
+
+    fnc_ctx = <span class="f">FunctionContext</span>()
+    fnc_ctx.<span class="f">ai_callable</span>(get_weather)
+    fnc_ctx.<span class="f">ai_callable</span>(end_call)
+
+    <span class="c"># Build agent</span>
+    agent = <span class="f">VoicePipelineAgent</span>(
+        vad=silero.<span class="f">VAD.load</span>(min_silence_duration=<span class="n">0.4</span>),
+        stt=deepgram.<span class="f">STT</span>(model=<span class="s">"nova-2"</span>, language=<span class="s">"en-US"</span>),
+        llm=openai.<span class="f">LLM</span>(model=<span class="s">"gpt-4o"</span>),
+        tts=elevenlabs.<span class="f">TTS</span>(model=<span class="s">"eleven_turbo_v2"</span>),
+        chat_ctx=chat_ctx,
+        fnc_ctx=fnc_ctx,
+        allow_interruptions=<span class="k">True</span>,
+        preemptive_synthesis=<span class="k">True</span>,
+    )
+
+    <span class="c"># Lifecycle events</span>
+    <span class="f">@</span>agent.on(<span class="s">"user_speech_committed"</span>)
+    <span class="k">def</span> <span class="f">on_speech</span>(msg): logger.<span class="f">info</span>(<span class="s">f"User: {msg.content}"</span>)
+
+    <span class="f">@</span>agent.on(<span class="s">"agent_speech_committed"</span>)
+    <span class="k">def</span> <span class="f">on_agent</span>(msg): logger.<span class="f">info</span>(<span class="s">f"Agent: {msg.content}"</span>)
+
+    agent.<span class="f">start</span>(ctx.room, participant)
+    <span class="k">await</span> agent.<span class="f">say</span>(<span class="s">"Hi! I'm Alex from Acme Corp. How can I help you today?"</span>)
+
+<span class="c"># ── Worker setup ───────────────────────────────────────</span>
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    logging.<span class="f">basicConfig</span>(level=logging.INFO)
+    cli.<span class="f">run_app</span>(<span class="f">WorkerOptions</span>(
+        entrypoint_fnc=entrypoint,
+        worker_type=WorkerType.ROOM,          <span class="c"># one agent per room</span>
+        max_retry=<span class="n">3</span>,                         <span class="c"># retry on failure</span>
+    ))</div>
+</section>
+
+<!-- ═══ UC: FRONTEND ═══ -->
+<section id="sec-uc-frontend" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Build It · Frontend</div>
+    <h1 class="htitle">Browser Frontend — <span>JavaScript SDK</span></h1>
+    <p class="hsub">Connect a browser to a LiveKit room, publish audio/video, and render remote tracks. Works with any JS framework.</p>
+  </div>
+
+  <div class="code"><span class="c">// Install: npm install livekit-client</span>
+<span class="k">import</span> { Room, RoomEvent, Track, createLocalVideoTrack, createLocalAudioTrack } <span class="k">from</span> <span class="s">'livekit-client'</span>;
+
+<span class="k">const</span> room = <span class="k">new</span> Room({
+  adaptiveStream: <span class="k">true</span>,          <span class="c">// auto adjust quality to bandwidth</span>
+  dynacast: <span class="k">true</span>,               <span class="c">// only encode simulcast layers that are subscribed</span>
+  videoCaptureDefaults: {
+    resolution: VideoPresets.h720.resolution,
+  },
+});
+
+<span class="c">// Subscribe to events</span>
+room
+  .<span class="f">on</span>(RoomEvent.TrackSubscribed, (track, publication, participant) => {
+    <span class="k">if</span> (track.kind === Track.Kind.Video || track.kind === Track.Kind.Audio) {
+      <span class="k">const</span> el = track.<span class="f">attach</span>();
+      document.<span class="f">getElementById</span>(<span class="s">'participant-grid'</span>).<span class="f">appendChild</span>(el);
+    }
+  })
+  .<span class="f">on</span>(RoomEvent.TrackUnsubscribed, (track) => track.<span class="f">detach</span>())
+  .<span class="f">on</span>(RoomEvent.ParticipantConnected, (p) => console.<span class="f">log</span>(<span class="s">'joined:'</span>, p.identity))
+  .<span class="f">on</span>(RoomEvent.Disconnected, () => console.<span class="f">log</span>(<span class="s">'left room'</span>));
+
+<span class="k">async function</span> <span class="f">joinRoom</span>(wsUrl, token) {
+  <span class="k">await</span> room.<span class="f">connect</span>(wsUrl, token);
+  console.<span class="f">log</span>(<span class="s">'connected to room:'</span>, room.name);
+
+  <span class="c">// Publish audio + video</span>
+  <span class="k">const</span> audioTrack = <span class="k">await</span> <span class="f">createLocalAudioTrack</span>({ echoCancellation: <span class="k">true</span> });
+  <span class="k">const</span> videoTrack = <span class="k">await</span> <span class="f">createLocalVideoTrack</span>();
+  <span class="k">await</span> room.localParticipant.<span class="f">publishTrack</span>(audioTrack);
+  <span class="k">await</span> room.localParticipant.<span class="f">publishTrack</span>(videoTrack);
+}
+
+<span class="k">async function</span> <span class="f">leaveRoom</span>() {
+  <span class="k">await</span> room.<span class="f">disconnect</span>();
+}</div>
+
+  <h2>React with LiveKit components (fastest way)</h2>
+  <div class="code"><span class="c">// npm install @livekit/components-react livekit-client</span>
+<span class="k">import</span> { LiveKitRoom, VideoConference } <span class="k">from</span> <span class="s">'@livekit/components-react'</span>;
+<span class="k">import</span> <span class="s">'@livekit/components-styles'</span>;
+
+<span class="k">function</span> <span class="f">MyVideoApp</span>() {
+  <span class="k">const</span> token = <span class="s">"your-jwt-token"</span>;  <span class="c">// fetch from your backend</span>
+  <span class="k">return</span> (
+    &lt;LiveKitRoom
+      serverUrl=<span class="s">"wss://your-project.livekit.cloud"</span>
+      token={token}
+      video={<span class="k">true</span>}
+      audio={<span class="k">true</span>}
+      onDisconnected={() => console.<span class="f">log</span>(<span class="s">'disconnected'</span>)}
+    &gt;
+      &lt;VideoConference /&gt;   {<span class="c">/* Full video conferencing UI in one component */</span>}
+    &lt;/LiveKitRoom&gt;
+  );
+}</div>
+</section>
+
+<!-- ═══ UC: FASTAPI ═══ -->
+<section id="sec-uc-fastapi" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Build It · FastAPI</div>
+    <h1 class="htitle">FastAPI <span>Integration</span></h1>
+    <p class="hsub">Complete FastAPI backend that manages LiveKit rooms, issues tokens, handles webhooks, and dispatches agents.</p>
+  </div>
+
+  <div class="code"><span class="c"># main.py — FastAPI + LiveKit complete integration</span>
+<span class="k">import</span> os, json, asyncio
+<span class="k">from</span> fastapi <span class="k">import</span> FastAPI, Depends, HTTPException, Request, BackgroundTasks
+<span class="k">from</span> fastapi.middleware.cors <span class="k">import</span> CORSMiddleware
+<span class="k">from</span> livekit <span class="k">import</span> api
+<span class="k">from</span> datetime <span class="k">import</span> timedelta
+<span class="k">from</span> pydantic <span class="k">import</span> BaseModel
+
+app = <span class="f">FastAPI</span>(title=<span class="s">"LiveKit Integration API"</span>)
+app.<span class="f">add_middleware</span>(CORSMiddleware, allow_origins=[<span class="s">"https://yourapp.com"</span>],
+    allow_methods=[<span class="s">"*"</span>], allow_headers=[<span class="s">"*"</span>])
+
+<span class="k">def</span> <span class="f">get_lk</span>():
+    <span class="k">return</span> api.<span class="f">LiveKitAPI</span>(
+        url=os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_URL"</span>),
+        api_key=os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_KEY"</span>),
+        api_secret=os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_SECRET"</span>)
+    )
+
+<span class="c"># ── Token endpoint ───────────────────────────────────</span>
+<span class="k">class</span> <span class="o">JoinRequest</span>(BaseModel):
+    room_name: str
+    display_name: str = <span class="s">""</span>
+
+<span class="f">@</span>app.post(<span class="s">"/api/livekit/token"</span>)
+<span class="k">async def</span> <span class="f">get_token</span>(req: <span class="o">JoinRequest</span>, user = <span class="f">Depends</span>(get_current_user)):
+    token = api.<span class="f">AccessToken</span>(
+        os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_KEY"</span>), os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_SECRET"</span>)
+    )
+    token.<span class="f">with_identity</span>(user.id).<span class="f">with_name</span>(req.display_name <span class="k">or</span> user.name)
+    token.<span class="f">with_ttl</span>(timedelta(hours=<span class="n">1</span>))
+    token.<span class="f">with_grants</span>(api.<span class="f">VideoGrants</span>(
+        room_join=<span class="k">True</span>, room=req.room_name,
+        can_publish=<span class="k">True</span>, can_subscribe=<span class="k">True</span>
+    ))
+    <span class="k">return</span> {<span class="s">"token"</span>: token.<span class="f">to_jwt</span>(), <span class="s">"ws_url"</span>: os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_URL"</span>)}
+
+<span class="c"># ── Create room + dispatch agent ─────────────────────</span>
+<span class="f">@</span>app.post(<span class="s">"/api/calls/start"</span>)
+<span class="k">async def</span> <span class="f">start_call</span>(user = <span class="f">Depends</span>(get_current_user)):
+    lk = <span class="f">get_lk</span>()
+    room_name = <span class="s">f"call-{user.id}-{int(time.time())}"</span>
+
+    <span class="c"># Create room</span>
+    <span class="k">await</span> lk.room.<span class="f">create_room</span>(api.<span class="f">CreateRoomRequest</span>(
+        name=room_name, empty_timeout=<span class="n">120</span>,
+        metadata=json.<span class="f">dumps</span>({<span class="s">"user_id"</span>: user.id})
+    ))
+
+    <span class="c"># Dispatch agent to the room</span>
+    <span class="k">await</span> lk.agent.<span class="f">create_agent_dispatch</span>(
+        api.<span class="f">CreateAgentDispatchRequest</span>(
+            agent_name=<span class="s">"voice-assistant"</span>,  <span class="c"># must match worker registration</span>
+            room=room_name,
+            metadata=json.<span class="f">dumps</span>({<span class="s">"user_id"</span>: user.id, <span class="s">"context"</span>: <span class="s">"customer_support"</span>})
+        )
+    )
+
+    <span class="c"># Generate user token</span>
+    token = api.<span class="f">AccessToken</span>(...)<span class="f">.with_grants</span>(api.<span class="f">VideoGrants</span>(
+        room_join=<span class="k">True</span>, room=room_name, can_publish=<span class="k">True</span>)).<span class="f">to_jwt</span>()
+
+    <span class="k">await</span> lk.<span class="f">aclose</span>()
+    <span class="k">return</span> {<span class="s">"room_name"</span>: room_name, <span class="s">"token"</span>: token, <span class="s">"ws_url"</span>: os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_URL"</span>)}
+
+<span class="c"># ── Webhook handler ─────────────────────────────────</span>
+<span class="f">@</span>app.post(<span class="s">"/webhook/livekit"</span>)
+<span class="k">async def</span> <span class="f">livekit_webhook</span>(request: Request, bg: BackgroundTasks):
+    body = <span class="k">await</span> request.<span class="f">body</span>()
+    auth = request.headers.<span class="f">get</span>(<span class="s">"Authorization"</span>, <span class="s">""</span>)
+    receiver = api.<span class="f">WebhookReceiver</span>(
+        os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_KEY"</span>), os.<span class="f">getenv</span>(<span class="s">"LIVEKIT_API_SECRET"</span>)
+    )
+    <span class="k">try</span>:
+        event = receiver.<span class="f">receive</span>(body.<span class="f">decode</span>(), auth)
+    <span class="k">except</span>:
+        <span class="k">raise</span> <span class="f">HTTPException</span>(<span class="n">403</span>)
+    bg.<span class="f">add_task</span>(<span class="f">handle_event</span>, event)
+    <span class="k">return</span> {<span class="s">"ok"</span>: <span class="k">True</span>}</div>
+</section>
+
+<!-- ═══ UC: MULTI-AGENT ═══ -->
+<section id="sec-uc-multiagent" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Build It · Advanced</div>
+    <h1 class="htitle">Multi-Agent <span>System</span></h1>
+    <p class="hsub">Multiple AI agents in one room, handing off between each other. Pattern: a triage agent routes to specialist agents (billing, technical, sales). Advanced but extremely powerful for enterprise workflows.</p>
+  </div>
+
+  <div class="code"><span class="c"># Multi-agent handoff pattern</span>
+<span class="k">from</span> livekit.agents <span class="k">import</span> AutoSubscribe, JobContext, WorkerOptions, cli
+<span class="k">from</span> livekit.agents.voice_assistant <span class="k">import</span> VoicePipelineAgent
+<span class="k">from</span> livekit <span class="k">import</span> api
+
+<span class="c"># Agent 1: Triage agent — routes to specialists</span>
+<span class="k">async def</span> <span class="f">triage_entrypoint</span>(ctx: JobContext):
+    <span class="k">await</span> ctx.<span class="f">connect</span>(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+
+    <span class="f">@</span>llm.<span class="f">ai_callable</span>(description=<span class="s">"Transfer to billing specialist"</span>)
+    <span class="k">async def</span> <span class="f">transfer_to_billing</span>():
+        <span class="c"># Dispatch billing agent to same room</span>
+        lk = api.<span class="f">LiveKitAPI</span>(...)
+        <span class="k">await</span> lk.agent.<span class="f">create_agent_dispatch</span>(
+            api.<span class="f">CreateAgentDispatchRequest</span>(
+                agent_name=<span class="s">"billing-agent"</span>,
+                room=ctx.room.name,
+            )
+        )
+        <span class="k">return</span> <span class="s">"Transferring you to billing now"</span>
+
+    agent = <span class="f">VoicePipelineAgent</span>(
+        vad=silero.<span class="f">VAD.load</span>(),
+        stt=deepgram.<span class="f">STT</span>(),
+        llm=openai.<span class="f">LLM</span>(),
+        tts=openai.<span class="f">TTS</span>(),
+        chat_ctx=ChatContext(messages=[ChatMessage(
+            role=<span class="s">"system"</span>,
+            content=<span class="s">"You are a triage agent. Route the user to billing, technical, or sales."</span>
+        )]),
+        fnc_ctx=<span class="f">FunctionContext</span>().<span class="f">ai_callable</span>(transfer_to_billing),
+    )
+    agent.<span class="f">start</span>(ctx.room)
+
+<span class="c"># Agent 2: Billing specialist — separate worker process</span>
+<span class="k">async def</span> <span class="f">billing_entrypoint</span>(ctx: JobContext):
+    <span class="k">await</span> ctx.<span class="f">connect</span>(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
+    <span class="c"># Find the human participant</span>
+    participant = <span class="k">await</span> ctx.room.<span class="f">wait_for_participant</span>()
+    agent = <span class="f">VoicePipelineAgent</span>(
+        chat_ctx=ChatContext(messages=[ChatMessage(
+            role=<span class="s">"system"</span>,
+            content=<span class="s">"You are a billing specialist. You handle invoices and payments."</span>
+        )]),
+        ...
+    )
+    agent.<span class="f">start</span>(ctx.room, participant)
+    <span class="k">await</span> agent.<span class="f">say</span>(<span class="s">"Hi, this is billing. How can I help you?"</span>)
+
+<span class="c"># Run separate workers for each agent type</span>
+<span class="c"># Worker registers with agent_name="triage-agent" or "billing-agent"</span></div>
+</section>
+
+<!-- ═══ DEPLOYMENT ═══ -->
+<section id="sec-deployment" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Operations</div>
+    <h1 class="htitle">Deployment — <span>Cloud vs Self-Host</span></h1>
+    <p class="hsub">Two deployment options: LiveKit Cloud (managed, instant) and self-hosted (full control, no per-minute cost). Both use identical APIs and SDKs.</p>
+  </div>
+
+  <div class="cmp">
+    <div class="cmpc"><h3 style="color:var(--a1)">LiveKit Cloud (Managed)</h3>
+      <li>Instant setup — create account, get credentials</li>
+      <li>Free tier: 100 min/month participant + egress</li>
+      <li>Pay-as-you-go after free tier</li>
+      <li>Global PoPs: US, EU, Asia-Pacific</li>
+      <li>TURN, STUN, egress infrastructure included</li>
+      <li>99.9% SLA, auto-scaling</li>
+      <li>No DevOps required</li>
+      <li>Best for: startups, fast iteration, ≤100k minutes/month</li>
+    </div>
+    <div class="cmpc"><h3 style="color:var(--a3)">Self-Hosted</h3>
+      <li>Run LiveKit Server on your own infra</li>
+      <li>No per-minute cost — just infra costs</li>
+      <li>Full data control (HIPAA, GDPR, air-gap)</li>
+      <li>Kubernetes, Docker, bare metal</li>
+      <li>Must manage TURN server, scaling, uptime</li>
+      <li>Requires DevOps expertise</li>
+      <li>Best for: compliance, scale, cost optimization</li>
+      <li>Economical at >500k minutes/month</li>
+    </div>
+  </div>
+
+  <h2>Docker self-hosted setup</h2>
+  <div class="code"><span class="c"># docker-compose.yml — minimal self-hosted LiveKit</span>
+version: <span class="s">'3'</span>
+services:
+  livekit:
+    image: livekit/livekit-server:latest
+    command: --config /etc/livekit/config.yaml
+    volumes:
+      - ./livekit.yaml:/etc/livekit/config.yaml
+    ports:
+      - <span class="s">"7880:7880"</span>    <span class="c"># HTTP/WebSocket API</span>
+      - <span class="s">"7881:7881"</span>    <span class="c"># gRPC API</span>
+      - <span class="s">"7882:7882/udp"</span> <span class="c"># WebRTC UDP range</span>
+      - <span class="s">"443:443"</span>       <span class="c"># TURN/TLS</span>
+    environment:
+      - LIVEKIT_CONFIG=/etc/livekit/config.yaml
+  redis:
+    image: redis:7
+    ports: [<span class="s">"6379:6379"</span>]</div>
+
+  <div class="code"><span class="c"># livekit.yaml — server configuration</span>
+port: <span class="n">7880</span>
+log_level: info
+
+keys:
+  your_api_key: your_api_secret_here  <span class="c"># API key: secret pairs</span>
+
+room:
+  empty_timeout: <span class="n">300</span>           <span class="c"># 5 min auto-delete</span>
+  max_participants: <span class="n">100</span>
+  enabled_codecs:
+    - mime: audio/opus
+    - mime: video/h264
+    - mime: video/vp9
+
+redis:
+  address: localhost:<span class="n">6379</span>       <span class="c"># required for multi-node</span>
+
+rtc:
+  tcp_port: <span class="n">7881</span>
+  port_range_start: <span class="n">40000</span>
+  port_range_end: <span class="n">50000</span>         <span class="c"># UDP range for media</span>
+  use_external_ip: <span class="k">true</span>          <span class="c"># use public IP for ICE</span>
+
+turn:
+  enabled: <span class="k">true</span>
+  domain: your-server.com
+  tls_port: <span class="n">443</span>
+  udp_port: <span class="n">3478</span>
+
+webhook:
+  urls: [<span class="s">"https://yourapp.com/webhook/livekit"</span>]
+  api_key: your_api_key</div>
+
+  <h2>Deploying the agent worker</h2>
+  <div class="code"><span class="c"># agent Dockerfile</span>
+FROM python:<span class="n">3.11</span>-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY agent.py .
+CMD [<span class="s">"python"</span>, <span class="s">"agent.py"</span>, <span class="s">"start"</span>]  <span class="c"># 'start' for production (not 'dev')</span>
+
+<span class="c"># requirements.txt</span>
+livekit-agents[openai,deepgram,silero,elevenlabs]~=<span class="n">0.8</span>
+
+<span class="c"># Kubernetes deployment (scale workers horizontally)</span>
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voice-agent-worker
+spec:
+  replicas: <span class="n">3</span>  <span class="c"># 3 worker instances = 3 concurrent agents max</span>
+  template:
+    spec:
+      containers:
+        - name: agent
+          image: your-registry/voice-agent:latest
+          env:
+            - name: LIVEKIT_URL
+              value: wss://your-server.livekit.cloud
+            - name: LIVEKIT_API_KEY
+              valueFrom:
+                secretKeyRef: {name: livekit-secrets, key: api-key}
+            - name: LIVEKIT_API_SECRET
+              valueFrom:
+                secretKeyRef: {name: livekit-secrets, key: api-secret}</div>
+</section>
+
+<!-- ═══ SECURITY ═══ -->
+<section id="sec-security" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Operations · Security</div>
+    <h1 class="htitle">Security <span>Best Practices</span></h1>
+    <p class="hsub">LiveKit is built on encrypted WebRTC (DTLS-SRTP) so media is always encrypted. The main security concerns are token management, API key protection, and webhook verification.</p>
+  </div>
+
+  <div class="dd">
+    <div class="do"><h4>Always do</h4>
+      <li>Generate tokens server-side only — never in frontend</li>
+      <li>Store API key + secret in env vars / Azure Key Vault</li>
+      <li>Set short TTL on tokens (1 hour max)</li>
+      <li>Verify webhook signatures with WebhookReceiver</li>
+      <li>Use Nginx IP allowlist for webhook endpoints</li>
+      <li>Set room-specific permissions (canPublish per user)</li>
+      <li>Use HTTPS for all token delivery endpoints</li>
+      <li>Set max_participants on rooms to prevent abuse</li>
+      <li>Rotate API keys periodically</li>
+    </div>
+    <div class="dont"><h4>Never do</h4>
+      <li>Put LIVEKIT_API_SECRET in client JavaScript</li>
+      <li>Accept webhooks without signature verification</li>
+      <li>Issue tokens with roomAdmin=true to regular users</li>
+      <li>Use * for CORS origins in production</li>
+      <li>Log full JWT tokens in application logs</li>
+      <li>Issue tokens valid for more than 24 hours</li>
+      <li>Commit .env files with API keys to git</li>
+    </div>
+  </div>
+
+  <h2>Token scoping — minimal permissions</h2>
+  <div class="code"><span class="c"># Viewer: subscribe only, no publishing</span>
+api.<span class="f">VideoGrants</span>(room_join=<span class="k">True</span>, room=room_name, can_publish=<span class="k">False</span>, can_subscribe=<span class="k">True</span>)
+
+<span class="c"># Presenter: audio only, no video publishing</span>
+api.<span class="f">VideoGrants</span>(room_join=<span class="k">True</span>, room=room_name,
+    can_publish=<span class="k">True</span>, can_publish_sources=[<span class="s">"microphone"</span>])  <span class="c"># camera blocked</span>
+
+<span class="c"># Hidden agent: subscribe + publish, not visible</span>
+api.<span class="f">VideoGrants</span>(room_join=<span class="k">True</span>, room=room_name, can_publish=<span class="k">True</span>, hidden=<span class="k">True</span>, agent=<span class="k">True</span>)
+
+<span class="c"># Admin: full control</span>
+api.<span class="f">VideoGrants</span>(room_join=<span class="k">True</span>, room=room_name,
+    can_publish=<span class="k">True</span>, room_admin=<span class="k">True</span>, room_record=<span class="k">True</span>)</div>
+</section>
+
+<!-- ═══ MONITORING ═══ -->
+<section id="sec-monitoring" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Operations · Monitoring</div>
+    <h1 class="htitle">Monitoring & <span>Debugging</span></h1>
+    <p class="hsub">LiveKit provides built-in tools for observability. For AI agents, you also need to track LLM latency, transcription quality, and conversation flow.</p>
+  </div>
+
+  <h2>Key metrics to monitor</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Metric</th><th>How to get it</th><th>Target</th></tr></thead>
+      <tbody>
+        <tr><td>Room count</td><td>LiveKit Cloud dashboard / REST API</td><td>Depends on scale</td></tr>
+        <tr><td>Participant connection quality</td><td>RoomEvent.ConnectionQualityChanged</td><td>Mostly Excellent/Good</td></tr>
+        <tr><td>STT → LLM latency</td><td>Log timestamps in agent hooks</td><td>&lt;200ms</td></tr>
+        <tr><td>LLM → first token</td><td>Log in LLM stream events</td><td>&lt;500ms</td></tr>
+        <tr><td>TTS first audio</td><td>Log TTS start events</td><td>&lt;200ms</td></tr>
+        <tr><td>End-to-end latency</td><td>user_stopped_speaking → agent_started_speaking</td><td>&lt;1000ms</td></tr>
+        <tr><td>Agent error rate</td><td>Prometheus / Datadog + exception handlers</td><td>&lt;1%</td></tr>
+        <tr><td>Webhook delivery</td><td>LiveKit Cloud dashboard → Webhooks</td><td>100% delivery</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Agent logging for production</h2>
+  <div class="code"><span class="k">import</span> logging, time, dataclasses
+
+<span class="k">@dataclasses.dataclass</span>
+<span class="k">class</span> <span class="o">ConversationMetrics</span>:
+    session_start: float = dataclasses.<span class="f">field</span>(default_factory=time.time)
+    turn_count: int = <span class="n">0</span>
+    total_latency_ms: float = <span class="n">0</span>
+    user_words: int = <span class="n">0</span>
+
+metrics = <span class="o">ConversationMetrics</span>()
+turn_start: float = <span class="n">0</span>
+
+<span class="f">@</span>agent.on(<span class="s">"user_stopped_speaking"</span>)
+<span class="k">def</span> <span class="f">on_user_stop</span>():
+    <span class="k">global</span> turn_start
+    turn_start = time.<span class="f">time</span>()
+
+<span class="f">@</span>agent.on(<span class="s">"agent_speech_committed"</span>)
+<span class="k">def</span> <span class="f">on_agent_done</span>(msg):
+    latency_ms = (time.<span class="f">time</span>() - turn_start) * <span class="n">1000</span>
+    metrics.turn_count += <span class="n">1</span>
+    metrics.total_latency_ms += latency_ms
+    logger.<span class="f">info</span>(<span class="s">f"Turn {metrics.turn_count}: {latency_ms:.0f}ms latency"</span>)
+
+<span class="f">@</span>agent.on(<span class="s">"user_speech_committed"</span>)
+<span class="k">def</span> <span class="f">on_speech</span>(msg):
+    metrics.user_words += <span class="f">len</span>(msg.content.<span class="f">split</span>())
+    logger.<span class="f">info</span>(<span class="s">f"Transcript: {msg.content}"</span>)</div>
+</section>
+
+<!-- ═══ TROUBLESHOOT ═══ -->
+<section id="sec-troubleshoot" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Operations · Troubleshooting</div>
+    <h1 class="htitle"><span>Troubleshooting</span> Guide</h1>
+    <p class="hsub">Common problems and exactly how to fix them.</p>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Agent joins room but user can't hear it <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Check 1:</strong> Is the agent actually publishing audio? Add <code>@agent.on("agent_speech_started")</code> log — if it fires, TTS is working.<br><br>
+      <strong>Check 2:</strong> Did the user subscribe to the agent's audio track? In the JS SDK, check <code>room.remoteParticipants</code> — is the agent there? Is its audio track subscribed?<br><br>
+      <strong>Check 3:</strong> Is the token correct? The agent's token must have <code>can_publish=True</code>. The user's token must have <code>can_subscribe=True</code>.<br><br>
+      <strong>Check 4:</strong> Browser autoplay policy. Chrome blocks autoplay. You must call <code>track.attach()</code> after a user gesture (button click), or call <code>room.startAudio()</code> on user interaction.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">STT not transcribing / transcription is wrong <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Check 1:</strong> Is VAD detecting speech? Add <code>@agent.on("user_started_speaking")</code> log. If it never fires, VAD isn't detecting audio — check audio track is subscribed with <code>auto_subscribe=AutoSubscribe.AUDIO_ONLY</code>.<br><br>
+      <strong>Check 2:</strong> Is the Deepgram/STT API key valid? Check agent logs for STT connection errors.<br><br>
+      <strong>Check 3:</strong> Is audio quality poor? Try lowering <code>activation_threshold</code> in VAD config. Check for background noise — use noise cancellation plugin.<br><br>
+      <strong>Check 4:</strong> STT language mismatch. Set <code>language="en-US"</code> explicitly in Deepgram STT config.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">High latency — agent responds slowly <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Reduce VAD silence threshold:</strong> <code>min_silence_duration=0.3</code> (default 0.5). Agent starts processing sooner.<br><br>
+      <strong>Enable preemptive synthesis:</strong> <code>preemptive_synthesis=True</code> starts TTS while LLM is still generating. Saves 200-400ms.<br><br>
+      <strong>Use faster LLM:</strong> GPT-4o mini &lt; GPT-4o. Claude Haiku &lt; Sonnet. Groq (Llama) is fastest at ~600 tokens/sec.<br><br>
+      <strong>Use faster TTS:</strong> Cartesia Sonic (~50ms) &gt; ElevenLabs (~150ms) &gt; OpenAI TTS (~200ms).<br><br>
+      <strong>Use faster STT:</strong> Deepgram Nova-2 streaming is ~100ms. Avoid batch Whisper (~500ms).
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Webhook signature verification failing (403 errors) <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Check 1:</strong> Are you reading the raw bytes before parsing JSON? You must pass raw bytes to WebhookReceiver, not parsed JSON.<br><br>
+      <strong>Check 2:</strong> Is the Authorization header being forwarded by Nginx? Some Nginx configs strip authorization headers. Add <code>proxy_set_header Authorization $http_authorization;</code>.<br><br>
+      <strong>Check 3:</strong> Are the API key/secret in WebhookReceiver the same as the LiveKit server configuration? If testing locally with a different LiveKit project, keys must match.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Agent process crashes / restarts unexpectedly <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Check logs:</strong> The agent framework logs errors before shutdown. Add <code>logging.basicConfig(level=logging.DEBUG)</code> to see all output.<br><br>
+      <strong>Wrap entrypoint in try-except:</strong> Unhandled exceptions kill the process. Add a global exception handler and log it before re-raising.<br><br>
+      <strong>API key limits:</strong> OpenAI rate limits cause HTTP 429 errors which crash the agent. Add retry logic or use <code>max_retry=3</code> in WorkerOptions.<br><br>
+      <strong>Memory leaks:</strong> Ensure <code>await agent.aclose()</code> is called when the room ends. Otherwise each job leaks memory.
+    </div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Room not auto-dispatching agent when participant joins <span class="acc-ico">+</span></div>
+    <div class="acc-b">
+      <strong>Check 1:</strong> Is the worker running and connected to the LiveKit server? Check worker process logs — it should say "Connected to LiveKit server".<br><br>
+      <strong>Check 2:</strong> Agent dispatch requires LiveKit Server 1.7+ or LiveKit Cloud. Older servers don't support auto-dispatch.<br><br>
+      <strong>Check 3:</strong> For explicit dispatch, you must call <code>lk.agent.create_agent_dispatch()</code> from your backend when a user starts a call. The worker won't auto-join unless configured for that.<br><br>
+      <strong>Manual workaround:</strong> Use the dispatch API from your FastAPI backend when the user clicks "Start Call".
+    </div>
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  if(event&&event.currentTarget)event.currentTarget.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700)closeSb();
+}
+function toggleAcc(el){el.classList.toggle('open')}
+const sb=document.getElementById('sb'),ov=document.getElementById('ov'),hbg=document.getElementById('hbg');
+function openSb(){sb.classList.add('open');ov.classList.add('open')}
+function closeSb(){sb.classList.remove('open');ov.classList.remove('open')}
+hbg.addEventListener('click',()=>sb.classList.contains('open')?closeSb():openSb());
+ov.addEventListener('click',closeSb);
+</script>
+</body>
+</html>

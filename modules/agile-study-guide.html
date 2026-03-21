@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agile Methodologies — Complete Study Guide · Beginner to Advanced</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090f;--bg2:#0c1018;--bg3:#101622;--bg4:#141c2e;--bg5:#19243a;
+  --bdr:#1a2540;--bdr2:#22304e;
+  --t1:#d6e4ff;--t2:#6b84b0;--t3:#2e4060;
+  --a1:#00d4ff;--a2:#7c3aed;--a3:#10b981;--a4:#f59e0b;--a5:#f43f5e;--a6:#06b6d4;--a7:#8b5cf6;
+  --sw:282px;--top:54px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;overflow-x:hidden}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:400;height:var(--top);background:rgba(7,9,15,.95);border-bottom:1px solid var(--bdr);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between}
+.tl{display:flex;align-items:center;height:100%;width:var(--sw);padding:0 20px;border-right:1px solid var(--bdr);gap:12px;flex-shrink:0}
+.tlogo{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#000;background:linear-gradient(135deg,var(--a3),var(--a2));box-shadow:0 0 20px rgba(16,185,129,.3)}
+.tbrand{font-size:14px;font-weight:800;color:var(--t1);letter-spacing:-.3px}.tbrand span{display:block;font-size:10px;font-weight:400;color:var(--t3)}
+.tr{display:flex;align-items:center;gap:14px;padding-right:20px}
+.tcnt{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.tpill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;background:rgba(16,185,129,.12);color:var(--a3);border:1px solid rgba(16,185,129,.25);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.hbg{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px}
+.hbg span{display:block;width:18px;height:1.5px;background:var(--t2);border-radius:1px}
+.layout{display:flex;padding-top:var(--top);min-height:100vh}
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;top:var(--top);left:0;bottom:0;background:var(--bg2);border-right:1px solid var(--bdr);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bdr2) transparent}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--bdr2)}
+.sg{padding:16px 16px 5px;font-size:9px;font-weight:700;letter-spacing:.16em;color:var(--t3);text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.sg:first-child{padding-top:13px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;font-size:12px;color:var(--t2);border-left:2px solid transparent;transition:all .13s;text-decoration:none;user-select:none}
+.ni:hover{background:var(--bg3);color:var(--t1)}.ni.on{color:var(--a3);background:rgba(16,185,129,.07);border-left-color:var(--a3);font-weight:600}
+.nd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nt{margin-left:auto;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em}
+.n1{background:rgba(0,212,255,.13);color:var(--a1)}.n2{background:rgba(124,58,237,.13);color:var(--a2)}.n3{background:rgba(16,185,129,.13);color:var(--a3)}.n4{background:rgba(245,158,11,.13);color:var(--a4)}.n5{background:rgba(244,63,94,.13);color:var(--a5)}.n6{background:rgba(6,182,212,.13);color:var(--a6)}.n7{background:rgba(139,92,246,.13);color:var(--a7)}
+.main{margin-left:var(--sw);flex:1;padding:36px 46px 80px;max-width:960px}
+.sec{display:none}.sec.on{display:block;animation:fi .22s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.hero{padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid var(--bdr)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:100px;padding:5px 14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--a3);font-weight:700;margin-bottom:14px;font-family:'JetBrains Mono',monospace}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:var(--a3);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.htitle{font-size:26px;font-weight:800;color:var(--t1);line-height:1.2;margin-bottom:8px;letter-spacing:-.5px}
+.htitle span{background:linear-gradient(90deg,var(--a3),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{font-size:13.5px;color:var(--t2);line-height:1.7;max-width:720px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
+.stat{background:var(--bg3);border:1px solid var(--bdr);border-radius:7px;padding:11px 14px}
+.sl{font-size:9px;color:var(--t3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.sv{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.card{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:18px 20px;margin-bottom:12px}
+.ca1{border-left:3px solid var(--a1);background:rgba(0,212,255,.04)}.ca2{border-left:3px solid var(--a2);background:rgba(124,58,237,.04)}.ca3{border-left:3px solid var(--a3);background:rgba(16,185,129,.04)}.ca4{border-left:3px solid var(--a4);background:rgba(245,158,11,.04)}.ca5{border-left:3px solid var(--a5);background:rgba(244,63,94,.04)}.ca6{border-left:3px solid var(--a6);background:rgba(6,182,212,.04)}.ca7{border-left:3px solid var(--a7);background:rgba(139,92,246,.04)}
+.ct{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px}.cb{font-size:12.5px;color:var(--t2);line-height:1.7}
+.code{background:#04060c;border:1px solid var(--bdr);border-radius:7px;padding:16px 18px;margin:12px 0;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;overflow-x:auto;white-space:pre}
+.code .k{color:#a78bfa}.code .s{color:#10b981}.code .f{color:#00d4ff}.code .c{color:#2e4060}.code .o{color:#f59e0b}.code .n{color:#fbbf24}.code .p{color:#f43f5e}.code .t{color:#06b6d4}.code .b{color:#60a5fa}.code .g{color:#34d399}
+.clabel{background:#04060c;border:1px solid var(--bdr);border-bottom:none;border-radius:7px 7px 0 0;padding:7px 18px 0;font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
+.clabel+.code{border-top:none;border-radius:0 0 7px 7px;margin-top:0}
+code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(255,255,255,.07);color:var(--a4);padding:1px 5px;border-radius:3px}
+.callout{border-radius:7px;padding:13px 16px;margin:12px 0;font-size:13px;line-height:1.65}
+.q1{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);color:#93d4f8}
+.q2{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.22);color:#c4b5fd}
+.q3{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.22);color:#6ee7b7}
+.q4{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);color:#fde68a}
+.q5{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.22);color:#fca5a5}
+.q7{background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.22);color:#ddd6fe}
+.callout strong{font-weight:700;color:inherit}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mini{background:var(--bg4);border:1px solid var(--bdr);border-radius:6px;padding:13px 15px}
+.mt{font-size:12px;font-weight:700;margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.mb{font-size:12px;color:var(--t2);line-height:1.55}
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{background:var(--bg4)}
+th{text-align:left;padding:9px 14px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--bdr2);font-family:'JetBrains Mono',monospace}
+td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--t2)}
+td:first-child{color:var(--t1);font-weight:600}
+tr:hover td{background:rgba(255,255,255,.018)}tr:last-child td{border-bottom:none}
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+.p1{background:rgba(0,212,255,.15);color:var(--a1)}.p2{background:rgba(124,58,237,.15);color:var(--a2)}.p3{background:rgba(16,185,129,.15);color:var(--a3)}.p4{background:rgba(245,158,11,.15);color:var(--a4)}.p5{background:rgba(244,63,94,.15);color:var(--a5)}.p6{background:rgba(6,182,212,.15);color:var(--a6)}.p7{background:rgba(139,92,246,.15);color:var(--a7)}
+.flow{background:#04060c;border:1px solid var(--bdr);border-radius:8px;padding:20px;margin:12px 0;overflow-x:auto}
+.fr{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;min-width:fit-content}
+.fbox{padding:10px 14px;border-radius:6px;font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:700;border:1px solid;text-align:center;white-space:nowrap;line-height:1.4}
+.fa{color:var(--t3);font-size:14px;padding:0 4px;flex-shrink:0}
+.steps{margin:14px 0}
+.step{display:flex;gap:14px;margin-bottom:4px}
+.sl2{display:flex;flex-direction:column;align-items:center}
+.sdot{width:27px;height:27px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-top:2px}
+.sv2{width:2px;flex:1;min-height:18px;margin:3px 0;background:var(--bdr2)}
+.sc{flex:1;padding-bottom:16px}.stitle{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px}.sbody{font-size:12px;color:var(--t2);line-height:1.6}
+.cmp{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin:14px 0}
+.cmpc{padding:16px 18px}.cmpc:first-child{border-right:1px solid var(--bdr);background:rgba(0,212,255,.03)}.cmpc:last-child{background:rgba(16,185,129,.03)}
+.cmpc h3{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.cmpc li{font-size:12px;color:var(--t2);padding:3px 0;list-style:none;display:flex;gap:7px;line-height:1.5}
+.cmpc li::before{content:"·";color:var(--t3);flex-shrink:0}
+.layers{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.layer{border-radius:5px;padding:10px 15px;border-left:3px solid}
+.lname{font-size:12px;font-weight:700;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
+.ldesc{font-size:11.5px;color:var(--t2)}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.do{background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.18);border-radius:7px;padding:13px 15px}
+.dont{background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.18);border-radius:7px;padding:13px 15px}
+.do h4,.dont h4{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.do h4{color:var(--a3)}.dont h4{color:var(--a5)}
+.do li,.dont li{font-size:12px;color:var(--t2);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do li::before{content:"✓";position:absolute;left:0;color:var(--a3);font-size:10px;top:4px}.dont li::before{content:"✗";position:absolute;left:0;color:var(--a5);font-size:10px;top:4px}
+.acc{border:1px solid var(--bdr);border-radius:7px;overflow:hidden;margin-bottom:7px}
+.acc-h{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;background:var(--bg3);font-size:12.5px;font-weight:600;color:var(--t1);transition:background .13s;user-select:none}
+.acc-h:hover{background:var(--bg4)}.acc-ico{color:var(--t3);font-size:17px;transition:transform .18s;font-style:normal}
+.acc-b{display:none;padding:14px 16px;font-size:12px;color:var(--t2);line-height:1.65;background:var(--bg4);border-top:1px solid var(--bdr)}
+.acc.open .acc-b{display:block}.acc.open .acc-ico{transform:rotate(45deg)}
+.providers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.pcard{background:var(--bg4);border:1px solid var(--bdr);border-radius:8px;padding:14px;transition:border-color .15s}
+.pcard:hover{border-color:var(--bdr2)}
+.pname{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.ptag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.pbody{font-size:11.5px;color:var(--t2);line-height:1.5}
+.div{height:1px;background:var(--bdr);margin:24px 0}
+h2{font-size:18px;font-weight:700;color:var(--t1);margin:24px 0 10px}h2:first-child{margin-top:0}
+h3{font-size:14px;font-weight:700;color:var(--t1);margin:18px 0 8px}
+p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px}p:last-child{margin-bottom:0}
+strong{color:var(--t1);font-weight:700}
+/* Sprint board visual */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.bcol{background:var(--bg4);border:1px solid var(--bdr);border-radius:7px;padding:10px}
+.bcol-h{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-family:'JetBrains Mono',monospace;padding-bottom:8px;border-bottom:1px solid var(--bdr);margin-bottom:8px}
+.btask{background:var(--bg3);border:1px solid var(--bdr2);border-radius:5px;padding:8px 10px;margin-bottom:6px;font-size:11px;color:var(--t2);line-height:1.4}
+.btask-label{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;margin-bottom:4px;display:inline-block;font-family:'JetBrains Mono',monospace}
+/* Timeline */
+.timeline{margin:14px 0}
+.tl-item{display:flex;gap:16px;margin-bottom:0}
+.tl-line{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.tl-dot{width:12px;height:12px;border-radius:50%;border:2px solid;flex-shrink:0;margin-top:4px}
+.tl-stem{width:2px;flex:1;min-height:20px;background:var(--bdr2);margin:4px 0}
+.tl-content{flex:1;padding-bottom:18px}
+.tl-year{font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-bottom:2px}
+.tl-title{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px}
+.tl-body{font-size:12px;color:var(--t2);line-height:1.55}
+/* Ceremony card */
+.ceremony{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:16px;margin-bottom:10px}
+.cer-h{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cer-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.cer-title{font-size:13px;font-weight:700;color:var(--t1)}
+.cer-meta{font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.cer-body{font-size:12px;color:var(--t2);line-height:1.65}
+/* Overlay and responsive */
+.overlay{display:none;position:fixed;inset:var(--top) 0 0 0;background:rgba(0,0,0,.7);z-index:100}
+.overlay.open{display:block}
+@media(max-width:900px){.main{padding:24px 22px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:268px}.main{margin-left:0;padding:20px 15px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .22s;z-index:110}.sidebar.open{transform:translateX(0)}
+  .hbg{display:flex}.tl{width:auto;border-right:none}.tcnt{display:none}
+  .stats,.g2,.g3,.g4,.dd,.cmp,.board{grid-template-columns:1fr}
+  .providers{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){.htitle{font-size:20px}.stats{grid-template-columns:1fr 1fr}.providers{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tl">
+    <div class="tlogo">AG</div>
+    <div class="tbrand">Agile Mastery<span>Complete Study Guide — Beginner to Advanced</span></div>
+  </div>
+  <div class="tr">
+    <button class="hbg" id="hbg"><span></span><span></span><span></span></button>
+    <span class="tcnt">30 modules · 200+ concepts</span>
+    <span class="tpill">v1.0</span>
+  </div>
+</header>
+
+<div class="overlay" id="ov"></div>
+<div class="layout">
+
+<nav class="sidebar" id="sb">
+  <div class="sg">Foundation</div>
+  <a class="ni on" onclick="go('intro')"><span class="nd" style="background:var(--a3)"></span>What is Agile?<span class="nt n3">Start</span></a>
+  <a class="ni" onclick="go('history')"><span class="nd" style="background:var(--a1)"></span>History & Timeline<span class="nt n1">Beginner</span></a>
+  <a class="ni" onclick="go('manifesto')"><span class="nd" style="background:var(--a2)"></span>Agile Manifesto<span class="nt n2">Core</span></a>
+  <a class="ni" onclick="go('principles')"><span class="nd" style="background:var(--a4)"></span>12 Principles<span class="nt n4">Core</span></a>
+  <a class="ni" onclick="go('vs-waterfall')"><span class="nd" style="background:var(--a5)"></span>Agile vs Waterfall<span class="nt n5">Key</span></a>
+
+  <div class="sg">Agile Frameworks</div>
+  <a class="ni" onclick="go('frameworks-overview')"><span class="nd" style="background:var(--a1)"></span>Frameworks Overview<span class="nt n1">Mid</span></a>
+  <a class="ni" onclick="go('scrum')"><span class="nd" style="background:var(--a3)"></span>Scrum (Full Deep Dive)<span class="nt n3">Core</span></a>
+  <a class="ni" onclick="go('kanban')"><span class="nd" style="background:var(--a6)"></span>Kanban<span class="nt n6">Core</span></a>
+  <a class="ni" onclick="go('xp')"><span class="nd" style="background:var(--a2)"></span>Extreme Programming (XP)<span class="nt n2">Mid</span></a>
+  <a class="ni" onclick="go('lean')"><span class="nd" style="background:var(--a4)"></span>Lean Software Dev<span class="nt n4">Mid</span></a>
+  <a class="ni" onclick="go('crystal')"><span class="nd" style="background:var(--a7)"></span>Crystal Methods<span class="nt n7">Mid</span></a>
+  <a class="ni" onclick="go('fdd')"><span class="nd" style="background:var(--a5)"></span>FDD & DSDM<span class="nt n5">Mid</span></a>
+
+  <div class="sg">Scrum Deep Dive</div>
+  <a class="ni" onclick="go('scrum-roles')"><span class="nd" style="background:var(--a3)"></span>Scrum Roles<span class="nt n3">Core</span></a>
+  <a class="ni" onclick="go('scrum-events')"><span class="nd" style="background:var(--a1)"></span>Scrum Events<span class="nt n1">Core</span></a>
+  <a class="ni" onclick="go('scrum-artifacts')"><span class="nd" style="background:var(--a2)"></span>Scrum Artifacts<span class="nt n2">Core</span></a>
+  <a class="ni" onclick="go('scrum-sprint')"><span class="nd" style="background:var(--a4)"></span>Sprint Lifecycle<span class="nt n4">Core</span></a>
+  <a class="ni" onclick="go('user-stories')"><span class="nd" style="background:var(--a6)"></span>User Stories & Estimation<span class="nt n6">Mid</span></a>
+
+  <div class="sg">Scaled Agile</div>
+  <a class="ni" onclick="go('safe')"><span class="nd" style="background:var(--a5)"></span>SAFe Framework<span class="nt n5">Adv</span></a>
+  <a class="ni" onclick="go('less')"><span class="nd" style="background:var(--a7)"></span>LeSS Framework<span class="nt n7">Adv</span></a>
+  <a class="ni" onclick="go('nexus')"><span class="nd" style="background:var(--a2)"></span>Nexus & Scrum@Scale<span class="nt n2">Adv</span></a>
+
+  <div class="sg">Comparison & When to Use</div>
+  <a class="ni" onclick="go('compare-all')"><span class="nd" style="background:var(--a4)"></span>Compare All Frameworks<span class="nt n4">Key</span></a>
+  <a class="ni" onclick="go('when-to-use')"><span class="nd" style="background:var(--a1)"></span>When to Use What<span class="nt n1">Key</span></a>
+  <a class="ni" onclick="go('hybrid')"><span class="nd" style="background:var(--a6)"></span>Hybrid Approaches<span class="nt n6">Adv</span></a>
+
+  <div class="sg">Implementation</div>
+  <a class="ni" onclick="go('implement')"><span class="nd" style="background:var(--a3)"></span>Implementing Agile<span class="nt n3">Build</span></a>
+  <a class="ni" onclick="go('metrics')"><span class="nd" style="background:var(--a1)"></span>Agile Metrics & KPIs<span class="nt n1">Ops</span></a>
+  <a class="ni" onclick="go('tools')"><span class="nd" style="background:var(--a2)"></span>Tools & Software<span class="nt n2">Ref</span></a>
+  <a class="ni" onclick="go('devops-ci')"><span class="nd" style="background:var(--a7)"></span>Agile + DevOps / CI-CD<span class="nt n7">Adv</span></a>
+  <a class="ni" onclick="go('pitfalls')"><span class="nd" style="background:var(--a5)"></span>Common Pitfalls<span class="nt n5">Fix</span></a>
+  <a class="ni" onclick="go('cheatsheet')"><span class="nd" style="background:var(--a4)"></span>Quick Cheatsheet<span class="nt n4">Ref</span></a>
+</nav>
+
+<main class="main">
+
+<!-- ═══ INTRO ═══ -->
+<section id="sec-intro" class="sec on">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Agile Mastery · Module 1</div>
+    <h1 class="htitle">What is <span>Agile</span>?</h1>
+    <p class="hsub">Agile is a mindset, philosophy, and set of practices for software development that prioritizes flexibility, collaboration, customer feedback, and rapid delivery of working software over rigid planning and documentation. It is not a single methodology — it is a family of frameworks united by shared values.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Born</div><div class="sv" style="color:var(--a3)">2001</div></div>
+    <div class="stat"><div class="sl">Core Document</div><div class="sv" style="color:var(--a1)">Manifesto</div></div>
+    <div class="stat"><div class="sl">Principles</div><div class="sv" style="color:var(--a2)">12</div></div>
+    <div class="stat"><div class="sl">Adoption (2024)</div><div class="sv" style="color:var(--a4)">~71%</div></div>
+  </div>
+
+  <div class="callout q3"><strong>The core idea:</strong> Instead of spending months planning everything upfront then building in one shot, Agile teams deliver working software in small, frequent increments (called iterations or sprints), continuously incorporating customer feedback and adapting to change.</div>
+
+  <h2>Agile is NOT a methodology</h2>
+  <p>This is the most common misconception. Agile is a <strong>philosophy and mindset</strong> described by 4 values and 12 principles in the Agile Manifesto. The actual methodologies (Scrum, Kanban, XP, SAFe, etc.) are <em>implementations</em> of the Agile mindset.</p>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--a3)">Agile Mindset (Philosophy)</div><div class="ldesc">The beliefs: flexibility over rigidity, collaboration over silos, working software over documentation, customer partnership over contracts.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓ manifests as</div>
+    <div class="layer" style="border-color:var(--a1);background:rgba(0,212,255,.04)"><div class="lname" style="color:var(--a1)">Agile Frameworks (Methodologies)</div><div class="ldesc">Scrum, Kanban, XP, SAFe, LeSS, Crystal, FDD, DSDM — each is a concrete way to implement the Agile mindset.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓ supported by</div>
+    <div class="layer" style="border-color:var(--a2);background:rgba(124,58,237,.04)"><div class="lname" style="color:var(--a2)">Agile Practices & Techniques</div><div class="ldesc">Daily standups, sprints, user stories, retrospectives, pair programming, TDD, continuous integration, kanban boards, velocity tracking…</div></div>
+  </div>
+
+  <h2>Why Agile exists — The problem it solves</h2>
+  <div class="callout q4"><strong>The Standish CHAOS Report:</strong> Studies consistently show that 30–40% of software projects fail outright and another 40–50% are significantly challenged (over budget, late, missing features). Traditional "big design upfront" approaches couldn't handle changing requirements.</div>
+
+  <div class="g2">
+    <div class="card ca5">
+      <div class="ct">❌ The Traditional Problem</div>
+      <div class="cb">Requirements change mid-project. Markets shift. Customers realize what they actually wanted only after seeing the first version. A 12-month plan becomes obsolete within 3 months. The team builds the wrong thing — perfectly.</div>
+    </div>
+    <div class="card ca3">
+      <div class="ct">✅ The Agile Solution</div>
+      <div class="cb">Deliver a small working piece every 2 weeks. Show it to customers. Get feedback. Adjust. Repeat. By month 3, you've already delivered value and course-corrected three times. Failure is discovered early and cheaply.</div>
+    </div>
+  </div>
+
+  <h2>Key Agile concepts you must know</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a1)">Iteration / Sprint</div><div class="mb">A fixed time box (usually 1–4 weeks) during which the team builds and delivers a potentially shippable increment of the product.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">Increment</div><div class="mb">A tangible, working, tested piece of software delivered at the end of each iteration. Must be potentially releasable to users.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Backlog</div><div class="mb">A prioritized list of everything the product needs. The team pulls work from the top. New items can be added anytime — the backlog evolves.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Velocity</div><div class="mb">How much work a team completes per sprint (measured in story points or hours). Used for forecasting, not performance management.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Definition of Done</div><div class="mb">The shared checklist that must be met for any piece of work to be called "done." Prevents half-finished work from being counted as complete.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a6)">Retrospective</div><div class="mb">A team meeting at the end of each sprint to reflect on the process and identify one or two improvements for the next sprint.</div></div>
+  </div>
+</section>
+
+<!-- ═══ HISTORY ═══ -->
+<section id="sec-history" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 2 · Context</div>
+    <h1 class="htitle">History & <span>Timeline</span></h1>
+    <p class="hsub">Agile did not appear out of thin air. It evolved from decades of frustration with heavyweight software processes and multiple earlier lightweight methodologies. Understanding the history helps you understand why Agile is designed the way it is.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-line"><div class="tl-dot" style="border-color:var(--a5);background:rgba(244,63,94,.2)"></div><div class="tl-stem"></div></div>
+      <div class="tl-content"><div class="tl-year" style="color:var(--a5)">1970s–1980s</div><div class="tl-title">The Waterfall Era</div><div class="tl-body">Winston Royce's 1970 paper described a sequential development process (later named "Waterfall"). IBM and DoD mandated heavyweight processes. CMMI, ISO 9001 defined rigorous, documentation-heavy standards. Works for known, stable requirements — terrible for software.</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-line"><div class="tl-dot" style="border-color:var(--a4);background:rgba(245,158,11,.2)"></div><div class="tl-stem"></div></div>
+      <div class="tl-content"><div class="tl-year" style="color:var(--a4)">1986</div><div class="tl-title">Scrum origins — "The New New Product Development Game"</div><div class="tl-body">Hirotaka Takeuchi and Ikujiro Nonaka publish a Harvard Business Review paper comparing the most productive development teams to rugby teams. They coin the term "Scrum" from rugby. The paper describes overlapping, cross-functional, self-organizing teams producing breakthroughs.</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-line"><div class="tl-dot" style="border-color:var(--a6);background:rgba(6,182,212,.2)"></div><div class="tl-stem"></div></div>
+      <div class="tl-content"><div class="tl-year" style="color:var(--a6)">1991–1995</div><div class="tl-title">Lightweight methods emerge</div><div class="tl-body">RAD (Rapid Application Development) by James Martin (1991), DSDM founded in UK (1994), Scrum formalized by Jeff Sutherland &amp; Ken Schwaber (1995) at OOPSLA conference, Feature-Driven Development (FDD) by Jeff De Luca, Crystal by Alistair Cockburn at IBM.</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-line"><div class="tl-dot" style="border-color:var(--a2);background:rgba(124,58,237,.2)"></div><div class="tl-stem"></div></div>
+      <div class="tl-content"><div class="tl-year" style="color:var(--a2)">1999</div><div class="tl-title">Extreme Programming (XP) — Kent Beck</div><div class="tl-body">Kent Beck publishes "Extreme Programming Explained." XP introduces pair programming, test-driven development (TDD), continuous integration, refactoring, and the concept of the "planning game." Heavily technical and engineering-focused.</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-line"><div class="tl-dot" style="border-color:var(--a3);background:rgba(16,185,129,.3)"></div><div class="tl-stem"></div></div>
+      <div class="tl-content"><div class="tl-year" style="color:var(--a3)">February 2001 ⭐</div><div class="tl-title">The Agile Manifesto — Snowbird, Utah</div><div class="tl-body">17 software practitioners (including Kent Beck, Jeff Sutherland, Ken Schwaber, Martin Fowler, Bob Martin) meet at a ski resort and write the Agile Manifesto in two days. Four values, 12 principles. The document that names and unites the movement. Still the foundation today.</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-line"><div class="tl-dot" style="border-color:var(--a1);background:rgba(0,212,255,.2)"></div><div class="tl-stem"></div></div>
+      <div class="tl-content"><div class="tl-year" style="color:var(--a1)">2001–2010</div><div class="tl-title">Agile adoption accelerates</div><div class="tl-body">Scrum becomes dominant. The Scrum Guide published by Sutherland &amp; Schwaber. Kanban for software introduced by David Anderson (2007). VersionOne begins tracking Agile adoption (2006). By 2010, Agile is mainstream in software.</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-line"><div class="tl-dot" style="border-color:var(--a7);background:rgba(139,92,246,.2)"></div><div class="tl-stem"></div></div>
+      <div class="tl-content"><div class="tl-year" style="color:var(--a7)">2011–2018</div><div class="tl-title">Scaling Agile — SAFe, LeSS, Nexus</div><div class="tl-body">Companies need Agile for hundreds of teams. SAFe (Scaled Agile Framework) by Dean Leffingwell (2011), LeSS by Craig Larman &amp; Bas Vodde, Nexus by Ken Schwaber. Enterprise Agile transformation becomes a billion-dollar consulting industry.</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-line"><div class="tl-dot" style="border-color:var(--a4);background:rgba(245,158,11,.2)"></div></div>
+      <div class="tl-content"><div class="tl-year" style="color:var(--a4)">2019–Present</div><div class="tl-title">Agile matures, critiques emerge</div><div class="tl-body">Debate about "Dark Agile" / "Agile theater" — cargo-culting ceremonies without the mindset. "The Death of Agile" discourse. 2023 State of Agile report: 71% of organizations use Agile. DevOps and Platform Engineering reshape how Agile is practiced. Focus shifts to outcomes over process.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MANIFESTO ═══ -->
+<section id="sec-manifesto" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 3 · Foundation</div>
+    <h1 class="htitle">The Agile <span>Manifesto</span></h1>
+    <p class="hsub">Written in February 2001 by 17 software practitioners in Snowbird, Utah. Four values that changed software development forever. Every Agile framework derives from these four statements.</p>
+  </div>
+
+  <div class="callout q3"><strong>The full opening:</strong> "We are uncovering better ways of developing software by doing it and helping others do it. Through this work we have come to value…"</div>
+
+  <h2>The Four Core Values</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.25);color:var(--a3)">1</div><div class="sv2"></div></div>
+      <div class="sc">
+        <div class="stitle">Individuals and interactions <span style="color:var(--a3)">over</span> processes and tools</div>
+        <div class="sbody">People and how they communicate are more important than the tools they use or the processes they follow. A great team with mediocre tools outperforms a mediocre team with great tools every time. This doesn't mean processes and tools are worthless — it means human communication and collaboration come first.<br><br><strong>In practice:</strong> Face-to-face conversations over email threads. Team autonomy over strict role definitions. Trust over surveillance. The best architectures emerge from self-organizing teams.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.25);color:var(--a1)">2</div><div class="sv2"></div></div>
+      <div class="sc">
+        <div class="stitle">Working software <span style="color:var(--a1)">over</span> comprehensive documentation</div>
+        <div class="sbody">The primary measure of progress is working software, not documentation. Agile doesn't reject documentation — it questions documentation that consumes energy without delivering value. A 200-page spec document that nobody reads is less valuable than a working feature.<br><br><strong>In practice:</strong> Ship working features every sprint. Write just enough documentation to be useful. Use executable tests as living documentation. Code that works is proof — documents that say it works are not.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.25);color:var(--a4)">3</div><div class="sv2"></div></div>
+      <div class="sc">
+        <div class="stitle">Customer collaboration <span style="color:var(--a4)">over</span> contract negotiation</div>
+        <div class="sbody">Work <em>with</em> customers continuously rather than negotiate rigid contracts upfront and only deliver at the end. Contracts create adversarial relationships. Collaboration creates partnership. When requirements change (and they always do), a collaborative relationship allows graceful adaptation.<br><br><strong>In practice:</strong> Product owners embedded in the team. Regular sprint reviews with stakeholders. Continuous feedback loops. Embrace change requests rather than fight them through change control boards.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.25);color:var(--a2)">4</div></div>
+      <div class="sc">
+        <div class="stitle">Responding to change <span style="color:var(--a2)">over</span> following a plan</div>
+        <div class="sbody">Adaptability is more valuable than adherence to a plan. In a complex, fast-moving environment, a plan made 6 months ago is likely wrong. Agile teams plan continuously in short horizons rather than once in long horizons. This doesn't mean planning is bad — it means plans must remain flexible.<br><br><strong>In practice:</strong> Reprioritize the backlog each sprint. Accept mid-sprint feedback. Plan the sprint, adapt during execution. "No plan survives first contact with the enemy" — Agile is designed for reality, not theory.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout q1"><strong>Critical nuance:</strong> The manifesto explicitly says "while there is value in the items on the right, we value the items on the left more." This means Agile does NOT eliminate plans, documentation, tools, or contracts. It prioritizes the left-hand values when they conflict with the right.</div>
+
+  <h2>Who signed it?</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a3)">Kent Beck</div><div class="mb">Creator of XP and TDD. One of the most influential figures in software methodology.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Jeff Sutherland</div><div class="mb">Co-creator of Scrum (with Ken Schwaber). Former fighter pilot. Wrote "Scrum: The Art of Doing Twice the Work in Half the Time."</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Ken Schwaber</div><div class="mb">Co-creator of Scrum. Author of the Scrum Guide. Founder of Scrum.org.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Martin Fowler</div><div class="mb">Chief Scientist at ThoughtWorks. Wrote "Refactoring." Major voice in software design and Agile practice.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a7)">Alistair Cockburn</div><div class="mb">Creator of Crystal methodology. Coined "Agile" as a term for this family of methods.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Bob Martin ("Uncle Bob")</div><div class="mb">Author of Clean Code. SOLID principles. Advocate for engineering discipline in Agile.</div></div>
+  </div>
+</section>
+
+<!-- ═══ 12 PRINCIPLES ═══ -->
+<section id="sec-principles" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 4 · Foundation</div>
+    <h1 class="htitle">The 12 Agile <span>Principles</span></h1>
+    <p class="hsub">Behind the four values are 12 principles that give detailed guidance on how to practice Agile. Every Agile ceremony, artifact, and practice traces back to one or more of these principles. Know these deeply.</p>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 1 — Customer satisfaction through early and continuous delivery <span class="acc-ico">+</span></div>
+    <div class="acc-b">"Our highest priority is to satisfy the customer through early and continuous delivery of valuable software."<br><br><strong>What it means:</strong> Don't wait months to show customers something. Ship working features early — even if small — so customers can verify you're building the right thing. Continuous delivery means every sprint produces something a customer could potentially use.<br><br><strong>In Scrum:</strong> Sprint Reviews show working software every 2 weeks. The increment must be potentially shippable. In Kanban: work flows continuously to done.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 2 — Welcome changing requirements, even late in development <span class="acc-ico">+</span></div>
+    <div class="acc-b">"Welcome changing requirements, even late in development. Agile processes harness change for the customer's competitive advantage."<br><br><strong>What it means:</strong> Change is not a problem to be controlled — it's information that helps you build better products. A competitor launches a new feature; a customer's market shifts; technical discoveries change the approach. Agile teams can respond in the next sprint.<br><br><strong>Anti-pattern:</strong> "We can't add that — it's not in scope." Agile teams reprioritize the backlog instead of refusing change.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 3 — Deliver working software frequently (weeks, not months) <span class="acc-ico">+</span></div>
+    <div class="acc-b">"Deliver working software frequently, from a couple of weeks to a couple of months, with a preference to the shorter timescale."<br><br><strong>What it means:</strong> Short delivery cycles reduce risk, create feedback loops, and keep teams focused. The shorter the cycle, the faster you discover mistakes. 2-week sprints are the most common implementation. Continuous deployment (CD) takes this to the extreme: deploy every commit.<br><br><strong>Why it matters:</strong> A 6-month release cycle means 6 months of accumulated risk. A 2-week sprint cycle means 2 weeks of accumulated risk.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 4 — Business and developers must work together daily <span class="acc-ico">+</span></div>
+    <div class="acc-b">"Business people and developers must work together daily throughout the project."<br><br><strong>What it means:</strong> The wall between "IT" and "business" is an Agile anti-pattern. Product Owners, stakeholders, and customers must be accessible — not hidden behind requirements docs. Daily collaboration eliminates the "telephone game" of requirements passing through layers of intermediaries.<br><br><strong>In practice:</strong> The Product Owner is a full-time team member. Developers can directly ask the PO questions. Stakeholders attend Sprint Reviews and give feedback directly.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 5 — Build projects around motivated individuals with trust and support <span class="acc-ico">+</span></div>
+    <div class="acc-b">"Build projects around motivated individuals. Give them the environment and support they need, and trust them to get the job done."<br><br><strong>What it means:</strong> Hire talented, motivated people. Remove obstacles. Provide tools and environment. Then get out of their way. Micromanagement and Agile are fundamentally incompatible. Command-and-control management destroys the self-organization that Agile requires.<br><br><strong>Contrast:</strong> Traditional management: assign tasks, monitor hours, approve decisions. Agile management: set goals, provide context, remove blockers, trust the team.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 6 — Face-to-face conversation is the most effective communication <span class="acc-ico">+</span></div>
+    <div class="acc-b">"The most efficient and effective method of conveying information to and within a development team is face-to-face conversation."<br><br><strong>What it means:</strong> Synchronous, in-person (or video) conversation conveys context, tone, body language, and immediate feedback that written messages cannot. A 5-minute conversation resolves what 20 email exchanges cannot.<br><br><strong>Remote teams:</strong> This principle drives the move to video calls, virtual whiteboards, and synchronous collaboration in remote Agile teams. It doesn't mean everyone must be co-located — it means prioritize rich communication channels.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 7 — Working software is the primary measure of progress <span class="acc-ico">+</span></div>
+    <div class="acc-b">"Working software is the primary measure of progress."<br><br><strong>What it means:</strong> Not lines of code. Not hours logged. Not percentage complete. Not documentation delivered. The only true measure of progress is working, tested, potentially shippable software. This protects against "90% done" projects that stay 90% done forever.<br><br><strong>Anti-pattern:</strong> Reporting "50 story points burned" without verifying the features actually work. Definition of Done must include tested and demo-able.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 8 — Agile processes promote sustainable development (no crunch culture) <span class="acc-ico">+</span></div>
+    <div class="acc-b">"Agile processes promote sustainable development. The sponsors, developers, and users should be able to maintain a constant pace indefinitely."<br><br><strong>What it means:</strong> Software is a marathon, not a sprint (ironically). Burnout, crunch culture, and hero culture are Agile anti-patterns. A team that works 80-hour weeks for 2 months becomes unproductive for the next 6. Sustainable velocity is higher than unsustainable bursts.<br><br><strong>In practice:</strong> Teams push back on overloaded sprints. Sprint velocity naturally stabilizes. Overtime is a signal of a planning problem, not a badge of honor.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 9 — Continuous attention to technical excellence and good design <span class="acc-ico">+</span></div>
+    <div class="acc-b">"Continuous attention to technical excellence and good design enhances agility."<br><br><strong>What it means:</strong> Technical debt is the enemy of agility. A codebase full of shortcuts, no tests, and poor design becomes harder to change over time — exactly when Agile needs it to be easy to change. TDD, refactoring, clean code, and SOLID principles are Agile enablers, not optional extras.<br><br><strong>Warning:</strong> "We'll refactor later" becomes "we can't change anything without breaking everything." Prioritize tech excellence from day one.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 10 — Simplicity — maximizing the amount of work not done <span class="acc-ico">+</span></div>
+    <div class="acc-b">"Simplicity — the art of maximizing the amount of work not done — is essential."<br><br><strong>What it means:</strong> YAGNI — "You Ain't Gonna Need It." Don't build features users didn't ask for. Don't add complexity that isn't needed now. The simplest solution that works is the best solution. Over-engineering is waste.<br><br><strong>In practice:</strong> Ruthless backlog prioritization. Minimal viable features. Delete dead code. Say no to gold-plating. Every line of code you don't write is a line you never have to maintain.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 11 — Self-organizing teams produce the best architectures <span class="acc-ico">+</span></div>
+    <div class="acc-b">"The best architectures, requirements, and designs emerge from self-organizing teams."<br><br><strong>What it means:</strong> Don't have an architect who designs in isolation and hands specs to developers. The people doing the work have the best understanding of the problems and solutions. Self-organizing teams decide HOW to accomplish their goals — management sets the WHAT and WHY.<br><br><strong>Contrast:</strong> In Waterfall, architects design → developers implement. In Agile, the team collectively owns architecture decisions. Emergent design through continuous refactoring and collective code ownership.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Principle 12 — Regular reflection and adaptation (retrospectives) <span class="acc-ico">+</span></div>
+    <div class="acc-b">"At regular intervals, the team reflects on how to become more effective, then tunes and adjusts its behavior accordingly."<br><br><strong>What it means:</strong> This is the engine of continuous improvement. The Scrum retrospective is the direct implementation of this principle. Every sprint, the team asks: What went well? What didn't? What do we change? The team that improves its process consistently outperforms one that doesn't.<br><br><strong>Anti-pattern:</strong> Skipping retrospectives when "we're too busy." The busy team needs retrospectives more than the un-busy one.</div>
+  </div>
+</section>
+
+<!-- ═══ AGILE VS WATERFALL ═══ -->
+<section id="sec-vs-waterfall" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 5 · Key Comparison</div>
+    <h1 class="htitle">Agile vs <span>Waterfall</span></h1>
+    <p class="hsub">Waterfall is the dominant alternative to Agile. Understanding the deep differences — and when each is appropriate — is essential for any Agile practitioner.</p>
+  </div>
+
+  <h2>The Waterfall Process</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="border-color:rgba(244,63,94,.4);color:var(--a5);background:rgba(244,63,94,.07)">Requirements<br><span style="font-size:9px;color:var(--t3)">Months 1–2</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(245,158,11,.4);color:var(--a4);background:rgba(245,158,11,.07)">Design<br><span style="font-size:9px;color:var(--t3)">Months 3–4</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(0,212,255,.4);color:var(--a1);background:rgba(0,212,255,.07)">Implementation<br><span style="font-size:9px;color:var(--t3)">Months 5–8</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(124,58,237,.4);color:var(--a2);background:rgba(124,58,237,.07)">Verification<br><span style="font-size:9px;color:var(--t3)">Months 9–10</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(16,185,129,.4);color:var(--a3);background:rgba(16,185,129,.07)">Maintenance<br><span style="font-size:9px;color:var(--t3)">Month 11+</span></div>
+    </div>
+  </div>
+
+  <h2>The Agile Process (Scrum as example)</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="border-color:rgba(16,185,129,.4);color:var(--a3);background:rgba(16,185,129,.07)">Product<br>Backlog</div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(0,212,255,.4);color:var(--a1);background:rgba(0,212,255,.07)">Sprint<br>Planning</div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(245,158,11,.4);color:var(--a4);background:rgba(245,158,11,.07)">Sprint<br>2 weeks</div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(124,58,237,.4);color:var(--a2);background:rgba(124,58,237,.07)">Working<br>Increment</div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(6,182,212,.4);color:var(--a6);background:rgba(6,182,212,.07)">Review +<br>Retro</div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(16,185,129,.4);color:var(--a3);background:rgba(16,185,129,.07)">🔄 Repeat</div>
+    </div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Dimension</th><th>Waterfall</th><th>Agile</th></tr></thead>
+      <tbody>
+        <tr><td>Requirements</td><td>Defined completely upfront, frozen</td><td>Evolve continuously, welcomed late</td></tr>
+        <tr><td>Delivery</td><td>Single delivery at project end</td><td>Working software every 1–4 weeks</td></tr>
+        <tr><td>Customer involvement</td><td>At start (requirements) and end (acceptance)</td><td>Every sprint (continuous feedback)</td></tr>
+        <tr><td>Change tolerance</td><td>Very low — changes are expensive</td><td>High — designed for change</td></tr>
+        <tr><td>Team structure</td><td>Functional silos (BA → Dev → QA)</td><td>Cross-functional, self-organizing teams</td></tr>
+        <tr><td>Planning horizon</td><td>Full project planned upfront</td><td>Detailed for next sprint, rough for later</td></tr>
+        <tr><td>Risk management</td><td>Risk discovered late (at testing)</td><td>Risk discovered early (each sprint)</td></tr>
+        <tr><td>Documentation</td><td>Comprehensive upfront documents</td><td>Just enough, just in time</td></tr>
+        <tr><td>Progress measure</td><td>% of plan complete</td><td>Working software delivered</td></tr>
+        <tr><td>Testing</td><td>Separate phase at end</td><td>Continuous, within each sprint</td></tr>
+        <tr><td>Best for</td><td>Fixed requirements, regulated industries, construction-like projects</td><td>Complex software, uncertain requirements, fast-moving markets</td></tr>
+        <tr><td>Failure mode</td><td>Builds wrong product perfectly on time</td><td>Can lose direction without strong Product Owner</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>When Waterfall is actually better</h2>
+  <div class="callout q4"><strong>Waterfall is not always wrong.</strong> It excels in environments with truly fixed, well-understood requirements, regulatory mandates requiring specific documentation, or physical-world constraints that make iteration impossible.</div>
+  <div class="g2">
+    <div class="card ca4">
+      <div class="ct">✅ Use Waterfall when…</div>
+      <div class="cb">Requirements are stable and well-understood (building a bridge, FDA drug approval). Regulatory compliance requires formal sign-offs at each stage (medical devices, aerospace, defense). Short-duration projects with a single, well-understood deliverable. Integration with fixed external systems with known APIs.</div>
+    </div>
+    <div class="card ca3">
+      <div class="ct">✅ Use Agile when…</div>
+      <div class="cb">Requirements are uncertain or likely to change. You need to deliver value before the full product is done. You're building software in a competitive market. Customer input during development is available and valuable. The team is small to medium and can self-organize.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FRAMEWORKS OVERVIEW ═══ -->
+<section id="sec-frameworks-overview" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 6 · Survey</div>
+    <h1 class="htitle">Agile Frameworks <span>Overview</span></h1>
+    <p class="hsub">There are many frameworks that implement Agile values. Each has a different emphasis, structure, and ideal use case. Here is the complete landscape before we dive into each.</p>
+  </div>
+
+  <div class="providers">
+    <div class="pcard">
+      <div class="pname">🏉 Scrum</div>
+      <div class="ptag" style="background:rgba(16,185,129,.15);color:var(--a3)">Most Popular</div>
+      <div class="pbody">Iterative framework with fixed sprints, defined roles (PO, SM, Dev), ceremonies, and artifacts. Best for product development teams. ~66% of Agile teams use it.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">📋 Kanban</div>
+      <div class="ptag" style="background:rgba(0,212,255,.15);color:var(--a1)">Flow-Based</div>
+      <div class="pbody">Visualize work, limit WIP, manage flow. No sprints. No roles defined. Works for any team type including operations, support, and maintenance.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">⚡ XP (Extreme Programming)</div>
+      <div class="ptag" style="background:rgba(124,58,237,.15);color:var(--a2)">Engineering</div>
+      <div class="pbody">Engineering-focused. TDD, pair programming, continuous integration, refactoring. Best for teams that want technical rigor alongside Agile planning.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">🏭 Lean</div>
+      <div class="ptag" style="background:rgba(245,158,11,.15);color:var(--a4)">Efficiency</div>
+      <div class="pbody">From Toyota Production System. Eliminate waste, amplify learning, deliver fast. Principles rather than prescribed practices. Applied through Kanban in software.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">💎 Crystal</div>
+      <div class="ptag" style="background:rgba(139,92,246,.15);color:var(--a7)">Team-Sized</div>
+      <div class="pbody">A family of methodologies scaled by team size and criticality. Crystal Clear (≤8 people) to Crystal Sapphire (large, life-critical). People-centric approach.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">🏗️ SAFe</div>
+      <div class="ptag" style="background:rgba(244,63,94,.15);color:var(--a5)">Enterprise</div>
+      <div class="pbody">Scaled Agile Framework. Coordinates 50–125+ teams across a large organization. Program Increments (PI). Adds portfolio, program, and team layers.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">🌀 LeSS</div>
+      <div class="ptag" style="background:rgba(6,182,212,.15);color:var(--a6)">Large Scale</div>
+      <div class="pbody">Large-Scale Scrum. Scale Scrum minimally. One Product Backlog, one Product Owner for up to 8 teams. LeSS Huge for more. Simpler than SAFe.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">🎯 FDD</div>
+      <div class="ptag" style="background:rgba(245,158,11,.15);color:var(--a4)">Feature-First</div>
+      <div class="pbody">Feature-Driven Development. Model the domain, build a feature list, plan by feature, design and build by feature. Regular client-valued feature builds every 2 weeks.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">🔄 DSDM</div>
+      <div class="ptag" style="background:rgba(16,185,129,.15);color:var(--a3)">Governance</div>
+      <div class="pbody">Dynamic Systems Development Method. UK origin. Strong governance. Fixes time and cost, flexes scope. MoSCoW prioritization. Popular in government/enterprise.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SCRUM ═══ -->
+<section id="sec-scrum" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 7 · Core Framework</div>
+    <h1 class="htitle"><span>Scrum</span> — The Complete Guide</h1>
+    <p class="hsub">Scrum is the most widely used Agile framework. It provides a lightweight structure with three roles, five events, and three artifacts to deliver complex products in environments with changing requirements. Understanding Scrum is the foundation of Agile practice.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Adoption</div><div class="sv" style="color:var(--a3)">~66%</div></div>
+    <div class="stat"><div class="sl">Sprint length</div><div class="sv" style="color:var(--a1)">1–4 weeks</div></div>
+    <div class="stat"><div class="sl">Team size</div><div class="sv" style="color:var(--a4)">3–9 devs</div></div>
+    <div class="stat"><div class="sl">Scrum Guide</div><div class="sv" style="color:var(--a2)">2020 ed.</div></div>
+  </div>
+
+  <h2>What Scrum actually is</h2>
+  <p>Scrum is a <strong>framework</strong> — not a methodology. The 2020 Scrum Guide is only 13 pages long. It is intentionally lightweight and incomplete: it tells you the rules of the game, but leaves the specific plays to you. This is a design choice — Scrum provides structure without prescribing solutions.</p>
+  <div class="callout q3"><strong>The Scrum definition:</strong> "Scrum is a lightweight framework that helps people, teams and organizations generate value through adaptive solutions for complex problems." — Scrum Guide 2020.</div>
+
+  <h2>The Three Pillars of Scrum (Empiricism)</h2>
+  <p>Scrum is founded on <strong>empirical process control</strong> — knowledge comes from experience and decisions are made based on what is known. This requires three pillars:</p>
+  <div class="g3">
+    <div class="card ca1"><div class="ct">🔍 Transparency</div><div class="cb">Everyone must have the same understanding of what's happening. The Backlog, Sprint Board, Definition of Done, and team progress are visible to all stakeholders. No hidden information.</div></div>
+    <div class="card ca3"><div class="ct">🔬 Inspection</div><div class="cb">Scrum artifacts and progress toward goals must be inspected frequently. All five Scrum events are inspection points. Teams regularly check: Are we building the right thing? Are we on track?</div></div>
+    <div class="card ca4"><div class="ct">🔧 Adaptation</div><div class="cb">If inspection reveals that something is unacceptable, the process or product must be adjusted. Sprint Retrospective is the adaptation event for process. Sprint Review adapts the product direction.</div></div>
+  </div>
+</section>
+
+<!-- ═══ SCRUM ROLES ═══ -->
+<section id="sec-scrum-roles" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Scrum Deep Dive · Roles</div>
+    <h1 class="htitle">Scrum <span>Roles</span></h1>
+    <p class="hsub">Scrum defines exactly three roles (called "accountabilities" in the 2020 Guide). Each has specific responsibilities that do not overlap. Getting roles right is the foundation of a functional Scrum team.</p>
+  </div>
+
+  <h2>The Scrum Team</h2>
+  <p>A Scrum Team consists of one Scrum Master, one Product Owner, and Developers. It is a cohesive unit of professionals focused on one objective at a time — the Product Goal. The team is small enough to be nimble and large enough to complete significant work (typically 10 or fewer people including SM and PO).</p>
+  <div class="callout q4"><strong>Key principle:</strong> The Scrum Team is cross-functional (has all skills needed to create value each Sprint) and self-managing (the team decides who does what, when, and how — nobody outside the team tells the developers how to turn items into Increments).</div>
+
+  <div class="ceremony">
+    <div class="cer-h">
+      <div class="cer-icon" style="background:rgba(16,185,129,.15)">👤</div>
+      <div><div class="cer-title">Product Owner (PO)</div><div class="cer-meta">One person · Accountable for product value</div></div>
+    </div>
+    <div class="cer-body">
+      <strong>Primary accountability:</strong> Maximizing the value of the product resulting from the Scrum Team's work. The PO is the single voice of the customer and business.<br><br>
+      <strong>Specific responsibilities:</strong><br>
+      — Creates, maintains, and clearly communicates the Product Backlog<br>
+      — Orders Product Backlog items (prioritization)<br>
+      — Ensures the Product Backlog is transparent, visible, and understood<br>
+      — Accepts or rejects Sprint output<br>
+      — Defines the Product Goal<br>
+      — The only person authorized to cancel a Sprint<br><br>
+      <strong>Must be one person</strong> — not a committee. The PO may represent many stakeholders' needs, but they are a single accountable individual. Decisions are made by this one person.<br><br>
+      <strong>Common failure modes:</strong> PO who is "part-time" (unavailable to team), PO who lets stakeholders bypass them to give developers direct orders, PO who doesn't say "no" to low-priority requests.
+    </div>
+  </div>
+
+  <div class="ceremony">
+    <div class="cer-h">
+      <div class="cer-icon" style="background:rgba(0,212,255,.15)">🧭</div>
+      <div><div class="cer-title">Scrum Master (SM)</div><div class="cer-meta">One person · Servant-leader · Process coach</div></div>
+    </div>
+    <div class="cer-body">
+      <strong>Primary accountability:</strong> Establishing Scrum as defined in the Scrum Guide and helping the team and organization understand and enact Scrum theory and practice. The SM is a <em>servant-leader</em> — serving the team, not managing it.<br><br>
+      <strong>Serves the Scrum Team by:</strong><br>
+      — Coaching team members on self-management and cross-functionality<br>
+      — Removing impediments to progress (blockers the team cannot remove themselves)<br>
+      — Facilitating Scrum events (not running them — facilitating)<br>
+      — Training team in creating clear Product Backlog items<br><br>
+      <strong>Serves the Product Owner by:</strong><br>
+      — Helping find techniques for Product Goal definition and Backlog management<br>
+      — Facilitating stakeholder collaboration<br><br>
+      <strong>Serves the Organization by:</strong><br>
+      — Leading, training, and coaching Agile adoption<br>
+      — Planning and advising Scrum implementations<br><br>
+      <strong>What the SM is NOT:</strong> A project manager. A secretary who takes minutes. A team lead. A resource manager. A meeting organizer. A tracker of hours.
+    </div>
+  </div>
+
+  <div class="ceremony">
+    <div class="cer-h">
+      <div class="cer-icon" style="background:rgba(124,58,237,.15)">💻</div>
+      <div><div class="cer-title">Developers</div><div class="cer-meta">3–9 people · Cross-functional · Self-organizing</div></div>
+    </div>
+    <div class="cer-body">
+      <strong>Primary accountability:</strong> Creating any aspect of a usable Increment each Sprint. Despite the name "Developers," this includes everyone who contributes to building the product — software engineers, QA engineers, UX designers, data scientists, etc.<br><br>
+      <strong>Specific responsibilities:</strong><br>
+      — Creating the Sprint Backlog (the plan for the Sprint)<br>
+      — Adapting their plan each day toward the Sprint Goal<br>
+      — Holding each other accountable as professionals<br>
+      — Creating the Increment according to the Definition of Done<br><br>
+      <strong>Key characteristic:</strong> The Developers have no sub-teams or hierarchies. No lead developer, no architect role in Scrum. All Developers are equal. They collectively own how work gets done.<br><br>
+      <strong>Ideal size:</strong> 3–9 Developers. Too few = not enough skills. Too many = too much coordination overhead. If the team is larger, consider creating multiple Scrum Teams with one shared Product Backlog.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SCRUM EVENTS ═══ -->
+<section id="sec-scrum-events" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Scrum Deep Dive · Events</div>
+    <h1 class="htitle">Scrum <span>Events</span></h1>
+    <p class="hsub">Scrum prescribes five events (previously called "ceremonies"). All events are timeboxed — they have a maximum duration. Events create regularity and minimize the need for meetings not defined in Scrum.</p>
+  </div>
+
+  <div class="callout q1"><strong>Important:</strong> All Scrum events happen within and including the Sprint. The Sprint is the container for all other events. Skipping Scrum events is anti-Scrum and reduces transparency and the opportunity to inspect and adapt.</div>
+
+  <div class="ceremony">
+    <div class="cer-h">
+      <div class="cer-icon" style="background:rgba(16,185,129,.2)">📦</div>
+      <div><div class="cer-title">The Sprint</div><div class="cer-meta">1–4 weeks · Fixed timebox · The heartbeat of Scrum</div></div>
+    </div>
+    <div class="cer-body">
+      The Sprint is the container event. All other events happen within a Sprint. Each Sprint is a short project with a goal, a plan, the execution, and a potentially releasable product.<br><br>
+      <strong>Sprint rules:</strong><br>
+      — Fixed length. Never shortened or extended (except: only the PO can cancel a Sprint in extreme cases)<br>
+      — No changes that endanger the Sprint Goal<br>
+      — Quality does not decrease<br>
+      — The Product Backlog is refined as needed<br>
+      — Scope may be clarified and renegotiated with the PO as more is learned<br><br>
+      <strong>Recommended length:</strong> 2 weeks for most software teams. 1 week for very urgent, fast-changing work. 4 weeks for hardware-dependent teams. Shorter = faster feedback = less risk.
+    </div>
+  </div>
+
+  <div class="ceremony">
+    <div class="cer-h">
+      <div class="cer-icon" style="background:rgba(0,212,255,.2)">🗓️</div>
+      <div><div class="cer-title">Sprint Planning</div><div class="cer-meta">Max 8 hours per month · Start of each sprint · Whole team</div></div>
+    </div>
+    <div class="cer-body">
+      The team plans the work to be done during the Sprint. The Scrum Team answers three questions:<br><br>
+      <strong>Topic 1: Why is this Sprint valuable?</strong> — PO proposes how the product can increase value. The team crafts a Sprint Goal that makes the Sprint cohesive.<br><br>
+      <strong>Topic 2: What can be done this Sprint?</strong> — Developers select items from the Product Backlog to include in the current Sprint, using their past performance (velocity) as a guide. They commit to a Sprint Goal, not to specific backlog items.<br><br>
+      <strong>Topic 3: How will the chosen work get done?</strong> — For each selected Product Backlog item, the Developers plan how to create an Increment. Work is decomposed into items of one day or less. This creates the Sprint Backlog.<br><br>
+      <strong>Output:</strong> Sprint Goal (commitment) + Sprint Backlog (plan) + understanding of how the team will self-organize.
+    </div>
+  </div>
+
+  <div class="ceremony">
+    <div class="cer-h">
+      <div class="cer-icon" style="background:rgba(245,158,11,.2)">☀️</div>
+      <div><div class="cer-title">Daily Scrum (Daily Standup)</div><div class="cer-meta">Max 15 minutes · Every day · Developers only</div></div>
+    </div>
+    <div class="cer-body">
+      A 15-minute event for the Developers to inspect progress toward the Sprint Goal and adapt the Sprint Backlog as necessary. The Daily Scrum is NOT a status report to the Scrum Master or management.<br><br>
+      <strong>Traditional three questions (still useful but not required by the 2020 Guide):</strong><br>
+      — What did I do yesterday that helped the team meet the Sprint Goal?<br>
+      — What will I do today to help the team meet the Sprint Goal?<br>
+      — Do I see any impediment that prevents me or the team from meeting the Sprint Goal?<br><br>
+      <strong>Key rules:</strong><br>
+      — Same time, same place, every day — creates predictability and reduces cognitive overhead<br>
+      — Developers only (PO and SM attend only if they are doing development work)<br>
+      — Not a problem-solving session — just surface problems; solve them after in smaller groups<br>
+      — Standing improves focus and keeps it short (hence "standup")<br><br>
+      <strong>Anti-pattern:</strong> Daily Scrum becomes a status report to the SM or manager ("telling boss what you did"). This kills psychological safety and defeats the purpose.
+    </div>
+  </div>
+
+  <div class="ceremony">
+    <div class="cer-h">
+      <div class="cer-icon" style="background:rgba(124,58,237,.2)">🎯</div>
+      <div><div class="cer-title">Sprint Review</div><div class="cer-meta">Max 4 hours per month · End of sprint · Team + Stakeholders</div></div>
+    </div>
+    <div class="cer-body">
+      The Scrum Team and stakeholders inspect the outcome of the Sprint and determine future adaptations. The team <strong>demonstrates</strong> working software to stakeholders and gathers feedback.<br><br>
+      <strong>What happens:</strong><br>
+      — Scrum Team presents what was accomplished and what has changed in their environment<br>
+      — Stakeholders discuss and provide feedback (this is the key value of the event)<br>
+      — The Product Backlog is updated to reflect new insights<br>
+      — Attendees collaborate on what to do next<br><br>
+      <strong>What it is NOT:</strong> A demo performance or approval gate. Not a pass/fail review. It's a collaborative working session to determine what is the most valuable next step.<br><br>
+      <strong>Output:</strong> A revised Product Backlog, updated Product Goal understanding, stakeholder feedback incorporated.
+    </div>
+  </div>
+
+  <div class="ceremony">
+    <div class="cer-h">
+      <div class="cer-icon" style="background:rgba(16,185,129,.2)">🔄</div>
+      <div><div class="cer-title">Sprint Retrospective</div><div class="cer-meta">Max 3 hours per month · End of sprint · Scrum Team only</div></div>
+    </div>
+    <div class="cer-body">
+      The team inspects how the last Sprint went with regards to individuals, interactions, processes, tools, and their Definition of Done. The goal is to identify improvements for the next Sprint.<br><br>
+      <strong>Classic format (one of many):</strong><br>
+      — <strong>What went well?</strong> Practices, interactions, tools that worked — keep doing these<br>
+      — <strong>What could be improved?</strong> Problems, inefficiencies, frustrations — be specific<br>
+      — <strong>What will we commit to doing differently next Sprint?</strong> Concrete, specific, measurable action items<br><br>
+      <strong>Key rules:</strong><br>
+      — Safe space: psychological safety is essential. No blame, no management present (unless they're part of the team)<br>
+      — Actionable output: leave with 1–3 specific improvements to attempt next Sprint<br>
+      — Follow-up: start the next retro by reviewing whether last Sprint's improvements worked<br><br>
+      <strong>Other formats:</strong> Sailboat (wind/anchors), Mad/Sad/Glad, Start/Stop/Continue, 4Ls (Liked/Learned/Lacked/Longed For).<br><br>
+      <strong>Most commonly skipped and most valuable event.</strong> Teams that do great retrospectives consistently outperform those that don't.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SCRUM ARTIFACTS ═══ -->
+<section id="sec-scrum-artifacts" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Scrum Deep Dive · Artifacts</div>
+    <h1 class="htitle">Scrum <span>Artifacts</span></h1>
+    <p class="hsub">Scrum defines three artifacts, each with a commitment. Artifacts represent work or value and are designed to maximize transparency of key information so that the team and stakeholders have the same understanding of the artifact.</p>
+  </div>
+
+  <div class="g3">
+    <div class="card ca1"><div class="ct">Product Backlog</div><div class="cb">The ordered list of everything that is known to be needed in the product. Single source of truth for changes. Only product backlog items that meet the Definition of Ready enter a Sprint. Commitment: <strong>Product Goal</strong>.</div></div>
+    <div class="card ca2"><div class="ct">Sprint Backlog</div><div class="cb">The Sprint Goal (why) + the set of Product Backlog items selected for the Sprint (what) + the actionable plan for delivering the Increment (how). Created by Developers. Commitment: <strong>Sprint Goal</strong>.</div></div>
+    <div class="card ca3"><div class="ct">Increment</div><div class="cb">A concrete stepping stone toward the Product Goal. Each Increment is additive and must work with all previous Increments. Must meet the Definition of Done. Multiple Increments per Sprint is allowed. Commitment: <strong>Definition of Done</strong>.</div></div>
+  </div>
+
+  <h2>Product Backlog — Deep Dive</h2>
+  <p>The Product Backlog is an emergent, ordered list of what is needed to improve the product. It is never complete — as long as a product exists, so does its Product Backlog.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Property</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Ordered, not prioritized</td><td>Items are ordered top-to-bottom. Higher-ordered items are clearer, smaller, and delivered sooner. Lower items are vaguer and larger.</td></tr>
+        <tr><td>Single source of truth</td><td>One backlog per product. Multiple teams share one Product Backlog (not per-team backlogs).</td></tr>
+        <tr><td>Owned by the PO</td><td>Only the PO can order and remove items. Developers can suggest items but PO decides priority.</td></tr>
+        <tr><td>Living document</td><td>Constantly refined (groomed). Items are added, removed, reordered, and estimated continuously.</td></tr>
+        <tr><td>Refinement</td><td>PBIs are broken down and clarified. Should be an ongoing activity consuming no more than 10% of sprint capacity.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Definition of Done (DoD)</h2>
+  <p>The Definition of Done is a formal description of the state of the Increment when it meets the quality measures required for the product. It creates a shared understanding of what "done" means and prevents half-finished work from being counted.</p>
+  <div class="callout q5"><strong>If an item doesn't meet the DoD, it is NOT done — regardless of how much work was spent on it.</strong> It should not be presented at the Sprint Review and should not be counted toward velocity.</div>
+  <div class="clabel">Example Definition of Done</div>
+  <div class="code"><span class="c">## Definition of Done — Acme Software Team</span>
+
+<span class="g">Code quality:</span>
+  ✓ Code reviewed by at least one other developer (PR approved)
+  ✓ All unit tests pass (coverage &gt;= 80%)
+  ✓ Integration tests pass
+  ✓ No new SonarQube critical/major issues
+
+<span class="g">Functionality:</span>
+  ✓ Acceptance criteria met (verified by PO)
+  ✓ Feature demonstrated in staging environment
+  ✓ Edge cases handled and tested
+
+<span class="g">Documentation:</span>
+  ✓ API documentation updated (if applicable)
+  ✓ README updated (if applicable)
+
+<span class="g">Deployment:</span>
+  ✓ CI pipeline passes
+  ✓ Deployed to staging environment
+  ✓ No regression in existing features</div>
+</section>
+
+<!-- ═══ SPRINT LIFECYCLE ═══ -->
+<section id="sec-scrum-sprint" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Scrum Deep Dive · Sprint</div>
+    <h1 class="htitle">Sprint <span>Lifecycle</span></h1>
+    <p class="hsub">A Sprint is a time-boxed period (1–4 weeks) during which the Scrum Team creates a usable, potentially releasable Increment. Understanding the full sprint lifecycle is essential to running a healthy Scrum process.</p>
+  </div>
+
+  <h2>Full Sprint Timeline (2-week example)</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="border-color:rgba(16,185,129,.4);color:var(--a3);background:rgba(16,185,129,.07)">Day 1<br>Sprint Planning<br><span style="color:var(--t3);font-size:9px">2–4 hours</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(0,212,255,.4);color:var(--a1);background:rgba(0,212,255,.07)">Days 2–9<br>Development<br><span style="color:var(--t3);font-size:9px">Daily standups</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(245,158,11,.4);color:var(--a4);background:rgba(245,158,11,.07)">Day 9<br>Refinement<br><span style="color:var(--t3);font-size:9px">~1.5 hours</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(124,58,237,.4);color:var(--a2);background:rgba(124,58,237,.07)">Day 10<br>Sprint Review<br><span style="color:var(--t3);font-size:9px">2 hours</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(16,185,129,.4);color:var(--a3);background:rgba(16,185,129,.07)">Day 10<br>Retrospective<br><span style="color:var(--t3);font-size:9px">1.5 hours</span></div>
+    </div>
+  </div>
+
+  <h2>The Sprint Board</h2>
+  <div class="board">
+    <div class="bcol">
+      <div class="bcol-h" style="color:var(--t2)">📋 Backlog / To Do</div>
+      <div class="btask"><div class="btask-label" style="background:rgba(245,158,11,.15);color:var(--a4)">8 pts</div><br>User can reset password via email link</div>
+      <div class="btask"><div class="btask-label" style="background:rgba(245,158,11,.15);color:var(--a4)">5 pts</div><br>Add dark mode toggle to settings</div>
+      <div class="btask"><div class="btask-label" style="background:rgba(16,185,129,.15);color:var(--a3)">3 pts</div><br>Fix pagination bug on search results</div>
+    </div>
+    <div class="bcol">
+      <div class="bcol-h" style="color:var(--a1)">🔨 In Progress</div>
+      <div class="btask"><div class="btask-label" style="background:rgba(0,212,255,.15);color:var(--a1)">8 pts</div><br>Implement OAuth2 login with Google</div>
+      <div class="btask"><div class="btask-label" style="background:rgba(0,212,255,.15);color:var(--a1)">5 pts</div><br>Create user profile API endpoint</div>
+    </div>
+    <div class="bcol">
+      <div class="bcol-h" style="color:var(--a4)">👀 In Review</div>
+      <div class="btask"><div class="btask-label" style="background:rgba(139,92,246,.15);color:var(--a7)">3 pts</div><br>Update email notification templates</div>
+    </div>
+    <div class="bcol">
+      <div class="bcol-h" style="color:var(--a3)">✅ Done</div>
+      <div class="btask"><div class="btask-label" style="background:rgba(16,185,129,.15);color:var(--a3)">5 pts</div><br>Set up CI/CD pipeline for staging</div>
+      <div class="btask"><div class="btask-label" style="background:rgba(16,185,129,.15);color:var(--a3)">2 pts</div><br>Fix login redirect after session timeout</div>
+    </div>
+  </div>
+
+  <h2>Sprint Burndown Chart</h2>
+  <p>A burndown chart tracks remaining work (story points) against time remaining in the sprint. The ideal line is a straight diagonal from total points on Day 1 to zero on the last day. Reality never matches the ideal — but the pattern matters.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Pattern</th><th>What it means</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>Burning ahead of ideal</td><td>Team is going faster than expected</td><td>Consider pulling more items from backlog</td></tr>
+        <tr><td>Burning behind ideal</td><td>Team is going slower — may not finish Sprint Goal</td><td>Daily Scrum: identify blockers, consider scope reduction with PO</td></tr>
+        <tr><td>Flat line for 2+ days</td><td>Work is blocked</td><td>SM escalates impediment immediately</td></tr>
+        <tr><td>Points added mid-sprint</td><td>Scope creep or underestimation</td><td>Discuss with PO — was it really necessary to add?</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ USER STORIES ═══ -->
+<section id="sec-user-stories" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Scrum Deep Dive · Backlog Items</div>
+    <h1 class="htitle">User Stories & <span>Estimation</span></h1>
+    <p class="hsub">User stories are the most common format for expressing Product Backlog Items (PBIs). Estimation techniques (story points, planning poker) determine how much work fits in a sprint and enable velocity tracking.</p>
+  </div>
+
+  <h2>What is a User Story?</h2>
+  <p>A User Story is an informal, natural-language description of a feature from the perspective of the user who desires it. It focuses on <em>who wants it, what they want, and why</em> — not how to build it.</p>
+
+  <div class="callout q3"><strong>Format:</strong> "As a [type of user], I want [some goal] so that [some reason/value]."</div>
+
+  <div class="clabel">User Story Examples</div>
+  <div class="code"><span class="c">// Good User Stories</span>
+
+<span class="g">As a</span> registered user,
+<span class="g">I want</span> to reset my password via email,
+<span class="g">So that</span> I can regain access to my account if I forget it.
+
+<span class="g">As a</span> product manager,
+<span class="g">I want</span> to filter the sales dashboard by date range,
+<span class="g">So that</span> I can compare performance across time periods.
+
+<span class="g">As a</span> mobile app user,
+<span class="g">I want</span> to receive push notifications for order updates,
+<span class="g">So that</span> I know the status of my delivery without opening the app.
+
+<span class="c">// Bad User Story (technical, no user perspective)</span>
+<span class="p">As a</span> system, I need to update the user table with a reset token
+<span class="p">when</span> the /auth/reset-password endpoint is called.</div>
+
+  <h2>INVEST Criteria — Good User Stories</h2>
+  <div class="g2">
+    <div class="mini"><div class="mt" style="color:var(--a1)">I — Independent</div><div class="mb">Stories should not depend on each other. Avoids prioritization problems and partial completion issues.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">N — Negotiable</div><div class="mb">Stories are not contracts. They are a starting point for conversation. Details are negotiated between PO and developers.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">V — Valuable</div><div class="mb">Every story must deliver value to the user or business. No stories that are purely technical infrastructure (these are tasks or enablers).</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">E — Estimable</div><div class="mb">The team must be able to estimate its size. If they can't, it's too vague or too large (an Epic). Split it.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">S — Small</div><div class="mb">A story should be completable within a Sprint (ideally in a few days). Large stories (Epics) must be split before entering a sprint.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a6)">T — Testable</div><div class="mb">Must have clear acceptance criteria so the PO and team can verify completion. "User can login" must have testable conditions.</div></div>
+  </div>
+
+  <h2>Acceptance Criteria</h2>
+  <p>Acceptance criteria define the conditions that must be met for a user story to be considered complete. They are written by the PO (with developer input) before the sprint and used to verify completion.</p>
+  <div class="clabel">Acceptance Criteria Example</div>
+  <div class="code"><span class="g">Story:</span> As a user, I want to reset my password via email.
+
+<span class="g">Acceptance Criteria:</span>
+
+<span class="k">Given</span> I am on the login page
+<span class="k">When</span> I click "Forgot Password"
+<span class="k">Then</span> I see a form asking for my email address
+
+<span class="k">Given</span> I enter a valid registered email
+<span class="k">When</span> I submit the form
+<span class="k">Then</span> I receive a reset email within 2 minutes
+<span class="k">And</span> the email contains a unique, single-use link
+
+<span class="k">Given</span> I click the reset link (valid, unexpired)
+<span class="k">When</span> the link opens
+<span class="k">Then</span> I can enter and confirm a new password
+
+<span class="k">Given</span> I enter a password &lt; 8 characters
+<span class="k">When</span> I submit
+<span class="k">Then</span> I see an error: "Password must be at least 8 characters"
+
+<span class="k">Given</span> I use an expired link (24h)
+<span class="k">When</span> I visit it
+<span class="k">Then</span> I see: "This link has expired. Please request a new one."</div>
+
+  <h2>Story Points & Estimation</h2>
+  <p>Story points are a unit of measure for the <em>relative complexity and effort</em> of user stories — not hours. They capture size, complexity, risk, and uncertainty together. A story that's "twice as complex" gets twice the points.</p>
+  <div class="callout q4"><strong>Why not use hours?</strong> Hours are personal (what takes me 2 hours may take you 8). Hours create a false sense of precision. Story points measure relative complexity, which teams are much better at estimating than absolute time.</div>
+
+  <h3>Fibonacci Scale (most common)</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Points</th><th>Meaning</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Trivial — clearly understood, no risk</td><td>Fix a typo in a UI label</td></tr>
+        <tr><td>2</td><td>Small — simple, well-understood</td><td>Add a field to a form with validation</td></tr>
+        <tr><td>3</td><td>Medium-small — some complexity</td><td>Create a CRUD API endpoint with tests</td></tr>
+        <tr><td>5</td><td>Medium — moderate complexity or uncertainty</td><td>Implement password reset flow (email + token)</td></tr>
+        <tr><td>8</td><td>Large — complex, some unknowns</td><td>Integrate with third-party payment gateway</td></tr>
+        <tr><td>13</td><td>Very large — significant uncertainty — split it</td><td>Build a real-time notification system</td></tr>
+        <tr><td>21+</td><td>Epic — must be split before entering sprint</td><td>Implement full authentication system</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Planning Poker</h3>
+  <p>Planning Poker is the most common estimation technique. Each team member votes simultaneously using a deck of cards (Fibonacci numbers). Outliers explain their reasoning, discussion follows, and the team re-votes until consensus is reached.</p>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">PO reads the user story</div><div class="sbody">PO describes the story and answers clarifying questions. The team understands what is being built and why.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Team discusses briefly</div><div class="sbody">Developers ask clarifying questions about scope, acceptance criteria, technical approach, and unknowns. Keep this to 2–3 minutes.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Simultaneous reveal</div><div class="sbody">Everyone holds up their card simultaneously. Prevents anchoring bias — the first estimate affects everyone else's if not done simultaneously.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Outliers explain</div><div class="sbody">The highest and lowest estimators explain their reasoning. This surfaces hidden assumptions and risks that others hadn't considered.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">5</div></div><div class="sc"><div class="stitle">Re-vote until consensus</div><div class="sbody">After discussion, the team votes again. Usually converges in 1–2 rounds. The goal is shared understanding, not false precision.</div></div></div>
+  </div>
+</section>
+
+<!-- ═══ KANBAN ═══ -->
+<section id="sec-kanban" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 8 · Framework</div>
+    <h1 class="htitle"><span>Kanban</span> — Flow-Based Agile</h1>
+    <p class="hsub">Kanban is a method for managing work by visualizing it on a board, limiting the amount of work in progress at any given time, and managing flow. Unlike Scrum, it has no sprints, no fixed roles, and no prescribed ceremonies — making it highly adaptable.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Origin</div><div class="sv" style="color:var(--a1)">Toyota 1940s</div></div>
+    <div class="stat"><div class="sl">Software version</div><div class="sv" style="color:var(--a3)">2007</div></div>
+    <div class="stat"><div class="sl">Timebox</div><div class="sv" style="color:var(--a4)">None</div></div>
+    <div class="stat"><div class="sl">Key metric</div><div class="sv" style="color:var(--a2)">Lead Time</div></div>
+  </div>
+
+  <h2>The Six Core Practices of Kanban</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Visualize the workflow</div><div class="sbody">Make all work visible on the Kanban board. Columns represent workflow stages (Backlog → In Progress → Review → Done). Work items (cards) move left to right. Problems become visible when cards pile up or stop moving.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Limit Work In Progress (WIP)</div><div class="sbody"><strong>The core insight of Kanban.</strong> Each column has a WIP limit — the maximum number of items allowed in that column simultaneously. Exceeding WIP limits means the team must finish existing work before starting new work. This prevents multitasking, reduces context-switching, and improves quality. If In Progress has WIP limit of 3 and 3 cards are there, you must finish one before starting another.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Manage flow</div><div class="sbody">Track how work moves through the system. Identify bottlenecks (where cards pile up). The goal is smooth, predictable flow — not maximizing utilization of individuals. A developer who is "100% busy" but blocking QA is creating waste, not value.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Make policies explicit</div><div class="sbody">Define clearly: What does it mean for an item to move from column to column? What are the entry and exit criteria for each stage? What is our Definition of Done? Explicit policies reduce ambiguity and enable self-organization.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(6,182,212,.2);color:var(--a6)">5</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Implement feedback loops</div><div class="sbody">Regular cadence meetings: daily standup (optional), replenishment meeting (add items to backlog), delivery planning, service delivery review (review metrics), operations review. Kanban doesn't mandate these — it encourages them as feedback loops.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(139,92,246,.2);color:var(--a7)">6</div></div><div class="sc"><div class="stitle">Improve collaboratively, evolve experimentally</div><div class="sbody">Use models, metrics, and the scientific method to improve. Run small experiments. Measure the impact. Keep what works, discard what doesn't. Kanban's philosophy is evolutionary change — improve your current process rather than revolutionary transformation.</div></div></div>
+  </div>
+
+  <h2>Kanban Metrics</h2>
+  <div class="g2">
+    <div class="card ca1">
+      <div class="ct">Lead Time</div>
+      <div class="cb">The time from when a customer request is made (item enters the backlog) to when it is delivered. This is what the customer experiences. Reduce lead time to improve customer satisfaction.<br><br><strong>Formula:</strong> Lead Time = Delivery Date − Request Date</div>
+    </div>
+    <div class="card ca3">
+      <div class="ct">Cycle Time</div>
+      <div class="cb">The time from when work actually starts on an item to when it's done. This is what the team controls. Shorter cycle time = faster throughput. Reduce cycle time by removing blockers and limiting WIP.<br><br><strong>Formula:</strong> Cycle Time = Done Date − Work Start Date</div>
+    </div>
+    <div class="card ca4">
+      <div class="ct">Throughput</div>
+      <div class="cb">The number of items completed per unit of time (e.g., per week). Higher throughput means the team delivers more. Forecasting using throughput is often more accurate than story points.</div>
+    </div>
+    <div class="card ca2">
+      <div class="ct">Cumulative Flow Diagram (CFD)</div>
+      <div class="cb">A stacked area chart showing the count of items in each stage over time. Bands widening = items piling up in that stage (bottleneck). Parallel bands = smooth flow. Essential Kanban visualization.</div>
+    </div>
+  </div>
+
+  <h2>Scrum vs Kanban — Quick Comparison</h2>
+  <div class="cmp">
+    <div class="cmpc">
+      <h3 style="color:var(--a3)">🏉 Scrum</h3>
+      <ul>
+        <li>Fixed-length sprints (1–4 weeks)</li>
+        <li>Three defined roles (PO, SM, Devs)</li>
+        <li>Sprint planning and retrospectives mandated</li>
+        <li>Story points and velocity tracking</li>
+        <li>Cannot change sprint scope once committed</li>
+        <li>Best for new product development</li>
+        <li>Teams with relatively stable composition</li>
+        <li>Strong product direction needed</li>
+      </ul>
+    </div>
+    <div class="cmpc">
+      <h3 style="color:var(--a1)">📋 Kanban</h3>
+      <ul>
+        <li>Continuous flow — no iterations</li>
+        <li>No prescribed roles</li>
+        <li>No mandatory ceremonies</li>
+        <li>Lead time and throughput metrics</li>
+        <li>New items can enter at any time</li>
+        <li>Best for operations, support, maintenance</li>
+        <li>Teams where work type varies widely</li>
+        <li>Evolutionary change preferred</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ XP ═══ -->
+<section id="sec-xp" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 9 · Framework</div>
+    <h1 class="htitle">Extreme Programming <span>(XP)</span></h1>
+    <p class="hsub">XP is the most engineering-focused Agile methodology. While Scrum focuses on the management process, XP focuses on software engineering practices that make the code easy to change — which is the prerequisite for any Agile approach to work.</p>
+  </div>
+
+  <div class="callout q2"><strong>Kent Beck's insight:</strong> "If code reviews are good, let's do them all the time (pair programming). If testing is good, let's test all the time (TDD). If integration is good, let's integrate all the time (continuous integration)." XP takes best practices to extremes.</div>
+
+  <h2>XP's 5 Values</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a3)">Communication</div><div class="mb">Constant, open communication between team members and with the customer. Daily contact. No information hiding.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Simplicity</div><div class="mb">Do the simplest thing that could possibly work. YAGNI — don't build what you don't need right now.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Feedback</div><div class="mb">Rapid feedback from tests, customers, and the team. Short iterations. TDD gives immediate feedback on every change.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Courage</div><div class="mb">Courage to refactor mercilessly. Courage to throw away code. Courage to say "this won't work" early. Courage to face hard truths.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a6)">Respect</div><div class="mb">Team members respect each other and the customer. No ego. Collective code ownership means anyone can improve any code.</div></div>
+  </div>
+
+  <h2>XP's Key Engineering Practices</h2>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Test-Driven Development (TDD) <span class="acc-ico">+</span></div>
+    <div class="acc-b">Write the failing test first, then write the minimum code to make it pass, then refactor. The cycle: Red → Green → Refactor.<br><br><strong>Benefits:</strong> Forces clarity about what the code should do before writing it. Creates a comprehensive test suite. Makes refactoring safe. Reduces debugging time significantly.<br><br><strong>The TDD cycle:</strong><br>1. Write a failing test (Red) — define what you want the code to do<br>2. Write the minimum code to pass (Green) — just enough, no more<br>3. Refactor (Refactor) — clean up without changing behavior<br>4. Repeat for the next requirement</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Pair Programming <span class="acc-ico">+</span></div>
+    <div class="acc-b">Two developers work together at one keyboard. One "drives" (writes code), the other "navigates" (reviews, thinks about design, spots bugs). Roles switch frequently.<br><br><strong>Benefits:</strong> Real-time code review (catches bugs immediately). Knowledge transfer (both learn). Collective ownership (the code belongs to neither — it belongs to the team). Improved design decisions through discussion.<br><br><strong>Common objection:</strong> "We're paying two people to do one person's work." Studies show pair programming reduces bugs by 15% and increases team knowledge, resulting in faster overall throughput. The math often works out.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Continuous Integration (CI) <span class="acc-ico">+</span></div>
+    <div class="acc-b">Every developer integrates their code into the shared repository multiple times per day. Each integration is verified by automated tests. Problems are found and fixed immediately — not accumulated for weeks.<br><br><strong>The rule:</strong> If the build is broken, fixing it is the team's highest priority. A broken build stops everyone's work from being verifiable.<br><br><strong>Tools:</strong> GitHub Actions, Jenkins, CircleCI, GitLab CI. The CI server runs tests on every commit and alerts the team immediately if something breaks.</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Refactoring <span class="acc-ico">+</span></div>
+    <div class="acc-b">Continuously improve the design of existing code without changing its behavior. Refactoring is not optional in XP — it's a discipline. The goal: the simplest possible design that passes all tests.<br><br><strong>Why constantly?</strong> Code that never gets refactored accumulates technical debt — it becomes harder and harder to change. In Agile, code must always be easy to change (that's the whole point). Refactoring keeps the cost of change flat over time.<br><br><strong>Safe to refactor when:</strong> You have a comprehensive test suite (hence why TDD comes first).</div>
+  </div>
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">Small Releases & Collective Ownership <span class="acc-ico">+</span></div>
+    <div class="acc-b"><strong>Small Releases:</strong> Release to production frequently (every iteration or more). Each release should be the smallest possible that makes business sense. Reduces risk, provides feedback earlier, keeps morale high through regular wins.<br><br><strong>Collective Code Ownership:</strong> Any developer can change any part of the codebase at any time. No "this is Bob's module." Everyone is responsible for everything. Combined with CI and TDD, this prevents knowledge silos and bus factor problems.<br><br><strong>Coding Standards:</strong> The whole team agrees on a consistent style. Essential for collective ownership — you can't own code you can't read.</div>
+  </div>
+</section>
+
+<!-- ═══ LEAN ═══ -->
+<section id="sec-lean" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 10 · Framework</div>
+    <h1 class="htitle"><span>Lean</span> Software Development</h1>
+    <p class="hsub">Lean is a philosophy derived from the Toyota Production System (TPS). In software, Lean means eliminating all forms of waste, amplifying learning, and delivering fast. Kanban is a Lean tool. Lean thinking underlies much of Agile.</p>
+  </div>
+
+  <h2>The 7 Principles of Lean Software (Poppendieck)</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>#</th><th>Principle</th><th>What it means in software</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Eliminate Waste</td><td>Waste = anything that doesn't add value. In software: unused features, waiting, unnecessary handoffs, task switching, defects, over-processing, extra inventory (partially done work).</td></tr>
+        <tr><td>2</td><td>Amplify Learning</td><td>Software is a learning process. Short iterations, frequent feedback, experiments, and retrospectives all amplify learning. Make knowledge visible and shareable.</td></tr>
+        <tr><td>3</td><td>Decide as Late as Possible</td><td>Delay irreversible decisions until the last responsible moment — when you have the most information. Don't over-architect for requirements that may never exist.</td></tr>
+        <tr><td>4</td><td>Deliver as Fast as Possible</td><td>Fast delivery = faster feedback = less risk. Speed is a competitive advantage. The faster you deliver, the sooner you learn if you're building the right thing.</td></tr>
+        <tr><td>5</td><td>Empower the Team</td><td>Decisions should be made by the people closest to the work. Managers set direction; teams choose how. Autonomy, mastery, and purpose drive performance.</td></tr>
+        <tr><td>6</td><td>Build Integrity In</td><td>Quality is not something you add at the end — it's built in from the start. TDD, refactoring, code reviews, and CI are integrity practices.</td></tr>
+        <tr><td>7</td><td>See the Whole</td><td>Optimize the entire value stream, not local sub-processes. A team that completes features 2x faster but creates bottlenecks in QA has not improved the system.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>The 7 Wastes of Software (Lean)</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a5)">Partially Done Work</div><div class="mb">Code written but not tested, not reviewed, not deployed. Inventory that doesn't flow. The most common and dangerous waste in software.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Extra Features</div><div class="mb">80% of features are rarely or never used (Pareto). Building them wastes time, adds complexity, and must be maintained forever.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Relearning</div><div class="mb">Solving the same problem repeatedly because solutions aren't captured. Poor documentation, no knowledge base, high turnover.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Handoffs</div><div class="mb">Every handoff between people/teams loses information. BA → Dev → QA → Ops is a chain of handoffs and information loss.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Task Switching</div><div class="mb">Developers working on 5 things simultaneously complete all 5 later than if they worked sequentially. Context switching is extremely costly.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Delays / Waiting</div><div class="mb">Waiting for approval, waiting for another team, waiting for information. Every wait is waste. WIP limits and single-piece flow reduce waiting.</div></div>
+  </div>
+</section>
+
+<!-- ═══ CRYSTAL ═══ -->
+<section id="sec-crystal" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 11 · Framework</div>
+    <h1 class="htitle"><span>Crystal</span> Methods</h1>
+    <p class="hsub">Crystal is a family of Agile methodologies created by Alistair Cockburn that scales based on team size and project criticality. The key insight: different projects need different processes. One size does not fit all.</p>
+  </div>
+
+  <h2>Crystal Family by Team Size & Criticality</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Crystal</th><th>Team Size</th><th>Criticality</th><th>Key Feature</th></tr></thead>
+      <tbody>
+        <tr><td>Crystal Clear</td><td>1–6 people</td><td>Comfort (C) — loss of comfort only</td><td>Lightest process. Osmotic communication, reflective improvement.</td></tr>
+        <tr><td>Crystal Yellow</td><td>7–20 people</td><td>Discretionary Money (D)</td><td>More structure. Sponsor role, iteration cycle defined.</td></tr>
+        <tr><td>Crystal Orange</td><td>21–40 people</td><td>Essential Money (E)</td><td>Project teams, integration team, dedicated QA. More formal.</td></tr>
+        <tr><td>Crystal Red</td><td>41–80 people</td><td>Essential Money (E)</td><td>Multiple coordinating teams. Formal standards needed.</td></tr>
+        <tr><td>Crystal Maroon</td><td>80–200 people</td><td>Essential Money (E)</td><td>Large program coordination. Rare in practice.</td></tr>
+        <tr><td>Crystal Diamond / Sapphire</td><td>200+ people</td><td>Life-critical (L)</td><td>Aviation, medical, safety-critical systems. Extreme rigor.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Crystal's 7 Properties</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a3)">Frequent Delivery</div><div class="mb">Deliver to real users every few months or less. Feedback from actual use is the most reliable form of feedback.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Reflective Improvement</div><div class="mb">Team meets periodically to reflect on their working conventions and tries improvements. Similar to Scrum retrospective.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Osmotic Communication</div><div class="mb">Information flows between team members as a by-product of being in close proximity. The "background awareness" of overheard conversations. Supports co-location.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Personal Safety</div><div class="mb">Team members can speak up without fear of punishment. Required for honest estimation, raising problems, and retrospective feedback.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a6)">Focus</div><div class="mb">Team members know their highest priorities and have quiet time to work on them. No excessive interruptions or task switching.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Easy Access to Expert Users</div><div class="mb">Direct access to real users or domain experts. Not mediated through requirements documents. Enables rapid clarification and validation.</div></div>
+  </div>
+</section>
+
+<!-- ═══ FDD & DSDM ═══ -->
+<section id="sec-fdd" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Module 12 · Frameworks</div>
+    <h1 class="htitle">FDD &amp; <span>DSDM</span></h1>
+    <p class="hsub">Feature-Driven Development (FDD) and Dynamic Systems Development Method (DSDM) are two less common but important Agile frameworks — FDD is feature-centric and model-heavy; DSDM is governance-heavy and popular in UK enterprise/government contexts.</p>
+  </div>
+
+  <h2>Feature-Driven Development (FDD)</h2>
+  <p>FDD is an iterative and incremental software development process. Developed by Jeff De Luca and Peter Coad. FDD is more prescriptive than other Agile methods — it defines specific roles, activities, and outputs.</p>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Develop an Overall Model</div><div class="sbody">Domain experts and developers create a high-level object model of the domain. Not a full design — a shared understanding map. Done once upfront.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Build a Features List</div><div class="sbody">Decompose the model into a comprehensive feature list. Features are tiny, client-valued functions: "&lt;action&gt; the &lt;result&gt; &lt;by/for/of/to&gt; a &lt;object&gt;." E.g., "Calculate the total sales for a customer." Features take &lt;2 weeks to build.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Plan By Feature</div><div class="sbody">Sequence features based on business priority and technical dependencies. Assign feature sets to Chief Programmers (leads). Create a schedule for when feature sets will be built.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">Design By Feature</div><div class="sbody">For each feature: create sequence diagrams, refine object model, write class and method prologs. 1-week design activity before development.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">5</div></div><div class="sc"><div class="stitle">Build By Feature</div><div class="sbody">Implement the feature. Code, unit test, inspect. Feature builds take 1–10 days maximum. Regular client-visible feature builds every 2 weeks.</div></div></div>
+  </div>
+
+  <div class="div"></div>
+
+  <h2>DSDM (Dynamic Systems Development Method)</h2>
+  <p>DSDM is the oldest Agile framework (1994). It is the only Agile method that covers the entire project lifecycle including pre-project and post-project phases. It is strongly governance-focused and popular in the UK public sector.</p>
+  <div class="callout q4"><strong>DSDM's core principle:</strong> Fix time and cost; flex scope. Instead of saying "We'll build all these features; it might take 6–18 months," DSDM says "We'll deliver in 6 months for this budget; here's what we'll definitely build vs. what we might build."</div>
+
+  <h3>MoSCoW Prioritization (DSDM's key technique)</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Priority</th><th>Meaning</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill p5">Must Have</span></td><td>Non-negotiable requirements</td><td>If not delivered, the product fails. Typically 60% of scope.</td></tr>
+        <tr><td><span class="pill p4">Should Have</span></td><td>Important but not vital</td><td>Significant value. Painful to leave out but the product works without them.</td></tr>
+        <tr><td><span class="pill p3">Could Have</span></td><td>Nice to have</td><td>Desirable but easily dropped. First to go when time is tight. ~20% of scope.</td></tr>
+        <tr><td><span class="pill p2">Won't Have (this time)</span></td><td>Explicitly out of scope now</td><td>Agreed to NOT be delivered. May be done in a future release. Prevents scope creep.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ SAFe ═══ -->
+<section id="sec-safe" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Scaled Agile · Enterprise</div>
+    <h1 class="htitle">SAFe — Scaled Agile <span>Framework</span></h1>
+    <p class="hsub">SAFe (Scaled Agile Framework) is the most widely adopted framework for scaling Agile to enterprises. It coordinates 50–125+ Agile teams across large organizations, adding portfolio, program, and team levels of governance.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sl">Adoption</div><div class="sv" style="color:var(--a5)">~37%</div></div>
+    <div class="stat"><div class="sl">Created by</div><div class="sv" style="color:var(--a1)">D. Leffingwell</div></div>
+    <div class="stat"><div class="sl">Year</div><div class="sv" style="color:var(--a4)">2011</div></div>
+    <div class="stat"><div class="sl">PI length</div><div class="sv" style="color:var(--a2)">8–12 weeks</div></div>
+  </div>
+
+  <h2>SAFe Levels</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a5);background:rgba(244,63,94,.04)"><div class="lname" style="color:var(--a5)">Portfolio Level — Strategy & Investment</div><div class="ldesc">Enterprise strategy → Lean Portfolio Management → Epics → Program Backlogs. Connects Agile execution to business strategy. Investment themes and lean budgeting.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓</div>
+    <div class="layer" style="border-color:var(--a4);background:rgba(245,158,11,.04)"><div class="lname" style="color:var(--a4)">Large Solution Level (optional) — Complex Systems</div><div class="ldesc">For organizations building very large and complex solutions. Solution Train. Solution Architect/Engineering. Used by defense, aerospace, automotive.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓</div>
+    <div class="layer" style="border-color:var(--a1);background:rgba(0,212,255,.04)"><div class="lname" style="color:var(--a1)">Program Level (ART) — Agile Release Train</div><div class="ldesc">5–12 Agile Teams aligned to a Program Increment (PI). Synchronized sprints, shared PI Planning event. Release Train Engineer (RTE) = "Scrum Master for the ART."</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">↓</div>
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--a3)">Team Level — Scrum/Kanban Teams</div><div class="ldesc">Individual Scrum or Kanban teams. 2-week sprints. Team Backlogs derived from ART Program Backlog. Standard Scrum/Kanban practices at this level.</div></div>
+  </div>
+
+  <h2>Program Increment (PI) Planning — SAFe's signature event</h2>
+  <p>PI Planning is a 2-day event where all teams in an ART (typically 50–125 people) get together to plan the next 8–12 weeks of work. It is SAFe's most important event — nothing in SAFe replaces the value of bringing everyone together to align, identify dependencies, and commit to shared objectives.</p>
+  <div class="callout q7"><strong>PI Planning agenda:</strong> Day 1: Business context & vision → Architecture vision → Team breakouts (draft plans) → Risk/dependency identification. Day 2: Draft plan review → Team breakouts (refine plans) → ART risks → Confidence vote → Commit to PI Objectives.</div>
+
+  <h2>SAFe Pros &amp; Cons</h2>
+  <div class="dd">
+    <div class="do">
+      <h4>✅ SAFe Strengths</h4>
+      <ul>
+        <li>Coordinates many teams around shared goals</li>
+        <li>Strong portfolio-strategy connection</li>
+        <li>Prescriptive — clear "how to" for enterprises</li>
+        <li>Extensive training and certification ecosystem</li>
+        <li>Works with regulated industries (compliance built-in)</li>
+        <li>PI Planning creates powerful organizational alignment</li>
+      </ul>
+    </div>
+    <div class="dont">
+      <h4>❌ SAFe Criticisms</h4>
+      <ul>
+        <li>Heavy and complex — often criticized as "Waterfall in disguise"</li>
+        <li>Expensive to implement (training, coaching, tools)</li>
+        <li>Can reduce team autonomy if implemented poorly</li>
+        <li>Overhead can exceed benefit for smaller orgs</li>
+        <li>Original Agile Manifesto authors have criticized SAFe</li>
+        <li>Can become "Agile theater" without cultural change</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LeSS ═══ -->
+<section id="sec-less" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Scaled Agile · Large-Scale Scrum</div>
+    <h1 class="htitle">LeSS — Large-Scale <span>Scrum</span></h1>
+    <p class="hsub">LeSS (Large-Scale Scrum) takes a radically different approach to scaling than SAFe: instead of adding process, it keeps Scrum's simplicity and applies it at scale with minimal additional structure. The philosophy is "less is more."</p>
+  </div>
+
+  <div class="cmp">
+    <div class="cmpc">
+      <h3 style="color:var(--a6)">LeSS (2–8 teams)</h3>
+      <ul>
+        <li>One Product Backlog for all teams</li>
+        <li>One Product Owner for all teams</li>
+        <li>Teams share one Sprint</li>
+        <li>One Sprint Review for all teams</li>
+        <li>Each team has its own Daily Scrum</li>
+        <li>Overall Retrospective across teams</li>
+        <li>Multi-Team Sprint Planning</li>
+        <li>Feature teams (not component teams)</li>
+      </ul>
+    </div>
+    <div class="cmpc">
+      <h3 style="color:var(--a7)">LeSS Huge (8+ teams)</h3>
+      <ul>
+        <li>Multiple requirement areas</li>
+        <li>Area Product Owners per requirement area</li>
+        <li>One overall Chief Product Owner</li>
+        <li>Each area has an Area Backlog</li>
+        <li>Teams still follow standard Scrum</li>
+        <li>No additional hierarchy layers</li>
+        <li>All teams sprint together</li>
+        <li>Reduces bureaucracy vs SAFe</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>SAFe vs LeSS vs Nexus</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Dimension</th><th>SAFe</th><th>LeSS</th><th>Nexus</th></tr></thead>
+      <tbody>
+        <tr><td>Philosophy</td><td>Add structure to scale</td><td>Keep Scrum, scale minimally</td><td>Extend Scrum for multi-team</td></tr>
+        <tr><td>Team count</td><td>50–125+ (ART)</td><td>2–8 (LeSS) / 8+ (LeSS Huge)</td><td>3–9 teams</td></tr>
+        <tr><td>Complexity</td><td><span class="pill p5">Very High</span></td><td><span class="pill p3">Low-Medium</span></td><td><span class="pill p4">Medium</span></td></tr>
+        <tr><td>New roles</td><td>Many (RTE, Business Owner, etc.)</td><td>Minimal — Area PO in LeSS Huge</td><td>Nexus Integration Team</td></tr>
+        <tr><td>PI Planning</td><td>Yes — signature event</td><td>No — optional</td><td>No</td></tr>
+        <tr><td>Best for</td><td>Large enterprises, regulated industries</td><td>Product companies wanting true Agile</td><td>3–9 teams building one product</td></tr>
+        <tr><td>Cost to implement</td><td><span class="pill p5">High</span></td><td><span class="pill p3">Low</span></td><td><span class="pill p4">Medium</span></td></tr>
+        <tr><td>Created by</td><td>Dean Leffingwell (2011)</td><td>Larman &amp; Vodde</td><td>Ken Schwaber (Scrum.org)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ NEXUS ═══ -->
+<section id="sec-nexus" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Scaled Agile · Nexus</div>
+    <h1 class="htitle">Nexus &amp; <span>Scrum@Scale</span></h1>
+    <p class="hsub">Nexus is Scrum.org's scaling framework for 3–9 teams. Scrum@Scale (S@S) is Jeff Sutherland's approach for scaling Scrum indefinitely. Both aim to preserve Scrum's simplicity while enabling multi-team coordination.</p>
+  </div>
+
+  <h2>Nexus Framework</h2>
+  <p>Nexus adds minimal structure on top of Scrum to coordinate 3–9 Scrum Teams building one product. The key addition is the <strong>Nexus Integration Team (NIT)</strong> — a team of people (including the PO and SM roles) responsible for coordinating integration across all teams.</p>
+  <div class="g3">
+    <div class="card ca6"><div class="ct">Nexus Integration Team (NIT)</div><div class="cb">Coordinates, coaches, and supervises application of Nexus across the teams. Responsible for cross-team integration and ensuring a single, integrated Increment is produced each Sprint.</div></div>
+    <div class="card ca1"><div class="ct">Nexus Sprint Planning</div><div class="cb">All teams plan together. Identifies dependencies between teams. Team representatives participate. Produces per-team Sprint Backlogs with cross-team dependencies identified.</div></div>
+    <div class="card ca3"><div class="ct">Nexus Daily Scrum</div><div class="cb">Representatives from each team meet to inspect integration progress, identify cross-team impediments, and coordinate. Each team still has its own Daily Scrum.</div></div>
+  </div>
+
+  <h2>Scrum@Scale (S@S)</h2>
+  <p>Scrum@Scale is Jeff Sutherland's fractal scaling approach. The core idea: use Scrum of Scrums to scale the Developer accountability, and use MetaScrum to scale the Product Owner accountability. Stack these fractally to scale to any number of teams.</p>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="border-color:rgba(16,185,129,.4);color:var(--a3);background:rgba(16,185,129,.07)">Teams A, B, C, D<br><span style="font-size:9px;color:var(--t3)">Individual Scrums</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(0,212,255,.4);color:var(--a1);background:rgba(0,212,255,.07)">Scrum of Scrums<br><span style="font-size:9px;color:var(--t3)">SM representatives</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(245,158,11,.4);color:var(--a4);background:rgba(245,158,11,.07)">Scrum of Scrum<br>of Scrums<br><span style="font-size:9px;color:var(--t3)">For large programs</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(124,58,237,.4);color:var(--a2);background:rgba(124,58,237,.07)">Executive Action<br>Team (EAT)<br><span style="font-size:9px;color:var(--t3)">Org-level impediments</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COMPARE ALL ═══ -->
+<section id="sec-compare-all" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Comparison · Master Table</div>
+    <h1 class="htitle">Compare <span>All Frameworks</span></h1>
+    <p class="hsub">A comprehensive side-by-side comparison of every major Agile framework across the dimensions that matter most for choosing the right approach.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Framework</th><th>Iterations</th><th>Roles defined</th><th>Ceremonies</th><th>Scale</th><th>Best for</th><th>Complexity</th></tr></thead>
+      <tbody>
+        <tr><td>Scrum</td><td>Fixed sprints (1–4w)</td><td>PO, SM, Devs</td><td>5 events</td><td>1 team</td><td>New product development</td><td><span class="pill p3">Low</span></td></tr>
+        <tr><td>Kanban</td><td>Continuous flow</td><td>None prescribed</td><td>Optional</td><td>Any team</td><td>Ops, support, maintenance</td><td><span class="pill p3">Low</span></td></tr>
+        <tr><td>Scrumban</td><td>Flexible</td><td>Optional SM/PO</td><td>Minimal</td><td>1–2 teams</td><td>Scrum teams adding flow</td><td><span class="pill p3">Low</span></td></tr>
+        <tr><td>XP</td><td>1–2 week iterations</td><td>Customer, Coach, Devs</td><td>Planning game, standup</td><td>1 team</td><td>High-quality engineering</td><td><span class="pill p4">Medium</span></td></tr>
+        <tr><td>Crystal Clear</td><td>Monthly releases</td><td>Sponsor, Senior Designer, Programmer</td><td>Chartering, delivery, retro</td><td>≤6 people</td><td>Small collocated teams</td><td><span class="pill p3">Low</span></td></tr>
+        <tr><td>Crystal Orange</td><td>Monthly milestones</td><td>More formal roles</td><td>More ceremonies</td><td>21–40</td><td>Medium projects</td><td><span class="pill p4">Medium</span></td></tr>
+        <tr><td>Lean (Software)</td><td>As fast as possible</td><td>Not prescribed</td><td>Not prescribed</td><td>Any</td><td>Efficiency-focused teams</td><td><span class="pill p4">Medium</span></td></tr>
+        <tr><td>FDD</td><td>Feature builds (≤2w)</td><td>Chief Programmer, Domain Expert</td><td>5-phase process</td><td>Up to ~250</td><td>Large OO projects</td><td><span class="pill p4">Medium</span></td></tr>
+        <tr><td>DSDM</td><td>Timeboxed iterations</td><td>Business Sponsor, Solution Dev Team</td><td>Pre, Foundation, Exploration, Engineering</td><td>Medium</td><td>Enterprise/government</td><td><span class="pill p5">High</span></td></tr>
+        <tr><td>SAFe</td><td>PI (8–12w) + 2w sprints</td><td>RTE, Business Owner, etc.</td><td>PI Planning, System Demo, I&amp;A</td><td>50–125+</td><td>Large enterprises</td><td><span class="pill p5">Very High</span></td></tr>
+        <tr><td>LeSS</td><td>1–4 week sprints</td><td>Minimal additions</td><td>Extended Scrum events</td><td>2–8+ teams</td><td>Product companies</td><td><span class="pill p4">Medium</span></td></tr>
+        <tr><td>Nexus</td><td>1-4 week sprints</td><td>Nexus Integration Team</td><td>Extended Scrum + Nexus events</td><td>3–9 teams</td><td>Multi-team one product</td><td><span class="pill p4">Medium</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ WHEN TO USE WHAT ═══ -->
+<section id="sec-when-to-use" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Decision Guide · Key</div>
+    <h1 class="htitle">When to Use <span>What</span></h1>
+    <p class="hsub">Choosing the right Agile framework is not about what's most popular — it's about what fits your context. Team size, project type, organizational maturity, and requirements clarity all influence the right choice.</p>
+  </div>
+
+  <h2>Decision Framework: Which Agile to Use</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">Q1</div><div class="sv2"></div></div><div class="sc"><div class="stitle">How many teams need to coordinate?</div><div class="sbody"><strong>1 team:</strong> Scrum, Kanban, XP, or Crystal Clear depending on Q2–Q5.<br><strong>2–9 teams:</strong> LeSS or Nexus (prefer product companies) / Scrumban if more flexible.<br><strong>10–50+ teams:</strong> SAFe (enterprise), LeSS Huge (product companies), Scrum@Scale.<br><strong>100+ teams:</strong> SAFe or Scrum@Scale are the only viable options.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">Q2</div><div class="sv2"></div></div><div class="sc"><div class="stitle">What type of work is it?</div><div class="sbody"><strong>New product / feature development:</strong> Scrum (best fit — structured, sprint-based).<br><strong>Operations / support / maintenance:</strong> Kanban (continuous flow, no fixed sprints needed).<br><strong>High-quality engineering with strong tech culture:</strong> XP or Scrum+XP hybrid.<br><strong>Research / exploratory work:</strong> Kanban or Crystal Clear.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">Q3</div><div class="sv2"></div></div><div class="sc"><div class="stitle">How stable are the requirements?</div><div class="sbody"><strong>Requirements well-known and stable:</strong> Waterfall or DSDM may be appropriate.<br><strong>Requirements clear for next month, fuzzy beyond:</strong> Scrum ideal — short sprints.<br><strong>Requirements change day-to-day:</strong> Kanban — no need to lock into a sprint plan.<br><strong>Requirements completely unknown:</strong> Lean Startup experiments + Kanban.</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">Q4</div><div class="sv2"></div></div><div class="sc"><div class="stitle">How mature is the team in Agile?</div><div class="sbody"><strong>Brand new to Agile:</strong> Start with Scrum — most support, most training, most community.<br><strong>Agile-experienced, wants more flexibility:</strong> Kanban or Scrumban.<br><strong>Expert team, strong engineering culture:</strong> XP or minimal Scrum.<br><strong>Organization needs change management support:</strong> SAFe (has built-in transformation playbook).</div></div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(6,182,212,.2);color:var(--a6)">Q5</div></div><div class="sc"><div class="stitle">What are the organizational constraints?</div><div class="sbody"><strong>Regulatory / compliance-heavy (government, finance, healthcare):</strong> SAFe or DSDM (built-in compliance documentation).<br><strong>Fixed budget and time:</strong> DSDM (MoSCoW — flex scope, fix time/cost).<br><strong>Startup / fast growth:</strong> Scrum or Kanban (lightweight, fast).<br><strong>Legacy enterprise culture:</strong> SAFe provides the "enterprise-friendly" Agile transformation path.</div></div></div>
+  </div>
+
+  <h2>Quick Reference: Match Use Cases to Frameworks</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Situation</th><th>Recommended</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>5-person startup building a new SaaS product</td><td><span class="pill p3">Scrum</span></td><td>Sprint cadence creates focus; PO + SM + 3 devs is perfect</td></tr>
+        <tr><td>IT support / helpdesk team</td><td><span class="pill p1">Kanban</span></td><td>Requests arrive continuously; no batch planning needed</td></tr>
+        <tr><td>10-person team maintaining a legacy codebase</td><td><span class="pill p6">Scrumban</span></td><td>Mix of planned features + unplanned bugs; Kanban's flexibility helps</td></tr>
+        <tr><td>Engineering team that wants TDD and high quality</td><td><span class="pill p2">XP</span></td><td>TDD, CI, pair programming, refactoring are XP's core</td></tr>
+        <tr><td>3 teams building one product</td><td><span class="pill p6">Nexus</span></td><td>Minimal scaling overhead; Nexus adds just enough coordination</td></tr>
+        <tr><td>5–8 teams in a product company</td><td><span class="pill p6">LeSS</span></td><td>Preserves Scrum with one PB; avoids SAFe bureaucracy</td></tr>
+        <tr><td>50+ teams in a bank or insurance company</td><td><span class="pill p5">SAFe</span></td><td>Compliance documentation; PI planning aligns org; training ecosystem</td></tr>
+        <tr><td>Government project with fixed budget</td><td><span class="pill p3">DSDM</span></td><td>Time-and-cost fixed, flex scope; governance-friendly</td></tr>
+        <tr><td>A team that tried Scrum and found it too rigid</td><td><span class="pill p1">Kanban</span> or <span class="pill p6">Scrumban</span></td><td>Less ceremony; pull-based; continuous flow</td></tr>
+        <tr><td>Team building safety-critical medical device software</td><td><span class="pill p7">Crystal Diamond</span> + <span class="pill p5">SAFe</span></td><td>Life-critical quality; regulatory compliance; formal reviews</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ HYBRID ═══ -->
+<section id="sec-hybrid" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Advanced · Combinations</div>
+    <h1 class="htitle"><span>Hybrid</span> Approaches</h1>
+    <p class="hsub">Real-world teams rarely use a single framework in its pure form. Hybrids combine the best elements of multiple frameworks to fit their specific context. Understanding common hybrids helps you make pragmatic choices.</p>
+  </div>
+
+  <h2>Scrumban</h2>
+  <p>Scrumban is the most popular hybrid — combining Scrum's structure with Kanban's flow. Teams typically keep Scrum's events (standups, retrospectives, reviews) but add WIP limits and move away from strict sprint commitments.</p>
+  <div class="card ca6">
+    <div class="ct">Scrumban — What you take from each</div>
+    <div class="cb"><strong>From Scrum:</strong> Sprint cadence, daily standup, retrospectives, sprint reviews, velocity tracking (optional), user stories.<br><br><strong>From Kanban:</strong> WIP limits, visual board with flow metrics, pull-based planning (pull items into sprint as capacity opens), no "sprint commitment" pressure, throughput measurement.<br><br><strong>Best for:</strong> Teams transitioning away from pure Scrum, teams with high variability in work types, teams supporting products (mix of features + bugs + tech debt).</div>
+  </div>
+
+  <h2>Scrum + XP</h2>
+  <p>The most powerful combination for engineering teams. Scrum provides the management framework (sprints, PO, ceremonies); XP provides the engineering practices (TDD, CI, pair programming, refactoring) that make Agile sustainable.</p>
+  <div class="callout q2"><strong>Why this combination works:</strong> Scrum is intentionally silent about engineering practices — it only defines the process. XP fills the gap. Without engineering discipline, Scrum teams accumulate technical debt that eventually prevents them from delivering value quickly — defeating the entire purpose.</div>
+
+  <h2>Agile + Waterfall (Phase-Gate Hybrid)</h2>
+  <p>Some organizations use Waterfall for initial requirements and design phases, then switch to Agile for development. Or use Agile during development but require Waterfall-style formal approvals at key gates.</p>
+  <div class="callout q5"><strong>Warning:</strong> This often results in "Wagile" — the worst of both worlds. You get Waterfall's upfront planning rigidity and you don't get early delivery feedback that makes Agile valuable. This hybrid is usually a sign of organizational resistance to full Agile adoption, not a genuine best-of-both approach.</div>
+
+  <h2>SAFe + Kanban at Team Level</h2>
+  <p>Many organizations run SAFe at the program/portfolio level but allow individual teams to choose Scrum or Kanban at the team level. This is explicitly supported by SAFe — "Team Kanban" is a recognized SAFe pattern for teams whose work doesn't fit the Sprint-based model (e.g., operations, DevOps, support teams).</p>
+</section>
+
+<!-- ═══ IMPLEMENTING AGILE ═══ -->
+<section id="sec-implement" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Implementation Guide</div>
+    <h1 class="htitle">Implementing <span>Agile</span></h1>
+    <p class="hsub">How do you actually transform a team or organization from traditional processes to Agile? This is where most implementations fail — not because of wrong framework choice, but because of poor change management and incomplete adoption.</p>
+  </div>
+
+  <h2>Starting Scrum from Scratch — Step by Step</h2>
+  <div class="steps">
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">1</div><div class="sv2"></div></div><div class="sc">
+      <div class="stitle">Define the Scrum Team</div>
+      <div class="sbody">Identify and commit 3–9 developers. Assign a Product Owner (someone who understands the product vision and can prioritize). Assign a Scrum Master (ideally someone trained; don't just pick a developer and call them SM). The team should be <strong>dedicated</strong> — part-time Scrum almost always fails.</div>
+    </div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(0,212,255,.2);color:var(--a1)">2</div><div class="sv2"></div></div><div class="sc">
+      <div class="stitle">Create the Product Backlog</div>
+      <div class="sbody">Product Owner creates an initial backlog of user stories/features. Doesn't need to be complete — start with the top 20–30 most important items detailed enough for Sprint Planning. Items should be written from the user's perspective, have acceptance criteria, and be estimable. Use Jira, Linear, Trello, or a whiteboard.</div>
+    </div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">3</div><div class="sv2"></div></div><div class="sc">
+      <div class="stitle">Agree on Definition of Done and working agreements</div>
+      <div class="sbody">Team collectively defines: What does "done" mean? (code reviewed, tested, deployed to staging, accepted by PO). What are our norms? (hours, meetings, communication channels, coding standards). Write these down and put them somewhere visible. Revisit in retrospectives.</div>
+    </div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(124,58,237,.2);color:var(--a2)">4</div><div class="sv2"></div></div><div class="sc">
+      <div class="stitle">Run Sprint 1 Planning</div>
+      <div class="sbody">PO presents top backlog items. Team asks clarifying questions. Team estimates complexity (story points). Team selects items they're confident they can complete. Team creates the Sprint Goal — one sentence that captures the sprint's purpose. First sprint: keep scope conservative — it's learning time.</div>
+    </div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(6,182,212,.2);color:var(--a6)">5</div><div class="sv2"></div></div><div class="sc">
+      <div class="stitle">Execute the Sprint</div>
+      <div class="sbody">Daily standup at a fixed time. Update the board. SM removes impediments. PO is available to answer questions — not to add new work. Developers self-organize to accomplish the Sprint Goal. If you're going to miss the goal, raise it immediately — don't hide it until the review.</div>
+    </div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(16,185,129,.2);color:var(--a3)">6</div><div class="sv2"></div></div><div class="sc">
+      <div class="stitle">Sprint Review + Retrospective</div>
+      <div class="sbody">Demo working software to stakeholders. Get feedback. Reprioritize the backlog. Then: hold the retrospective — even if you think it went perfectly. Especially for sprint 1, there's always something to improve. Take 1–2 concrete actions. <strong>Don't skip this.</strong></div>
+    </div></div>
+    <div class="step"><div class="sl2"><div class="sdot" style="background:rgba(245,158,11,.2);color:var(--a4)">7</div></div><div class="sc">
+      <div class="stitle">Repeat and improve</div>
+      <div class="sbody">Each sprint, you get better. Velocity stabilizes after 3–5 sprints. Process improvements from retrospectives compound. By sprint 10, the team you have is dramatically better than the team you started with. Track this — it's motivating.</div>
+    </div></div>
+  </div>
+
+  <h2>Agile Transformation — Organizational Level</h2>
+  <p>Scaling Agile beyond one team requires organizational change management. Most Agile transformations fail not because of the framework — but because of leadership, culture, and structure.</p>
+  <div class="g2">
+    <div class="card ca5">
+      <div class="ct">⚠️ Why Transformations Fail</div>
+      <div class="cb">Management doesn't change behavior (says "Agile" but still micromanages). Teams adopt ceremonies without the mindset. Annual budgeting processes contradict Lean budgeting. Functional silos (Dev, QA, Ops) prevent cross-functional teams. No executive sponsorship. Agile coaches leave and nothing sticks.</div>
+    </div>
+    <div class="card ca3">
+      <div class="ct">✅ Transformation Success Factors</div>
+      <div class="cb">Start with willing teams — don't force it. Get leadership to change first. Invest in training, coaching, and Communities of Practice. Change budgeting and HR processes to match Agile. Measure business outcomes, not process compliance. Be patient — 18–36 months for cultural change.</div>
+    </div>
+  </div>
+
+  <h2>The Agile Adoption Maturity Model</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a5);background:rgba(244,63,94,.04)"><div class="lname" style="color:var(--a5)">Level 0: Pre-Agile</div><div class="ldesc">Waterfall or chaotic development. No iterations. Big design upfront. Testing at the end. Single large delivery.</div></div>
+    <div class="layer" style="border-color:var(--a4);background:rgba(245,158,11,.04)"><div class="lname" style="color:var(--a4)">Level 1: Agile theater ("ScrumBut")</div><div class="ldesc">"We do Scrum, BUT we don't do retrospectives." "We do Scrum, BUT sprints can be extended." Ceremonies adopted; mindset not changed. Teams go through motions.</div></div>
+    <div class="layer" style="border-color:var(--a1);background:rgba(0,212,255,.04)"><div class="lname" style="color:var(--a1)">Level 2: Agile by the book</div><div class="ldesc">Full Scrum ceremonies. Story points. Velocity tracked. PO engaged. SM facilitating. DoD enforced. Delivering every sprint. This is where most teams aim to be.</div></div>
+    <div class="layer" style="border-color:var(--a2);background:rgba(124,58,237,.04)"><div class="lname" style="color:var(--a2)">Level 3: High-performing Agile</div><div class="ldesc">Continuous delivery. TDD and CI/CD. Psychological safety high. Retrospective improvements actually compound. Team predicts velocity accurately. Technical excellence maintained.</div></div>
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--a3)">Level 4: Business Agility</div><div class="ldesc">The whole organization is Agile — not just IT. Strategy adapts quarterly. Lean budgeting. Customer value drives everything. Product thinking replaces project thinking. This is the goal.</div></div>
+  </div>
+</section>
+
+<!-- ═══ METRICS ═══ -->
+<section id="sec-metrics" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Operations · Measurement</div>
+    <h1 class="htitle">Agile Metrics <span>&amp; KPIs</span></h1>
+    <p class="hsub">What you measure shapes how your team behaves. Agile metrics should measure outcomes (value delivered to customers) and team health — not activity (hours worked, story points burned). Goodhart's Law: when a measure becomes a target, it ceases to be a good measure.</p>
+  </div>
+
+  <h2>Delivery Metrics</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Metric</th><th>What it measures</th><th>How to use it</th><th>Anti-pattern</th></tr></thead>
+      <tbody>
+        <tr><td>Velocity</td><td>Story points completed per sprint</td><td>Forecasting future sprints; capacity planning</td><td>Comparing velocity between teams; using as a performance metric</td></tr>
+        <tr><td>Lead Time</td><td>Time from request to delivery</td><td>Understanding customer-perceived speed; trend over time</td><td>Ignoring the queue time; measuring only development time</td></tr>
+        <tr><td>Cycle Time</td><td>Time from work start to done</td><td>Identifying process bottlenecks; WIP limit optimization</td><td>Pressuring individuals to have lower cycle time</td></tr>
+        <tr><td>Throughput</td><td>Items delivered per time period</td><td>Flow forecasting; team capacity understanding</td><td>Pushing team to increase throughput through overwork</td></tr>
+        <tr><td>Sprint Goal Achievement</td><td>% of sprints where Sprint Goal was met</td><td>Planning accuracy; commitment reliability</td><td>Gaming by setting trivially easy Sprint Goals</td></tr>
+        <tr><td>Release Frequency</td><td>How often you release to production</td><td>Continuous delivery maturity indicator</td><td>Treating more releases as inherently better without quality consideration</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Quality Metrics</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a5)">Defect Escape Rate</div><div class="mb">Bugs found in production / total bugs found. A high rate means quality gates are failing. Aim to catch bugs before they reach users.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">Test Coverage</div><div class="mb">% of code covered by automated tests. Not a guarantee of quality, but low coverage correlates with high defect rates. Aim for &gt;80% on business logic.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Technical Debt Ratio</div><div class="mb">Estimated remediation cost / total development cost. Tracked over time. Rising ratio = team building on shaky ground.</div></div>
+  </div>
+
+  <h2>Team Health Metrics</h2>
+  <div class="g2">
+    <div class="card ca2">
+      <div class="ct">Spotify Health Check (or similar)</div>
+      <div class="cb">Teams self-assess on dimensions like: Easy to Release, Fun to Work, Suitable Process, Speed, Value, Learning, Mission, Teamwork, Pawns vs. Players. Done quarterly. Green/Yellow/Red. Trends matter more than snapshots. Qualitative but very actionable.</div>
+    </div>
+    <div class="card ca4">
+      <div class="ct">Team Happiness / eNPS</div>
+      <div class="cb">Simple: "How happy are you working on this team? (1–10)" tracked per retrospective. Sudden drops indicate real problems. High scores with low delivery often means the team isn't being challenged. Low scores with high delivery indicates burnout.</div>
+    </div>
+  </div>
+
+  <h2>The DORA Metrics (DevOps / Advanced Agile)</h2>
+  <p>The DORA (DevOps Research and Assessment) metrics are the gold standard for measuring software delivery performance. They predict organizational performance and culture.</p>
+  <div class="g4">
+    <div class="mini"><div class="mt" style="color:var(--a3)">Deployment Frequency</div><div class="mb">How often the team deploys to production. Elite: multiple per day. High: weekly. Medium: monthly.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Lead Time for Changes</div><div class="mb">Time from code commit to production. Elite: &lt;1 hour. High: &lt;1 day. Medium: 1 week–1 month.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">Change Failure Rate</div><div class="mb">% of deployments causing a production incident. Elite: 0–15%. High: 16–30%.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Time to Restore Service</div><div class="mb">How long to recover from a failure. Elite: &lt;1 hour. High: &lt;1 day.</div></div>
+  </div>
+</section>
+
+<!-- ═══ TOOLS ═══ -->
+<section id="sec-tools" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Reference · Software</div>
+    <h1 class="htitle">Agile <span>Tools</span></h1>
+    <p class="hsub">The right tools support Agile practices without becoming a bureaucratic burden. Here's the landscape of tools for Agile teams — from backlog management to CI/CD pipelines.</p>
+  </div>
+
+  <h2>Project Management / Backlog Tools</h2>
+  <div class="providers">
+    <div class="pcard">
+      <div class="pname">Jira</div>
+      <div class="ptag" style="background:rgba(0,212,255,.15);color:var(--a1)">Enterprise</div>
+      <div class="pbody">The industry standard for large teams. Supports Scrum boards, Kanban boards, epics, sprints, velocity charts, and reporting. Highly configurable — can become overkill for small teams. Integrates with DevOps tools.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">Linear</div>
+      <div class="ptag" style="background:rgba(16,185,129,.15);color:var(--a3)">Modern</div>
+      <div class="pbody">Beloved by engineering teams. Extremely fast and keyboard-driven. Cycles (sprints), triage queue, roadmaps. Growing rapidly. Better developer UX than Jira. Best for product engineering teams ≤100 people.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">Notion / Confluence</div>
+      <div class="ptag" style="background:rgba(245,158,11,.15);color:var(--a4)">Wiki+Board</div>
+      <div class="pbody">Flexible wikis with database views that can serve as light project management. Not purpose-built for Agile but used by many small teams. Notion for simplicity, Confluence for enterprise.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">Trello</div>
+      <div class="ptag" style="background:rgba(16,185,129,.15);color:var(--a3)">Simple</div>
+      <div class="pbody">Kanban boards made simple. Drag-and-drop cards between lists. No built-in sprint/velocity. Perfect for small teams (1–10) who need visual work management without complexity.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">Azure DevOps</div>
+      <div class="ptag" style="background:rgba(0,212,255,.15);color:var(--a1)">Microsoft</div>
+      <div class="pbody">Full DevOps suite including Agile boards, Git, CI/CD pipelines, test plans. Best for Microsoft ecosystem teams. Strong integration with Visual Studio and Azure cloud.</div>
+    </div>
+    <div class="pcard">
+      <div class="pname">Shortcut (Clubhouse)</div>
+      <div class="ptag" style="background:rgba(139,92,246,.15);color:var(--a7)">Product</div>
+      <div class="pbody">Built specifically for software teams. Stories, epics, iterations, milestones. Clean UX. Strong Git integration. Popular with mid-size product teams who find Jira too heavy.</div>
+    </div>
+  </div>
+
+  <h2>Real-Time Collaboration &amp; Ceremony Tools</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a3)">Miro / Mural</div><div class="mb">Virtual whiteboards for remote retrospectives, sprint planning, story mapping, and brainstorming. Essential for distributed Agile teams.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">PlanningPoker.com / Scrum Poker</div><div class="mb">Online planning poker for remote story point estimation. Teams vote simultaneously to prevent anchoring bias. Free to use.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Retrium / EasyRetro</div><div class="mb">Dedicated retrospective tools with timers, voting, anonymity options, and action tracking. Better than a whiteboard for distributed teams.</div></div>
+  </div>
+
+  <h2>CI/CD Tools (Essential for XP and mature Agile)</h2>
+  <div class="g3">
+    <div class="mini"><div class="mt" style="color:var(--a1)">GitHub Actions</div><div class="mb">Native CI/CD integrated with GitHub. Free for public repos. Run tests on every PR and commit. YAML-based workflows. Most popular for new projects.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Jenkins</div><div class="mb">The veteran CI server. Self-hosted, highly extensible. Huge plugin ecosystem. Higher setup cost but maximum flexibility. Common in enterprises.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">CircleCI / GitLab CI</div><div class="mb">Cloud CI/CD with fast configuration. GitLab CI is native to GitLab; CircleCI is standalone. Both popular with mid-size engineering teams.</div></div>
+  </div>
+</section>
+
+<!-- ═══ DEVOPS + CI-CD ═══ -->
+<section id="sec-devops-ci" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Advanced · Engineering</div>
+    <h1 class="htitle">Agile + <span>DevOps &amp; CI/CD</span></h1>
+    <p class="hsub">Agile defines how teams plan and deliver work in iterations. DevOps and CI/CD define how teams deploy that work safely and frequently. Together, they form the modern software delivery system. Without CI/CD, Agile can't fully deliver on its promise.</p>
+  </div>
+
+  <div class="callout q3"><strong>The connection:</strong> Agile says "deliver working software frequently." CI/CD is the technical foundation that makes frequent delivery <em>safe</em>. Without automated testing and deployment pipelines, "frequent delivery" means frequent risk.</div>
+
+  <h2>The Relationship: Agile → DevOps → CI/CD</h2>
+  <div class="layers">
+    <div class="layer" style="border-color:var(--a3);background:rgba(16,185,129,.04)"><div class="lname" style="color:var(--a3)">Agile (Process layer)</div><div class="ldesc">Sprint cadence, user stories, retrospectives. Determines what to build and when. 2-week delivery rhythm.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">enables</div>
+    <div class="layer" style="border-color:var(--a1);background:rgba(0,212,255,.04)"><div class="lname" style="color:var(--a1)">DevOps (Culture layer)</div><div class="ldesc">Dev and Ops teams work as one. Shared responsibility for development AND production. "You build it, you run it." Eliminates the Dev→Ops handoff wall.</div></div>
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:4px;font-family:'JetBrains Mono',monospace">implemented through</div>
+    <div class="layer" style="border-color:var(--a2);background:rgba(124,58,237,.04)"><div class="lname" style="color:var(--a2)">CI/CD (Technical layer)</div><div class="ldesc">Continuous Integration: merge code frequently, run automated tests. Continuous Delivery: always have a releasable artifact. Continuous Deployment: auto-deploy every passing build to production.</div></div>
+  </div>
+
+  <h2>The CI/CD Pipeline in an Agile Sprint</h2>
+  <div class="flow">
+    <div class="fr">
+      <div class="fbox" style="border-color:rgba(16,185,129,.4);color:var(--a3);background:rgba(16,185,129,.07)">Code commit<br><span style="font-size:9px;color:var(--t3)">Developer pushes</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(0,212,255,.4);color:var(--a1);background:rgba(0,212,255,.07)">Unit tests<br><span style="font-size:9px;color:var(--t3)">&lt;5 min</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(245,158,11,.4);color:var(--a4);background:rgba(245,158,11,.07)">Integration<br>tests<br><span style="font-size:9px;color:var(--t3)">&lt;15 min</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(124,58,237,.4);color:var(--a2);background:rgba(124,58,237,.07)">Code review<br><span style="font-size:9px;color:var(--t3)">PR approved</span></div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(16,185,129,.4);color:var(--a3);background:rgba(16,185,129,.07)">Deploy to<br>staging</div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(6,182,212,.4);color:var(--a6);background:rgba(6,182,212,.07)">E2E tests<br>Smoke tests</div>
+      <div class="fa">→</div>
+      <div class="fbox" style="border-color:rgba(16,185,129,.4);color:var(--a3);background:rgba(16,185,129,.07)">🚀 Production</div>
+    </div>
+  </div>
+
+  <h2>How Agile and DevOps reinforce each other</h2>
+  <div class="g2">
+    <div class="card ca3">
+      <div class="ct">Sprint → Deploy cycle alignment</div>
+      <div class="cb">Every sprint ends with a potentially shippable increment. CI/CD makes "potentially shippable" mean "actually shippable." Teams move from "we could release this" to "we already did." Release frequency aligns with sprint cadence or faster.</div>
+    </div>
+    <div class="card ca1">
+      <div class="ct">Definition of Done includes CI/CD gates</div>
+      <div class="cb">Mature Agile teams add CI/CD requirements to their DoD: "CI pipeline passes," "deployed to staging," "no new monitoring alerts." This ensures quality is verified automatically, not manually.</div>
+    </div>
+    <div class="card ca2">
+      <div class="ct">Fast feedback from production</div>
+      <div class="cb">Feature flags allow releasing features to a % of users in production while hiding from others. A/B testing provides data-driven product decisions. Real production metrics validate sprint outcomes better than any demo.</div>
+    </div>
+    <div class="card ca4">
+      <div class="ct">Incident management in Agile</div>
+      <div class="cb">Production incidents are treated like unplanned Sprint Backlog items. On-call rotation. Post-mortems (blameless) feed into retrospectives. Reliability work competes with feature work in the backlog — prioritized by the PO based on business impact.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PITFALLS ═══ -->
+<section id="sec-pitfalls" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Operations · Pitfalls</div>
+    <h1 class="htitle">Common Agile <span>Pitfalls</span></h1>
+    <p class="hsub">Most Agile failures are not framework failures — they are adoption failures. Here are the most common anti-patterns, how to recognize them, and how to fix them.</p>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">🚩 "ScrumBut" — Doing Scrum, but not really <span class="acc-ico">+</span></div>
+    <div class="acc-b"><strong>What it looks like:</strong> "We do Scrum, but we skip retrospectives because we don't have time." "We do Scrum, but sprint scope changes every day." "We do Scrum, but the PO is not available."<br><br><strong>Why it's a problem:</strong> You get the overhead of Scrum (meetings, ceremonies, roles) without the benefits (predictability, feedback loops, continuous improvement). ScrumBut teams often conclude "Scrum doesn't work" when really they never tried it.<br><br><strong>Fix:</strong> Identify which Scrum elements you're violating. Ask: are you avoiding them because they're hard, or because they genuinely don't apply? Usually it's because they're hard — which is exactly when you need them most.</div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">🚩 Proxy Product Owner — PO is not empowered <span class="acc-ico">+</span></div>
+    <div class="acc-b"><strong>What it looks like:</strong> The PO must "check with management" before making backlog decisions. The PO changes priorities daily based on whoever last spoke to them. Developers receive conflicting direction from multiple stakeholders.<br><br><strong>Why it's a problem:</strong> The entire point of having a single PO is to have one voice, one decision-maker, one person who can say "yes" and "no." Without authority, the PO becomes a bottleneck and a gossip relay — not a value-maximizer.<br><br><strong>Fix:</strong> The PO must have authority to prioritize the backlog without approval. Management provides direction and context; PO makes decisions. Senior leadership must explicitly delegate this authority.</div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">🚩 Sprint = mini-Waterfall (no collaboration within sprint) <span class="acc-ico">+</span></div>
+    <div class="acc-b"><strong>What it looks like:</strong> Sprint starts with requirements. Days 1–5: developers write code. Days 6–9: QA tests. Day 10: PO reviews. This is Waterfall with a 2-week cycle, not Scrum.<br><br><strong>Why it's a problem:</strong> All the problems of Waterfall (late defect discovery, hand-off waste, lack of collaboration) but compressed into 2 weeks. No benefit of cross-functional collaboration.<br><br><strong>Fix:</strong> Each story should go through the full dev+test+review cycle within the sprint, concurrently where possible. QA and dev collaborate from the start of each story, not in sequence. PO reviews features as they're completed, not at the end.</div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">🚩 Daily Scrum as status report to management <span class="acc-ico">+</span></div>
+    <div class="acc-b"><strong>What it looks like:</strong> The Scrum Master (or manager) asks each developer "What did you do yesterday?" Developers report to the SM rather than to each other. Team members feel anxiety about what they'll say.<br><br><strong>Why it's a problem:</strong> Creates command-and-control culture. Developers optimize for looking productive instead of actually being productive. Information flow goes to the SM, not between developers. Trust is destroyed.<br><br><strong>Fix:</strong> The Daily Scrum belongs to the Developers. The SM facilitates, doesn't interrogate. Focus on: "What helps us reach the Sprint Goal?" not "What did each person do?" Have developers speak to the board, not to the SM.</div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">🚩 Velocity used to pressure teams (velocity gaming) <span class="acc-ico">+</span></div>
+    <div class="acc-b"><strong>What it looks like:</strong> Management tracks team velocity and asks teams to increase it. Teams inflate story points to show higher velocity. Teams rush work to hit velocity targets.<br><br><strong>Why it's a problem:</strong> Velocity is a planning tool, not a performance metric. Comparing teams by velocity is meaningless (story points are relative to each team). Inflated estimates make sprint planning inaccurate. Technical debt accumulates from rushing.<br><br><strong>Fix:</strong> Never compare velocities between teams. Never use velocity as a goal. Use it only for sprint capacity planning. Educate stakeholders: "higher velocity" doesn't mean "working harder" — it means "better at splitting stories into smaller pieces."</div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">🚩 No technical practices → accumulating technical debt <span class="acc-ico">+</span></div>
+    <div class="acc-b"><strong>What it looks like:</strong> Team ships features fast for 6 months. Then progress slows dramatically. Every new feature takes 3x longer because of the mess underneath. Bugs multiply. Developers become afraid to change anything.<br><br><strong>Why it's a problem:</strong> Agile requires the ability to change quickly. Technical debt removes that ability. A "fast" team that doesn't manage tech debt becomes a slow team within a year.<br><br><strong>Fix:</strong> Add TDD to your Definition of Done. Allocate 20% of each sprint to tech debt / refactoring. Track technical debt as real backlog items. Add engineering practices from XP. The Scrum Master should surface this to management as a business risk.</div>
+  </div>
+
+  <div class="acc" onclick="toggleAcc(this)">
+    <div class="acc-h">🚩 Agile only in development — not in the organization <span class="acc-ico">+</span></div>
+    <div class="acc-b"><strong>What it looks like:</strong> Development team runs Scrum. But: annual budgeting cycles. Quarterly roadmaps committed to 12 months ahead. HR processes reward individual performance over team performance. Management makes architecture decisions.<br><br><strong>Why it's a problem:</strong> The development team is trying to be Agile inside a Waterfall organization. The organizational processes override and undermine the team-level practices. This creates frustration and limits what Agile can deliver.<br><br><strong>Fix:</strong> Agile transformations must change organizational processes, not just team processes. Lean budgeting (fund teams, not projects). OKRs instead of detailed annual plans. Change hiring and performance management to support Agile values. This is the hard part — and why Agile transformations take years.</div>
+  </div>
+</section>
+
+<!-- ═══ CHEATSHEET ═══ -->
+<section id="sec-cheatsheet" class="sec">
+  <div class="hero">
+    <div class="hero-eyebrow"><div class="hero-dot"></div>Reference · Quick Guide</div>
+    <h1 class="htitle">Agile <span>Cheatsheet</span></h1>
+    <p class="hsub">A compact reference for all the key facts, formulas, definitions, and decisions in Agile. Bookmark this page.</p>
+  </div>
+
+  <h2>Scrum Quick Reference</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Element</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>Roles</td><td>Product Owner · Scrum Master · Developers (3–9 people)</td></tr>
+        <tr><td>Events</td><td>Sprint · Sprint Planning (max 8h/mo) · Daily Scrum (15 min) · Sprint Review (max 4h/mo) · Retrospective (max 3h/mo)</td></tr>
+        <tr><td>Artifacts</td><td>Product Backlog (→ Product Goal) · Sprint Backlog (→ Sprint Goal) · Increment (→ Definition of Done)</td></tr>
+        <tr><td>Sprint length</td><td>1–4 weeks; 2 weeks is most common</td></tr>
+        <tr><td>Team size</td><td>10 or fewer people including PO and SM</td></tr>
+        <tr><td>Sprint Goal</td><td>One-sentence objective for the Sprint. Committed at Sprint Planning. Only PO can cancel.</td></tr>
+        <tr><td>Velocity</td><td>Planning tool only. Story points completed per sprint. Average over last 3–5 sprints.</td></tr>
+        <tr><td>Story points scale</td><td>Fibonacci: 1, 2, 3, 5, 8, 13, 21. Or T-shirt sizes: XS, S, M, L, XL</td></tr>
+        <tr><td>Refinement</td><td>Ongoing activity. Max 10% of sprint capacity. Not a formal Scrum event.</td></tr>
+        <tr><td>Sprint cancellation</td><td>Only the Product Owner can cancel a Sprint. Extremely rare.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Kanban Quick Reference</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Element</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>6 practices</td><td>Visualize · Limit WIP · Manage flow · Explicit policies · Feedback loops · Improve collaboratively</td></tr>
+        <tr><td>Lead Time</td><td>Request date → Delivery date (customer-perceived)</td></tr>
+        <tr><td>Cycle Time</td><td>Work start date → Done date (team-controlled)</td></tr>
+        <tr><td>WIP limit</td><td>Max items in a column simultaneously. Exceeding = team must finish before starting.</td></tr>
+        <tr><td>CFD</td><td>Cumulative Flow Diagram. Widening bands = bottleneck at that stage.</td></tr>
+        <tr><td>Throughput</td><td>Items completed per week/month. Used for Monte Carlo forecasting.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Agile Vocabulary Quick Reference</h2>
+  <div class="g2">
+    <div class="mini"><div class="mt" style="color:var(--a4)">Epic</div><div class="mb">A large user story that must be split before entering a sprint. Too big for one sprint. Parent of multiple smaller stories.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Feature</div><div class="mb">A user-facing capability, typically spanning multiple user stories. Parent of stories. Child of Epic.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">User Story</div><div class="mb">"As a [user], I want [goal] so that [reason]." Fits in a sprint. Has acceptance criteria.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a4)">Task</div><div class="mb">Technical sub-unit of a user story. Typically hours, not points. Created by developers during Sprint Planning.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Spike</div><div class="mb">Time-boxed research/exploration story. Used to resolve technical uncertainty. Produces knowledge, not shippable code.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a1)">Bus Factor</div><div class="mb">The number of team members who, if hit by a bus, would halt the project. Collective ownership and pair programming raise the bus factor.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">DoD</div><div class="mb">Definition of Done. Checklist a story must pass to be "done." Includes code review, tests, deployment.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a3)">DoR</div><div class="mb">Definition of Ready. Criteria a story must meet before it enters a sprint. Has acceptance criteria, estimated, no open questions.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Impediment</div><div class="mb">A blocker that prevents the team from making progress. The SM's job is to remove impediments the team cannot remove itself.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a2)">Technical Debt</div><div class="mb">Shortcuts and poor practices that make future changes harder. Like financial debt: accumulates interest over time.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">YAGNI</div><div class="mb">You Ain't Gonna Need It. Don't build features you don't have an immediate need for. XP/Lean principle.</div></div>
+    <div class="mini"><div class="mt" style="color:var(--a5)">MVP</div><div class="mb">Minimum Viable Product. The smallest version of a product that delivers value to users and enables validated learning.</div></div>
+  </div>
+
+  <h2>Agile Manifesto Values — Ultra-Compact</h2>
+  <div class="callout q3">
+    <strong>Individuals &amp; interactions</strong> over processes &amp; tools ·
+    <strong>Working software</strong> over comprehensive documentation ·
+    <strong>Customer collaboration</strong> over contract negotiation ·
+    <strong>Responding to change</strong> over following a plan
+  </div>
+
+  <h2>Decision: Which Framework?</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>If you are…</th><th>Use…</th></tr></thead>
+      <tbody>
+        <tr><td>A small team building a new product</td><td><span class="pill p3">Scrum</span></td></tr>
+        <tr><td>An ops / support team</td><td><span class="pill p1">Kanban</span></td></tr>
+        <tr><td>An engineering team wanting tech excellence</td><td><span class="pill p2">XP</span> or <span class="pill p3">Scrum + XP</span></td></tr>
+        <tr><td>2–9 teams, one product, product company</td><td><span class="pill p6">LeSS</span> or <span class="pill p6">Nexus</span></td></tr>
+        <tr><td>50+ teams, large enterprise</td><td><span class="pill p5">SAFe</span></td></tr>
+        <tr><td>Government / fixed budget project</td><td><span class="pill p3">DSDM</span></td></tr>
+        <tr><td>Transitioning from Scrum, want more flexibility</td><td><span class="pill p6">Scrumban</span></td></tr>
+        <tr><td>Need to choose what to build first</td><td><span class="pill p4">MoSCoW</span> prioritization</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  const sec = document.getElementById('sec-'+id);
+  if(sec) sec.classList.add('on');
+  if(event&&event.currentTarget) event.currentTarget.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700) closeSb();
+}
+function toggleAcc(el){ el.classList.toggle('open'); }
+const sb=document.getElementById('sb'),ov=document.getElementById('ov'),hbg=document.getElementById('hbg');
+function openSb(){sb.classList.add('open');ov.classList.add('open')}
+function closeSb(){sb.classList.remove('open');ov.classList.remove('open')}
+hbg.addEventListener('click',()=>sb.classList.contains('open')?closeSb():openSb());
+ov.addEventListener('click',closeSb);
+</script>
+</body>
+</html>
