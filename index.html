@@ -340,7 +340,6 @@ footer code { font-family: 'JetBrains Mono', monospace; font-size: 11px; backgro
 </head>
 <body>
 
-<!-- TOP BAR ─────────────────────────────── -->
 <header class="topbar">
   <div class="brand">
     <div class="brand-mark">📚</div>
@@ -370,7 +369,6 @@ footer code { font-family: 'JetBrains Mono', monospace; font-size: 11px; backgro
   </div>
 </header>
 
-<!-- HERO ────────────────────────────────── -->
 <section class="hero">
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
@@ -382,13 +380,10 @@ footer code { font-family: 'JetBrains Mono', monospace; font-size: 11px; backgro
   </div>
 </section>
 
-<!-- OVERLAY (mobile) ────────────────────── -->
 <div class="overlay" id="overlay"></div>
 
-<!-- MAIN ────────────────────────────────── -->
 <main class="page">
 
-  <!-- filter bar -->
   <div class="filter-bar">
     <div class="ftabs" id="ftabs">
       <button class="ftab on" data-cat="all">All Guides</button>
@@ -398,6 +393,7 @@ footer code { font-family: 'JetBrains Mono', monospace; font-size: 11px; backgro
       <button class="ftab" data-cat="networking">Networking</button>
       <button class="ftab" data-cat="architecture">Architecture</button>
       <button class="ftab" data-cat="agile">Agile</button>
+      <button class="ftab" data-cat="system_design">System Design</button>
     </div>
     <div class="filter-right">
       <span class="rslt" id="rslt"></span>
@@ -410,10 +406,8 @@ footer code { font-family: 'JetBrains Mono', monospace; font-size: 11px; backgro
     </div>
   </div>
 
-  <!-- cards rendered here -->
   <div id="output"></div>
 
-  <!-- empty state -->
   <div class="empty" id="empty">
     <div class="empty-ico">🔎</div>
     <div class="empty-title">No guides found</div>
@@ -422,7 +416,6 @@ footer code { font-family: 'JetBrains Mono', monospace; font-size: 11px; backgro
 
 </main>
 
-<!-- FOOTER ──────────────────────────────── -->
 <footer>
   <span>To add a new guide — add an entry to the <code>GUIDES</code> array &amp; drop the .html in the same folder</span>
   <span class="footer-mono">dev-study-hub · index.html</span>
@@ -587,6 +580,106 @@ const GUIDES = [
     level:    'Beginner → Mid',
     color: '#fb923c', color2: '#fbbf24', updated: '2025',
   },
+
+  /* ── SYSTEM DESIGN ────────────────────────────────── */
+  {
+    id:       'sd-intro',
+    file:     'system-design-intro.html',
+    icon:     '🏁',
+    title:    'System Design Intro',
+    subtitle: 'Foundations of System Design',
+    desc:     'An introduction to the core concepts, components, and thought processes required for effective system design.',
+    category: 'system_design',
+    tags:     ['System Design', 'Basics', 'Architecture'],
+    topics:   ['Core concepts', 'Architecture basics'],
+    modules:  1, concepts: 15,
+    level:    'Beginner',
+    color: '#6366f1', color2: '#a855f7', updated: '2026',
+  },
+  {
+    id:       'sd-design-goal',
+    file:     'system-design-design-goal.html',
+    icon:     '🎯',
+    title:    'Design Goals',
+    subtitle: 'Scalability · Reliability · Availability',
+    desc:     'Deep dive into system design goals including high availability, reliability, scalability, and latency vs throughput tradeoffs.',
+    category: 'system_design',
+    tags:     ['Scalability', 'Reliability', 'Availability', 'Latency', 'Throughput'],
+    topics:   ['CAP Theorem', 'Trade-offs', 'Scalability'],
+    modules:  1, concepts: 20,
+    level:    'Beginner → Mid',
+    color: '#14b8a6', color2: '#0ea5e9', updated: '2026',
+  },
+  {
+    id:       'sd-networking',
+    file:     'system-design-networking.html',
+    icon:     '🖧',
+    title:    'System Networking',
+    subtitle: 'DNS · Load Balancing · Proxies',
+    desc:     'Networking concepts for system design. Covering DNS, load balancing algorithms, reverse and forward proxies, and API gateways.',
+    category: 'system_design',
+    tags:     ['Networking', 'DNS', 'Load Balancing', 'Proxy'],
+    topics:   ['DNS', 'Load Balancers', 'Proxies'],
+    modules:  1, concepts: 25,
+    level:    'Mid',
+    color: '#f59e0b', color2: '#ef4444', updated: '2026',
+  },
+  {
+    id:       'sd-communication',
+    file:     'system-design-communication.html',
+    icon:     '📡',
+    title:    'System Communication',
+    subtitle: 'REST · gRPC · WebSockets · Polling',
+    desc:     'How distributed systems communicate. Exploring REST, GraphQL, gRPC, WebSockets, Server-Sent Events (SSE), and messaging patterns.',
+    category: 'system_design',
+    tags:     ['REST', 'gRPC', 'WebSockets', 'SSE', 'Communication'],
+    topics:   ['REST vs gRPC', 'WebSockets', 'SSE'],
+    modules:  1, concepts: 20,
+    level:    'Mid',
+    color: '#8b5cf6', color2: '#ec4899', updated: '2026',
+  },
+  {
+    id:       'sd-caching',
+    file:     'system-design-caching.html',
+    icon:     '⚡',
+    title:    'Caching Strategies',
+    subtitle: 'Redis · Memcached · Eviction Policies',
+    desc:     'Comprehensive guide to caching. Learn about write-through, write-around, write-back policies, LRU/LFU eviction, and distributed caching.',
+    category: 'system_design',
+    tags:     ['Caching', 'Redis', 'Eviction', 'Performance'],
+    topics:   ['Caching strategies', 'Eviction policies', 'Redis'],
+    modules:  1, concepts: 22,
+    level:    'Mid → Advanced',
+    color: '#10b981', color2: '#3b82f6', updated: '2026',
+  },
+  {
+    id:       'sd-buzzwords',
+    file:     'system-design-extra-buzzwords.html',
+    icon:     '🐝',
+    title:    'System Design Buzzwords',
+    subtitle: 'Terminology · Jargon · Concepts',
+    desc:     'A glossary of common system design buzzwords and jargon to help you understand and communicate effectively during interviews and planning.',
+    category: 'system_design',
+    tags:     ['Buzzwords', 'Terminology', 'Jargon'],
+    topics:   ['Glossary', 'Industry terms'],
+    modules:  1, concepts: 50,
+    level:    'Beginner → Mid',
+    color: '#f43f5e', color2: '#f97316', updated: '2026',
+  },
+  {
+    id:       'sd-others',
+    file:     'system-design-others.html',
+    icon:     '🧩',
+    title:    'Other Concepts',
+    subtitle: 'Miscellaneous System Design Topics',
+    desc:     'Additional system design concepts, edge cases, and miscellaneous patterns that don\'t fit neatly into other core categories.',
+    category: 'system_design',
+    tags:     ['Miscellaneous', 'Patterns', 'Edge Cases'],
+    topics:   ['Misc patterns', 'Edge cases'],
+    modules:  1, concepts: 18,
+    level:    'Mid',
+    color: '#64748b', color2: '#94a3b8', updated: '2026',
+  },
 ];
 
 /* ══════════════════════════════════════════════════════════
@@ -599,6 +692,7 @@ const CATS = {
   networking:   { label: 'Networking & Protocols',       icon: '🌐' },
   architecture: { label: 'Architecture & System Design', icon: '🏗️' },
   agile:        { label: 'Agile & Project Management',   icon: '🔄' },
+  system_design:{ label: 'System Design',                icon: '🖥️' },
 };
 
 /* ══════════════════════════════════════════════════════════
