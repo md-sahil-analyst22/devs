@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design — Extra Buzzwords</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-dark:#0f1117;--bg-sidebar:#141820;--bg-card:#1a1f2e;--bg-card2:#1e2535;
+  --bg-hover:#252d3d;--accent:#00c96e;--text-primary:#e8eaf0;--text-secondary:#8892a4;
+  --text-muted:#505a6e;--border:#252d3d;--border2:#2e3748;
+  --green:#00c96e;--blue:#00a8ff;--orange:#f5a623;--pink:#e85d75;--purple:#9b6dff;
+  --sidebar-w:285px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg-dark);color:var(--text-primary);line-height:1.6;overflow-x:hidden}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 0}
+.topbar-brand{display:flex;align-items:center;width:var(--sidebar-w);padding:0 20px;border-right:1px solid var(--border);height:100%}
+.brand-icon{width:34px;height:34px;border-radius:8px;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:15px;margin-right:11px;flex-shrink:0}
+.brand-text{font-weight:600;font-size:15px;color:var(--text-primary)}
+.brand-sub{font-size:11px;color:var(--text-muted)}
+.topbar-meta{display:flex;align-items:center;gap:16px}
+.progress-pill{background:rgba(155,109,255,.12);color:var(--purple);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(155,109,255,.25)}
+.topic-count{color:var(--text-muted);font-size:12px}
+.layout{display:flex;padding-top:56px;min-height:100vh}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--bg-sidebar);border-right:1px solid var(--border);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sidebar-section-header{padding:20px 20px 8px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase}
+.sidebar-section-header:first-child{padding-top:16px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .15s;text-decoration:none;user-select:none}
+.nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+.nav-item.active{color:var(--purple);background:rgba(155,109,255,.08);border-left-color:var(--purple);font-weight:500}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nav-badge{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.b-bg{background:rgba(0,201,110,.15);color:var(--green)}
+.b-mid{background:rgba(0,168,255,.15);color:var(--blue)}
+.b-adv{background:rgba(155,109,255,.15);color:var(--purple)}
+.b-key{background:rgba(245,166,35,.15);color:var(--orange)}
+.main{margin-left:var(--sidebar-w);flex:1;padding:40px 48px 80px;max-width:920px}
+.section{display:none}
+.section.active{display:block}
+.section-hero{margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.hero-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:6px;margin-bottom:14px}
+.hero-title{font-size:28px;font-weight:600;color:var(--text-primary);line-height:1.25;margin-bottom:10px}
+.hero-desc{font-size:15px;color:var(--text-secondary);line-height:1.7;max-width:680px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
+.card-body{font-size:14px;color:var(--text-secondary);line-height:1.7}
+.c-green{border-left:3px solid var(--green);background:rgba(0,201,110,.05)}
+.c-blue{border-left:3px solid var(--blue);background:rgba(0,168,255,.05)}
+.c-orange{border-left:3px solid var(--orange);background:rgba(245,166,35,.05)}
+.c-purple{border-left:3px solid var(--purple);background:rgba(155,109,255,.05)}
+.c-pink{border-left:3px solid var(--pink);background:rgba(232,93,117,.05)}
+.code-block{background:#0a0e16;border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin:14px 0;font-family:'DM Mono',monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;white-space:pre}
+.kw{color:#9b6dff}.str{color:#00c96e}.cmt{color:#505a6e}.dir{color:#00a8ff}.fn{color:#e85d75}.cls{color:#f5a623}
+code{font-family:'DM Mono',monospace;font-size:12.5px;background:rgba(255,255,255,.06);color:var(--purple);padding:1px 6px;border-radius:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mini-card{background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.mini-title{font-size:13px;font-weight:600;margin-bottom:6px}
+.mini-body{font-size:12px;color:var(--text-secondary);line-height:1.55}
+.flow-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0}
+.flow-box{padding:7px 14px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid;text-align:center;white-space:nowrap}
+.flow-arrow{color:var(--text-muted);font-size:16px;flex-shrink:0}
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--bg-card2)}
+th{text-align:left;padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border2)}
+td{padding:11px 16px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.td-n{color:var(--text-primary);font-weight:500}
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.pg{background:rgba(0,201,110,.15);color:var(--green)}
+.pb{background:rgba(0,168,255,.15);color:var(--blue)}
+.po{background:rgba(245,166,35,.15);color:var(--orange)}
+.pp{background:rgba(155,109,255,.15);color:var(--purple)}
+.ppk{background:rgba(232,93,117,.15);color:var(--pink)}
+.callout{border-radius:8px;padding:14px 18px;margin:14px 0;font-size:13px;line-height:1.65}
+.cg{background:rgba(0,201,110,.08);border:1px solid rgba(0,201,110,.2);color:#7ddcaa}
+.cb{background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.2);color:#7dc8f0}
+.co{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#f0c87a}
+.cpur{background:rgba(155,109,255,.08);border:1px solid rgba(155,109,255,.2);color:#c4aafe}
+.cpk{background:rgba(232,93,117,.08);border:1px solid rgba(232,93,117,.2);color:#f0a0b0}
+.callout strong{color:inherit;font-weight:600}
+.step{display:flex;gap:14px;margin-bottom:18px}
+.step-num{width:28px;height:28px;border-radius:50%;flex-shrink:0;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;color:#000}
+.step-content{flex:1}
+.step-title{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.dw{background:#0a0e16;border:1px solid var(--border);border-radius:10px;padding:22px 18px;margin:16px 0;overflow-x:auto}
+.dw svg{display:block;margin:0 auto}
+.layer-stack{display:flex;flex-direction:column;gap:3px;margin:14px 0}
+.layer{border-radius:6px;padding:12px 16px;border-left:4px solid;font-size:13px}
+.layer-name{font-weight:600;margin-bottom:2px}
+.layer-desc{font-size:12px;color:var(--text-secondary)}
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.do-box,.dont-box{border-radius:8px;padding:14px 16px}
+.do-box{background:rgba(0,201,110,.07);border:1px solid rgba(0,201,110,.2)}
+.dont-box{background:rgba(232,93,117,.07);border:1px solid rgba(232,93,117,.2)}
+.do-box h4{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.dont-box h4{font-size:11px;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.do-box li,.dont-box li{font-size:12px;color:var(--text-secondary);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do-box li::before{content:"✓";position:absolute;left:0;color:var(--green);font-size:11px}
+.dont-box li::before{content:"✗";position:absolute;left:0;color:var(--pink);font-size:11px}
+.rule-list{list-style:none;margin:10px 0}
+.rule-list li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-secondary)}
+.rule-list li:last-child{border-bottom:none}
+.rule-list li::before{content:"→";color:var(--purple);font-weight:700;flex-shrink:0;margin-top:1px}
+.rule-list li strong{color:var(--text-primary);font-weight:600}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.tag{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;border:1px solid}
+.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+.sbar3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.si{background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center}
+.sl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.sv{font-size:13px;font-weight:600}
+.divider{height:1px;background:var(--border);margin:32px 0}
+h2{font-size:20px;font-weight:600;color:var(--text-primary);margin:28px 0 12px}
+h2:first-child{margin-top:0}
+h3{font-size:15px;font-weight:600;color:var(--text-primary);margin:22px 0 10px}
+p{font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px}
+/* CAP triangle specific */
+.cap-props{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:14px 0}
+.cap-box{border-radius:10px;padding:18px;text-align:center}
+.hamburger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.hamburger span{display:block;width:20px;height:2px;background:var(--text-secondary);border-radius:1px;transition:.2s}
+.sidebar-overlay{display:none}
+.section.active .card,.section.active .mini-card,.section.active .section-hero{animation:fu .3s ease both}
+.section.active .card:nth-child(2){animation-delay:.05s}
+.section.active .card:nth-child(3){animation-delay:.1s}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.main{padding:28px 24px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sidebar-w:265px}
+  .main{margin-left:0;padding:24px 18px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .25s;z-index:90}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.5);z-index:89}
+  .sidebar-overlay.open{display:block}
+  .hamburger{display:flex}
+  .topbar-brand{width:auto;border-right:none}
+  .grid2,.grid3,.grid4,.do-dont,.sbar,.sbar3,.cap-props{grid-template-columns:1fr}
+  .flow-row{flex-direction:column;align-items:flex-start}
+  .flow-arrow{transform:rotate(90deg)}
+}
+@media(max-width:480px){.hero-title{font-size:22px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">🧩</div>
+    <div>
+      <div class="brand-text">SysDesign</div>
+      <div class="brand-sub">Extra Buzzwords</div>
+    </div>
+  </div>
+  <div class="topbar-meta">
+    <button class="hamburger" id="hamburger" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="topic-count">4 topics · Core concepts</span>
+    <span class="progress-pill">Study Guide</span>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="overlay"></div>
+<div class="layout">
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-section-header">Infrastructure</div>
+  <a class="nav-item active" onclick="show('cloud')">
+    <span class="nav-dot" style="background:var(--blue)"></span>Cloud Computing
+    <span class="nav-badge b-bg">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="show('logging')">
+    <span class="nav-dot" style="background:var(--green)"></span>Logging &amp; Monitoring
+    <span class="nav-badge b-mid">Mid</span>
+  </a>
+  <div class="sidebar-section-header">Distributed Systems</div>
+  <a class="nav-item" onclick="show('hashing')">
+    <span class="nav-dot" style="background:var(--orange)"></span>Hashing &amp; Consistent Hashing
+    <span class="nav-badge b-adv">Adv</span>
+  </a>
+  <a class="nav-item" onclick="show('cap')">
+    <span class="nav-dot" style="background:var(--pink)"></span>CAP Theorem
+    <span class="nav-badge b-key">Key</span>
+  </a>
+</nav>
+
+<main class="main">
+
+<!-- ════════════════════════════════════
+     CLOUD COMPUTING
+════════════════════════════════════ -->
+<section id="sec-cloud" class="section active">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.1);color:var(--blue)">☁️ Topic 1 — Infrastructure</div>
+    <div class="hero-title">Cloud Computing</div>
+    <div class="hero-desc">Cloud computing is the on-demand delivery of IT resources — servers, storage, databases, networking, software — over the internet with pay-as-you-go pricing. It's the foundation every modern system is built on.</div>
+  </div>
+
+  <h2>What is Cloud Computing?</h2>
+  <div class="card c-blue">
+    <div class="card-title">The Core Idea</div>
+    <div class="card-body">Instead of buying and maintaining physical servers, you rent capacity from a provider (AWS, GCP, Azure) and pay only for what you use. The provider handles hardware, power, cooling, and physical security. You focus on your application.</div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.3);color:var(--blue)">On-Demand</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.3);color:var(--green)">Pay-as-you-go</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.3);color:var(--orange)">Elastic Scaling</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.3);color:var(--purple)">Global Reach</span>
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.3);color:var(--pink)">Managed Services</span>
+  </div>
+
+  <h2>The 3 Service Models</h2>
+  <div class="dw">
+    <svg viewBox="0 0 660 270" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs><marker id="c1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#505a6e"/></marker></defs>
+      <!-- IaaS -->
+      <rect x="20" y="20" width="185" height="230" rx="10" fill="#1a1f2e" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="112" y="46" text-anchor="middle" fill="#00a8ff" font-weight="600" font-size="13">IaaS</text>
+      <text x="112" y="62" text-anchor="middle" fill="#505a6e" font-size="11">Infrastructure as a Service</text>
+      <rect x="35" y="75" width="155" height="28" rx="5" fill="rgba(0,201,110,.15)" stroke="rgba(0,201,110,.3)"/>
+      <text x="112" y="94" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="500">YOU manage: App + OS + Runtime</text>
+      <rect x="35" y="108" width="155" height="28" rx="5" fill="#1e2535" stroke="#2e3748"/>
+      <text x="112" y="127" text-anchor="middle" fill="#505a6e" font-size="11">Virtualisation</text>
+      <rect x="35" y="141" width="155" height="28" rx="5" fill="#1e2535" stroke="#2e3748"/>
+      <text x="112" y="160" text-anchor="middle" fill="#505a6e" font-size="11">Servers / Storage</text>
+      <rect x="35" y="174" width="155" height="28" rx="5" fill="#1e2535" stroke="#2e3748"/>
+      <text x="112" y="193" text-anchor="middle" fill="#505a6e" font-size="11">Networking</text>
+      <rect x="35" y="207" width="155" height="28" rx="5" fill="#1e2535" stroke="#2e3748"/>
+      <text x="112" y="226" text-anchor="middle" fill="#505a6e" font-size="11">Physical Datacentre</text>
+      <text x="112" y="256" text-anchor="middle" fill="#00a8ff" font-size="11">AWS EC2 · GCP Compute</text>
+      <!-- PaaS -->
+      <rect x="237" y="20" width="185" height="230" rx="10" fill="#1a1f2e" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="329" y="46" text-anchor="middle" fill="#f5a623" font-weight="600" font-size="13">PaaS</text>
+      <text x="329" y="62" text-anchor="middle" fill="#505a6e" font-size="11">Platform as a Service</text>
+      <rect x="252" y="75" width="155" height="28" rx="5" fill="rgba(0,201,110,.15)" stroke="rgba(0,201,110,.3)"/>
+      <text x="329" y="94" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="500">YOU manage: App code only</text>
+      <rect x="252" y="108" width="155" height="61" rx="5" fill="rgba(245,166,35,.12)" stroke="rgba(245,166,35,.25)"/>
+      <text x="329" y="132" text-anchor="middle" fill="#f5a623" font-size="11">Runtime + Middleware</text>
+      <text x="329" y="149" text-anchor="middle" fill="#f5a623" font-size="11">OS + Virtualisation</text>
+      <rect x="252" y="174" width="155" height="28" rx="5" fill="#1e2535" stroke="#2e3748"/>
+      <text x="329" y="193" text-anchor="middle" fill="#505a6e" font-size="11">Servers / Storage</text>
+      <rect x="252" y="207" width="155" height="28" rx="5" fill="#1e2535" stroke="#2e3748"/>
+      <text x="329" y="226" text-anchor="middle" fill="#505a6e" font-size="11">Physical Datacentre</text>
+      <text x="329" y="256" text-anchor="middle" fill="#f5a623" font-size="11">Heroku · Google App Engine</text>
+      <!-- SaaS -->
+      <rect x="454" y="20" width="185" height="230" rx="10" fill="#1a1f2e" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="546" y="46" text-anchor="middle" fill="#9b6dff" font-weight="600" font-size="13">SaaS</text>
+      <text x="546" y="62" text-anchor="middle" fill="#505a6e" font-size="11">Software as a Service</text>
+      <rect x="469" y="75" width="155" height="160" rx="5" fill="rgba(155,109,255,.12)" stroke="rgba(155,109,255,.25)"/>
+      <text x="546" y="105" text-anchor="middle" fill="#9b6dff" font-size="11">YOU manage: Nothing</text>
+      <text x="546" y="123" text-anchor="middle" fill="#505a6e" font-size="11">App + Runtime + OS</text>
+      <text x="546" y="141" text-anchor="middle" fill="#505a6e" font-size="11">Virtualisation</text>
+      <text x="546" y="159" text-anchor="middle" fill="#505a6e" font-size="11">Servers / Storage</text>
+      <text x="546" y="177" text-anchor="middle" fill="#505a6e" font-size="11">Networking</text>
+      <text x="546" y="195" text-anchor="middle" fill="#505a6e" font-size="11">Physical Datacentre</text>
+      <text x="546" y="256" text-anchor="middle" fill="#9b6dff" font-size="11">Gmail · Salesforce · Slack</text>
+    </svg>
+  </div>
+
+  <h2>The 3 Deployment Models</h2>
+  <div class="grid3">
+    <div class="mini-card" style="border-top:2px solid var(--blue)">
+      <div class="mini-title" style="color:var(--blue)">☁️ Public Cloud</div>
+      <div class="mini-body">Resources shared across many customers (multi-tenant). Managed entirely by the provider. Cheapest, most scalable. Examples: AWS, GCP, Azure.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--orange)">
+      <div class="mini-title" style="color:var(--orange)">🏢 Private Cloud</div>
+      <div class="mini-body">Cloud infrastructure dedicated to one organisation. On-premises or hosted. More control and security. Higher cost. Used by banks, governments.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--purple)">
+      <div class="mini-title" style="color:var(--purple)">🔀 Hybrid Cloud</div>
+      <div class="mini-body">Mix of public + private. Sensitive data stays on-prem; burst workloads run in public cloud. Best of both worlds. Most enterprises use this.</div>
+    </div>
+  </div>
+
+  <h2>Key Cloud Concepts for System Design</h2>
+  <div class="layer-stack">
+    <div class="layer" style="border-color:var(--blue);background:rgba(0,168,255,.05)">
+      <div class="layer-name" style="color:var(--blue)">Regions &amp; Availability Zones (AZs)</div>
+      <div class="layer-desc">A Region is a geographic area (us-east-1). Each region has 2–6 AZs — physically separate datacentres with independent power/networking. Deploy across AZs for high availability.</div>
+    </div>
+    <div class="layer" style="border-color:var(--green);background:rgba(0,201,110,.05)">
+      <div class="layer-name" style="color:var(--green)">Horizontal vs Vertical Scaling</div>
+      <div class="layer-desc">Vertical = bigger machine (scale up). Horizontal = more machines (scale out). Cloud enables auto-scaling — add/remove instances automatically based on CPU/traffic.</div>
+    </div>
+    <div class="layer" style="border-color:var(--orange);background:rgba(245,166,35,.05)">
+      <div class="layer-name" style="color:var(--orange)">Managed Services</div>
+      <div class="layer-desc">RDS (managed Postgres), ElastiCache (managed Redis), S3 (object storage), Lambda (serverless). Let the cloud handle ops — you write business logic.</div>
+    </div>
+    <div class="layer" style="border-color:var(--purple);background:rgba(155,109,255,.05)">
+      <div class="layer-name" style="color:var(--purple)">Serverless / FaaS</div>
+      <div class="layer-desc">AWS Lambda, GCP Cloud Functions. Run code without managing servers. Pay per invocation. Auto-scales to zero. Great for event-driven, bursty workloads.</div>
+    </div>
+    <div class="layer" style="border-color:var(--pink);background:rgba(232,93,117,.05)">
+      <div class="layer-name" style="color:var(--pink)">CDN — Content Delivery Network</div>
+      <div class="layer-desc">Distributes static assets (images, JS, CSS) to edge nodes globally. Users get served from the nearest edge — sub-50ms globally. CloudFront, Cloudflare, Fastly.</div>
+    </div>
+  </div>
+
+  <h2>Cloud Architecture — Reference Diagram</h2>
+  <div class="dw">
+    <svg viewBox="0 0 660 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="ca" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#505a6e"/></marker></defs>
+      <!-- Internet users -->
+      <rect x="10" y="125" width="80" height="40" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="50" y="140" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Users</text>
+      <text x="50" y="155" text-anchor="middle" fill="#505a6e" font-size="10">Internet</text>
+      <!-- CDN -->
+      <rect x="130" y="80" width="100" height="40" rx="6" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="180" y="99" text-anchor="middle" fill="#00a8ff" font-weight="600">CDN</text>
+      <text x="180" y="112" text-anchor="middle" fill="#505a6e" font-size="10">CloudFront</text>
+      <!-- Load Balancer -->
+      <rect x="130" y="170" width="100" height="40" rx="6" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="180" y="187" text-anchor="middle" fill="#00c96e" font-weight="600">Load Balancer</text>
+      <text x="180" y="202" text-anchor="middle" fill="#505a6e" font-size="10">ALB / nginx</text>
+      <!-- App servers AZ-A -->
+      <rect x="275" y="70" width="140" height="75" rx="8" fill="#1a1f2e" stroke="#2e3748"/>
+      <text x="345" y="90" text-anchor="middle" fill="#505a6e" font-size="10">AZ-A</text>
+      <rect x="285" y="98" width="55" height="36" rx="5" fill="#1e2535" stroke="#9b6dff" stroke-width="1.2"/>
+      <text x="312" y="116" text-anchor="middle" fill="#9b6dff" font-size="10" font-weight="600">App-1</text>
+      <text x="312" y="128" text-anchor="middle" fill="#505a6e" font-size="9">EC2 / ECS</text>
+      <rect x="348" y="98" width="55" height="36" rx="5" fill="#1e2535" stroke="#9b6dff" stroke-width="1.2"/>
+      <text x="375" y="116" text-anchor="middle" fill="#9b6dff" font-size="10" font-weight="600">App-2</text>
+      <text x="375" y="128" text-anchor="middle" fill="#505a6e" font-size="9">EC2 / ECS</text>
+      <!-- App servers AZ-B -->
+      <rect x="275" y="165" width="140" height="75" rx="8" fill="#1a1f2e" stroke="#2e3748"/>
+      <text x="345" y="185" text-anchor="middle" fill="#505a6e" font-size="10">AZ-B</text>
+      <rect x="285" y="193" width="55" height="36" rx="5" fill="#1e2535" stroke="#9b6dff" stroke-width="1.2"/>
+      <text x="312" y="211" text-anchor="middle" fill="#9b6dff" font-size="10" font-weight="600">App-3</text>
+      <text x="312" y="223" text-anchor="middle" fill="#505a6e" font-size="9">EC2 / ECS</text>
+      <rect x="348" y="193" width="55" height="36" rx="5" fill="#1e2535" stroke="#9b6dff" stroke-width="1.2"/>
+      <text x="375" y="211" text-anchor="middle" fill="#9b6dff" font-size="10" font-weight="600">App-4</text>
+      <text x="375" y="223" text-anchor="middle" fill="#505a6e" font-size="9">EC2 / ECS</text>
+      <!-- Data layer -->
+      <rect x="462" y="70" width="110" height="45" rx="6" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="517" y="90" text-anchor="middle" fill="#f5a623" font-weight="600">Redis Cache</text>
+      <text x="517" y="106" text-anchor="middle" fill="#505a6e" font-size="10">ElastiCache</text>
+      <rect x="462" y="130" width="110" height="45" rx="6" fill="#1e2535" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="517" y="150" text-anchor="middle" fill="#e85d75" font-weight="600">RDS Primary</text>
+      <text x="517" y="166" text-anchor="middle" fill="#505a6e" font-size="10">Postgres AZ-A</text>
+      <rect x="462" y="190" width="110" height="45" rx="6" fill="#1a1f2e" stroke="#2e3748"/>
+      <text x="517" y="210" text-anchor="middle" fill="#505a6e" font-weight="600">RDS Replica</text>
+      <text x="517" y="226" text-anchor="middle" fill="#505a6e" font-size="10">Postgres AZ-B</text>
+      <rect x="462" y="255" width="110" height="35" rx="6" fill="#1e2535" stroke="#00a8ff" stroke-width="1.2"/>
+      <text x="517" y="272" text-anchor="middle" fill="#00a8ff" font-weight="600">S3 Object Store</text>
+      <text x="517" y="284" text-anchor="middle" fill="#505a6e" font-size="10">Files / Backups</text>
+      <!-- Arrows -->
+      <line x1="90" y1="138" x2="128" y2="103" stroke="#505a6e" stroke-width="1" marker-end="url(#ca)"/>
+      <line x1="90" y1="152" x2="128" y2="182" stroke="#505a6e" stroke-width="1" marker-end="url(#ca)"/>
+      <line x1="230" y1="190" x2="273" y2="190" stroke="#505a6e" stroke-width="1" marker-end="url(#ca)"/>
+      <line x1="230" y1="190" x2="273" y2="105" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ca)"/>
+      <line x1="415" y1="105" x2="460" y2="95" stroke="#505a6e" stroke-width="1" marker-end="url(#ca)"/>
+      <line x1="415" y1="105" x2="460" y2="152" stroke="#505a6e" stroke-width="1" marker-end="url(#ca)"/>
+      <line x1="415" y1="205" x2="460" y2="172" stroke="#505a6e" stroke-width="1" marker-end="url(#ca)"/>
+      <line x1="517" y1="175" x2="517" y2="188" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ca)"/>
+    </svg>
+  </div>
+
+  <div class="callout cpur"><strong>System Design Tip:</strong> Always deploy across <strong>at least 2 AZs</strong>. Use managed services (RDS, ElastiCache, S3) instead of self-managing — they handle backups, failover, and patching. Auto-scaling groups ensure capacity matches demand automatically.</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Deploy app servers across multiple AZs</li>
+      <li>Use managed services — offload operational burden</li>
+      <li>Enable auto-scaling with proper health checks</li>
+      <li>Use CDN for all static assets globally</li>
+      <li>Tag everything — cost visibility is critical</li>
+      <li>Use IAM roles, not hardcoded credentials</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Deploy in a single AZ (one outage = full outage)</li>
+      <li>Run your own database if a managed one exists</li>
+      <li>Commit credentials to source control</li>
+      <li>Ignore cloud costs — they compound fast</li>
+      <li>Skip backups and disaster recovery testing</li>
+    </ul></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     LOGGING & MONITORING
+════════════════════════════════════ -->
+<section id="sec-logging" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.1);color:var(--green)">📊 Topic 2 — Observability</div>
+    <div class="hero-title">Logging &amp; Monitoring</div>
+    <div class="hero-desc">You can't fix what you can't see. Logging and monitoring are the eyes of your system. Without them, debugging production incidents is guesswork. With them, you understand exactly what's happening and why.</div>
+  </div>
+
+  <h2>The 3 Pillars of Observability</h2>
+  <div class="grid3">
+    <div class="card c-green" style="margin-bottom:0">
+      <div class="card-title">📝 Logs</div>
+      <div class="card-body">Timestamped, structured records of discrete events. <em>"User 42 logged in at 14:03:22"</em>. Human-readable. Rich context. Used for debugging and auditing.</div>
+    </div>
+    <div class="card c-blue" style="margin-bottom:0">
+      <div class="card-title">📈 Metrics</div>
+      <div class="card-body">Numeric measurements over time. CPU 72%, p99 latency 340ms, error rate 0.1%. Aggregatable. Alertable. Used for dashboards and anomaly detection.</div>
+    </div>
+    <div class="card c-purple" style="margin-bottom:0">
+      <div class="card-title">🔍 Traces</div>
+      <div class="card-body">Track a single request across multiple services end-to-end. Shows which service added latency. Essential in microservices. Used for performance analysis.</div>
+    </div>
+  </div>
+
+  <h2>Structured Logging — The Right Way</h2>
+  <div class="code-block"><span class="cmt">// ❌ Bad — Unstructured log (hard to query/parse)</span>
+console.<span class="fn">log</span>(<span class="str">"User 42 placed order 99 for $29.99 at 14:03:22"</span>);
+
+<span class="cmt">// ✅ Good — Structured JSON log (queryable, parseable)</span>
+logger.<span class="fn">info</span>({
+  event:      <span class="str">"order.created"</span>,
+  userId:     <span class="cls">42</span>,
+  orderId:    <span class="cls">99</span>,
+  amount:     <span class="cls">29.99</span>,
+  currency:   <span class="str">"USD"</span>,
+  timestamp:  <span class="str">"2025-01-15T14:03:22Z"</span>,
+  traceId:    <span class="str">"abc-123-def"</span>,   <span class="cmt">// link to distributed trace</span>
+  service:    <span class="str">"order-service"</span>,
+  severity:   <span class="str">"INFO"</span>
+});
+
+<span class="cmt">// Search in Kibana/Grafana: event="order.created" AND userId=42</span>
+<span class="cmt">// Alert on: error_rate > 1% in last 5 minutes</span></div>
+
+  <h2>Log Levels — When to Use Each</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Level</th><th>Use When</th><th>Example</th><th>Alert?</th></tr></thead>
+      <tbody>
+        <tr><td class="td-n">ERROR</td><td>Something failed — needs immediate attention</td><td>DB connection failed, unhandled exception</td><td><span class="pill pg">Yes — PagerDuty</span></td></tr>
+        <tr><td class="td-n">WARN</td><td>Unexpected but recoverable — investigate soon</td><td>Retry #3 on API call, slow query &gt;2s</td><td><span class="pill po">Maybe — Slack</span></td></tr>
+        <tr><td class="td-n">INFO</td><td>Normal business events worth recording</td><td>User login, order created, payment processed</td><td><span class="pill" style="background:rgba(255,255,255,.07);color:var(--text-secondary)">No</span></td></tr>
+        <tr><td class="td-n">DEBUG</td><td>Detailed diagnostic data — dev/staging only</td><td>SQL query text, request headers, function entry</td><td><span class="pill" style="background:rgba(255,255,255,.07);color:var(--text-secondary)">No — off in prod</span></td></tr>
+        <tr><td class="td-n">TRACE</td><td>Extremely verbose — loop iterations, byte counts</td><td>Packet contents, lock acquisitions</td><td><span class="pill" style="background:rgba(255,255,255,.07);color:var(--text-secondary)">Never in prod</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>The Monitoring Stack — End to End</h2>
+  <div class="dw">
+    <svg viewBox="0 0 660 240" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="m1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#505a6e"/></marker></defs>
+      <!-- Services (emit) -->
+      <rect x="10" y="40" width="100" height="35" rx="6" fill="#1a1f2e" stroke="#9b6dff" stroke-width="1.2"/>
+      <text x="60" y="62" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">API Service</text>
+      <rect x="10" y="90" width="100" height="35" rx="6" fill="#1a1f2e" stroke="#9b6dff" stroke-width="1.2"/>
+      <text x="60" y="112" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">Order Service</text>
+      <rect x="10" y="140" width="100" height="35" rx="6" fill="#1a1f2e" stroke="#9b6dff" stroke-width="1.2"/>
+      <text x="60" y="162" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">DB / Redis</text>
+      <!-- Collectors -->
+      <rect x="160" y="55" width="115" height="40" rx="6" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="217" y="74" text-anchor="middle" fill="#00c96e" font-weight="600">Log Collector</text>
+      <text x="217" y="88" text-anchor="middle" fill="#505a6e" font-size="10">Fluentd / Filebeat</text>
+      <rect x="160" y="120" width="115" height="40" rx="6" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="217" y="139" text-anchor="middle" fill="#00a8ff" font-weight="600">Metrics Collector</text>
+      <text x="217" y="153" text-anchor="middle" fill="#505a6e" font-size="10">Prometheus / StatsD</text>
+      <!-- Storage -->
+      <rect x="330" y="40" width="115" height="40" rx="6" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="387" y="59" text-anchor="middle" fill="#00c96e" font-weight="600">Log Storage</text>
+      <text x="387" y="73" text-anchor="middle" fill="#505a6e" font-size="10">Elasticsearch / Loki</text>
+      <rect x="330" y="105" width="115" height="40" rx="6" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="387" y="124" text-anchor="middle" fill="#00a8ff" font-weight="600">Metrics DB</text>
+      <text x="387" y="138" text-anchor="middle" fill="#505a6e" font-size="10">Prometheus / InfluxDB</text>
+      <rect x="330" y="170" width="115" height="40" rx="6" fill="#1e2535" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="387" y="189" text-anchor="middle" fill="#9b6dff" font-weight="600">Trace Storage</text>
+      <text x="387" y="203" text-anchor="middle" fill="#505a6e" font-size="10">Jaeger / Zipkin / Tempo</text>
+      <!-- Visualisation / Alerting -->
+      <rect x="500" y="55" width="145" height="40" rx="6" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="572" y="74" text-anchor="middle" fill="#f5a623" font-weight="600">Dashboard</text>
+      <text x="572" y="88" text-anchor="middle" fill="#505a6e" font-size="10">Grafana / Kibana</text>
+      <rect x="500" y="120" width="145" height="40" rx="6" fill="#1e2535" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="572" y="139" text-anchor="middle" fill="#e85d75" font-weight="600">Alerting</text>
+      <text x="572" y="153" text-anchor="middle" fill="#505a6e" font-size="10">PagerDuty / OpsGenie</text>
+      <!-- Arrows -->
+      <line x1="110" y1="60" x2="158" y2="72" stroke="#505a6e" stroke-width="1" marker-end="url(#m1)"/>
+      <line x1="110" y1="108" x2="158" y2="78" stroke="#505a6e" stroke-width="1" marker-end="url(#m1)"/>
+      <line x1="110" y1="108" x2="158" y2="135" stroke="#505a6e" stroke-width="1" marker-end="url(#m1)"/>
+      <line x1="110" y1="160" x2="158" y2="140" stroke="#505a6e" stroke-width="1" marker-end="url(#m1)"/>
+      <line x1="275" y1="75" x2="328" y2="62" stroke="#505a6e" stroke-width="1" marker-end="url(#m1)"/>
+      <line x1="275" y1="138" x2="328" y2="125" stroke="#505a6e" stroke-width="1" marker-end="url(#m1)"/>
+      <line x1="328" y1="185" x2="218" y2="162" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#m1)"/>
+      <line x1="445" y1="62" x2="498" y2="72" stroke="#505a6e" stroke-width="1" marker-end="url(#m1)"/>
+      <line x1="445" y1="125" x2="498" y2="135" stroke="#505a6e" stroke-width="1" marker-end="url(#m1)"/>
+      <line x1="445" y1="195" x2="498" y2="145" stroke="#505a6e" stroke-width="1" marker-end="url(#m1)"/>
+      <text x="330" y="230" text-anchor="middle" fill="#505a6e" font-size="11">The ELK stack (Elasticsearch + Logstash + Kibana) and Grafana+Prometheus are the most common combos</text>
+    </svg>
+  </div>
+
+  <h2>Key Metrics to Track — Golden Signals</h2>
+  <div class="grid4">
+    <div class="mini-card" style="border-top:2px solid var(--blue)">
+      <div class="mini-title" style="color:var(--blue)">Latency</div>
+      <div class="mini-body">How long requests take. Track p50, p95, p99 — not just average. p99 = worst experience for 1 in 100 users.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--green)">
+      <div class="mini-title" style="color:var(--green)">Traffic</div>
+      <div class="mini-body">How much demand. Requests per second, queries/sec, messages/sec. Baseline traffic to detect anomalies.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--pink)">
+      <div class="mini-title" style="color:var(--pink)">Errors</div>
+      <div class="mini-body">Rate of failed requests. 5xx responses, exceptions, timeouts. Alert when error rate exceeds 1% over 5 min.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--orange)">
+      <div class="mini-title" style="color:var(--orange)">Saturation</div>
+      <div class="mini-body">How full resources are. CPU %, memory %, disk I/O, DB connection pool usage. Signal before you run out.</div>
+    </div>
+  </div>
+
+  <div class="callout co"><strong>💡 Distributed Tracing insight:</strong> Add a <code>traceId</code> to every log line and HTTP header. When a request spans 5 microservices, you can pull all related logs with a single query: <code>traceId = "abc-123"</code>. Without this, debugging takes hours.</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     HASHING & CONSISTENT HASHING
+════════════════════════════════════ -->
+<section id="sec-hashing" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.1);color:var(--orange)">🔢 Topic 3 — Distributed Systems</div>
+    <div class="hero-title">Hashing &amp; Consistent Hashing</div>
+    <div class="hero-desc">Hashing decides which server handles which data. Regular hashing breaks when you add or remove servers — causing massive cache invalidation. Consistent hashing solves this elegantly.</div>
+  </div>
+
+  <h2>Regular Hashing — The Problem</h2>
+  <div class="card c-orange">
+    <div class="card-title">How it Works (and why it fails)</div>
+    <div class="card-body">With N servers, assign request by: <code>server = hash(key) % N</code>. Simple. Works great — until you add or remove a server. Now N changes, and <strong>almost every key maps to a different server</strong>. All cached data is suddenly on the wrong server → massive cache miss storm.</div>
+  </div>
+
+  <div class="code-block"><span class="cmt">// Regular hashing — breaks on server change</span>
+<span class="kw">function</span> <span class="fn">getServer</span>(key, servers) {
+  <span class="kw">const</span> hash = <span class="fn">murmurHash</span>(key);           <span class="cmt">// e.g. 1234567</span>
+  <span class="kw">return</span> servers[hash % servers.length];   <span class="cmt">// modulo N</span>
+}
+
+<span class="cmt">// With 3 servers: "user:42" → hash=1234567 → 1234567 % 3 = 1 → Server-B</span>
+<span class="cmt">// Add 1 server (now 4): "user:42" → 1234567 % 4 = 3 → Server-D ← WRONG!</span>
+<span class="cmt">// Every key remaps → 75%+ of cache becomes invalid instantly</span></div>
+
+  <h2>Consistent Hashing — The Solution</h2>
+  <div class="card c-green">
+    <div class="card-title">The Big Idea</div>
+    <div class="card-body">Place both servers and keys on a <strong>virtual ring</strong> from 0 to 2³²-1. Each key is assigned to the <em>next server clockwise</em> on the ring. When a server is added or removed, only the keys that were assigned to that server need to move — typically only <code>K/N</code> keys (K = total keys, N = servers). Everything else stays put.</div>
+  </div>
+
+  <h2>The Hash Ring — Visual</h2>
+  <div class="dw">
+    <svg viewBox="0 0 660 340" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <!-- Ring -->
+      <circle cx="330" cy="168" r="120" fill="none" stroke="#252d3d" stroke-width="2"/>
+      <!-- Ring tick marks -->
+      <text x="330" y="30" text-anchor="middle" fill="#505a6e" font-size="10">0</text>
+      <text x="468" y="175" text-anchor="middle" fill="#505a6e" font-size="10">2³²/4</text>
+      <text x="330" y="306" text-anchor="middle" fill="#505a6e" font-size="10">2³²/2</text>
+      <text x="188" y="175" text-anchor="middle" fill="#505a6e" font-size="10">3×2³²/4</text>
+
+      <!-- Server A — top (0°) -->
+      <circle cx="330" cy="48" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="2"/>
+      <text x="330" y="53" text-anchor="middle" fill="#00c96e" font-weight="700" font-size="11">A</text>
+      <text x="330" y="18" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="600">Server A</text>
+
+      <!-- Server B — right (90°) -->
+      <circle cx="450" cy="168" r="18" fill="#1e2535" stroke="#00a8ff" stroke-width="2"/>
+      <text x="450" y="173" text-anchor="middle" fill="#00a8ff" font-weight="700" font-size="11">B</text>
+      <text x="498" y="155" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="600">Server B</text>
+
+      <!-- Server C — bottom-right (~150°) -->
+      <circle cx="404" cy="272" r="18" fill="#1e2535" stroke="#f5a623" stroke-width="2"/>
+      <text x="404" y="277" text-anchor="middle" fill="#f5a623" font-weight="700" font-size="11">C</text>
+      <text x="438" y="300" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="600">Server C</text>
+
+      <!-- Server D — left (270°) -->
+      <circle cx="210" cy="168" r="18" fill="#1e2535" stroke="#9b6dff" stroke-width="2"/>
+      <text x="210" y="173" text-anchor="middle" fill="#9b6dff" font-weight="700" font-size="11">D</text>
+      <text x="148" y="155" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">Server D</text>
+
+      <!-- Keys on ring -->
+      <!-- key:user1 near A clockwise -->
+      <circle cx="374" cy="62" r="9" fill="rgba(0,201,110,.2)" stroke="#00c96e"/>
+      <text x="374" y="66" text-anchor="middle" fill="#00c96e" font-size="9">k1</text>
+      <text x="390" y="52" text-anchor="middle" fill="#505a6e" font-size="10">user:1 → A</text>
+
+      <!-- key:user2 near B -->
+      <circle cx="450" cy="130" r="9" fill="rgba(0,168,255,.2)" stroke="#00a8ff"/>
+      <text x="450" y="134" text-anchor="middle" fill="#00a8ff" font-size="9">k2</text>
+      <text x="510" y="120" text-anchor="middle" fill="#505a6e" font-size="10">user:2 → B</text>
+
+      <!-- key:user3 near C -->
+      <circle cx="375" cy="258" r="9" fill="rgba(245,166,35,.2)" stroke="#f5a623"/>
+      <text x="375" y="262" text-anchor="middle" fill="#f5a623" font-size="9">k3</text>
+      <text x="330" y="315" text-anchor="middle" fill="#505a6e" font-size="10">user:3 → C</text>
+
+      <!-- key:user4 near D -->
+      <circle cx="222" cy="130" r="9" fill="rgba(155,109,255,.2)" stroke="#9b6dff"/>
+      <text x="222" y="134" text-anchor="middle" fill="#9b6dff" font-size="9">k4</text>
+      <text x="140" y="120" text-anchor="middle" fill="#505a6e" font-size="10">user:4 → D</text>
+
+      <!-- Clockwise arrows suggestion -->
+      <path d="M 345 48 Q 450 55 450 148" fill="none" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ca)"/>
+
+      <!-- Centre label -->
+      <text x="330" y="162" text-anchor="middle" fill="#505a6e" font-size="11">Hash Ring</text>
+      <text x="330" y="178" text-anchor="middle" fill="#505a6e" font-size="11">0 → 2³²</text>
+      <text x="330" y="336" text-anchor="middle" fill="#505a6e" font-size="11">Keys find the next clockwise server — only K/N keys move when a server changes</text>
+    </svg>
+  </div>
+
+  <h2>What Happens When a Server is Added/Removed</h2>
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">➕ Server Added</div>
+      <div class="mini-body">New server E placed on ring between A and B. Only keys that were going to B (but now fall between A→E) move to E. Typically <strong>~1/N of keys</strong> = just 25% with 4 servers. Everything else untouched.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">➖ Server Removed</div>
+      <div class="mini-body">Server B crashes. Its keys now flow to the next clockwise server C. Only B's keys are affected. A, D, and their keys are completely unaffected. Graceful degradation.</div>
+    </div>
+  </div>
+
+  <h2>Virtual Nodes — Solving Uneven Distribution</h2>
+  <div class="card c-purple">
+    <div class="card-title">The Problem with a Basic Ring</div>
+    <div class="card-body">With only 4 servers on the ring, load distribution can be uneven — server A might get 40% of traffic, server C only 15%. <strong>Virtual nodes</strong> (vnodes) fix this: each physical server gets mapped to <strong>multiple positions</strong> on the ring (e.g. 150 virtual nodes per server). This distributes load far more evenly. Used by Cassandra, DynamoDB, Riak.</div>
+  </div>
+
+  <div class="code-block"><span class="cmt">// Consistent hashing with virtual nodes</span>
+<span class="kw">class</span> <span class="cls">ConsistentHash</span> {
+  <span class="fn">constructor</span>(servers, vnodes = 150) {
+    <span class="kw">this</span>.ring = <span class="kw">new</span> <span class="cls">SortedMap</span>();
+    servers.<span class="fn">forEach</span>(server => <span class="kw">this</span>.<span class="fn">addServer</span>(server, vnodes));
+  }
+
+  <span class="fn">addServer</span>(server, vnodes) {
+    <span class="kw">for</span> (<span class="kw">let</span> i = <span class="cls">0</span>; i &lt; vnodes; i++) {
+      <span class="cmt">// Each server gets 150 positions on the ring</span>
+      <span class="kw">const</span> hash = <span class="fn">murmurHash</span>(<span class="str">`</span><span class="cls">${server}</span><span class="str">:vnode:</span><span class="cls">${i}</span><span class="str">`</span>);
+      <span class="kw">this</span>.ring.<span class="fn">set</span>(hash, server);
+    }
+  }
+
+  <span class="fn">getServer</span>(key) {
+    <span class="kw">const</span> hash = <span class="fn">murmurHash</span>(key);
+    <span class="cmt">// Find next clockwise position on ring</span>
+    <span class="kw">return</span> <span class="kw">this</span>.ring.<span class="fn">ceilingEntry</span>(hash)?.value
+        ?? <span class="kw">this</span>.ring.<span class="fn">firstEntry</span>()?.value; <span class="cmt">// wrap around</span>
+  }
+}</div>
+
+  <h2>Where Consistent Hashing is Used</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>System</th><th>Use</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td class="td-n">Apache Cassandra</td><td>Data partitioning</td><td>Virtual nodes decide which node stores which rows</td></tr>
+        <tr><td class="td-n">Amazon DynamoDB</td><td>Partition routing</td><td>Each partition key hashes to a storage partition</td></tr>
+        <tr><td class="td-n">Redis Cluster</td><td>Slot assignment</td><td>16,384 hash slots distributed across nodes</td></tr>
+        <tr><td class="td-n">CDN / Load Balancers</td><td>Sticky routing</td><td>Same user always hits same edge node or cache</td></tr>
+        <tr><td class="td-n">Memcached (twemproxy)</td><td>Cache sharding</td><td>Keys distributed across cache nodes minimally disturbed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout co"><strong>Interview Answer:</strong> "I'd use consistent hashing to distribute data across the cache cluster. Adding or removing a cache node only remaps ~1/N of keys instead of rehashing everything. I'd add 100–150 virtual nodes per server to ensure even load distribution even with a small cluster."</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CAP THEOREM
+════════════════════════════════════ -->
+<section id="sec-cap" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(232,93,117,.1);color:var(--pink)">⚖️ Topic 4 — Distributed Systems</div>
+    <div class="hero-title">CAP Theorem</div>
+    <div class="hero-desc">CAP Theorem states that a distributed data system can only guarantee <strong>2 of 3</strong> properties simultaneously: Consistency, Availability, and Partition Tolerance. Understanding this shapes every database and distributed system decision.</div>
+  </div>
+
+  <h2>The Three Properties</h2>
+  <div class="cap-props">
+    <div class="cap-box" style="background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.25)">
+      <div style="font-size:28px;margin-bottom:8px">🔵</div>
+      <div style="font-size:15px;font-weight:700;color:var(--blue);margin-bottom:8px">Consistency (C)</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.6">Every read receives the <strong style="color:var(--text-primary)">most recent write</strong> or an error. All nodes see the same data at the same time. No stale reads.</div>
+    </div>
+    <div class="cap-box" style="background:rgba(0,201,110,.08);border:1px solid rgba(0,201,110,.25)">
+      <div style="font-size:28px;margin-bottom:8px">🟢</div>
+      <div style="font-size:15px;font-weight:700;color:var(--green);margin-bottom:8px">Availability (A)</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.6">Every request receives a <strong style="color:var(--text-primary)">non-error response</strong>, but it might not be the most recent write. System always responds — even if data is stale.</div>
+    </div>
+    <div class="cap-box" style="background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25)">
+      <div style="font-size:28px;margin-bottom:8px">🟡</div>
+      <div style="font-size:15px;font-weight:700;color:var(--orange);margin-bottom:8px">Partition Tolerance (P)</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.6">System <strong style="color:var(--text-primary)">continues operating</strong> when some network messages are lost or nodes can't talk to each other (network partition).</div>
+    </div>
+  </div>
+
+  <div class="callout cpk"><strong>The Critical Insight:</strong> Network partitions <em>always happen</em> in distributed systems — cables fail, switches drop packets, data centres lose connectivity. <strong>P is non-negotiable</strong>. Therefore, the real choice is: when a partition occurs, do you sacrifice C or A?</div>
+
+  <h2>CAP Triangle — Visual</h2>
+  <div class="dw">
+    <svg viewBox="0 0 660 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <!-- Triangle -->
+      <polygon points="330,30 100,280 560,280" fill="none" stroke="#2e3748" stroke-width="2"/>
+      <!-- Vertex circles -->
+      <circle cx="330" cy="30" r="28" fill="#1e2535" stroke="#00a8ff" stroke-width="2"/>
+      <text x="330" y="26" text-anchor="middle" fill="#00a8ff" font-weight="700" font-size="13">C</text>
+      <text x="330" y="42" text-anchor="middle" fill="#00a8ff" font-size="10">Consistency</text>
+      <circle cx="100" cy="280" r="28" fill="#1e2535" stroke="#00c96e" stroke-width="2"/>
+      <text x="100" y="276" text-anchor="middle" fill="#00c96e" font-weight="700" font-size="13">A</text>
+      <text x="100" y="292" text-anchor="middle" fill="#00c96e" font-size="10">Availability</text>
+      <circle cx="560" cy="280" r="28" fill="#1e2535" stroke="#f5a623" stroke-width="2"/>
+      <text x="560" y="276" text-anchor="middle" fill="#f5a623" font-weight="700" font-size="13">P</text>
+      <text x="560" y="292" text-anchor="middle" fill="#f5a623" font-size="10">Partition Tol.</text>
+
+      <!-- CP region -->
+      <circle cx="248" cy="165" r="42" fill="rgba(0,168,255,.12)" stroke="rgba(0,168,255,.3)" stroke-dasharray="5,3"/>
+      <text x="248" y="158" text-anchor="middle" fill="#00a8ff" font-weight="700" font-size="12">CP</text>
+      <text x="248" y="172" text-anchor="middle" fill="#505a6e" font-size="10">HBase</text>
+      <text x="248" y="184" text-anchor="middle" fill="#505a6e" font-size="10">Zookeeper</text>
+
+      <!-- AP region -->
+      <circle cx="412" cy="165" r="42" fill="rgba(0,201,110,.12)" stroke="rgba(0,201,110,.3)" stroke-dasharray="5,3"/>
+      <text x="412" y="158" text-anchor="middle" fill="#00c96e" font-weight="700" font-size="12">AP</text>
+      <text x="412" y="172" text-anchor="middle" fill="#505a6e" font-size="10">Cassandra</text>
+      <text x="412" y="184" text-anchor="middle" fill="#505a6e" font-size="10">DynamoDB</text>
+
+      <!-- CA region -->
+      <circle cx="330" cy="242" r="42" fill="rgba(245,166,35,.12)" stroke="rgba(245,166,35,.3)" stroke-dasharray="5,3"/>
+      <text x="330" y="235" text-anchor="middle" fill="#f5a623" font-weight="700" font-size="12">CA</text>
+      <text x="330" y="249" text-anchor="middle" fill="#505a6e" font-size="10">Traditional RDBMS</text>
+      <text x="330" y="261" text-anchor="middle" fill="#505a6e" font-size="10">(single node only)</text>
+
+      <!-- Cannot have all 3 -->
+      <text x="330" y="142" text-anchor="middle" fill="#505a6e" font-size="11">← pick 2 →</text>
+
+      <text x="330" y="310" text-anchor="middle" fill="#505a6e" font-size="11">CA is theoretical — real distributed systems must tolerate partitions (choose CP or AP)</text>
+    </svg>
+  </div>
+
+  <h2>CP vs AP — The Real Choice</h2>
+  <div class="grid2">
+    <div class="card c-blue">
+      <div class="card-title">CP — Consistency + Partition Tolerance</div>
+      <div class="card-body">During a network partition, the system <strong>refuses to respond</strong> rather than return stale data. Guarantees every read gets the most recent write. May return errors or become unavailable.
+      <br><br><strong>Examples:</strong> HBase, Zookeeper, etcd, Redis (when configured), MongoDB (default)<br><strong>Use when:</strong> Financial transactions, inventory, user balances — where stale = wrong</div>
+    </div>
+    <div class="card c-green">
+      <div class="card-title">AP — Availability + Partition Tolerance</div>
+      <div class="card-body">During a partition, the system <strong>keeps serving requests</strong> even if some nodes have stale data. Always responds — but data might be slightly out of date. Resolves conflicts later (eventual consistency).
+      <br><br><strong>Examples:</strong> Cassandra, DynamoDB, CouchDB, DNS<br><strong>Use when:</strong> Social feeds, product catalogue, user preferences — where slightly stale is OK</div>
+    </div>
+  </div>
+
+  <h2>Real-World Scenario — Network Partition</h2>
+  <div class="dw">
+    <svg viewBox="0 0 660 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="cp1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#505a6e"/></marker></defs>
+      <!-- Title -->
+      <text x="330" y="20" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">Network Partition Occurs</text>
+      <!-- Node A -->
+      <rect x="30" y="40" width="130" height="60" rx="8" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="95" y="66" text-anchor="middle" fill="#00a8ff" font-weight="600" font-size="12">Node A (Primary)</text>
+      <text x="95" y="82" text-anchor="middle" fill="#505a6e">balance = $100</text>
+      <text x="95" y="96" text-anchor="middle" fill="#00c96e" font-size="10">✓ has latest write</text>
+      <!-- Node B -->
+      <rect x="500" y="40" width="130" height="60" rx="8" fill="#1e2535" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="565" y="66" text-anchor="middle" fill="#e85d75" font-weight="600" font-size="12">Node B (Replica)</text>
+      <text x="565" y="82" text-anchor="middle" fill="#505a6e">balance = $80</text>
+      <text x="565" y="96" text-anchor="middle" fill="#e85d75" font-size="10">⚠ stale (partition)</text>
+      <!-- Partition line -->
+      <line x1="265" y1="30" x2="265" y2="220" stroke="#e85d75" stroke-width="2" stroke-dasharray="6,4"/>
+      <line x1="395" y1="30" x2="395" y2="220" stroke="#e85d75" stroke-width="2" stroke-dasharray="6,4"/>
+      <text x="330" y="130" text-anchor="middle" fill="#e85d75" font-weight="600" font-size="12">🔴 PARTITION</text>
+      <text x="330" y="148" text-anchor="middle" fill="#e85d75" font-size="11">Network split</text>
+      <!-- CP choice -->
+      <rect x="30" y="145" width="220" height="65" rx="8" fill="rgba(0,168,255,.08)" stroke="rgba(0,168,255,.25)"/>
+      <text x="140" y="165" text-anchor="middle" fill="#00a8ff" font-weight="600">CP Choice</text>
+      <text x="140" y="181" text-anchor="middle" fill="#505a6e">Node B returns ERROR</text>
+      <text x="140" y="197" text-anchor="middle" fill="#505a6e">"Service unavailable"</text>
+      <text x="140" y="213" text-anchor="middle" fill="#00c96e" font-size="10">✓ No stale reads — safe</text>
+      <!-- AP choice -->
+      <rect x="410" y="145" width="220" height="65" rx="8" fill="rgba(0,201,110,.08)" stroke="rgba(0,201,110,.25)"/>
+      <text x="520" y="165" text-anchor="middle" fill="#00c96e" font-weight="600">AP Choice</text>
+      <text x="520" y="181" text-anchor="middle" fill="#505a6e">Node B returns $80</text>
+      <text x="520" y="197" text-anchor="middle" fill="#505a6e">(stale but responsive)</text>
+      <text x="520" y="213" text-anchor="middle" fill="#e85d75" font-size="10">⚠ User sees wrong balance</text>
+    </svg>
+  </div>
+
+  <h2>PACELC — The Extended Model</h2>
+  <div class="card c-purple">
+    <div class="card-title">Beyond CAP — What Happens When There's No Partition?</div>
+    <div class="card-body">CAP only describes behaviour during a partition. <strong>PACELC</strong> extends this: even without a partition (the normal state), there's still a tradeoff between <strong>Latency (L)</strong> and <strong>Consistency (C)</strong>.<br><br>
+    <strong style="color:var(--blue)">PA/EL</strong> — Dynamo, Cassandra: available during partition; low latency otherwise<br>
+    <strong style="color:var(--green)">PC/EC</strong> — BigTable, HBase: consistent during partition; consistent otherwise<br>
+    <strong style="color:var(--orange)">PA/EC</strong> — MongoDB: available during partition; consistent otherwise</div>
+  </div>
+
+  <h2>Choosing the Right Database</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Database</th><th>CAP Type</th><th>Consistency Model</th><th>Best Use Case</th></tr></thead>
+      <tbody>
+        <tr><td class="td-n">PostgreSQL / MySQL</td><td><span class="pill po">CA*</span></td><td>Strong (ACID)</td><td>Transactions, finance, single-region apps</td></tr>
+        <tr><td class="td-n">MongoDB</td><td><span class="pill pb">CP</span></td><td>Configurable (strong default)</td><td>Flexible schemas, documents, general purpose</td></tr>
+        <tr><td class="td-n">Apache Cassandra</td><td><span class="pill pg">AP</span></td><td>Eventual (tunable)</td><td>High write throughput, global scale, time-series</td></tr>
+        <tr><td class="td-n">Amazon DynamoDB</td><td><span class="pill pg">AP</span></td><td>Eventual (strong opt-in)</td><td>Serverless, key-value, global tables</td></tr>
+        <tr><td class="td-n">Apache ZooKeeper</td><td><span class="pill pb">CP</span></td><td>Strong (linearizable)</td><td>Distributed coordination, leader election, config</td></tr>
+        <tr><td class="td-n">etcd</td><td><span class="pill pb">CP</span></td><td>Strong (Raft consensus)</td><td>Kubernetes config, service discovery</td></tr>
+        <tr><td class="td-n">Redis (Cluster)</td><td><span class="pill pb">CP</span></td><td>Eventual by default</td><td>Cache, sessions, leaderboards</td></tr>
+        <tr><td class="td-n">CouchDB</td><td><span class="pill pg">AP</span></td><td>Eventual + MVCC</td><td>Offline-first apps, multi-master sync</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout cg"><strong>💡 Interview Answer Framework:</strong> "CAP says we can only guarantee 2 of 3. Since network partitions are inevitable in distributed systems, I need to choose between CP and AP. For [payments/inventory] I'd pick CP — I'd rather return an error than show wrong data. For [user feed/preferences] I'd pick AP — eventual consistency is fine and availability matters more."</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Choose CP for financial data, inventory, user balances</li>
+      <li>Choose AP for social feeds, analytics, recommendations</li>
+      <li>State your CAP choice explicitly in design interviews</li>
+      <li>Know that most modern DBs let you tune consistency level per query</li>
+      <li>Consider PACELC for latency vs consistency in normal operation</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Say "I'll use CA" — partitions always happen, CA is theoretical</li>
+      <li>Pick a DB without justifying its consistency model</li>
+      <li>Assume SQL = consistent and NoSQL = eventual (wrong)</li>
+      <li>Ignore eventual consistency lag in AP systems design</li>
+      <li>Use strong consistency everywhere — it costs latency</li>
+    </ul></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700)closeSidebar();
+}
+const hamburger=document.getElementById('hamburger');
+const sidebar=document.getElementById('sidebar');
+const overlay=document.getElementById('overlay');
+function openSidebar(){sidebar.classList.add('open');overlay.classList.add('open')}
+function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('remove')}
+hamburger.addEventListener('click',()=>sidebar.classList.contains('open')?closeSidebar():openSidebar());
+overlay.addEventListener('click',closeSidebar);
+</script>
+</body>
+</html>

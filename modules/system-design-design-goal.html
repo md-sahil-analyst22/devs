@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design — Design Goals Tutorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-dark: #0f1117;
+  --bg-sidebar: #141820;
+  --bg-card: #1a1f2e;
+  --bg-card2: #1e2535;
+  --bg-hover: #252d3d;
+  --accent: #00c96e;
+  --accent2: #00a8ff;
+  --accent3: #f5a623;
+  --accent4: #e85d75;
+  --accent5: #9b6dff;
+  --text-primary: #e8eaf0;
+  --text-secondary: #8892a4;
+  --text-muted: #505a6e;
+  --border: #252d3d;
+  --border2: #2e3748;
+  --green: #00c96e;
+  --blue: #00a8ff;
+  --orange: #f5a623;
+  --pink: #e85d75;
+  --purple: #9b6dff;
+  --sidebar-w: 280px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* TOPBAR */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px;
+  background: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px 0 0;
+}
+.topbar-brand {
+  display: flex; align-items: center; gap: 0;
+  width: var(--sidebar-w);
+  padding: 0 24px;
+  border-right: 1px solid var(--border);
+  height: 100%;
+}
+.brand-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-weight: 600; font-size: 14px; color: #000; margin-right: 10px;
+}
+.brand-text { font-weight: 600; font-size: 15px; color: var(--text-primary); }
+.brand-sub { font-size: 11px; color: var(--text-muted); }
+.topbar-meta { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--text-secondary); }
+.progress-pill {
+  background: rgba(0,201,110,0.12); color: var(--accent);
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  border: 1px solid rgba(0,201,110,0.25);
+}
+.topic-count { color: var(--text-muted); font-size: 12px; }
+
+/* LAYOUT */
+.layout { display: flex; padding-top: 56px; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  position: fixed; top: 56px; left: 0; bottom: 0;
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.sidebar-section-header {
+  padding: 20px 20px 8px;
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  color: var(--text-muted); text-transform: uppercase;
+}
+.sidebar-section-header:first-child { padding-top: 16px; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; cursor: pointer;
+  font-size: 13px; color: var(--text-secondary);
+  border-left: 3px solid transparent;
+  transition: all .15s;
+  text-decoration: none;
+}
+.nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.nav-item.active {
+  color: var(--accent); background: rgba(0,201,110,0.08);
+  border-left-color: var(--accent); font-weight: 500;
+}
+.nav-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.nav-badge {
+  margin-left: auto; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500;
+}
+.badge-beginner { background: rgba(0,201,110,.15); color: var(--green); }
+.badge-inter { background: rgba(0,168,255,.15); color: var(--blue); }
+.badge-adv { background: rgba(155,109,255,.15); color: var(--purple); }
+.badge-core { background: rgba(245,166,35,.15); color: var(--orange); }
+
+/* MAIN CONTENT */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1; padding: 40px 48px 80px;
+  max-width: 900px;
+}
+
+/* SECTION */
+.section { display: none; }
+.section.active { display: block; }
+
+/* HERO */
+.section-hero {
+  margin-bottom: 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+  padding: 4px 10px; border-radius: 6px; margin-bottom: 14px;
+}
+.hero-title {
+  font-size: 28px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.25; margin-bottom: 10px;
+}
+.hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 680px; }
+
+/* CARDS */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 22px 24px; margin-bottom: 16px;
+}
+.card-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.card-body { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+.card-accent { border-left: 3px solid var(--accent); background: rgba(0,201,110,.05); }
+.card-blue { border-left: 3px solid var(--blue); background: rgba(0,168,255,.05); }
+.card-orange { border-left: 3px solid var(--orange); background: rgba(245,166,35,.05); }
+.card-purple { border-left: 3px solid var(--purple); background: rgba(155,109,255,.05); }
+.card-pink { border-left: 3px solid var(--pink); background: rgba(232,93,117,.05); }
+
+/* CODE BLOCKS */
+.code-block {
+  background: #0a0e16; border: 1px solid var(--border);
+  border-radius: 8px; padding: 18px 20px; margin: 14px 0;
+  font-family: 'DM Mono', monospace; font-size: 12.5px;
+  line-height: 1.75; overflow-x: auto; white-space: pre;
+}
+.code-block .kw { color: #9b6dff; }
+.code-block .str { color: #00c96e; }
+.code-block .cmt { color: #505a6e; }
+.code-block .fn { color: #e85d75; }
+.code-block .num { color: #f5a623; }
+
+code {
+  font-family: 'DM Mono', monospace; font-size: 12.5px;
+  background: rgba(255,255,255,.06); color: var(--accent);
+  padding: 1px 6px; border-radius: 4px;
+}
+
+/* GRIDS */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+.mini-card {
+  background: var(--bg-card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px;
+}
+.mini-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.mini-body { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+/* FLOW */
+.flow-row {
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap; margin: 14px 0;
+}
+.flow-box {
+  padding: 7px 14px; border-radius: 6px;
+  font-size: 12px; font-weight: 500; border: 1px solid;
+  text-align: center;
+}
+.flow-arrow { color: var(--text-muted); font-size: 16px; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; margin: 14px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--bg-card2); }
+th {
+  text-align: left; padding: 10px 16px;
+  font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--text-muted); border-bottom: 1px solid var(--border2);
+}
+td { padding: 11px 16px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.02); }
+.td-name { color: var(--text-primary); font-weight: 500; }
+
+/* BADGE PILL */
+.pill {
+  display: inline-block; font-size: 11px; font-weight: 500;
+  padding: 2px 8px; border-radius: 10px;
+}
+.pill-green { background: rgba(0,201,110,.15); color: var(--green); }
+.pill-blue { background: rgba(0,168,255,.15); color: var(--blue); }
+.pill-orange { background: rgba(245,166,35,.15); color: var(--orange); }
+.pill-purple { background: rgba(155,109,255,.15); color: var(--purple); }
+.pill-pink { background: rgba(232,93,117,.15); color: var(--pink); }
+.pill-gray { background: rgba(255,255,255,.07); color: var(--text-secondary); }
+
+/* CALLOUT */
+.callout {
+  border-radius: 8px; padding: 14px 18px; margin: 14px 0;
+  font-size: 13px; line-height: 1.65;
+}
+.callout-green { background: rgba(0,201,110,.08); border: 1px solid rgba(0,201,110,.2); color: #7ddcaa; }
+.callout-blue { background: rgba(0,168,255,.08); border: 1px solid rgba(0,168,255,.2); color: #7dc8f0; }
+.callout-orange { background: rgba(245,166,35,.08); border: 1px solid rgba(245,166,35,.2); color: #f0c87a; }
+.callout-purple { background: rgba(155,109,255,.08); border: 1px solid rgba(155,109,255,.2); color: #c4aafe; }
+.callout strong { color: inherit; font-weight: 600; }
+
+/* STEPS */
+.step { display: flex; gap: 14px; margin-bottom: 18px; }
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: var(--accent); color: #000; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.step-num-blue { background: var(--blue); }
+.step-num-purple { background: var(--purple); }
+.step-content { flex: 1; }
+.step-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ACCORDION */
+.acc { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
+.acc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 18px; cursor: pointer; font-size: 13px; font-weight: 500;
+  color: var(--text-primary); background: var(--bg-card);
+  transition: background .15s; user-select: none;
+}
+.acc-head:hover { background: var(--bg-hover); }
+.acc-icon { color: var(--text-muted); font-size: 18px; transition: transform .2s; }
+.acc-body {
+  display: none; padding: 14px 18px; font-size: 13px; color: var(--text-secondary);
+  line-height: 1.65; background: var(--bg-card2); border-top: 1px solid var(--border);
+}
+.acc.open .acc-body { display: block; }
+.acc.open .acc-icon { transform: rotate(45deg); }
+
+/* SECTION DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+/* H2 H3 */
+h2 { font-size: 20px; font-weight: 600; color: var(--text-primary); margin: 28px 0 12px; }
+h2:first-child { margin-top: 0; }
+h3 { font-size: 15px; font-weight: 600; color: var(--text-primary); margin: 22px 0 10px; }
+
+p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
+
+/* RULE LIST */
+.rule-list { list-style: none; margin: 10px 0; }
+.rule-list li {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-secondary);
+}
+.rule-list li:last-child { border-bottom: none; }
+.rule-list li::before { content: "→"; color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.rule-list li strong { color: var(--text-primary); font-weight: 600; }
+
+/* DO / DON'T */
+.do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0; }
+.do-box, .dont-box { border-radius: 8px; padding: 16px 18px; font-size: 13px; }
+.do-box { background: rgba(0,201,110,.06); border: 1px solid rgba(0,201,110,.2); }
+.dont-box { background: rgba(232,93,117,.06); border: 1px solid rgba(232,93,117,.2); }
+.do-box h4 { color: var(--green); margin-bottom: 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.dont-box h4 { color: var(--pink); margin-bottom: 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.do-box ul, .dont-box ul { list-style: none; }
+.do-box li { color: var(--text-secondary); padding: 4px 0; }
+.dont-box li { color: var(--text-secondary); padding: 4px 0; }
+.do-box li::before { content: "✓ "; color: var(--green); font-weight: 700; }
+.dont-box li::before { content: "✗ "; color: var(--pink); font-weight: 700; }
+
+/* SUMMARY BAR */
+.summary-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 16px 0;
+}
+.sum-item {
+  background: var(--bg-card2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 14px; text-align: center;
+}
+.sum-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.sum-val { font-size: 13px; font-weight: 600; }
+
+/* TAG ROW */
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 20px; }
+.tag {
+  font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 6px; border: 1px solid;
+}
+
+/* DIAGRAM WRAPPER */
+.diagram-wrap {
+  background: var(--bg-card2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 24px; margin: 18px 0; overflow-x: auto;
+}
+.diagram-title {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--text-muted); margin-bottom: 16px;
+}
+
+/* RESOURCE CARDS */
+.resource-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+.resource-card {
+  background: var(--bg-card2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start;
+  text-decoration: none; transition: background .15s, border-color .15s;
+}
+.resource-card:hover { background: var(--bg-hover); border-color: var(--border2); }
+.resource-icon {
+  width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.resource-meta { flex: 1; }
+.resource-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+.resource-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+.resource-type { font-size: 10px; font-weight: 600; margin-top: 5px; }
+
+/* HAMBURGER */
+.hamburger {
+  display: none; background: none; border: none; cursor: pointer;
+  flex-direction: column; gap: 5px; padding: 4px;
+}
+.hamburger span { display: block; width: 20px; height: 2px; background: var(--text-secondary); border-radius: 1px; transition: .2s; }
+.sidebar-overlay { display: none; }
+
+/* ANIMATIONS */
+.section.active .card,
+.section.active .mini-card,
+.section.active .section-hero,
+.section.active .diagram-wrap {
+  animation: fadeUp .3s ease both;
+}
+.section.active .card:nth-child(2) { animation-delay: .05s; }
+.section.active .card:nth-child(3) { animation-delay: .1s; }
+.section.active .card:nth-child(4) { animation-delay: .15s; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* LAYER STACK */
+.layer-stack { display: flex; flex-direction: column; gap: 3px; margin: 14px 0; }
+.layer { border-radius: 6px; padding: 12px 16px; border-left: 4px solid; font-size: 13px; }
+.layer-name { font-weight: 600; margin-bottom: 2px; }
+.layer-desc { font-size: 12px; color: var(--text-secondary); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .main { padding: 28px 24px 60px; max-width: 100%; }
+  .summary-bar { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  :root { --sidebar-w: 260px; }
+  .main { margin-left: 0; padding: 24px 18px 60px; }
+  .sidebar { transform: translateX(-100%); transition: transform .25s; z-index: 90; }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay { display: none; position: fixed; inset: 56px 0 0 0; background: rgba(0,0,0,.5); z-index: 89; }
+  .sidebar-overlay.open { display: block; }
+  .hamburger { display: flex; }
+  .topbar-brand { width: auto; border-right: none; }
+  .grid2, .resource-grid { grid-template-columns: 1fr; }
+  .grid3 { grid-template-columns: 1fr 1fr; }
+  .do-dont { grid-template-columns: 1fr; }
+  .flow-row { flex-direction: column; align-items: flex-start; }
+  .flow-arrow { transform: rotate(90deg); }
+}
+@media (max-width: 480px) {
+  .grid3 { grid-template-columns: 1fr; }
+  .hero-title { font-size: 22px; }
+  .summary-bar { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">SD</div>
+    <div>
+      <div class="brand-text">SysDesign</div>
+      <div class="brand-sub">Design Goals Tutorial</div>
+    </div>
+  </div>
+  <div class="topbar-meta">
+    <button class="hamburger" id="hamburger" aria-label="menu">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="topic-count">5 modules · 40+ concepts</span>
+    <span class="progress-pill">Study Guide</span>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-section-header">Getting Started</div>
+  <a class="nav-item active" onclick="show('intro')">
+    <span class="nav-dot" style="background:var(--green)"></span> Introduction
+    <span class="nav-badge badge-beginner">Start</span>
+  </a>
+
+  <div class="sidebar-section-header">Design Goals</div>
+  <a class="nav-item" onclick="show('scalability')">
+    <span class="nav-dot" style="background:var(--blue)"></span> Scalability
+    <span class="nav-badge badge-inter">Core</span>
+  </a>
+  <a class="nav-item" onclick="show('availability')">
+    <span class="nav-dot" style="background:var(--green)"></span> Availability
+    <span class="nav-badge badge-inter">Core</span>
+  </a>
+  <a class="nav-item" onclick="show('consistency')">
+    <span class="nav-dot" style="background:var(--orange)"></span> Consistency
+    <span class="nav-badge badge-adv">Core</span>
+  </a>
+  <a class="nav-item" onclick="show('fault')">
+    <span class="nav-dot" style="background:var(--pink)"></span> Fault Tolerance / SPOF
+    <span class="nav-badge badge-adv">Core</span>
+  </a>
+
+  <div class="sidebar-section-header">Reference</div>
+  <a class="nav-item" onclick="show('cap')">
+    <span class="nav-dot" style="background:var(--purple)"></span> CAP Theorem
+    <span class="nav-badge badge-adv">Theory</span>
+  </a>
+  <a class="nav-item" onclick="show('tradeoffs')">
+    <span class="nav-dot" style="background:var(--orange)"></span> Trade-offs Summary
+    <span class="nav-badge badge-core">Ref</span>
+  </a>
+  <a class="nav-item" onclick="show('resources')">
+    <span class="nav-dot" style="background:var(--accent)"></span> Resources & Courses
+    <span class="nav-badge badge-beginner">Links</span>
+  </a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ====================== INTRO ====================== -->
+<section id="sec-intro" class="section active">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.12);color:var(--green)">
+      Module 1 · Getting Started
+    </div>
+    <h1 class="hero-title">What is System Design?</h1>
+    <p class="hero-desc">System design is the process of defining the architecture, components, and data flow of a large-scale software system. Before building anything, engineers align on a set of design goals — the "buzzwords" that every system must balance.</p>
+  </div>
+
+  <div class="card card-accent">
+    <div class="card-title">Why do design goals matter?</div>
+    <div class="card-body">Every system you build is a set of trade-offs. You can't have perfect scalability, 100% availability, strong consistency, and zero faults — all at the same time for free. Understanding these goals helps you make <strong style="color:var(--text-primary)">deliberate, justified decisions</strong> rather than accidental ones.</div>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-title">The Restaurant Analogy</div>
+    <div class="card-body">Think of a restaurant. <strong style="color:var(--text-primary)">Scalability</strong> = adding more chefs when customers grow. <strong style="color:var(--text-primary)">Availability</strong> = always being open, never turning anyone away. <strong style="color:var(--text-primary)">Consistency</strong> = every customer gets the exact same menu and prices. <strong style="color:var(--text-primary)">Fault Tolerance</strong> = the kitchen still works if one oven breaks. These same tensions exist in every distributed system.</div>
+  </div>
+
+  <h2>The 5 Core Design Goals</h2>
+  <div class="layer-stack">
+    <div class="layer" style="border-color:var(--green);background:rgba(0,201,110,.05)">
+      <div class="layer-name" style="color:var(--green)">1 · Introduction</div>
+      <div class="layer-desc">Understanding what system design is and the problems it solves at scale.</div>
+    </div>
+    <div class="layer" style="border-color:var(--blue);background:rgba(0,168,255,.05)">
+      <div class="layer-name" style="color:var(--blue)">2 · Scalability</div>
+      <div class="layer-desc">The ability to handle growing amounts of load — horizontally or vertically.</div>
+    </div>
+    <div class="layer" style="border-color:var(--green);background:rgba(0,201,110,.05)">
+      <div class="layer-name" style="color:var(--green)">3 · Availability</div>
+      <div class="layer-desc">The percentage of time a system is operational and accessible to users.</div>
+    </div>
+    <div class="layer" style="border-color:var(--orange);background:rgba(245,166,35,.05)">
+      <div class="layer-name" style="color:var(--orange)">4 · Consistency</div>
+      <div class="layer-desc">Whether all nodes in a distributed system see the same data at the same time.</div>
+    </div>
+    <div class="layer" style="border-color:var(--pink);background:rgba(232,93,117,.05)">
+      <div class="layer-name" style="color:var(--pink)">5 · Fault Tolerance / No SPOF</div>
+      <div class="layer-desc">The system's ability to continue operating when components fail.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-green">
+    <strong>Udemy Tip:</strong> As you go through your Udemy course, use this guide as a companion reference. Each section maps directly to a lecture topic. The diagrams here will help you visualise what the instructor is explaining verbally.
+  </div>
+
+  <h2>How to use this guide</h2>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">Read each section in order</div>
+      <div class="step-desc">Start from Scalability and work your way through. Each concept builds on the previous one.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">Study the diagrams</div>
+      <div class="step-desc">Each module has an inline SVG diagram. Trace through it until you can redraw it from memory — this is what interviewers expect.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">Check the Do / Don't boxes</div>
+      <div class="step-desc">These are the gotchas that cost people interviews. Memorise the patterns, not the facts.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">Visit the Resources section</div>
+      <div class="step-desc">Curated YouTube videos, courses, and reading material are listed at the end — all free or widely accessible.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== SCALABILITY ====================== -->
+<section id="sec-scalability" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.12);color:var(--blue)">
+      Module 2 · Design Goal
+    </div>
+    <h1 class="hero-title">Scalability</h1>
+    <p class="hero-desc">Scalability is the system's ability to handle increasing load — more users, more data, more requests — without degrading performance. It's the most talked-about property in system design interviews.</p>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Type</div><div class="sum-val" style="color:var(--blue)">Design Goal</div></div>
+    <div class="sum-item"><div class="sum-label">Key Pattern</div><div class="sum-val" style="color:var(--green)">Load Balancing</div></div>
+    <div class="sum-item"><div class="sum-label">Trade-off</div><div class="sum-val" style="color:var(--orange)">Complexity</div></div>
+    <div class="sum-item"><div class="sum-label">Interview Weight</div><div class="sum-val" style="color:var(--pink)">Very High</div></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Horizontal Scaling</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">Vertical Scaling</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">Load Balancer</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">Caching</span>
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">Sharding</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">CDN</span>
+  </div>
+
+  <h2>What is Scalability?</h2>
+  <div class="card card-blue">
+    <div class="card-title">Definition</div>
+    <div class="card-body">Scalability means a system can grow to handle more work by adding resources. A scalable system performs just as well with 10 million users as it does with 10 users — it just costs more. The key question: <strong style="color:var(--text-primary)">How does performance change as load increases?</strong></div>
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Mental model:</strong> If your system can serve 100 requests/second on 1 server, can it serve 1,000 req/s on 10 servers with no code changes? If yes — it's horizontally scalable.
+  </div>
+
+  <h2>Why does it matter?</h2>
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">Growth happens fast</div>
+      <div class="mini-body">Viral moments, product launches, or seasonal traffic can increase load 100× overnight. Systems that aren't designed to scale will crash exactly when you need them most.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Cost efficiency</div>
+      <div class="mini-body">Over-provisioning resources wastes money. A scalable architecture lets you add capacity when needed and remove it when traffic drops — pay for what you use.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">User experience</div>
+      <div class="mini-body">A slow or down system = users leaving. Scalability is directly tied to latency, throughput, and uptime — all things users feel immediately.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">Business continuity</div>
+      <div class="mini-body">For e-commerce, a 1-second latency increase can reduce conversions by 7%. Scalability is a revenue-protecting investment, not just a technical nice-to-have.</div>
+    </div>
+  </div>
+
+  <h2>Vertical vs Horizontal Scaling</h2>
+  <div class="diagram-wrap">
+    <div class="diagram-title">Scaling Strategies</div>
+    <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <!-- Left: Vertical -->
+      <text x="180" y="22" text-anchor="middle" fill="#8892a4" font-size="11" font-family="DM Sans,sans-serif" font-weight="600" letter-spacing="1">VERTICAL SCALING</text>
+      <!-- Small server -->
+      <rect x="140" y="35" width="80" height="50" rx="6" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="180" y="56" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Mono,monospace">Server</text>
+      <text x="180" y="70" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">2 CPU · 4GB</text>
+      <!-- Arrow down -->
+      <line x1="180" y1="88" x2="180" y2="108" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="193" y="101" fill="#505a6e" font-size="9" font-family="DM Sans,sans-serif">upgrade</text>
+      <!-- Big server -->
+      <rect x="120" y="112" width="120" height="70" rx="6" fill="#1a1f2e" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="180" y="138" text-anchor="middle" fill="#00a8ff" font-size="9" font-family="DM Mono,monospace">Big Server</text>
+      <text x="180" y="152" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">32 CPU · 128GB</text>
+      <text x="180" y="172" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Sans,sans-serif">Scale UP ↑</text>
+
+      <text x="180" y="215" text-anchor="middle" fill="#7dc8f0" font-size="10" font-family="DM Sans,sans-serif">✓ Simple</text>
+      <text x="180" y="230" text-anchor="middle" fill="#e85d75" font-size="10" font-family="DM Sans,sans-serif">✗ Hardware limit</text>
+      <text x="180" y="245" text-anchor="middle" fill="#e85d75" font-size="10" font-family="DM Sans,sans-serif">✗ Single point of failure</text>
+
+      <!-- Divider -->
+      <line x1="380" y1="20" x2="380" y2="260" stroke="#252d3d" stroke-width="1" stroke-dasharray="4,4"/>
+
+      <!-- Right: Horizontal -->
+      <text x="570" y="22" text-anchor="middle" fill="#8892a4" font-size="11" font-family="DM Sans,sans-serif" font-weight="600" letter-spacing="1">HORIZONTAL SCALING</text>
+      <!-- Load balancer -->
+      <rect x="510" y="35" width="120" height="36" rx="6" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="570" y="57" text-anchor="middle" fill="#00c96e" font-size="10" font-family="DM Mono,monospace">Load Balancer</text>
+      <!-- Arrows to servers -->
+      <line x1="510" y1="71" x2="470" y2="110" stroke="#505a6e" stroke-width="1.5"/>
+      <line x1="545" y1="71" x2="540" y2="110" stroke="#505a6e" stroke-width="1.5"/>
+      <line x1="595" y1="71" x2="600" y2="110" stroke="#505a6e" stroke-width="1.5"/>
+      <line x1="630" y1="71" x2="668" y2="110" stroke="#505a6e" stroke-width="1.5"/>
+      <!-- 4 servers -->
+      <rect x="430" y="110" width="70" height="44" rx="5" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="465" y="130" text-anchor="middle" fill="#8892a4" font-size="8" font-family="DM Mono,monospace">Server 1</text>
+      <text x="465" y="144" text-anchor="middle" fill="#505a6e" font-size="7.5" font-family="DM Mono,monospace">4 CPU·16GB</text>
+      <rect x="508" y="110" width="70" height="44" rx="5" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="543" y="130" text-anchor="middle" fill="#8892a4" font-size="8" font-family="DM Mono,monospace">Server 2</text>
+      <text x="543" y="144" text-anchor="middle" fill="#505a6e" font-size="7.5" font-family="DM Mono,monospace">4 CPU·16GB</text>
+      <rect x="586" y="110" width="70" height="44" rx="5" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="621" y="130" text-anchor="middle" fill="#8892a4" font-size="8" font-family="DM Mono,monospace">Server 3</text>
+      <text x="621" y="144" text-anchor="middle" fill="#505a6e" font-size="7.5" font-family="DM Mono,monospace">4 CPU·16GB</text>
+      <rect x="664" y="110" width="70" height="44" rx="5" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="699" y="130" text-anchor="middle" fill="#8892a4" font-size="8" font-family="DM Mono,monospace">Server 4</text>
+      <text x="699" y="144" text-anchor="middle" fill="#505a6e" font-size="7.5" font-family="DM Mono,monospace">4 CPU·16GB</text>
+
+      <!-- add more label -->
+      <text x="570" y="175" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Sans,sans-serif">Scale OUT → Add more servers</text>
+
+      <text x="570" y="215" text-anchor="middle" fill="#7ddcaa" font-size="10" font-family="DM Sans,sans-serif">✓ Near-infinite scale</text>
+      <text x="570" y="230" text-anchor="middle" fill="#7ddcaa" font-size="10" font-family="DM Sans,sans-serif">✓ Fault tolerant</text>
+      <text x="570" y="245" text-anchor="middle" fill="#e85d75" font-size="10" font-family="DM Sans,sans-serif">✗ Distributed complexity</text>
+
+      <defs>
+        <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#505a6e"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h2>How to achieve Scalability</h2>
+  <div class="step">
+    <div class="step-num" style="background:var(--blue);color:#000">1</div>
+    <div class="step-content">
+      <div class="step-title">Add a Load Balancer</div>
+      <div class="step-desc">Distribute incoming traffic across multiple servers. Strategies include Round Robin, Least Connections, and IP Hashing. Tools: Nginx, HAProxy, AWS ALB.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--blue);color:#000">2</div>
+    <div class="step-content">
+      <div class="step-title">Use Caching aggressively</div>
+      <div class="step-desc">Cache expensive DB queries in Redis or Memcached. A cache hit is 100–1000× faster than a DB read. Apply at every layer: browser, CDN, API, database.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--blue);color:#000">3</div>
+    <div class="step-content">
+      <div class="step-title">Shard your Database</div>
+      <div class="step-desc">Split data across multiple DB nodes by user ID or region. Each shard handles a subset of traffic. Avoid joins across shards — they're expensive and slow.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--blue);color:#000">4</div>
+    <div class="step-content">
+      <div class="step-title">Use a CDN for static assets</div>
+      <div class="step-desc">Serve images, CSS, JS from edge nodes closest to the user. This offloads 60–80% of your bandwidth and reduces latency dramatically. Tools: Cloudflare, AWS CloudFront.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--blue);color:#000">5</div>
+    <div class="step-content">
+      <div class="step-title">Decouple with Message Queues</div>
+      <div class="step-desc">Use Kafka or RabbitMQ to decouple producers and consumers. Spikes in traffic fill the queue instead of crashing your service. Workers process at their own pace.</div>
+    </div>
+  </div>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Design stateless services from day 1</li>
+        <li>Cache at every layer (CDN, API, DB)</li>
+        <li>Use read replicas for read-heavy workloads</li>
+        <li>Auto-scale based on CPU / request rate</li>
+        <li>Shard databases by a natural partition key</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Store session state in memory on one server</li>
+        <li>Vertically scale as your only strategy</li>
+        <li>Ignore database as the bottleneck</li>
+        <li>Couple services tightly (REST chains)</li>
+        <li>Premature optimisation before profiling</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== AVAILABILITY ====================== -->
+<section id="sec-availability" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.12);color:var(--green)">
+      Module 3 · Design Goal
+    </div>
+    <h1 class="hero-title">Availability</h1>
+    <p class="hero-desc">Availability is the fraction of time a system is operational and able to serve requests. It's usually expressed as a percentage — "nines" — and it's one of the most important SLAs (Service Level Agreements) you'll agree with customers.</p>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Target</div><div class="sum-val" style="color:var(--green)">99.9% – 99.999%</div></div>
+    <div class="sum-item"><div class="sum-label">Formula</div><div class="sum-val" style="color:var(--blue)">Uptime / Total Time</div></div>
+    <div class="sum-item"><div class="sum-label">Enemy</div><div class="sum-val" style="color:var(--pink)">Single Point of Failure</div></div>
+    <div class="sum-item"><div class="sum-label">Pattern</div><div class="sum-val" style="color:var(--orange)">Redundancy</div></div>
+  </div>
+
+  <h2>The Nines of Availability</h2>
+  <div class="diagram-wrap">
+    <div class="diagram-title">Availability Levels — Downtime per year</div>
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <!-- Bars -->
+      <!-- 90% -->
+      <rect x="40" y="30" width="600" height="28" rx="4" fill="rgba(232,93,117,.15)" stroke="rgba(232,93,117,.3)" stroke-width="1"/>
+      <rect x="40" y="30" width="600" height="28" rx="4" fill="#e85d75" opacity="0.85"/>
+      <text x="52" y="49" fill="#fff" font-size="11" font-family="DM Mono,monospace" font-weight="600">90% (1 nine)</text>
+      <text x="500" y="49" fill="#fff" font-size="10" font-family="DM Mono,monospace">~36.5 days/year offline</text>
+
+      <!-- 99% -->
+      <rect x="40" y="68" width="400" height="24" rx="4" fill="#f5a623" opacity="0.85"/>
+      <rect x="40" y="68" width="600" height="24" rx="4" fill="none" stroke="#252d3d" stroke-width="1"/>
+      <text x="52" y="85" fill="#fff" font-size="11" font-family="DM Mono,monospace" font-weight="600">99% (2 nines)</text>
+      <text x="430" y="85" fill="#f5a623" font-size="10" font-family="DM Mono,monospace">~3.65 days/year</text>
+
+      <!-- 99.9% -->
+      <rect x="40" y="102" width="120" height="24" rx="4" fill="#00a8ff" opacity="0.85"/>
+      <rect x="40" y="102" width="600" height="24" rx="4" fill="none" stroke="#252d3d" stroke-width="1"/>
+      <text x="52" y="119" fill="#fff" font-size="11" font-family="DM Mono,monospace" font-weight="600">99.9% (3 nines)</text>
+      <text x="168" y="119" fill="#00a8ff" font-size="10" font-family="DM Mono,monospace">~8.7 hours/year</text>
+
+      <!-- 99.99% -->
+      <rect x="40" y="136" width="22" height="24" rx="4" fill="#9b6dff" opacity="0.85"/>
+      <rect x="40" y="136" width="600" height="24" rx="4" fill="none" stroke="#252d3d" stroke-width="1"/>
+      <text x="52" y="153" fill="#fff" font-size="11" font-family="DM Mono,monospace" font-weight="600">99.99% (4 nines)</text>
+      <text x="70" y="153" fill="#9b6dff" font-size="10" font-family="DM Mono,monospace">~52 min/year</text>
+
+      <!-- 99.999% -->
+      <rect x="40" y="170" width="5" height="20" rx="2" fill="#00c96e" opacity="0.9"/>
+      <rect x="40" y="170" width="600" height="20" rx="4" fill="none" stroke="#252d3d" stroke-width="1"/>
+      <text x="52" y="185" fill="#00c96e" font-size="11" font-family="DM Mono,monospace" font-weight="600">99.999% (5 nines) → ~5 min/year — the gold standard</text>
+    </svg>
+  </div>
+
+  <div class="callout callout-green">
+    <strong>Key insight:</strong> Going from 99.9% to 99.99% cuts downtime by 10×, but the engineering cost is typically 3–5× higher. Most production systems target 3–4 nines. Five nines is reserved for critical infrastructure (banking, air traffic control).
+  </div>
+
+  <h2>Why Availability matters</h2>
+  <div class="card card-accent">
+    <div class="card-title">Real cost of downtime</div>
+    <div class="card-body">Amazon loses ~$220,000 per minute when AWS goes down. Even for smaller companies, a 1-hour outage can destroy customer trust that took months to build. Availability is not just technical — it is a business KPI.</div>
+  </div>
+
+  <h2>How to achieve High Availability</h2>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">High Availability Architecture Pattern</div>
+    <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#505a6e"/>
+        </marker>
+      </defs>
+      <!-- Users -->
+      <rect x="290" y="10" width="120" height="36" rx="6" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="350" y="33" text-anchor="middle" fill="#8892a4" font-size="11" font-family="DM Mono,monospace">👤 Users</text>
+
+      <!-- CDN -->
+      <line x1="350" y1="46" x2="350" y2="68" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="270" y="68" width="160" height="34" rx="6" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="350" y="90" text-anchor="middle" fill="#00c96e" font-size="10" font-family="DM Mono,monospace">🌐 CDN / DNS</text>
+
+      <!-- Load Balancer Primary -->
+      <line x1="350" y1="102" x2="350" y2="124" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="240" y="124" width="220" height="34" rx="6" fill="#1a1f2e" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="350" y="146" text-anchor="middle" fill="#00a8ff" font-size="10" font-family="DM Mono,monospace">⚖ Load Balancer (Active)</text>
+
+      <!-- LB to services -->
+      <line x1="280" y1="158" x2="170" y2="190" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <line x1="350" y1="158" x2="350" y2="190" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <line x1="420" y1="158" x2="530" y2="190" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+      <!-- Service instances -->
+      <rect x="100" y="190" width="130" height="40" rx="6" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="165" y="215" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">App Server 1</text>
+      <rect x="285" y="190" width="130" height="40" rx="6" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="350" y="215" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">App Server 2</text>
+      <rect x="470" y="190" width="130" height="40" rx="6" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="535" y="215" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">App Server 3</text>
+
+      <!-- DB primary + replica -->
+      <line x1="165" y1="230" x2="220" y2="258" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <line x1="350" y1="230" x2="350" y2="258" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <line x1="535" y1="230" x2="480" y2="258" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+      <rect x="170" y="258" width="140" height="34" rx="6" fill="#1a1f2e" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="240" y="280" text-anchor="middle" fill="#f5a623" font-size="9" font-family="DM Mono,monospace">DB Primary (Leader)</text>
+      <rect x="390" y="258" width="140" height="34" rx="6" fill="#1e2535" stroke="#505a6e" stroke-width="1.5"/>
+      <text x="460" y="280" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">DB Replica (Follower)</text>
+      <line x1="310" y1="275" x2="390" y2="275" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arr2)"/>
+      <text x="350" y="268" text-anchor="middle" fill="#505a6e" font-size="7" font-family="DM Sans,sans-serif">replicate</text>
+    </svg>
+  </div>
+
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Redundancy</div>
+      <div class="mini-body">Run multiple instances of every component. No single machine should be the only one doing a job. If one dies, others take over.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">Health Checks</div>
+      <div class="mini-body">Load balancers continuously ping servers. If a server fails a health check, it's removed from rotation automatically — no manual intervention needed.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">Graceful Degradation</div>
+      <div class="mini-body">When a service fails, show a fallback or cached version instead of an error. Users get reduced functionality, not a broken experience.</div>
+    </div>
+  </div>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Run at least 2 instances in different AZs</li>
+        <li>Use health checks and auto-restart</li>
+        <li>Set up DB replication with failover</li>
+        <li>Use circuit breakers for dependencies</li>
+        <li>Monitor and alert on error rates</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Deploy all servers in a single data center</li>
+        <li>Rely on manual failover processes</li>
+        <li>Ignore dependency availability (3rd-party APIs)</li>
+        <li>Skip DR (Disaster Recovery) plans</li>
+        <li>Confuse availability with reliability</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== CONSISTENCY ====================== -->
+<section id="sec-consistency" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.12);color:var(--orange)">
+      Module 4 · Design Goal
+    </div>
+    <h1 class="hero-title">Consistency — Strong vs Eventual</h1>
+    <p class="hero-desc">Consistency defines whether all nodes in a distributed system see the same data at the same time. It's the trickiest design goal because it forces a fundamental trade-off with availability — you usually can't have both simultaneously.</p>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Theorem</div><div class="sum-val" style="color:var(--orange)">CAP Theorem</div></div>
+    <div class="sum-item"><div class="sum-label">Models</div><div class="sum-val" style="color:var(--blue)">Strong / Eventual</div></div>
+    <div class="sum-item"><div class="sum-label">Strong example</div><div class="sum-val" style="color:var(--green)">Banking</div></div>
+    <div class="sum-item"><div class="sum-label">Eventual example</div><div class="sum-val" style="color:var(--purple)">Social Feed</div></div>
+  </div>
+
+  <h2>What is Consistency?</h2>
+  <div class="card card-orange">
+    <div class="card-title">The Bank Account Problem</div>
+    <div class="card-body">You have $100. You withdraw $100 from ATM A at the same moment your partner withdraws $100 from ATM B. If the system isn't strongly consistent, both succeed and you're now at -$100. <strong style="color:var(--text-primary)">Consistency prevents this</strong> — every node must agree on the current value before allowing a write.</div>
+  </div>
+
+  <h2>Strong Consistency</h2>
+  <div class="card card-accent">
+    <div class="card-title">Definition</div>
+    <div class="card-body">After a write completes, every subsequent read from any node returns that value. The system behaves as if there is a single copy of the data. Also called <strong style="color:var(--text-primary)">linearisability</strong>.</div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Strong Consistency — All nodes agree before acknowledging the write</div>
+    <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <marker id="arr3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#505a6e"/>
+        </marker>
+        <marker id="arr3g" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#00c96e"/>
+        </marker>
+      </defs>
+      <!-- Client -->
+      <rect x="10" y="88" width="90" height="36" rx="6" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="55" y="111" text-anchor="middle" fill="#8892a4" font-size="10" font-family="DM Mono,monospace">Client</text>
+
+      <!-- Write arrow -->
+      <line x1="100" y1="100" x2="158" y2="80" stroke="#f5a623" stroke-width="1.5" marker-end="url(#arr3)"/>
+      <text x="118" y="83" fill="#f5a623" font-size="9" font-family="DM Sans,sans-serif">write x=5</text>
+
+      <!-- Leader DB -->
+      <rect x="160" y="52" width="110" height="44" rx="6" fill="#1a1f2e" stroke="#f5a623" stroke-width="2"/>
+      <text x="215" y="74" text-anchor="middle" fill="#f5a623" font-size="10" font-family="DM Mono,monospace">Leader DB</text>
+      <text x="215" y="88" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Mono,monospace">x = 5</text>
+
+      <!-- Sync to replicas -->
+      <line x1="270" y1="68" x2="390" y2="48" stroke="#505a6e" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr3)"/>
+      <line x1="270" y1="80" x2="390" y2="100" stroke="#505a6e" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr3)"/>
+      <line x1="270" y1="92" x2="390" y2="152" stroke="#505a6e" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr3)"/>
+
+      <text x="320" y="38" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Sans,sans-serif">sync replicate (wait for ACK)</text>
+
+      <!-- Replicas -->
+      <rect x="390" y="28" width="110" height="36" rx="6" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="445" y="46" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">Replica 1</text>
+      <text x="445" y="58" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Mono,monospace">x = 5 ✓</text>
+      <rect x="390" y="80" width="110" height="36" rx="6" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="445" y="98" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">Replica 2</text>
+      <text x="445" y="110" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Mono,monospace">x = 5 ✓</text>
+      <rect x="390" y="132" width="110" height="36" rx="6" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="445" y="150" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">Replica 3</text>
+      <text x="445" y="162" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Mono,monospace">x = 5 ✓</text>
+
+      <!-- ACK back -->
+      <line x1="390" y1="46" x2="280" y2="80" stroke="#00c96e" stroke-width="1.5" marker-end="url(#arr3g)"/>
+      <line x1="390" y1="98" x2="280" y2="84" stroke="#00c96e" stroke-width="1.5" marker-end="url(#arr3g)"/>
+      <line x1="390" y1="150" x2="280" y2="88" stroke="#00c96e" stroke-width="1.5" marker-end="url(#arr3g)"/>
+
+      <!-- OK to client -->
+      <line x1="160" y1="100" x2="104" y2="110" stroke="#00c96e" stroke-width="1.5" marker-end="url(#arr3g)"/>
+      <text x="110" y="130" fill="#00c96e" font-size="9" font-family="DM Sans,sans-serif">✓ OK (after all ACKs)</text>
+
+      <text x="350" y="200" text-anchor="middle" fill="#8892a4" font-size="10" font-family="DM Sans,sans-serif">Every node confirmed x=5 before the client got "success"</text>
+    </svg>
+  </div>
+
+  <div class="callout callout-orange">
+    <strong>Cost of Strong Consistency:</strong> The write must wait for all replicas to confirm before returning success. This increases <strong>latency</strong>. If a replica is slow or unreachable, it can also reduce <strong>availability</strong>. This is the core tension described by the CAP Theorem.
+  </div>
+
+  <h2>Eventual Consistency</h2>
+  <div class="card card-purple">
+    <div class="card-title">Definition</div>
+    <div class="card-body">After a write, replicas will <em>eventually</em> converge to the same value — but there is a window of time where different nodes may return different (stale) data. The system prioritises <strong style="color:var(--text-primary)">availability over immediate consistency</strong>.</div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Eventual Consistency — Nodes catch up asynchronously</div>
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <marker id="arr4" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#505a6e"/>
+        </marker>
+      </defs>
+
+      <!-- Timeline arrow -->
+      <line x1="30" y1="185" x2="670" y2="185" stroke="#252d3d" stroke-width="1.5" marker-end="url(#arr4)"/>
+      <text x="670" y="182" fill="#505a6e" font-size="9" font-family="DM Sans,sans-serif">time →</text>
+
+      <!-- T=0 write -->
+      <line x1="100" y1="30" x2="100" y2="180" stroke="#252d3d" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="100" y="24" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Sans,sans-serif">t=0 write x=5</text>
+
+      <!-- Node A -->
+      <rect x="30" y="38" width="80" height="24" rx="4" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="70" y="55" text-anchor="middle" fill="#00c96e" font-size="9" font-family="DM Mono,monospace">Node A x=5</text>
+      <line x1="110" y1="50" x2="660" y2="50" stroke="#00c96e" stroke-width="1" stroke-dasharray="2,4" opacity="0.4"/>
+      <rect x="590" y="38" width="80" height="24" rx="4" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="630" y="55" text-anchor="middle" fill="#00c96e" font-size="9" font-family="DM Mono,monospace">Node A x=5</text>
+
+      <!-- Node B (lags) -->
+      <rect x="30" y="78" width="80" height="24" rx="4" fill="#1e2535" stroke="#505a6e" stroke-width="1.5"/>
+      <text x="70" y="95" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Mono,monospace">Node B x=3</text>
+      <line x1="110" y1="90" x2="300" y2="90" stroke="#505a6e" stroke-width="1" stroke-dasharray="2,4" opacity="0.4"/>
+      <line x1="300" y1="30" x2="300" y2="180" stroke="#252d3d" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="300" y="24" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Sans,sans-serif">t=2s sync</text>
+      <rect x="260" y="78" width="80" height="24" rx="4" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="300" y="95" text-anchor="middle" fill="#00c96e" font-size="9" font-family="DM Mono,monospace">Node B x=5</text>
+      <line x1="340" y1="90" x2="660" y2="90" stroke="#00c96e" stroke-width="1" stroke-dasharray="2,4" opacity="0.4"/>
+      <rect x="590" y="78" width="80" height="24" rx="4" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="630" y="95" text-anchor="middle" fill="#00c96e" font-size="9" font-family="DM Mono,monospace">Node B x=5</text>
+
+      <!-- Node C (lags more) -->
+      <rect x="30" y="118" width="80" height="24" rx="4" fill="#1e2535" stroke="#505a6e" stroke-width="1.5"/>
+      <text x="70" y="135" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Mono,monospace">Node C x=3</text>
+      <line x1="110" y1="130" x2="460" y2="130" stroke="#505a6e" stroke-width="1" stroke-dasharray="2,4" opacity="0.4"/>
+      <line x1="460" y1="30" x2="460" y2="180" stroke="#252d3d" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="460" y="24" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Sans,sans-serif">t=5s sync</text>
+      <rect x="420" y="118" width="80" height="24" rx="4" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="460" y="135" text-anchor="middle" fill="#00c96e" font-size="9" font-family="DM Mono,monospace">Node C x=5</text>
+      <line x1="500" y1="130" x2="660" y2="130" stroke="#00c96e" stroke-width="1" stroke-dasharray="2,4" opacity="0.4"/>
+      <rect x="590" y="118" width="80" height="24" rx="4" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="630" y="135" text-anchor="middle" fill="#00c96e" font-size="9" font-family="DM Mono,monospace">Node C x=5</text>
+
+      <text x="200" y="168" text-anchor="middle" fill="#e85d75" font-size="9" font-family="DM Sans,sans-serif">← inconsistency window →</text>
+      <text x="580" y="168" text-anchor="middle" fill="#00c96e" font-size="9" font-family="DM Sans,sans-serif">all converged ✓</text>
+    </svg>
+  </div>
+
+  <h2>Strong vs Eventual — When to choose which</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Consistency Model</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-name">Bank transfers</td><td><span class="pill pill-orange">Strong</span></td><td>Stale balance = money lost</td></tr>
+        <tr><td class="td-name">Inventory checkout</td><td><span class="pill pill-orange">Strong</span></td><td>Overselling = critical issue</td></tr>
+        <tr><td class="td-name">Social media likes</td><td><span class="pill pill-purple">Eventual</span></td><td>Slightly off count is fine</td></tr>
+        <tr><td class="td-name">Search index update</td><td><span class="pill pill-purple">Eventual</span></td><td>New content appearing 1s later is OK</td></tr>
+        <tr><td class="td-name">User profile read</td><td><span class="pill pill-purple">Eventual</span></td><td>Stale profile for seconds is tolerable</td></tr>
+        <tr><td class="td-name">Distributed lock</td><td><span class="pill pill-orange">Strong</span></td><td>Two processes must not hold the same lock</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Default to eventual consistency for reads</li>
+        <li>Use strong consistency only where money/correctness is involved</li>
+        <li>Document the consistency model for each service</li>
+        <li>Use idempotent writes to handle retries safely</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Force strong consistency everywhere — kills performance</li>
+        <li>Ignore consistency and assume "it'll be fine"</li>
+        <li>Mix consistency models without understanding trade-offs</li>
+        <li>Confuse consistency with durability</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== FAULT TOLERANCE ====================== -->
+<section id="sec-fault" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(232,93,117,.12);color:var(--pink)">
+      Module 5 · Design Goal
+    </div>
+    <h1 class="hero-title">Fault Tolerance & No SPOF</h1>
+    <p class="hero-desc">Fault tolerance is the system's ability to continue operating correctly even when one or more of its components fail. Eliminating Single Points of Failure (SPOF) is the architectural strategy to achieve it.</p>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Goal</div><div class="sum-val" style="color:var(--pink)">Continue under failure</div></div>
+    <div class="sum-item"><div class="sum-label">Enemy</div><div class="sum-val" style="color:var(--orange)">SPOF</div></div>
+    <div class="sum-item"><div class="sum-label">Strategy</div><div class="sum-val" style="color:var(--green)">Redundancy</div></div>
+    <div class="sum-item"><div class="sum-label">Pattern</div><div class="sum-val" style="color:var(--blue)">Circuit Breaker</div></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">No SPOF</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">Redundancy</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Circuit Breaker</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">Failover</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">Replication</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">Bulkhead</span>
+  </div>
+
+  <h2>What is a Single Point of Failure?</h2>
+  <div class="card card-pink">
+    <div class="card-title">Definition</div>
+    <div class="card-body">A SPOF is any component whose failure causes the entire system to fail. If you have one database, one server, one network switch — those are all SPOFs. The rule: <strong style="color:var(--text-primary)">if it can fail and take everything with it, it's a SPOF.</strong> Eliminate it by adding redundancy.</div>
+  </div>
+
+  <h2>SPOF vs Fault-Tolerant Architecture</h2>
+  <div class="diagram-wrap">
+    <div class="diagram-title">SPOF vs Redundant Architecture</div>
+    <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <marker id="arr5" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#505a6e"/>
+        </marker>
+        <marker id="arr5r" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#e85d75"/>
+        </marker>
+        <marker id="arr5g" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#00c96e"/>
+        </marker>
+      </defs>
+
+      <!-- LEFT: SPOF -->
+      <text x="160" y="18" text-anchor="middle" fill="#e85d75" font-size="11" font-family="DM Sans,sans-serif" font-weight="600">❌  WITH SPOF</text>
+
+      <rect x="110" y="28" width="100" height="30" rx="5" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="160" y="48" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">Users</text>
+      <line x1="160" y1="58" x2="160" y2="78" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+
+      <rect x="100" y="78" width="120" height="30" rx="5" fill="#1a1f2e" stroke="#e85d75" stroke-width="2"/>
+      <text x="160" y="98" text-anchor="middle" fill="#e85d75" font-size="9" font-family="DM Mono,monospace">⚠ 1 Load Balancer</text>
+      <line x1="160" y1="108" x2="160" y2="128" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+
+      <rect x="100" y="128" width="120" height="30" rx="5" fill="#1a1f2e" stroke="#e85d75" stroke-width="2"/>
+      <text x="160" y="148" text-anchor="middle" fill="#e85d75" font-size="9" font-family="DM Mono,monospace">⚠ 1 App Server</text>
+      <line x1="160" y1="158" x2="160" y2="178" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+
+      <rect x="100" y="178" width="120" height="30" rx="5" fill="#1a1f2e" stroke="#e85d75" stroke-width="2"/>
+      <text x="160" y="198" text-anchor="middle" fill="#e85d75" font-size="9" font-family="DM Mono,monospace">⚠ 1 Database</text>
+
+      <text x="160" y="232" text-anchor="middle" fill="#e85d75" font-size="9" font-family="DM Sans,sans-serif">Any failure = full outage</text>
+
+      <!-- Divider -->
+      <line x1="350" y1="10" x2="350" y2="260" stroke="#252d3d" stroke-width="1" stroke-dasharray="4,4"/>
+
+      <!-- RIGHT: Redundant -->
+      <text x="530" y="18" text-anchor="middle" fill="#00c96e" font-size="11" font-family="DM Sans,sans-serif" font-weight="600">✅  FAULT TOLERANT</text>
+
+      <rect x="480" y="28" width="100" height="30" rx="5" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="530" y="48" text-anchor="middle" fill="#8892a4" font-size="9" font-family="DM Mono,monospace">Users</text>
+
+      <!-- 2 LBs -->
+      <line x1="510" y1="58" x2="450" y2="78" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+      <line x1="550" y1="58" x2="610" y2="78" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+      <rect x="400" y="78" width="90" height="28" rx="5" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="445" y="97" text-anchor="middle" fill="#00c96e" font-size="8" font-family="DM Mono,monospace">LB Primary</text>
+      <rect x="570" y="78" width="90" height="28" rx="5" fill="#1e2535" stroke="#505a6e" stroke-width="1.5"/>
+      <text x="615" y="97" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Mono,monospace">LB Standby</text>
+      <line x1="490" y1="92" x2="572" y2="92" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,3"/>
+
+      <!-- 3 App Servers -->
+      <line x1="445" y1="106" x2="420" y2="130" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+      <line x1="445" y1="106" x2="530" y2="130" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+      <line x1="445" y1="106" x2="620" y2="130" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+
+      <rect x="383" y="130" width="80" height="26" rx="5" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="423" y="147" text-anchor="middle" fill="#8892a4" font-size="8" font-family="DM Mono,monospace">App 1</text>
+      <rect x="490" y="130" width="80" height="26" rx="5" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="530" y="147" text-anchor="middle" fill="#8892a4" font-size="8" font-family="DM Mono,monospace">App 2</text>
+      <rect x="597" y="130" width="80" height="26" rx="5" fill="#1e2535" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="637" y="147" text-anchor="middle" fill="#8892a4" font-size="8" font-family="DM Mono,monospace">App 3</text>
+
+      <!-- DB Primary + Replica -->
+      <line x1="423" y1="156" x2="445" y2="178" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+      <line x1="530" y1="156" x2="500" y2="178" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+      <line x1="637" y1="156" x2="610" y2="178" stroke="#505a6e" stroke-width="1.5" marker-end="url(#arr5)"/>
+
+      <rect x="400" y="178" width="100" height="28" rx="5" fill="#1a1f2e" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="450" y="197" text-anchor="middle" fill="#f5a623" font-size="8" font-family="DM Mono,monospace">DB Primary</text>
+      <line x1="500" y1="192" x2="548" y2="192" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arr5)"/>
+      <rect x="550" y="178" width="100" height="28" rx="5" fill="#1e2535" stroke="#505a6e" stroke-width="1.5"/>
+      <text x="600" y="197" text-anchor="middle" fill="#8892a4" font-size="8" font-family="DM Mono,monospace">DB Replica</text>
+
+      <text x="530" y="232" text-anchor="middle" fill="#00c96e" font-size="9" font-family="DM Sans,sans-serif">Component failure = automatic failover</text>
+    </svg>
+  </div>
+
+  <h2>Key Fault Tolerance Patterns</h2>
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">Circuit Breaker</div>
+      <div class="mini-body">When a downstream service starts failing, the circuit "trips" and stops sending requests to it. It periodically checks if the service has recovered. Prevents cascade failures. Pattern: <code>Closed → Open → Half-Open</code>.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">Retry with Backoff</div>
+      <div class="mini-body">When a request fails, retry it — but with exponentially increasing delays (1s, 2s, 4s, 8s...) plus random jitter. Prevents thundering-herd when a service recovers. Always set a max retry limit.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">Bulkhead Pattern</div>
+      <div class="mini-body">Isolate parts of a system so a failure in one doesn't cascade to others. Like compartments in a ship — if one floods, the others stay dry. Use thread pools or separate services per tenant.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Timeout</div>
+      <div class="mini-body">Always set timeouts on every network call. A stuck upstream service should not block your service indefinitely. Fail fast, return an error or fallback, keep the rest of the system running.</div>
+    </div>
+  </div>
+
+  <h2>Circuit Breaker — State Machine</h2>
+  <div class="diagram-wrap">
+    <div class="diagram-title">Circuit Breaker States</div>
+    <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <marker id="arr6" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0 L0,7 L7,3.5 z" fill="#505a6e"/>
+        </marker>
+      </defs>
+      <!-- CLOSED -->
+      <circle cx="130" cy="90" r="55" fill="#1a1f2e" stroke="#00c96e" stroke-width="2"/>
+      <text x="130" y="84" text-anchor="middle" fill="#00c96e" font-size="13" font-family="DM Sans,sans-serif" font-weight="600">CLOSED</text>
+      <text x="130" y="101" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Mono,monospace">requests pass</text>
+      <text x="130" y="114" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Mono,monospace">through ✓</text>
+
+      <!-- OPEN -->
+      <circle cx="370" cy="90" r="55" fill="#1a1f2e" stroke="#e85d75" stroke-width="2"/>
+      <text x="370" y="84" text-anchor="middle" fill="#e85d75" font-size="13" font-family="DM Sans,sans-serif" font-weight="600">OPEN</text>
+      <text x="370" y="101" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Mono,monospace">requests blocked</text>
+      <text x="370" y="114" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Mono,monospace">fail fast ✗</text>
+
+      <!-- HALF-OPEN -->
+      <circle cx="600" cy="90" r="58" fill="#1a1f2e" stroke="#f5a623" stroke-width="2"/>
+      <text x="600" y="84" text-anchor="middle" fill="#f5a623" font-size="12" font-family="DM Sans,sans-serif" font-weight="600">HALF-OPEN</text>
+      <text x="600" y="101" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Mono,monospace">probe requests</text>
+      <text x="600" y="114" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Mono,monospace">allowed</text>
+
+      <!-- Arrows -->
+      <!-- CLOSED → OPEN -->
+      <path d="M 182,72 Q 276,30 316,72" stroke="#e85d75" stroke-width="1.5" fill="none" marker-end="url(#arr6)"/>
+      <text x="255" y="32" text-anchor="middle" fill="#e85d75" font-size="8" font-family="DM Sans,sans-serif">failure threshold reached</text>
+
+      <!-- OPEN → HALF-OPEN -->
+      <path d="M 424,74 Q 500,30 546,72" stroke="#f5a623" stroke-width="1.5" fill="none" marker-end="url(#arr6)"/>
+      <text x="490" y="30" text-anchor="middle" fill="#f5a623" font-size="8" font-family="DM Sans,sans-serif">timeout elapsed</text>
+
+      <!-- HALF-OPEN → CLOSED (success) -->
+      <path d="M 552,114 Q 370,170 178,114" stroke="#00c96e" stroke-width="1.5" fill="none" marker-end="url(#arr6)"/>
+      <text x="370" y="168" text-anchor="middle" fill="#00c96e" font-size="8" font-family="DM Sans,sans-serif">probe succeeds → back to normal</text>
+
+      <!-- HALF-OPEN → OPEN (fail) -->
+      <path d="M 550,82 Q 490,52 424,80" stroke="#e85d75" stroke-width="1.5" fill="none" stroke-dasharray="3,3" marker-end="url(#arr6)"/>
+      <text x="488" y="50" text-anchor="middle" fill="#e85d75" font-size="8" font-family="DM Sans,sans-serif">probe fails</text>
+    </svg>
+  </div>
+
+  <div class="callout callout-purple">
+    <strong>Real-world example:</strong> Netflix's Hystrix library pioneered the circuit breaker pattern at scale. When their recommendation service failed, instead of crashing the whole app, they showed generic top-10 lists. Fault tolerance enabled graceful degradation.
+  </div>
+
+  <div class="do-dont">
+    <div class="do-box">
+      <h4>Do</h4>
+      <ul>
+        <li>Replicate every stateful component (DB, cache)</li>
+        <li>Use circuit breakers for all external calls</li>
+        <li>Test failures with chaos engineering (Netflix Chaos Monkey)</li>
+        <li>Set timeouts on every network call</li>
+        <li>Deploy across multiple availability zones</li>
+      </ul>
+    </div>
+    <div class="dont-box">
+      <h4>Don't</h4>
+      <ul>
+        <li>Assume dependencies are always up</li>
+        <li>Skip failover testing until production breaks</li>
+        <li>Build synchronous chains of critical services</li>
+        <li>Use a shared database as the only data store</li>
+        <li>Ignore cascading failure scenarios</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== CAP THEOREM ====================== -->
+<section id="sec-cap" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(155,109,255,.12);color:var(--purple)">
+      Reference · Theory
+    </div>
+    <h1 class="hero-title">CAP Theorem</h1>
+    <p class="hero-desc">The CAP Theorem, proven by Eric Brewer in 2000, states that any distributed data store can only guarantee two of three properties at the same time: Consistency, Availability, and Partition Tolerance.</p>
+  </div>
+
+  <div class="callout callout-purple">
+    <strong>The bitter truth:</strong> Network partitions <em>always</em> happen in distributed systems. This means you must always sacrifice either <strong>Consistency</strong> or <strong>Availability</strong> — you get to choose which matters more for your use case.
+  </div>
+
+  <h2>The CAP Triangle</h2>
+  <div class="diagram-wrap">
+    <div class="diagram-title">CAP Theorem — Pick any two (but P is mandatory)</div>
+    <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <!-- Triangle -->
+      <polygon points="350,30 130,280 570,280" fill="none" stroke="#252d3d" stroke-width="2"/>
+
+      <!-- C vertex -->
+      <circle cx="350" cy="30" r="42" fill="#1a1f2e" stroke="#f5a623" stroke-width="2"/>
+      <text x="350" y="25" text-anchor="middle" fill="#f5a623" font-size="12" font-family="DM Sans,sans-serif" font-weight="700">C</text>
+      <text x="350" y="41" text-anchor="middle" fill="#f5a623" font-size="10" font-family="DM Sans,sans-serif">Consistency</text>
+
+      <!-- A vertex -->
+      <circle cx="130" cy="280" r="42" fill="#1a1f2e" stroke="#00c96e" stroke-width="2"/>
+      <text x="130" y="275" text-anchor="middle" fill="#00c96e" font-size="12" font-family="DM Sans,sans-serif" font-weight="700">A</text>
+      <text x="130" y="291" text-anchor="middle" fill="#00c96e" font-size="10" font-family="DM Sans,sans-serif">Availability</text>
+
+      <!-- P vertex -->
+      <circle cx="570" cy="280" r="42" fill="#1a1f2e" stroke="#00a8ff" stroke-width="2"/>
+      <text x="570" y="275" text-anchor="middle" fill="#00a8ff" font-size="12" font-family="DM Sans,sans-serif" font-weight="700">P</text>
+      <text x="570" y="291" text-anchor="middle" fill="#00a8ff" font-size="10" font-family="DM Sans,sans-serif">Partition Tolerance</text>
+
+      <!-- Edge labels -->
+      <!-- CA edge -->
+      <text x="210" y="155" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Sans,sans-serif" transform="rotate(-58,210,155)">CA: Traditional RDBMS</text>
+      <!-- CP edge -->
+      <text x="490" y="155" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Sans,sans-serif" transform="rotate(58,490,155)">CP: HBase, Zookeeper</text>
+      <!-- AP edge -->
+      <text x="350" y="294" text-anchor="middle" fill="#505a6e" font-size="9" font-family="DM Sans,sans-serif">AP: Cassandra, DynamoDB, CouchDB</text>
+
+      <!-- Center label -->
+      <text x="350" y="188" text-anchor="middle" fill="#505a6e" font-size="10" font-family="DM Sans,sans-serif">← choose 2 →</text>
+    </svg>
+  </div>
+
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">CP Systems</div>
+      <div class="mini-body"><strong style="color:var(--text-primary)">Consistency + Partition Tolerance</strong><br>When a partition happens, the system refuses to serve stale data — it returns an error instead. Great for: financial records, distributed locks.<br><br>Examples: HBase, MongoDB (w:majority), Redis Sentinel, ZooKeeper</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">AP Systems</div>
+      <div class="mini-body"><strong style="color:var(--text-primary)">Availability + Partition Tolerance</strong><br>When a partition happens, nodes keep serving requests with potentially stale data. They converge when the partition heals (eventual consistency).<br><br>Examples: Cassandra, DynamoDB, CouchDB, Riak</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">CA Systems</div>
+      <div class="mini-body"><strong style="color:var(--text-primary)">Consistency + Availability</strong><br>Only possible if you never have network partitions — i.e., a single-node or LAN database. Not realistic for large distributed systems over the internet.<br><br>Examples: PostgreSQL (single node), MySQL</div>
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>PACELC Extension:</strong> Even without partitions, you face a trade-off between <strong>Latency</strong> and <strong>Consistency</strong>. PACELC (by Daniel Abadi) is a more complete model: "If Partition → choose A or C. Else → choose L or C."
+  </div>
+</section>
+
+<!-- ====================== TRADE-OFFS ====================== -->
+<section id="sec-tradeoffs" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.12);color:var(--orange)">
+      Reference · Summary
+    </div>
+    <h1 class="hero-title">Trade-offs Summary</h1>
+    <p class="hero-desc">No system perfectly maximises every design goal. Here's how the five properties relate to each other and the decisions you'll make in every system design interview.</p>
+  </div>
+
+  <h2>The Tension Map</h2>
+  <div class="diagram-wrap">
+    <div class="diagram-title">How Design Goals Conflict and Coexist</div>
+    <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      <defs>
+        <marker id="ta" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+          <path d="M0,0 L0,5 L5,2.5z" fill="#505a6e"/>
+        </marker>
+        <marker id="ta2" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+          <path d="M0,0 L0,5 L5,2.5z" fill="#e85d75"/>
+        </marker>
+      </defs>
+      <!-- Nodes -->
+      <!-- Scalability -->
+      <circle cx="350" cy="50" r="40" fill="#1a1f2e" stroke="#00a8ff" stroke-width="2"/>
+      <text x="350" y="44" text-anchor="middle" fill="#00a8ff" font-size="10" font-family="DM Sans,sans-serif" font-weight="600">Scalability</text>
+      <text x="350" y="59" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Mono,monospace">throughput</text>
+
+      <!-- Availability -->
+      <circle cx="110" cy="170" r="40" fill="#1a1f2e" stroke="#00c96e" stroke-width="2"/>
+      <text x="110" y="164" text-anchor="middle" fill="#00c96e" font-size="10" font-family="DM Sans,sans-serif" font-weight="600">Availability</text>
+      <text x="110" y="179" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Mono,monospace">uptime</text>
+
+      <!-- Consistency -->
+      <circle cx="590" cy="170" r="40" fill="#1a1f2e" stroke="#f5a623" stroke-width="2"/>
+      <text x="590" y="164" text-anchor="middle" fill="#f5a623" font-size="10" font-family="DM Sans,sans-serif" font-weight="600">Consistency</text>
+      <text x="590" y="179" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Mono,monospace">correctness</text>
+
+      <!-- Fault Tolerance -->
+      <circle cx="230" cy="250" r="38" fill="#1a1f2e" stroke="#e85d75" stroke-width="2"/>
+      <text x="230" y="245" text-anchor="middle" fill="#e85d75" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">Fault</text>
+      <text x="230" y="258" text-anchor="middle" fill="#e85d75" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">Tolerance</text>
+
+      <!-- No SPOF -->
+      <circle cx="470" cy="250" r="38" fill="#1a1f2e" stroke="#9b6dff" stroke-width="2"/>
+      <text x="470" y="245" text-anchor="middle" fill="#9b6dff" font-size="9" font-family="DM Sans,sans-serif" font-weight="600">No SPOF</text>
+      <text x="470" y="258" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Mono,monospace">redundancy</text>
+
+      <!-- Edges -->
+      <line x1="316" y1="80" x2="148" y2="142" stroke="#505a6e" stroke-width="1.5" marker-end="url(#ta)"/>
+      <text x="205" y="101" text-anchor="middle" fill="#00c96e" font-size="8" font-family="DM Sans,sans-serif">↑ enables</text>
+
+      <line x1="384" y1="80" x2="552" y2="142" stroke="#505a6e" stroke-width="1.5" marker-end="url(#ta)"/>
+      <text x="495" y="101" text-anchor="middle" fill="#e85d75" font-size="8" font-family="DM Sans,sans-serif">↓ conflicts</text>
+
+      <line x1="150" y1="175" x2="550" y2="175" stroke="#e85d75" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ta2)"/>
+      <text x="350" y="168" text-anchor="middle" fill="#e85d75" font-size="8" font-family="DM Sans,sans-serif">CAP: A vs C trade-off</text>
+
+      <line x1="150" y1="198" x2="195" y2="216" stroke="#505a6e" stroke-width="1.5" marker-end="url(#ta)"/>
+      <line x1="550" y1="198" x2="504" y2="218" stroke="#505a6e" stroke-width="1.5" marker-end="url(#ta)"/>
+      <line x1="268" y1="250" x2="432" y2="250" stroke="#505a6e" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ta)"/>
+      <text x="350" y="244" text-anchor="middle" fill="#505a6e" font-size="8" font-family="DM Sans,sans-serif">achieved by</text>
+    </svg>
+  </div>
+
+  <h2>Full Comparison Table</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Achieved by</th>
+          <th>Trade-off</th>
+          <th>Key metric</th>
+          <th>Example system</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-name">Scalability</td>
+          <td>Load balancers, sharding, CDN, caching</td>
+          <td>Distributed complexity</td>
+          <td>Throughput, latency under load</td>
+          <td><span class="pill pill-blue">YouTube, Netflix</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">Availability</td>
+          <td>Redundancy, replication, failover</td>
+          <td>Cost of running duplicates</td>
+          <td>Uptime % (nines)</td>
+          <td><span class="pill pill-green">AWS S3 (11 9s)</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">Strong Consistency</td>
+          <td>Two-phase commit, Paxos, Raft</td>
+          <td>Higher latency, lower availability</td>
+          <td>Read-after-write correctness</td>
+          <td><span class="pill pill-orange">Google Spanner</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">Eventual Consistency</td>
+          <td>Async replication, CRDTs</td>
+          <td>Stale reads, conflict resolution needed</td>
+          <td>Convergence time</td>
+          <td><span class="pill pill-purple">DynamoDB, Cassandra</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">Fault Tolerance</td>
+          <td>Circuit breakers, bulkheads, retries</td>
+          <td>Extra code complexity</td>
+          <td>MTTR (Mean Time to Recovery)</td>
+          <td><span class="pill pill-pink">Netflix, Uber</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-green">
+    <strong>Interview tip:</strong> In system design interviews, always explicitly state your consistency and availability trade-off. Say: "For the payment service I'll use strong consistency at the cost of slightly higher latency. For the activity feed, I'll use eventual consistency to maximise availability." Interviewers reward this deliberate thinking.
+  </div>
+</section>
+
+<!-- ====================== RESOURCES ====================== -->
+<section id="sec-resources" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.12);color:var(--green)">
+      Reference · Learning
+    </div>
+    <h1 class="hero-title">Resources & Courses</h1>
+    <p class="hero-desc">Curated list of the best free and paid resources to go deep on every concept covered in this guide — including YouTube videos, courses, books, and websites used by top engineers worldwide.</p>
+  </div>
+
+  <h2>🎥 YouTube Channels</h2>
+  <div class="resource-grid">
+    <a class="resource-card" href="https://www.youtube.com/@ByteByteGo" target="_blank">
+      <div class="resource-icon" style="background:rgba(0,168,255,.12)">🎬</div>
+      <div class="resource-meta">
+        <div class="resource-name">ByteByteGo</div>
+        <div class="resource-desc">Alex Xu's channel. Best animated system design diagrams on YouTube. Covers every topic in this guide in ~10 min episodes.</div>
+        <div class="resource-type" style="color:var(--blue)">YouTube · Free</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://www.youtube.com/@Fireship" target="_blank">
+      <div class="resource-icon" style="background:rgba(232,93,117,.12)">⚡</div>
+      <div class="resource-meta">
+        <div class="resource-name">Fireship</div>
+        <div class="resource-desc">Fast-paced 100-second explainers. Great for revisiting concepts you've already studied. High production quality.</div>
+        <div class="resource-type" style="color:var(--pink)">YouTube · Free</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://www.youtube.com/@jordanhasnolife5361" target="_blank">
+      <div class="resource-icon" style="background:rgba(155,109,255,.12)">🧠</div>
+      <div class="resource-meta">
+        <div class="resource-name">Jordan Has No Life</div>
+        <div class="resource-desc">Deep dives into distributed systems and databases. Covers Raft consensus, Kafka internals, CAP theorem in exceptional detail.</div>
+        <div class="resource-type" style="color:var(--purple)">YouTube · Free</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://www.youtube.com/@codeKarle" target="_blank">
+      <div class="resource-icon" style="background:rgba(0,201,110,.12)">🏗</div>
+      <div class="resource-meta">
+        <div class="resource-name">codeKarle</div>
+        <div class="resource-desc">End-to-end system design walkthroughs for popular products: Uber, WhatsApp, Instagram. Great for applying concepts to real systems.</div>
+        <div class="resource-type" style="color:var(--green)">YouTube · Free</div>
+      </div>
+    </a>
+  </div>
+
+  <h2>📚 Online Courses</h2>
+  <div class="resource-grid">
+    <a class="resource-card" href="https://www.udemy.com/course/system-design-interview-prep/" target="_blank">
+      <div class="resource-icon" style="background:rgba(245,166,35,.12)">🎓</div>
+      <div class="resource-meta">
+        <div class="resource-name">Udemy — System Design Interview</div>
+        <div class="resource-desc">Frank Kane's top-rated course. Comprehensive coverage of all design goals with real-world examples. Perfect companion to this guide.</div>
+        <div class="resource-type" style="color:var(--orange)">Udemy · Paid (~$20)</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://www.educative.io/courses/grokking-the-system-design-interview" target="_blank">
+      <div class="resource-icon" style="background:rgba(0,168,255,.12)">📖</div>
+      <div class="resource-meta">
+        <div class="resource-name">Grokking System Design</div>
+        <div class="resource-desc">Text + diagram based course by Educative. Industry standard interview prep. Covers 20+ system design problems end-to-end.</div>
+        <div class="resource-type" style="color:var(--blue)">Educative · Paid</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://www.designgurus.io/course/grokking-the-system-design-interview" target="_blank">
+      <div class="resource-icon" style="background:rgba(155,109,255,.12)">🌐</div>
+      <div class="resource-meta">
+        <div class="resource-name">Design Gurus</div>
+        <div class="resource-desc">Updated version of Grokking with video walkthroughs. Covers scalability, consistency, availability with modern examples (2024+).</div>
+        <div class="resource-type" style="color:var(--purple)">DesignGurus · Paid</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://github.com/donnemartin/system-design-primer" target="_blank">
+      <div class="resource-icon" style="background:rgba(0,201,110,.12)">⭐</div>
+      <div class="resource-meta">
+        <div class="resource-name">System Design Primer (GitHub)</div>
+        <div class="resource-desc">The most starred GitHub repo for system design. 250K+ stars. Covers every concept in this guide for free. Start here.</div>
+        <div class="resource-type" style="color:var(--green)">GitHub · 100% Free</div>
+      </div>
+    </a>
+  </div>
+
+  <h2>📕 Books</h2>
+  <div class="resource-grid">
+    <a class="resource-card" href="https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/" target="_blank">
+      <div class="resource-icon" style="background:rgba(232,93,117,.12)">📗</div>
+      <div class="resource-meta">
+        <div class="resource-name">Designing Data-Intensive Applications</div>
+        <div class="resource-desc">Martin Kleppmann's masterpiece. The bible of distributed systems. Chapters 5-9 cover consistency, replication, and fault tolerance in extreme depth.</div>
+        <div class="resource-type" style="color:var(--pink)">O'Reilly Book · ~$60</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://www.amazon.com/System-Design-Interview-Insiders-Guide/dp/1736049119" target="_blank">
+      <div class="resource-icon" style="background:rgba(245,166,35,.12)">📘</div>
+      <div class="resource-meta">
+        <div class="resource-name">System Design Interview Vol. 1 & 2</div>
+        <div class="resource-desc">Alex Xu's books. The most popular interview prep books. Clear diagrams, practical approach, real system walkthroughs. A must-have.</div>
+        <div class="resource-type" style="color:var(--orange)">Amazon Book · ~$35</div>
+      </div>
+    </a>
+  </div>
+
+  <h2>🌐 Best Websites</h2>
+  <div class="resource-grid">
+    <a class="resource-card" href="https://highscalability.com" target="_blank">
+      <div class="resource-icon" style="background:rgba(0,168,255,.12)">🔗</div>
+      <div class="resource-meta">
+        <div class="resource-name">HighScalability.com</div>
+        <div class="resource-desc">Real architectures from companies like Twitter, Google, Amazon — how they actually solved scalability at billions of users. Case studies.</div>
+        <div class="resource-type" style="color:var(--blue)">Website · Free</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://martinfowler.com/articles/patterns-of-distributed-systems/" target="_blank">
+      <div class="resource-icon" style="background:rgba(155,109,255,.12)">📝</div>
+      <div class="resource-meta">
+        <div class="resource-name">Martin Fowler — Distributed Patterns</div>
+        <div class="resource-desc">Canonical reference for patterns like Circuit Breaker, Bulkhead, Saga, Two-Phase Commit. Written by the industry's top architect.</div>
+        <div class="resource-type" style="color:var(--purple)">Blog · Free</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://newsletter.pragmaticengineer.com/p/system-design-interview-an-insiders" target="_blank">
+      <div class="resource-icon" style="background:rgba(0,201,110,.12)">📨</div>
+      <div class="resource-meta">
+        <div class="resource-name">Pragmatic Engineer Newsletter</div>
+        <div class="resource-desc">Gergely Orosz covers real engineering decisions at scale. Deep-dives from Uber, Stripe, Meta engineers on system design in production.</div>
+        <div class="resource-type" style="color:var(--green)">Newsletter · Free/Paid</div>
+      </div>
+    </a>
+    <a class="resource-card" href="https://aws.amazon.com/architecture/well-architected/" target="_blank">
+      <div class="resource-icon" style="background:rgba(245,166,35,.12)">☁</div>
+      <div class="resource-meta">
+        <div class="resource-name">AWS Well-Architected Framework</div>
+        <div class="resource-desc">AWS's official framework covering Reliability, Performance Efficiency, and Operational Excellence. Maps perfectly to the goals in this guide.</div>
+        <div class="resource-type" style="color:var(--orange)">AWS Docs · Free</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="callout callout-green">
+    <strong>Recommended learning path:</strong> Start with the GitHub System Design Primer (free) → Watch ByteByteGo for visual concepts → Read Alex Xu's book → Deep-dive with Designing Data-Intensive Applications. That combination covers everything you need for any system design interview.
+  </div>
+
+  <h2>🗺 Suggested Study Order</h2>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">Scalability first</div>
+      <div class="step-desc">Most interview questions start here. Understand load balancers, caching, sharding before anything else.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">Availability + Fault Tolerance together</div>
+      <div class="step-desc">These go hand-in-hand. Study redundancy, circuit breakers, and health checks as one unit.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">Consistency last</div>
+      <div class="step-desc">It requires understanding of replication (from availability) to make sense. Study CAP theorem and ACID vs BASE databases here.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">Practice with real systems</div>
+      <div class="step-desc">Design Twitter, Uber, WhatsApp, YouTube from scratch. Apply every concept you've learned. Use the trade-off table as your checklist.</div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (window.innerWidth <= 700) closeSidebar();
+}
+
+function toggleAcc(el) {
+  el.classList.toggle('open');
+}
+
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+
+function openSidebar() {
+  sidebar.classList.add('open');
+  overlay.classList.add('open');
+}
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+});
+overlay.addEventListener('click', closeSidebar);
+</script>
+</body>
+</html>

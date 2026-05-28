@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design — Caching Deep Dive</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-dark:#0f1117;--bg-sidebar:#141820;--bg-card:#1a1f2e;--bg-card2:#1e2535;
+  --bg-hover:#252d3d;--accent:#00c96e;--text-primary:#e8eaf0;--text-secondary:#8892a4;
+  --text-muted:#505a6e;--border:#252d3d;--border2:#2e3748;
+  --green:#00c96e;--blue:#00a8ff;--orange:#f5a623;--pink:#e85d75;--purple:#9b6dff;
+  --sidebar-w:290px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg-dark);color:var(--text-primary);line-height:1.6;overflow-x:hidden}
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 0}
+.topbar-brand{display:flex;align-items:center;width:var(--sidebar-w);padding:0 20px;border-right:1px solid var(--border);height:100%;gap:0}
+.brand-icon{width:34px;height:34px;border-radius:8px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:11px;flex-shrink:0}
+.brand-text{font-weight:600;font-size:15px;color:var(--text-primary)}
+.brand-sub{font-size:11px;color:var(--text-muted)}
+.topbar-meta{display:flex;align-items:center;gap:16px}
+.progress-pill{background:rgba(245,166,35,.12);color:var(--orange);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(245,166,35,.25)}
+.topic-count{color:var(--text-muted);font-size:12px}
+/* LAYOUT */
+.layout{display:flex;padding-top:56px;min-height:100vh}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--bg-sidebar);border-right:1px solid var(--border);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sidebar-section-header{padding:20px 20px 8px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase}
+.sidebar-section-header:first-child{padding-top:16px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .15s;text-decoration:none;user-select:none}
+.nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+.nav-item.active{color:var(--orange);background:rgba(245,166,35,.08);border-left-color:var(--orange);font-weight:500}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nav-badge{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.badge-bg{background:rgba(0,201,110,.15);color:var(--green)}
+.badge-int{background:rgba(0,168,255,.15);color:var(--blue)}
+.badge-adv{background:rgba(155,109,255,.15);color:var(--purple)}
+.badge-pro{background:rgba(245,166,35,.15);color:var(--orange)}
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;padding:40px 48px 80px;max-width:920px}
+.section{display:none}
+.section.active{display:block}
+/* HERO */
+.section-hero{margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.hero-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:6px;margin-bottom:14px}
+.hero-title{font-size:28px;font-weight:600;color:var(--text-primary);line-height:1.25;margin-bottom:10px}
+.hero-desc{font-size:15px;color:var(--text-secondary);line-height:1.7;max-width:680px}
+/* CARDS */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
+.card-body{font-size:14px;color:var(--text-secondary);line-height:1.7}
+.card-green{border-left:3px solid var(--green);background:rgba(0,201,110,.05)}
+.card-blue{border-left:3px solid var(--blue);background:rgba(0,168,255,.05)}
+.card-orange{border-left:3px solid var(--orange);background:rgba(245,166,35,.05)}
+.card-purple{border-left:3px solid var(--purple);background:rgba(155,109,255,.05)}
+.card-pink{border-left:3px solid var(--pink);background:rgba(232,93,117,.05)}
+/* CODE */
+.code-block{background:#0a0e16;border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin:14px 0;font-family:'DM Mono',monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;white-space:pre}
+.kw{color:#9b6dff}.str{color:#00c96e}.cmt{color:#505a6e}.dir{color:#00a8ff}.fn{color:#e85d75}.cls{color:#f5a623}
+code{font-family:'DM Mono',monospace;font-size:12.5px;background:rgba(255,255,255,.06);color:var(--orange);padding:1px 6px;border-radius:4px}
+/* GRIDS */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.mini-card{background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.mini-title{font-size:13px;font-weight:600;margin-bottom:6px}
+.mini-body{font-size:12px;color:var(--text-secondary);line-height:1.55}
+/* FLOW */
+.flow-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0}
+.flow-box{padding:7px 14px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid;text-align:center;white-space:nowrap}
+.flow-arrow{color:var(--text-muted);font-size:16px;flex-shrink:0}
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--bg-card2)}
+th{text-align:left;padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border2)}
+td{padding:11px 16px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.td-name{color:var(--text-primary);font-weight:500}
+/* PILLS */
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.pill-green{background:rgba(0,201,110,.15);color:var(--green)}
+.pill-blue{background:rgba(0,168,255,.15);color:var(--blue)}
+.pill-orange{background:rgba(245,166,35,.15);color:var(--orange)}
+.pill-purple{background:rgba(155,109,255,.15);color:var(--purple)}
+.pill-pink{background:rgba(232,93,117,.15);color:var(--pink)}
+.pill-gray{background:rgba(255,255,255,.07);color:var(--text-secondary)}
+/* CALLOUTS */
+.callout{border-radius:8px;padding:14px 18px;margin:14px 0;font-size:13px;line-height:1.65}
+.callout-green{background:rgba(0,201,110,.08);border:1px solid rgba(0,201,110,.2);color:#7ddcaa}
+.callout-blue{background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.2);color:#7dc8f0}
+.callout-orange{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#f0c87a}
+.callout-purple{background:rgba(155,109,255,.08);border:1px solid rgba(155,109,255,.2);color:#c4aafe}
+.callout-pink{background:rgba(232,93,117,.08);border:1px solid rgba(232,93,117,.2);color:#f0a0b0}
+.callout strong{color:inherit;font-weight:600}
+/* STEPS */
+.step{display:flex;gap:14px;margin-bottom:18px}
+.step-num{width:28px;height:28px;border-radius:50%;flex-shrink:0;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;color:#000}
+.step-content{flex:1}
+.step-title{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--text-secondary);line-height:1.6}
+/* DIAGRAMS */
+.diagram-wrap{background:#0a0e16;border:1px solid var(--border);border-radius:10px;padding:24px 20px;margin:16px 0;overflow-x:auto}
+.diagram-wrap svg{display:block;margin:0 auto}
+/* LAYERS */
+.layer-stack{display:flex;flex-direction:column;gap:3px;margin:14px 0}
+.layer{border-radius:6px;padding:12px 16px;border-left:4px solid;font-size:13px}
+.layer-name{font-weight:600;margin-bottom:2px}
+.layer-desc{font-size:12px;color:var(--text-secondary)}
+/* DO/DONT */
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.do-box,.dont-box{border-radius:8px;padding:14px 16px}
+.do-box{background:rgba(0,201,110,.07);border:1px solid rgba(0,201,110,.2)}
+.dont-box{background:rgba(232,93,117,.07);border:1px solid rgba(232,93,117,.2)}
+.do-box h4{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.dont-box h4{font-size:11px;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.do-box li,.dont-box li{font-size:12px;color:var(--text-secondary);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do-box li::before{content:"✓";position:absolute;left:0;color:var(--green);font-size:11px}
+.dont-box li::before{content:"✗";position:absolute;left:0;color:var(--pink);font-size:11px}
+/* PROS/CONS TABLE */
+.pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.pc-box{border-radius:8px;padding:16px 18px}
+.pc-pros{background:rgba(0,201,110,.06);border:1px solid rgba(0,201,110,.18)}
+.pc-cons{background:rgba(232,93,117,.06);border:1px solid rgba(232,93,117,.18)}
+.pc-box h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.pc-pros h4{color:var(--green)}
+.pc-cons h4{color:var(--pink)}
+.pc-box li{font-size:12.5px;color:var(--text-secondary);list-style:none;padding:5px 0 5px 18px;position:relative;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.5}
+.pc-box li:last-child{border-bottom:none}
+.pc-pros li::before{content:"✅";position:absolute;left:0;font-size:11px}
+.pc-cons li::before{content:"❌";position:absolute;left:0;font-size:11px}
+/* STRATEGY CARD */
+.strategy-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.strategy-icon{width:52px;height:52px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid}
+.strategy-meta .s-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.strategy-meta .s-title{font-size:22px;font-weight:600;color:var(--text-primary);margin-bottom:5px}
+.strategy-meta .s-tagline{font-size:14px;color:var(--text-secondary);line-height:1.6}
+/* RULE LIST */
+.rule-list{list-style:none;margin:10px 0}
+.rule-list li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-secondary)}
+.rule-list li:last-child{border-bottom:none}
+.rule-list li::before{content:"→";color:var(--orange);font-weight:700;flex-shrink:0;margin-top:1px}
+.rule-list li strong{color:var(--text-primary);font-weight:600}
+/* SUMMARY BAR */
+.summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+.sum-item{background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center}
+.sum-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.sum-val{font-size:13px;font-weight:600}
+/* TAG ROW */
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.tag{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;border:1px solid}
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:32px 0}
+/* COMPARISON VISUAL */
+.comp-strategy{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.comp-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg-card2);border-bottom:1px solid var(--border)}
+.comp-num{width:26px;height:26px;border-radius:50%;flex-shrink:0;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#000}
+.comp-title-text{font-size:13px;font-weight:600;color:var(--text-primary)}
+.comp-subtitle{font-size:11px;color:var(--text-muted);margin-left:auto}
+.comp-body{padding:16px 18px;background:var(--bg-card)}
+/* TYPOGRAPHY */
+h2{font-size:20px;font-weight:600;color:var(--text-primary);margin:28px 0 12px}
+h2:first-child{margin-top:0}
+h3{font-size:15px;font-weight:600;color:var(--text-primary);margin:22px 0 10px}
+p{font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px}
+/* HAMBURGER */
+.hamburger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.hamburger span{display:block;width:20px;height:2px;background:var(--text-secondary);border-radius:1px;transition:.2s}
+.sidebar-overlay{display:none}
+/* ANIMATIONS */
+.section.active .card,.section.active .mini-card,.section.active .section-hero,.section.active .comp-strategy{animation:fadeUp .3s ease both}
+.section.active .card:nth-child(2){animation-delay:.05s}
+.section.active .card:nth-child(3){animation-delay:.1s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* RESPONSIVE */
+@media(max-width:900px){.main{padding:28px 24px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sidebar-w:265px}
+  .main{margin-left:0;padding:24px 18px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .25s;z-index:90}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.5);z-index:89}
+  .sidebar-overlay.open{display:block}
+  .hamburger{display:flex}
+  .topbar-brand{width:auto;border-right:none}
+  .grid2,.grid3,.grid4,.pc-grid,.do-dont,.summary-bar{grid-template-columns:1fr}
+  .flow-row{flex-direction:column;align-items:flex-start}
+  .flow-arrow{transform:rotate(90deg)}
+}
+@media(max-width:480px){.hero-title{font-size:22px}}
+</style>
+</head>
+<body>
+
+<!-- ═══════ TOPBAR ═══════ -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">⚡</div>
+    <div>
+      <div class="brand-text">SysDesign</div>
+      <div class="brand-sub">Caching Deep Dive</div>
+    </div>
+  </div>
+  <div class="topbar-meta">
+    <button class="hamburger" id="hamburger" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="topic-count">5 topics · 9 strategies</span>
+    <span class="progress-pill">Study Guide</span>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+
+<!-- ═══════ SIDEBAR ═══════ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-section-header">Foundation</div>
+  <a class="nav-item active" onclick="show('overview')">
+    <span class="nav-dot" style="background:var(--orange)"></span>Caching Overview
+    <span class="nav-badge badge-bg">Beginner</span>
+  </a>
+
+  <div class="sidebar-section-header">Read Caching</div>
+  <a class="nav-item" onclick="show('read-strategies')">
+    <span class="nav-dot" style="background:var(--blue)"></span>Read Strategies
+    <span class="nav-badge badge-int">Mid</span>
+  </a>
+  <a class="nav-item" onclick="show('read-proscons')">
+    <span class="nav-dot" style="background:var(--blue)"></span>Read Pros &amp; Cons
+    <span class="nav-badge badge-pro">Key</span>
+  </a>
+
+  <div class="sidebar-section-header">Write Caching</div>
+  <a class="nav-item" onclick="show('write-strategies')">
+    <span class="nav-dot" style="background:var(--purple)"></span>Write Strategies
+    <span class="nav-badge badge-adv">Adv</span>
+  </a>
+  <a class="nav-item" onclick="show('write-proscons')">
+    <span class="nav-dot" style="background:var(--purple)"></span>Write Pros &amp; Cons
+    <span class="nav-badge badge-pro">Key</span>
+  </a>
+</nav>
+
+<!-- ═══════ MAIN ═══════ -->
+<main class="main">
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 0 — CACHING OVERVIEW
+══════════════════════════════════════════════════════ -->
+<section id="sec-overview" class="section active">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.1);color:var(--orange)">⚡ Foundation — Overview</div>
+    <div class="hero-title">Caching Deep Dive</div>
+    <div class="hero-desc">Caching is one of the highest-leverage tools in system design. A well-placed cache can reduce database load by 90%, cut latency from 200ms to 1ms, and allow a system to serve 10× more traffic without adding servers.</div>
+  </div>
+
+  <h2>What is Caching?</h2>
+  <div class="card card-orange">
+    <div class="card-title">The Core Idea</div>
+    <div class="card-body">A cache is a <strong>fast, temporary storage layer</strong> that sits in front of a slower data source (database, API, filesystem). Instead of recomputing or re-fetching expensive data every time, you store the result and serve it from memory. The fundamental tradeoff: <strong>speed vs freshness</strong>.</div>
+  </div>
+
+  <h2>Why Cache? — The Numbers</h2>
+  <div class="grid4">
+    <div class="mini-card" style="border-top:2px solid var(--pink)">
+      <div class="mini-title" style="color:var(--pink)">L1 CPU Cache</div>
+      <div class="mini-body">~<strong style="color:var(--text-primary)">1 ns</strong><br>Inside CPU chip. Tiny (32–64 KB). Fastest store on earth.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--orange)">
+      <div class="mini-title" style="color:var(--orange)">RAM / Redis</div>
+      <div class="mini-body">~<strong style="color:var(--text-primary)">100 µs</strong><br>In-memory. Redis, Memcached. Standard app cache layer.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--blue)">
+      <div class="mini-title" style="color:var(--blue)">SSD / DB</div>
+      <div class="mini-body">~<strong style="color:var(--text-primary)">1–10 ms</strong><br>Disk-backed. Postgres, MySQL. Much slower than RAM.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--purple)">
+      <div class="mini-title" style="color:var(--purple)">Network / HDD</div>
+      <div class="mini-body">~<strong style="color:var(--text-primary)">50–200 ms</strong><br>Remote DB, cold disk. Worst case for a user request.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-orange"><strong>The Cache Hierarchy Insight:</strong> Memory is ~10,000× faster than a network call to a database. Serving a cached response from Redis (0.1ms) vs a DB query (10ms) is a 100× speed improvement — on every single request.</div>
+
+  <h2>The Full Caching Landscape</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 310" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="ov1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#505a6e"/></marker>
+        <marker id="ov2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#f5a623"/></marker>
+      </defs>
+      <!-- Client -->
+      <rect x="10" y="130" width="90" height="50" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="55" y="151" text-anchor="middle" fill="#e8eaf0" font-weight="600">User</text>
+      <text x="55" y="169" text-anchor="middle" fill="#505a6e" font-size="11">Browser</text>
+      <!-- CDN -->
+      <rect x="140" y="60" width="110" height="50" rx="8" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="195" y="83" text-anchor="middle" fill="#00c96e" font-weight="600">CDN Cache</text>
+      <text x="195" y="99" text-anchor="middle" fill="#505a6e" font-size="11">Cloudflare / Edge</text>
+      <!-- Browser Cache -->
+      <rect x="140" y="200" width="110" height="50" rx="8" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="195" y="223" text-anchor="middle" fill="#00a8ff" font-weight="600">Browser Cache</text>
+      <text x="195" y="239" text-anchor="middle" fill="#505a6e" font-size="11">HTTP Cache-Control</text>
+      <!-- Load Balancer -->
+      <rect x="300" y="130" width="110" height="50" rx="8" fill="#1e2535" stroke="#2e3748"/>
+      <text x="355" y="153" text-anchor="middle" fill="#e8eaf0" font-weight="600">Load Balancer</text>
+      <text x="355" y="169" text-anchor="middle" fill="#505a6e" font-size="11">nginx / ALB</text>
+      <!-- App Server -->
+      <rect x="460" y="60" width="120" height="50" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="520" y="83" text-anchor="middle" fill="#e8eaf0" font-weight="600">App Server</text>
+      <text x="520" y="99" text-anchor="middle" fill="#505a6e" font-size="11">In-process cache</text>
+      <!-- Redis Cache -->
+      <rect x="460" y="200" width="120" height="50" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="2"/>
+      <text x="520" y="221" text-anchor="middle" fill="#f5a623" font-weight="600">Redis / Memcached</text>
+      <text x="520" y="239" text-anchor="middle" fill="#505a6e" font-size="11">Distributed Cache</text>
+      <!-- Database -->
+      <rect x="460" y="270" width="120" height="30" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="520" y="289" text-anchor="middle" fill="#505a6e" font-size="11">Database (slow)</text>
+      <!-- Arrows -->
+      <line x1="100" y1="145" x2="138" y2="90" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ov1)"/>
+      <line x1="100" y1="165" x2="138" y2="218" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ov1)"/>
+      <line x1="250" y1="95" x2="298" y2="148" stroke="#505a6e" stroke-width="1" marker-end="url(#ov1)"/>
+      <line x1="250" y1="218" x2="298" y2="162" stroke="#505a6e" stroke-width="1" marker-end="url(#ov1)"/>
+      <line x1="410" y1="148" x2="458" y2="90" stroke="#505a6e" stroke-width="1" marker-end="url(#ov1)"/>
+      <line x1="410" y1="162" x2="458" y2="218" stroke="#f5a623" stroke-width="1.5" marker-end="url(#ov2)"/>
+      <line x1="520" y1="250" x2="520" y2="268" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ov1)"/>
+      <!-- Labels -->
+      <text x="330" y="295" text-anchor="middle" fill="#f5a623" font-size="11">★ Redis is the primary app-level cache — this guide focuses here</text>
+    </svg>
+  </div>
+
+  <h2>Key Caching Terms</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Term</th><th>Definition</th><th>Target</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Cache Hit</td><td>Data found in cache — served instantly without DB call</td><td><span class="pill pill-green">&gt; 90% hit rate</span></td></tr>
+        <tr><td class="td-name">Cache Miss</td><td>Data not in cache — must fetch from DB, then cache it</td><td><span class="pill pill-pink">&lt; 10% miss rate</span></td></tr>
+        <tr><td class="td-name">TTL</td><td>Time-To-Live — how long a cache entry is valid before expiring</td><td>App-specific</td></tr>
+        <tr><td class="td-name">Cache Eviction</td><td>Removing entries when cache is full. Policies: LRU, LFU, FIFO</td><td>LRU is default</td></tr>
+        <tr><td class="td-name">Cache Invalidation</td><td>Marking/removing stale data so it's re-fetched on next request</td><td>Hardest part</td></tr>
+        <tr><td class="td-name">Stale Data</td><td>Cache has old data that doesn't match the DB (diverged)</td><td>Risk to manage</td></tr>
+        <tr><td class="td-name">Cache Stampede</td><td>Many requests all miss cache simultaneously, flooding DB</td><td>Use locking/jitter</td></tr>
+        <tr><td class="td-name">Hot Key</td><td>Single cache key receiving extreme traffic (e.g. viral tweet)</td><td>Use local cache too</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Eviction Policies</h2>
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">LRU — Least Recently Used</div>
+      <div class="mini-body">Evicts the item that hasn't been accessed the longest. Best general-purpose policy. Default in Redis. Works well for temporal locality.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">LFU — Least Frequently Used</div>
+      <div class="mini-body">Evicts the item accessed fewest times. Keeps "hot" popular items. Better than LRU when access patterns are uneven. Redis 4.0+ supports this.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">TTL-Based Expiry</div>
+      <div class="mini-body">Items expire after a set duration regardless of use. Simple to reason about. Forces refresh. Best for data with natural expiry (sessions, tokens, prices).</div>
+    </div>
+  </div>
+
+  <div class="callout callout-green"><strong>Phil Karlton's famous quote:</strong> <em>"There are only two hard things in Computer Science: cache invalidation and naming things."</em> — This guide is your complete weapon against both.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 1 — READ CACHING STRATEGIES
+══════════════════════════════════════════════════════ -->
+<section id="sec-read-strategies" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.1);color:var(--blue)">📖 Read Caching — Strategies</div>
+    <div class="hero-title">Read Caching Strategies</div>
+    <div class="hero-desc">Read caching strategies control <em>how</em> data gets loaded into the cache when it doesn't exist there yet. The strategy determines who is responsible for populating the cache and when that happens.</div>
+  </div>
+
+  <!-- ── STRATEGY 1: CACHE-ASIDE ── -->
+  <div class="strategy-header">
+    <div class="strategy-icon" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.3)">🔍</div>
+    <div class="strategy-meta">
+      <div class="s-label" style="color:var(--blue)">Strategy 1 — Most Common</div>
+      <div class="s-title">Cache-Aside (Lazy Loading)</div>
+      <div class="s-tagline">The application is in full control. Cache is populated <em>on demand</em> when a miss occurs. The most widely used pattern.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Also Called</div><div class="sum-val" style="color:var(--blue)">Lazy Loading</div></div>
+    <div class="sum-item"><div class="sum-label">Who Populates</div><div class="sum-val" style="color:var(--green)">Application</div></div>
+    <div class="sum-item"><div class="sum-label">Stale Risk</div><div class="sum-val" style="color:var(--orange)">Medium</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--green)">Low</div></div>
+  </div>
+
+  <h2>How Cache-Aside Works</h2>
+
+  <div class="step">
+    <div class="step-num" style="background:var(--blue)">1</div>
+    <div class="step-content">
+      <div class="step-title">Application checks the cache first</div>
+      <div class="step-desc">Before touching the database, the app sends a <code>GET user:42</code> to Redis. This is the "read-through" attempt.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--pink)">2</div>
+    <div class="step-content">
+      <div class="step-title">Cache HIT → Return data immediately</div>
+      <div class="step-desc">If Redis has the data, return it directly to the caller. No DB involved. Sub-millisecond response. ✅</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--orange)">3</div>
+    <div class="step-content">
+      <div class="step-title">Cache MISS → Fetch from DB</div>
+      <div class="step-desc">If Redis returns <code>nil</code>, the application queries the database directly. This is the expensive path.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--green)">4</div>
+    <div class="step-content">
+      <div class="step-title">Populate cache, return data</div>
+      <div class="step-desc">App writes the DB result into Redis with a TTL: <code>SET user:42 &lt;data&gt; EX 3600</code>. Future requests will hit the cache.</div>
+    </div>
+  </div>
+
+  <h2>Cache-Aside — Flow Diagram</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="ca1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00a8ff"/></marker>
+        <marker id="ca2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00c96e"/></marker>
+        <marker id="ca3" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e85d75"/></marker>
+        <marker id="ca4" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#f5a623"/></marker>
+      </defs>
+      <!-- App -->
+      <rect x="250" y="15" width="160" height="52" rx="8" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="330" y="38" text-anchor="middle" fill="#00a8ff" font-weight="600" font-size="13">Application</text>
+      <text x="330" y="56" text-anchor="middle" fill="#505a6e" font-size="11">Controller / Service</text>
+      <!-- Cache -->
+      <rect x="60" y="145" width="150" height="52" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="2"/>
+      <text x="135" y="168" text-anchor="middle" fill="#f5a623" font-weight="600" font-size="13">Redis Cache</text>
+      <text x="135" y="186" text-anchor="middle" fill="#505a6e" font-size="11">GET user:42</text>
+      <!-- DB -->
+      <rect x="450" y="145" width="150" height="52" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="525" y="168" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">Database</text>
+      <text x="525" y="186" text-anchor="middle" fill="#505a6e" font-size="11">PostgreSQL</text>
+      <!-- ① App → Cache -->
+      <line x1="280" y1="67" x2="170" y2="143" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#ca1)"/>
+      <text x="195" y="104" text-anchor="middle" fill="#00a8ff" font-size="11">① GET user:42</text>
+      <!-- ② HIT path -->
+      <line x1="155" y1="145" x2="275" y2="69" stroke="#00c96e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ca2)"/>
+      <text x="178" y="120" text-anchor="middle" fill="#00c96e" font-size="11">② HIT ✓</text>
+      <!-- ③ MISS → DB -->
+      <line x1="380" y1="67" x2="460" y2="143" stroke="#e85d75" stroke-width="1.5" marker-end="url(#ca3)"/>
+      <text x="455" y="104" text-anchor="middle" fill="#e85d75" font-size="11">③ MISS</text>
+      <text x="455" y="118" text-anchor="middle" fill="#e85d75" font-size="11">→ query DB</text>
+      <!-- ④ DB → App -->
+      <line x1="450" y1="172" x2="395" y2="69" stroke="#505a6e" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#ca1)"/>
+      <text x="452" y="130" text-anchor="middle" fill="#505a6e" font-size="11">④ result</text>
+      <!-- ⑤ App → Cache (write) -->
+      <line x1="265" y1="67" x2="165" y2="143" stroke="#f5a623" stroke-width="1.5" marker-end="url(#ca4)"/>
+      <rect x="35" y="225" width="195" height="38" rx="6" fill="rgba(245,166,35,.08)" stroke="rgba(245,166,35,.2)"/>
+      <text x="132" y="242" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="600">⑤ SET user:42 &lt;data&gt; EX 3600</text>
+      <text x="132" y="256" text-anchor="middle" fill="#505a6e" font-size="11">Populate cache for next request</text>
+    </svg>
+  </div>
+
+  <h2>Cache-Aside Code Pattern</h2>
+  <div class="code-block"><span class="kw">async function</span> <span class="fn">getUser</span>(userId) {
+  <span class="kw">const</span> cacheKey = <span class="str">`user:</span><span class="cls">${userId}</span><span class="str">`</span>;
+
+  <span class="cmt">// ① Check cache first</span>
+  <span class="kw">const</span> cached = <span class="kw">await</span> redis.<span class="fn">get</span>(cacheKey);
+  <span class="kw">if</span> (cached) {
+    <span class="kw">return</span> JSON.<span class="fn">parse</span>(cached);  <span class="cmt">// ② Cache HIT — return immediately</span>
+  }
+
+  <span class="cmt">// ③ Cache MISS — query database</span>
+  <span class="kw">const</span> user = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="str">'SELECT * FROM users WHERE id = $1'</span>, [userId]);
+
+  <span class="cmt">// ⑤ Populate cache (TTL = 1 hour)</span>
+  <span class="kw">await</span> redis.<span class="fn">set</span>(cacheKey, JSON.<span class="fn">stringify</span>(user), <span class="str">'EX'</span>, 3600);
+
+  <span class="kw">return</span> user;
+}</div>
+
+  <div class="divider"></div>
+
+  <!-- ── STRATEGY 2: READ-THROUGH ── -->
+  <div class="strategy-header">
+    <div class="strategy-icon" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.3)">🔄</div>
+    <div class="strategy-meta">
+      <div class="s-label" style="color:var(--green)">Strategy 2 — Library-Managed</div>
+      <div class="s-title">Read-Through</div>
+      <div class="s-tagline">The cache itself is responsible for loading data from the DB on a miss. The application always talks to the cache — never directly to the DB.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Who Populates</div><div class="sum-val" style="color:var(--green)">Cache Library</div></div>
+    <div class="sum-item"><div class="sum-label">App talks to</div><div class="sum-val" style="color:var(--blue)">Cache only</div></div>
+    <div class="sum-item"><div class="sum-label">Stale Risk</div><div class="sum-val" style="color:var(--orange)">Medium</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--orange)">Medium</div></div>
+  </div>
+
+  <h2>How Read-Through Works</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 240" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="rt1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00c96e"/></marker>
+        <marker id="rt2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#505a6e"/></marker>
+      </defs>
+      <!-- App -->
+      <rect x="10" y="95" width="110" height="52" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="65" y="117" text-anchor="middle" fill="#e8eaf0" font-weight="600">Application</text>
+      <text x="65" y="135" text-anchor="middle" fill="#505a6e" font-size="11">only talks to cache</text>
+      <!-- Cache with loader -->
+      <rect x="200" y="75" width="200" height="95" rx="8" fill="#1e2535" stroke="#00c96e" stroke-width="2"/>
+      <text x="300" y="103" text-anchor="middle" fill="#00c96e" font-weight="600" font-size="13">Cache Layer</text>
+      <text x="300" y="121" text-anchor="middle" fill="#505a6e" font-size="11">(e.g. NCache, Spring Cache)</text>
+      <rect x="215" y="130" width="170" height="26" rx="4" fill="rgba(0,201,110,.1)" stroke="rgba(0,201,110,.2)"/>
+      <text x="300" y="147" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="500">Built-in DB loader on miss</text>
+      <!-- DB -->
+      <rect x="485" y="95" width="130" height="52" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="550" y="117" text-anchor="middle" fill="#e8eaf0" font-weight="600">Database</text>
+      <text x="550" y="135" text-anchor="middle" fill="#505a6e" font-size="11">PostgreSQL</text>
+      <!-- Arrows -->
+      <line x1="120" y1="120" x2="198" y2="120" stroke="#00c96e" stroke-width="1.5" marker-end="url(#rt1)"/>
+      <text x="159" y="113" text-anchor="middle" fill="#00c96e" font-size="11">GET key</text>
+      <line x1="198" y1="132" x2="120" y2="132" stroke="#505a6e" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#rt2)"/>
+      <text x="159" y="148" text-anchor="middle" fill="#505a6e" font-size="11">data (from cache or DB)</text>
+      <line x1="400" y1="118" x2="483" y2="118" stroke="#505a6e" stroke-width="1.2" stroke-dasharray="3,2" marker-end="url(#rt2)"/>
+      <text x="441" y="112" text-anchor="middle" fill="#505a6e" font-size="11">miss → fetch</text>
+      <line x1="483" y1="128" x2="400" y2="128" stroke="#00c96e" stroke-width="1.2" stroke-dasharray="3,2" marker-end="url(#rt1)"/>
+      <text x="441" y="143" text-anchor="middle" fill="#00c96e" font-size="11">→ populate cache</text>
+      <!-- Note -->
+      <text x="330" y="205" text-anchor="middle" fill="#505a6e" font-size="11">App never calls DB directly — the cache library handles everything</text>
+      <text x="330" y="222" text-anchor="middle" fill="#505a6e" font-size="11">Difference from Cache-Aside: DB loading logic lives in cache, not app code</text>
+    </svg>
+  </div>
+
+  <h2>Cache-Aside vs Read-Through</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>Cache-Aside</th><th>Read-Through</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Who fetches on miss?</td><td>Application code</td><td>Cache library / provider</td></tr>
+        <tr><td class="td-name">App couples to DB?</td><td><span class="pill pill-pink">Yes — app calls DB directly</span></td><td><span class="pill pill-green">No — app only talks to cache</span></td></tr>
+        <tr><td class="td-name">First request after restart</td><td>Miss → slow (cold start)</td><td>Miss → slow (cold start)</td></tr>
+        <tr><td class="td-name">Code complexity</td><td>Low — just add if/else</td><td>Medium — configure loader fn</td></tr>
+        <tr><td class="td-name">Works with Redis directly?</td><td><span class="pill pill-green">Yes — standard pattern</span></td><td>Needs framework (Spring, etc.)</td></tr>
+        <tr><td class="td-name">Best for</td><td>Most apps, Redis users</td><td>ORM-heavy stacks, frameworks</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-blue"><strong>When to use which:</strong> Use <strong>Cache-Aside</strong> by default — it's explicit, simple, and works with any stack. Use <strong>Read-Through</strong> when your framework (Spring Cache, .NET NCache) supports it natively and you want cache logic out of business code.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 2 — READ PROS & CONS
+══════════════════════════════════════════════════════ -->
+<section id="sec-read-proscons" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.1);color:var(--blue)">⚖️ Read Caching — Analysis</div>
+    <div class="hero-title">Read Caching Strategies — Pros &amp; Cons</div>
+    <div class="hero-desc">Every read caching strategy comes with trade-offs. This section gives you the full honest picture so you can confidently choose — and defend your choice in an interview.</div>
+  </div>
+
+  <!-- CACHE-ASIDE PROS/CONS -->
+  <div class="comp-strategy">
+    <div class="comp-head">
+      <div class="comp-num" style="background:var(--blue)">1</div>
+      <div class="comp-title-text">Cache-Aside (Lazy Loading)</div>
+      <div class="comp-subtitle">Most widely used</div>
+    </div>
+    <div class="comp-body">
+      <div class="pc-grid">
+        <div class="pc-box pc-pros"><h4>✅ Pros</h4><ul>
+          <li>Only requested data is cached — no wasted memory on unused rows</li>
+          <li>Cache failure is non-fatal — app falls back to DB automatically</li>
+          <li>Works with any cache technology (Redis, Memcached, local)</li>
+          <li>Simple to implement — just wrap existing DB calls</li>
+          <li>Full control over TTL per data type</li>
+          <li>Cache can handle different data models than DB</li>
+        </ul></div>
+        <div class="pc-box pc-cons"><h4>❌ Cons</h4><ul>
+          <li><strong>Cold start penalty</strong> — first 3 reads always miss (request, cache miss, DB hit)</li>
+          <li><strong>Stale data risk</strong> — if DB updated externally, cache serves old data until TTL expires</li>
+          <li><strong>Cache stampede</strong> — on cold start, many requests flood DB simultaneously</li>
+          <li>Cache-writing logic scattered through application code</li>
+          <li>Must invalidate cache on write (extra complexity)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- READ-THROUGH PROS/CONS -->
+  <div class="comp-strategy">
+    <div class="comp-head">
+      <div class="comp-num" style="background:var(--green)">2</div>
+      <div class="comp-title-text">Read-Through</div>
+      <div class="comp-subtitle">Framework-managed</div>
+    </div>
+    <div class="comp-body">
+      <div class="pc-grid">
+        <div class="pc-box pc-pros"><h4>✅ Pros</h4><ul>
+          <li>Application code is cleaner — no manual cache logic in service layer</li>
+          <li>Cache loading logic is centralized in one place</li>
+          <li>Consistent caching behavior across all code paths</li>
+          <li>Application fully decoupled from the database</li>
+          <li>Easier to test — mock the cache, not the DB</li>
+        </ul></div>
+        <div class="pc-box pc-cons"><h4>❌ Cons</h4><ul>
+          <li>Requires framework support (not just vanilla Redis)</li>
+          <li>Cold start still slow — first-time misses go to DB</li>
+          <li>Less transparent — harder to debug what's hitting DB</li>
+          <li>Cache library becomes a critical dependency</li>
+          <li>Less flexibility for per-request cache decisions</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Common Read Caching Problems &amp; Fixes</h2>
+
+  <div class="card card-pink">
+    <div class="card-title">🚨 Problem: Cache Stampede (Thundering Herd)</div>
+    <div class="card-body">When a popular cache key expires, hundreds of concurrent requests all see a miss simultaneously, all query the DB at the same time, and all try to write the same key back. DB gets hammered.</div>
+  </div>
+  <div class="code-block"><span class="cmt">// Solution 1: Mutex Lock — only one thread fetches from DB</span>
+<span class="kw">async function</span> <span class="fn">getWithLock</span>(key) {
+  <span class="kw">const</span> cached = <span class="kw">await</span> redis.<span class="fn">get</span>(key);
+  <span class="kw">if</span> (cached) <span class="kw">return</span> JSON.<span class="fn">parse</span>(cached);
+
+  <span class="kw">const</span> lock = <span class="kw">await</span> redis.<span class="fn">set</span>(<span class="str">`lock:</span><span class="cls">${key}</span><span class="str">`</span>, <span class="str">'1'</span>, <span class="str">'NX'</span>, <span class="str">'EX'</span>, 5);
+  <span class="kw">if</span> (!lock) {
+    <span class="kw">await</span> <span class="fn">sleep</span>(50);         <span class="cmt">// wait, another process is fetching</span>
+    <span class="kw">return</span> <span class="fn">getWithLock</span>(key); <span class="cmt">// retry — will hit cache this time</span>
+  }
+
+  <span class="kw">const</span> data = <span class="kw">await</span> db.<span class="fn">query</span>(<span class="str">'...'</span>);
+  <span class="kw">await</span> redis.<span class="fn">set</span>(key, JSON.<span class="fn">stringify</span>(data), <span class="str">'EX'</span>, 3600);
+  <span class="kw">await</span> redis.<span class="fn">del</span>(<span class="str">`lock:</span><span class="cls">${key}</span><span class="str">`</span>);
+  <span class="kw">return</span> data;
+}
+
+<span class="cmt">// Solution 2: TTL Jitter — stagger expiry times to avoid mass simultaneous expiry</span>
+<span class="kw">const</span> ttl = 3600 + Math.<span class="fn">floor</span>(Math.<span class="fn">random</span>() * 300); <span class="cmt">// 3600 ± 300s</span>
+<span class="kw">await</span> redis.<span class="fn">set</span>(key, data, <span class="str">'EX'</span>, ttl);</div>
+
+  <div class="card card-orange">
+    <div class="card-title">🔄 Problem: Stale Data</div>
+    <div class="card-body">A user updates their profile in the DB. The cache still serves the old name for the next 60 minutes. Classic consistency problem.</div>
+  </div>
+
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Fix 1: Short TTL</div>
+      <div class="mini-body">Set TTL to 60–300 seconds. Data is slightly stale but self-heals quickly. Simple. Appropriate for non-critical data.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">Fix 2: Explicit Invalidation</div>
+      <div class="mini-body">On every write to DB, also <code>DEL user:42</code> from cache. Next read will re-populate. Most correct but adds write complexity.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">Fix 3: Event-Driven Invalidation</div>
+      <div class="mini-body">DB emits a change event (via Kafka/CDC). A separate service listens and invalidates/updates cache. Clean separation of concerns.</div>
+    </div>
+  </div>
+
+  <h2>Read Strategy Decision Guide</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Situation</th><th>Best Strategy</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">General web app, Redis</td><td>Cache-Aside</td><td>Simple, explicit, works everywhere</td></tr>
+        <tr><td class="td-name">Spring Boot / .NET app</td><td>Read-Through</td><td>Framework does the heavy lifting</td></tr>
+        <tr><td class="td-name">High read traffic, low write</td><td>Cache-Aside + long TTL</td><td>Maximize cache utilisation</td></tr>
+        <tr><td class="td-name">Frequently changing data</td><td>Cache-Aside + short TTL + invalidation</td><td>Keep freshness acceptable</td></tr>
+        <tr><td class="td-name">Critical consistency required</td><td>No read cache OR very short TTL</td><td>Cache introduces lag</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-orange"><strong>💡 Interview Answer Template:</strong> "I'd use cache-aside (lazy loading) with Redis. On a cache miss, the application fetches from the DB and populates the cache with a TTL appropriate for how frequently the data changes. On writes, I invalidate the cache key immediately to prevent stale reads."</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Add TTL jitter to prevent stampedes</li>
+      <li>Invalidate cache on every write to DB</li>
+      <li>Monitor cache hit rate — target &gt;90%</li>
+      <li>Use short TTL for user-facing mutable data</li>
+      <li>Consider local in-process cache for hot keys</li>
+      <li>Pre-warm cache after deploy / restart</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Cache without a TTL (stale data forever)</li>
+      <li>Cache PII or sensitive data without encryption</li>
+      <li>Ignore cold start — it can break your DB</li>
+      <li>Use the same TTL for all data types</li>
+      <li>Skip monitoring — silent cache misses are invisible</li>
+    </ul></div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 3 — WRITE CACHING STRATEGIES
+══════════════════════════════════════════════════════ -->
+<section id="sec-write-strategies" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(155,109,255,.1);color:var(--purple)">✍️ Write Caching — Strategies</div>
+    <div class="hero-title">Write Caching Strategies</div>
+    <div class="hero-desc">Write caching strategies control <em>when and how</em> data written to the cache gets persisted to the database. The strategy you choose determines your consistency guarantees, write performance, and risk of data loss.</div>
+  </div>
+
+  <!-- WRITE-THROUGH -->
+  <div class="strategy-header">
+    <div class="strategy-icon" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.3)">📝</div>
+    <div class="strategy-meta">
+      <div class="s-label" style="color:var(--green)">Strategy 1 — Safest</div>
+      <div class="s-title">Write-Through</div>
+      <div class="s-tagline">Every write goes to <strong>cache AND database synchronously</strong>. Both are always consistent. Safe but adds write latency.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Consistency</div><div class="sum-val" style="color:var(--green)">Strong ✓</div></div>
+    <div class="sum-item"><div class="sum-label">Write Latency</div><div class="sum-val" style="color:var(--orange)">Higher</div></div>
+    <div class="sum-item"><div class="sum-label">Data Loss Risk</div><div class="sum-val" style="color:var(--green)">None</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--green)">Low</div></div>
+  </div>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="wt1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00c96e"/></marker>
+        <marker id="wt2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#505a6e"/></marker>
+      </defs>
+      <rect x="20" y="80" width="120" height="50" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="80" y="101" text-anchor="middle" fill="#e8eaf0" font-weight="600">Application</text>
+      <text x="80" y="119" text-anchor="middle" fill="#505a6e" font-size="11">writes data</text>
+      <rect x="240" y="30" width="140" height="50" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="2"/>
+      <text x="310" y="53" text-anchor="middle" fill="#f5a623" font-weight="600">Redis Cache</text>
+      <text x="310" y="69" text-anchor="middle" fill="#505a6e" font-size="11">SET user:42 &lt;data&gt;</text>
+      <rect x="240" y="130" width="140" height="50" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="310" y="153" text-anchor="middle" fill="#e8eaf0" font-weight="600">Database</text>
+      <text x="310" y="169" text-anchor="middle" fill="#505a6e" font-size="11">UPDATE users SET …</text>
+      <!-- Write to both simultaneously -->
+      <line x1="140" y1="95" x2="238" y2="58" stroke="#00c96e" stroke-width="2" marker-end="url(#wt1)"/>
+      <line x1="140" y1="110" x2="238" y2="150" stroke="#00c96e" stroke-width="2" marker-end="url(#wt1)"/>
+      <text x="172" y="80" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="600">① write</text>
+      <text x="172" y="130" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="600">① write</text>
+      <!-- Both confirm -->
+      <line x1="380" y1="55" x2="500" y2="95" stroke="#505a6e" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#wt2)"/>
+      <line x1="380" y1="155" x2="500" y2="115" stroke="#505a6e" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#wt2)"/>
+      <rect x="500" y="80" width="135" height="45" rx="6" fill="rgba(0,201,110,.08)" stroke="rgba(0,201,110,.2)"/>
+      <text x="567" y="100" text-anchor="middle" fill="#00c96e" font-size="12" font-weight="600">② ACK to app</text>
+      <text x="567" y="116" text-anchor="middle" fill="#505a6e" font-size="11">only after both written</text>
+      <!-- Note -->
+      <text x="330" y="195" text-anchor="middle" fill="#505a6e" font-size="11">Writes are synchronous to both — app waits for confirmation from DB before responding</text>
+    </svg>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WRITE-BEHIND -->
+  <div class="strategy-header">
+    <div class="strategy-icon" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.3)">⚡</div>
+    <div class="strategy-meta">
+      <div class="s-label" style="color:var(--purple)">Strategy 2 — Fastest Writes</div>
+      <div class="s-title">Write-Behind (Write-Back)</div>
+      <div class="s-tagline">Writes go to cache first, confirmed to the app immediately. The DB is updated <strong>asynchronously later</strong> by a background process. Maximum write speed, small data loss risk.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Consistency</div><div class="sum-val" style="color:var(--orange)">Eventual</div></div>
+    <div class="sum-item"><div class="sum-label">Write Latency</div><div class="sum-val" style="color:var(--green)">Lowest ⚡</div></div>
+    <div class="sum-item"><div class="sum-label">Data Loss Risk</div><div class="sum-val" style="color:var(--pink)">Small window</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--orange)">High</div></div>
+  </div>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 220" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="wb1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#9b6dff"/></marker>
+        <marker id="wb2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#505a6e"/></marker>
+      </defs>
+      <rect x="10" y="85" width="120" height="50" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="70" y="106" text-anchor="middle" fill="#e8eaf0" font-weight="600">Application</text>
+      <text x="70" y="124" text-anchor="middle" fill="#505a6e" font-size="11">writes data</text>
+      <!-- Cache -->
+      <rect x="205" y="85" width="140" height="50" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="2"/>
+      <text x="275" y="106" text-anchor="middle" fill="#f5a623" font-weight="600">Redis Cache</text>
+      <text x="275" y="122" text-anchor="middle" fill="#505a6e" font-size="11">SET + dirty flag</text>
+      <!-- Write Queue -->
+      <rect x="205" y="165" width="140" height="40" rx="6" fill="#1e2535" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="275" y="181" text-anchor="middle" fill="#9b6dff" font-weight="600">Write Queue</text>
+      <text x="275" y="197" text-anchor="middle" fill="#505a6e" font-size="11">batched async writes</text>
+      <!-- DB -->
+      <rect x="460" y="155" width="130" height="50" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="525" y="176" text-anchor="middle" fill="#e8eaf0" font-weight="600">Database</text>
+      <text x="525" y="194" text-anchor="middle" fill="#505a6e" font-size="11">updated async</text>
+      <!-- ACK immediately -->
+      <rect x="460" y="65" width="130" height="40" rx="6" fill="rgba(155,109,255,.08)" stroke="rgba(155,109,255,.2)"/>
+      <text x="525" y="83" text-anchor="middle" fill="#9b6dff" font-size="12" font-weight="600">✓ ACK immediately</text>
+      <text x="525" y="97" text-anchor="middle" fill="#505a6e" font-size="11">app doesn't wait for DB</text>
+      <!-- Arrows -->
+      <line x1="130" y1="108" x2="203" y2="108" stroke="#9b6dff" stroke-width="2" marker-end="url(#wb1)"/>
+      <text x="166" y="102" text-anchor="middle" fill="#9b6dff" font-size="11">① write</text>
+      <line x1="345" y1="95" x2="458" y2="80" stroke="#505a6e" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#wb2)"/>
+      <text x="405" y="77" text-anchor="middle" fill="#505a6e" font-size="11">② instant ACK</text>
+      <line x1="275" y1="135" x2="275" y2="163" stroke="#505a6e" stroke-width="1.2" stroke-dasharray="3,2" marker-end="url(#wb2)"/>
+      <line x1="345" y1="180" x2="458" y2="176" stroke="#9b6dff" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#wb1)"/>
+      <text x="400" y="170" text-anchor="middle" fill="#9b6dff" font-size="11">③ async flush to DB</text>
+    </svg>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WRITE-AROUND -->
+  <div class="strategy-header">
+    <div class="strategy-icon" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.3)">🔃</div>
+    <div class="strategy-meta">
+      <div class="s-label" style="color:var(--pink)">Strategy 3 — Bypass Cache on Write</div>
+      <div class="s-title">Write-Around</div>
+      <div class="s-tagline">Writes go <strong>directly to the database</strong>, bypassing the cache entirely. Only reads populate the cache. Best when written data is rarely re-read.</div>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Consistency</div><div class="sum-val" style="color:var(--orange)">Delayed</div></div>
+    <div class="sum-item"><div class="sum-label">Write Latency</div><div class="sum-val" style="color:var(--blue)">DB speed</div></div>
+    <div class="sum-item"><div class="sum-label">Cache Pollution</div><div class="sum-val" style="color:var(--green)">None ✓</div></div>
+    <div class="sum-item"><div class="sum-label">Complexity</div><div class="sum-val" style="color:var(--green)">Very Low</div></div>
+  </div>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 190" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="wa1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e85d75"/></marker>
+        <marker id="wa2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00a8ff"/></marker>
+        <marker id="wa3" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#505a6e"/></marker>
+      </defs>
+      <rect x="10" y="75" width="120" height="50" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="70" y="96" text-anchor="middle" fill="#e8eaf0" font-weight="600">Application</text>
+      <text x="70" y="114" text-anchor="middle" fill="#505a6e" font-size="11">WRITE + READ</text>
+      <!-- Cache (greyed out for writes) -->
+      <rect x="220" y="30" width="140" height="50" rx="8" fill="#1a1f2e" stroke="#2e3748"/>
+      <text x="290" y="53" text-anchor="middle" fill="#505a6e" font-weight="600">Redis Cache</text>
+      <text x="290" y="69" text-anchor="middle" fill="#505a6e" font-size="11">reads populate this</text>
+      <!-- DB -->
+      <rect x="220" y="130" width="140" height="50" rx="8" fill="#1e2535" stroke="#e85d75" stroke-width="2"/>
+      <text x="290" y="153" text-anchor="middle" fill="#e85d75" font-weight="600">Database</text>
+      <text x="290" y="169" text-anchor="middle" fill="#505a6e" font-size="11">all writes go here</text>
+      <!-- Write arrow (bypasses cache) -->
+      <path d="M 130 115 Q 175 175 218 158" fill="none" stroke="#e85d75" stroke-width="2" marker-end="url(#wa1)"/>
+      <text x="142" y="163" text-anchor="middle" fill="#e85d75" font-size="11" font-weight="600">WRITE → bypass cache</text>
+      <!-- Read arrow (goes to cache) -->
+      <line x1="130" y1="88" x2="218" y2="57" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#wa2)"/>
+      <text x="175" y="60" text-anchor="middle" fill="#00a8ff" font-size="11">READ checks cache first</text>
+      <!-- Cross out write to cache -->
+      <text x="290" y="95" text-anchor="middle" fill="#e85d75" font-size="18">✗</text>
+      <text x="450" y="100" text-anchor="middle" fill="#505a6e" font-size="11">Writes skip cache entirely.</text>
+      <text x="450" y="116" text-anchor="middle" fill="#505a6e" font-size="11">First read after write = cache miss.</text>
+      <text x="450" y="132" text-anchor="middle" fill="#505a6e" font-size="11">Great for write-heavy data rarely re-read.</text>
+      <text x="450" y="155" text-anchor="middle" fill="#00c96e" font-size="11">✓ No cache pollution from write-once data</text>
+    </svg>
+  </div>
+
+  <div class="callout callout-purple"><strong>Write-Around use case:</strong> Log ingestion, analytics events, time-series data, or any data you write once and rarely read. Writing 1M log lines to cache would evict your useful hot data. Write-around keeps the cache clean.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 4 — WRITE PROS & CONS
+══════════════════════════════════════════════════════ -->
+<section id="sec-write-proscons" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(155,109,255,.1);color:var(--purple)">⚖️ Write Caching — Analysis</div>
+    <div class="hero-title">Write Caching Strategies — Pros &amp; Cons</div>
+    <div class="hero-desc">Write caching is where real consistency vs performance tradeoffs live. Understanding each strategy's failure modes and strengths is essential for system design interviews and production systems.</div>
+  </div>
+
+  <!-- WRITE-THROUGH -->
+  <div class="comp-strategy">
+    <div class="comp-head">
+      <div class="comp-num" style="background:var(--green)">1</div>
+      <div class="comp-title-text">Write-Through</div>
+      <div class="comp-subtitle">Strong consistency — write to cache + DB atomically</div>
+    </div>
+    <div class="comp-body">
+      <div class="pc-grid">
+        <div class="pc-box pc-pros"><h4>✅ Pros</h4><ul>
+          <li><strong>Strong consistency</strong> — cache and DB are always in sync after a write</li>
+          <li>No stale data in cache — every read after a write is correct</li>
+          <li>No data loss risk — DB is updated synchronously</li>
+          <li>Simple to reason about — no async complexity</li>
+          <li>Cache is always warm — no cold-start cache misses after writes</li>
+        </ul></div>
+        <div class="pc-box pc-cons"><h4>❌ Cons</h4><ul>
+          <li><strong>Higher write latency</strong> — must wait for both cache AND DB to confirm</li>
+          <li>Write penalty on every operation even if data is never read again</li>
+          <li>Cache fills with written-but-never-read data (cache pollution)</li>
+          <li>Higher write traffic — every write hits two systems</li>
+          <li>Not suitable for write-heavy workloads with low read ratios</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRITE-BEHIND -->
+  <div class="comp-strategy">
+    <div class="comp-head">
+      <div class="comp-num" style="background:var(--purple)">2</div>
+      <div class="comp-title-text">Write-Behind (Write-Back)</div>
+      <div class="comp-subtitle">Maximum write speed — async DB persistence</div>
+    </div>
+    <div class="comp-body">
+      <div class="pc-grid">
+        <div class="pc-box pc-pros"><h4>✅ Pros</h4><ul>
+          <li><strong>Lowest write latency</strong> — app gets ACK immediately after cache write</li>
+          <li>Write coalescing — 100 updates to same key = 1 DB write (huge savings)</li>
+          <li>DB protected from write spikes — queue absorbs burst traffic</li>
+          <li>Massive write throughput possible</li>
+          <li>Works well with batch DB operations</li>
+        </ul></div>
+        <div class="pc-box pc-cons"><h4>❌ Cons</h4><ul>
+          <li><strong>Data loss risk</strong> — if cache fails before async flush, writes are gone</li>
+          <li><strong>Complex implementation</strong> — need reliable write queue, retry logic, idempotency</li>
+          <li>Eventual consistency — DB lags behind cache</li>
+          <li>Hard to recover from partial failures</li>
+          <li>Not suitable where data durability is non-negotiable (finance, medical)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRITE-AROUND -->
+  <div class="comp-strategy">
+    <div class="comp-head">
+      <div class="comp-num" style="background:var(--pink)">3</div>
+      <div class="comp-title-text">Write-Around</div>
+      <div class="comp-subtitle">Skip cache on write — prevents pollution</div>
+    </div>
+    <div class="comp-body">
+      <div class="pc-grid">
+        <div class="pc-box pc-pros"><h4>✅ Pros</h4><ul>
+          <li><strong>No cache pollution</strong> — cache only holds frequently-read data</li>
+          <li>Good for write-once, rarely-read data (logs, audit trails)</li>
+          <li>Simple — writes are just DB writes, no cache logic needed</li>
+          <li>Cache stays focused on hot data — better hit rate</li>
+          <li>Lower memory usage in cache for high-write workloads</li>
+        </ul></div>
+        <div class="pc-box pc-cons"><h4>❌ Cons</h4><ul>
+          <li><strong>High read miss after write</strong> — first read of newly written data always misses cache</li>
+          <li>Slow initial reads for recently written data</li>
+          <li>Inconsistency window between cache and DB</li>
+          <li>Not suitable when written data is read back immediately</li>
+          <li>Must combine with read cache strategy (Cache-Aside)</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>The Write Strategy Decision Matrix</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Criteria</th><th>Write-Through</th><th>Write-Behind</th><th>Write-Around</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Consistency</td><td><span class="pill pill-green">Strong</span></td><td><span class="pill pill-orange">Eventual</span></td><td><span class="pill pill-orange">Delayed</span></td></tr>
+        <tr><td class="td-name">Write Speed</td><td><span class="pill pill-orange">Slower</span></td><td><span class="pill pill-green">Fastest ⚡</span></td><td><span class="pill pill-blue">DB speed</span></td></tr>
+        <tr><td class="td-name">Data Loss Risk</td><td><span class="pill pill-green">None</span></td><td><span class="pill pill-pink">Small window</span></td><td><span class="pill pill-green">None</span></td></tr>
+        <tr><td class="td-name">Cache Pollution</td><td><span class="pill pill-pink">Possible</span></td><td><span class="pill pill-orange">Possible</span></td><td><span class="pill pill-green">None ✓</span></td></tr>
+        <tr><td class="td-name">Implementation</td><td><span class="pill pill-green">Simple</span></td><td><span class="pill pill-pink">Complex</span></td><td><span class="pill pill-green">Simple</span></td></tr>
+        <tr><td class="td-name">Best for</td><td>Reads &gt;&gt; Writes, data must be consistent</td><td>Write-heavy, high throughput, can tolerate lag</td><td>Write-once, rarely re-read data</td></tr>
+        <tr><td class="td-name">Real examples</td><td>User profiles, settings, product catalog</td><td>Social feed counters, analytics, leaderboards</td><td>Logs, events, audit records</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Combining Strategies — Real Architecture</h2>
+  <div class="card card-purple">
+    <div class="card-title">🏗️ Production Pattern: E-Commerce Platform</div>
+    <div class="card-body">Real systems mix strategies per data type:
+      <br><br>
+      <strong style="color:var(--green)">Product catalog</strong> → <code>Write-Through</code> — price/stock changes must be immediately consistent in cache<br>
+      <strong style="color:var(--blue)">User cart &amp; sessions</strong> → <code>Write-Through</code> — cannot lose cart data, reads are frequent<br>
+      <strong style="color:var(--purple)">View counts, likes, clicks</strong> → <code>Write-Behind</code> — high throughput, eventual consistency is fine<br>
+      <strong style="color:var(--pink)">Order records, audit logs</strong> → <code>Write-Around</code> — write once, rarely re-read, don't pollute cache
+    </div>
+  </div>
+
+  <h2>Write-Behind Deep Dive: Implementation</h2>
+  <div class="code-block"><span class="cmt">// Write-Behind with Redis List as durable write queue</span>
+
+<span class="kw">async function</span> <span class="fn">updateUserProfile</span>(userId, data) {
+  <span class="kw">const</span> key = <span class="str">`user:</span><span class="cls">${userId}</span><span class="str">`</span>;
+
+  <span class="cmt">// ① Write to cache immediately (instant ACK to caller)</span>
+  <span class="kw">await</span> redis.<span class="fn">set</span>(key, JSON.<span class="fn">stringify</span>(data), <span class="str">'EX'</span>, 3600);
+
+  <span class="cmt">// ② Enqueue for async DB flush (durable queue)</span>
+  <span class="kw">await</span> redis.<span class="fn">lpush</span>(<span class="str">'write-queue'</span>, JSON.<span class="fn">stringify</span>({
+    table: <span class="str">'users'</span>, id: userId, data, timestamp: Date.<span class="fn">now</span>()
+  }));
+
+  <span class="kw">return</span> { success: <span class="kw">true</span> }; <span class="cmt">// Respond before DB write!</span>
+}
+
+<span class="cmt">// Background worker flushes queue to DB</span>
+<span class="kw">async function</span> <span class="fn">flushWorker</span>() {
+  <span class="kw">while</span> (<span class="kw">true</span>) {
+    <span class="kw">const</span> item = <span class="kw">await</span> redis.<span class="fn">brpop</span>(<span class="str">'write-queue'</span>, 0); <span class="cmt">// blocking pop</span>
+    <span class="kw">const</span> { table, id, data } = JSON.<span class="fn">parse</span>(item[1]);
+    <span class="kw">await</span> db.<span class="fn">query</span>(
+      <span class="str">`UPDATE </span><span class="cls">${table}</span><span class="str"> SET data = $1 WHERE id = $2`</span>, [data, id]
+    );
+  }
+}</div>
+
+  <div class="callout callout-pink"><strong>⚠️ Write-Behind Data Loss Scenario:</strong> If Redis crashes <em>after</em> writing to cache but <em>before</em> the background worker flushes to DB, those writes are lost. Mitigation: use Redis Persistence (AOF mode), a durable queue like Kafka, or ensure at-least-once delivery with idempotent DB writes.</div>
+
+  <h2>Optimal Strategy Combinations</h2>
+  <div class="grid3">
+    <div class="mini-card" style="border-top:2px solid var(--blue)">
+      <div class="mini-title" style="color:var(--blue)">Read-Heavy App</div>
+      <div class="mini-body"><strong>Read:</strong> Cache-Aside<br><strong>Write:</strong> Write-Through<br><br>High read hit rate, strong consistency. Accept slightly slower writes for always-fresh cache.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--purple)">
+      <div class="mini-title" style="color:var(--purple)">Write-Heavy App</div>
+      <div class="mini-body"><strong>Read:</strong> Cache-Aside<br><strong>Write:</strong> Write-Behind<br><br>Absorb write bursts with queue. Cache stays warm. Accept eventual consistency and complexity.</div>
+    </div>
+    <div class="mini-card" style="border-top:2px solid var(--pink)">
+      <div class="mini-title" style="color:var(--pink)">Mixed Workload</div>
+      <div class="mini-body"><strong>Hot data:</strong> Write-Through<br><strong>Counters:</strong> Write-Behind<br><strong>Logs:</strong> Write-Around<br><br>Match strategy to each data type's characteristics.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-green"><strong>💡 Interview Answer Template:</strong> "For this system I'd use Write-Through for [user data / product catalog] since reads are frequent and consistency is critical. For [counters / analytics events], I'd use Write-Behind to absorb the write spike and flush asynchronously — accepting eventual consistency there is fine."</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Match write strategy to each data type separately</li>
+      <li>Use Write-Behind only with a durable queue (Kafka, not memory)</li>
+      <li>Make Write-Behind workers idempotent (retry-safe)</li>
+      <li>Monitor write queue depth — backup = alarm</li>
+      <li>Test cache failure scenarios in staging</li>
+      <li>Use transactions where cache + DB must be atomic</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Use Write-Behind for financial/medical data</li>
+      <li>Forget to invalidate cache after Write-Around</li>
+      <li>Apply one strategy to all data types blindly</li>
+      <li>Skip error handling in async write workers</li>
+      <li>Ignore the write queue as a single point of failure</li>
+    </ul></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700)closeSidebar();
+}
+const hamburger=document.getElementById('hamburger');
+const sidebar=document.getElementById('sidebar');
+const overlay=document.getElementById('overlay');
+function openSidebar(){sidebar.classList.add('open');overlay.classList.add('open')}
+function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('open')}
+hamburger.addEventListener('click',()=>sidebar.classList.contains('open')?closeSidebar():openSidebar());
+overlay.addEventListener('click',closeSidebar);
+</script>
+</body>
+</html>

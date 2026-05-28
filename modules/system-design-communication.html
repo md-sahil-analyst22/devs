@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design — Communication Buzzwords</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-dark:#0f1117;--bg-sidebar:#141820;--bg-card:#1a1f2e;--bg-card2:#1e2535;
+  --bg-hover:#252d3d;--accent:#00c96e;--accent2:#00a8ff;--accent3:#f5a623;
+  --accent4:#e85d75;--accent5:#9b6dff;--text-primary:#e8eaf0;--text-secondary:#8892a4;
+  --text-muted:#505a6e;--border:#252d3d;--border2:#2e3748;
+  --green:#00c96e;--blue:#00a8ff;--orange:#f5a623;--pink:#e85d75;--purple:#9b6dff;
+  --sidebar-w:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg-dark);color:var(--text-primary);line-height:1.6;overflow-x:hidden}
+/* ── TOPBAR ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 0}
+.topbar-brand{display:flex;align-items:center;width:var(--sidebar-w);padding:0 24px;border-right:1px solid var(--border);height:100%}
+.brand-icon{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-weight:700;font-size:13px;color:#000;margin-right:10px;flex-shrink:0}
+.brand-text{font-weight:600;font-size:15px;color:var(--text-primary)}
+.brand-sub{font-size:11px;color:var(--text-muted)}
+.topbar-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--text-secondary)}
+.progress-pill{background:rgba(0,201,110,.12);color:var(--accent);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(0,201,110,.25)}
+.topic-count{color:var(--text-muted);font-size:12px}
+/* ── LAYOUT ── */
+.layout{display:flex;padding-top:56px;min-height:100vh}
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--bg-sidebar);border-right:1px solid var(--border);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sidebar-section-header{padding:20px 20px 8px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase}
+.sidebar-section-header:first-child{padding-top:16px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .15s;text-decoration:none}
+.nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+.nav-item.active{color:var(--accent);background:rgba(0,201,110,.08);border-left-color:var(--accent);font-weight:500}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nav-badge{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.badge-beginner{background:rgba(0,201,110,.15);color:var(--green)}
+.badge-inter{background:rgba(0,168,255,.15);color:var(--blue)}
+.badge-adv{background:rgba(155,109,255,.15);color:var(--purple)}
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;padding:40px 48px 80px;max-width:900px}
+.section{display:none}
+.section.active{display:block}
+/* ── HERO ── */
+.section-hero{margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.hero-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:6px;margin-bottom:14px}
+.hero-title{font-size:28px;font-weight:600;color:var(--text-primary);line-height:1.25;margin-bottom:10px}
+.hero-desc{font-size:15px;color:var(--text-secondary);line-height:1.7;max-width:680px}
+/* ── CARDS ── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
+.card-body{font-size:14px;color:var(--text-secondary);line-height:1.7}
+.card-accent{border-left:3px solid var(--accent);background:rgba(0,201,110,.05)}
+.card-blue{border-left:3px solid var(--blue);background:rgba(0,168,255,.05)}
+.card-orange{border-left:3px solid var(--orange);background:rgba(245,166,35,.05)}
+.card-purple{border-left:3px solid var(--purple);background:rgba(155,109,255,.05)}
+.card-pink{border-left:3px solid var(--pink);background:rgba(232,93,117,.05)}
+/* ── CODE ── */
+.code-block{background:#0a0e16;border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin:14px 0;font-family:'DM Mono',monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;white-space:pre}
+.code-block .kw{color:#9b6dff}.code-block .str{color:#00c96e}.code-block .cmt{color:#505a6e}
+.code-block .dir{color:#00a8ff}.code-block .fn{color:#e85d75}.code-block .cls{color:#f5a623}
+code{font-family:'DM Mono',monospace;font-size:12.5px;background:rgba(255,255,255,.06);color:var(--accent);padding:1px 6px;border-radius:4px}
+/* ── GRIDS ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.mini-card{background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.mini-title{font-size:13px;font-weight:600;margin-bottom:6px}
+.mini-body{font-size:12px;color:var(--text-secondary);line-height:1.55}
+/* ── FLOW ── */
+.flow-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0}
+.flow-box{padding:7px 14px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid;text-align:center}
+.flow-arrow{color:var(--text-muted);font-size:16px}
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--bg-card2)}
+th{text-align:left;padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border2)}
+td{padding:11px 16px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.td-name{color:var(--text-primary);font-weight:500}
+/* ── PILLS ── */
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.pill-green{background:rgba(0,201,110,.15);color:var(--green)}
+.pill-blue{background:rgba(0,168,255,.15);color:var(--blue)}
+.pill-orange{background:rgba(245,166,35,.15);color:var(--orange)}
+.pill-purple{background:rgba(155,109,255,.15);color:var(--purple)}
+.pill-pink{background:rgba(232,93,117,.15);color:var(--pink)}
+.pill-gray{background:rgba(255,255,255,.07);color:var(--text-secondary)}
+/* ── CALLOUT ── */
+.callout{border-radius:8px;padding:14px 18px;margin:14px 0;font-size:13px;line-height:1.65}
+.callout-green{background:rgba(0,201,110,.08);border:1px solid rgba(0,201,110,.2);color:#7ddcaa}
+.callout-blue{background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.2);color:#7dc8f0}
+.callout-orange{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#f0c87a}
+.callout-purple{background:rgba(155,109,255,.08);border:1px solid rgba(155,109,255,.2);color:#c4aafe}
+.callout-pink{background:rgba(232,93,117,.08);border:1px solid rgba(232,93,117,.2);color:#f0a0b0}
+.callout strong{color:inherit;font-weight:600}
+/* ── STEPS ── */
+.step{display:flex;gap:14px;margin-bottom:18px}
+.step-num{width:28px;height:28px;border-radius:50%;flex-shrink:0;color:#000;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.step-content{flex:1}
+.step-title{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--text-secondary);line-height:1.6}
+/* ── DIAGRAM ── */
+.diagram-wrap{background:#0a0e16;border:1px solid var(--border);border-radius:10px;padding:24px;margin:16px 0;overflow-x:auto}
+.diagram-wrap svg{display:block;margin:0 auto}
+/* ── LAYERS ── */
+.layer-stack{display:flex;flex-direction:column;gap:3px;margin:14px 0}
+.layer{border-radius:6px;padding:12px 16px;border-left:4px solid;font-size:13px}
+.layer-name{font-weight:600;margin-bottom:2px}
+.layer-desc{font-size:12px;color:var(--text-secondary)}
+/* ── DO/DON'T ── */
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.do-box,.dont-box{border-radius:8px;padding:14px 16px}
+.do-box{background:rgba(0,201,110,.07);border:1px solid rgba(0,201,110,.2)}
+.dont-box{background:rgba(232,93,117,.07);border:1px solid rgba(232,93,117,.2)}
+.do-box h4{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.dont-box h4{font-size:11px;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.do-box li,.dont-box li{font-size:12px;color:var(--text-secondary);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do-box li::before{content:"✓";position:absolute;left:0;color:var(--green);font-size:11px}
+.dont-box li::before{content:"✗";position:absolute;left:0;color:var(--pink);font-size:11px}
+/* ── RULE LIST ── */
+.rule-list{list-style:none;margin:10px 0}
+.rule-list li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-secondary)}
+.rule-list li:last-child{border-bottom:none}
+.rule-list li::before{content:"→";color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px}
+.rule-list li strong{color:var(--text-primary);font-weight:600}
+/* ── TAG ROW ── */
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.tag{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;border:1px solid}
+/* ── COMPARE GRID ── */
+.comp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.comp-col{background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.comp-col h4{font-size:12px;font-weight:600;padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid var(--border)}
+.comp-col li{font-size:11.5px;color:var(--text-secondary);list-style:none;padding:3px 0}
+.comp-col li::before{content:"—";margin-right:6px;color:var(--text-muted)}
+/* ── TYPOGRAPHY ── */
+.divider{height:1px;background:var(--border);margin:32px 0}
+h2{font-size:20px;font-weight:600;color:var(--text-primary);margin:28px 0 12px}
+h2:first-child{margin-top:0}
+h3{font-size:15px;font-weight:600;color:var(--text-primary);margin:22px 0 10px}
+p{font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px}
+/* ── HAMBURGER ── */
+.hamburger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.hamburger span{display:block;width:20px;height:2px;background:var(--text-secondary);border-radius:1px;transition:.2s}
+.sidebar-overlay{display:none}
+/* ── ANIMATIONS ── */
+.section.active .card,.section.active .mini-card,.section.active .section-hero{animation:fadeUp .3s ease both}
+.section.active .card:nth-child(2){animation-delay:.05s}
+.section.active .card:nth-child(3){animation-delay:.1s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.main{padding:28px 24px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sidebar-w:260px}
+  .main{margin-left:0;padding:24px 18px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .25s;z-index:90}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.5);z-index:89}
+  .sidebar-overlay.open{display:block}
+  .hamburger{display:flex}
+  .topbar-brand{width:auto;border-right:none}
+  .grid2{grid-template-columns:1fr}
+  .grid3{grid-template-columns:1fr 1fr}
+  .do-dont{grid-template-columns:1fr}
+  .comp-grid{grid-template-columns:1fr}
+  .flow-row{flex-direction:column;align-items:flex-start}
+  .flow-arrow{transform:rotate(90deg)}
+}
+@media(max-width:480px){.grid3{grid-template-columns:1fr}.hero-title{font-size:22px}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ TOPBAR ═══════════════════════ -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">💬</div>
+    <div>
+      <div class="brand-text">SysDesign</div>
+      <div class="brand-sub">Communication Buzzwords</div>
+    </div>
+  </div>
+  <div class="topbar-meta">
+    <button class="hamburger" id="hamburger" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="topic-count">5 topics · Communication</span>
+    <span class="progress-pill">Study Guide</span>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+
+<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-section-header">Overview</div>
+  <a class="nav-item active" onclick="show('intro')">
+    <span class="nav-dot" style="background:var(--green)"></span> Introduction
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+
+  <div class="sidebar-section-header">API Paradigms</div>
+  <a class="nav-item" onclick="show('rest')">
+    <span class="nav-dot" style="background:var(--blue)"></span> REST API
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="show('graphql')">
+    <span class="nav-dot" style="background:var(--orange)"></span> GraphQL
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+  <a class="nav-item" onclick="show('grpc')">
+    <span class="nav-dot" style="background:var(--purple)"></span> gRPC
+    <span class="nav-badge badge-adv">Adv</span>
+  </a>
+
+  <div class="sidebar-section-header">Async Communication</div>
+  <a class="nav-item" onclick="show('mq')">
+    <span class="nav-dot" style="background:var(--pink)"></span> Message Queues
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+</nav>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════ -->
+<main class="main">
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 1 — INTRODUCTION
+════════════════════════════════════════════════════════ -->
+<section id="sec-intro" class="section active">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.1);color:var(--green)">🗺️ Topic 1 — Overview</div>
+    <div class="hero-title">Communication in System Design</div>
+    <div class="hero-desc">Every distributed system is just a collection of services that talk to each other. <em>How</em> they talk — synchronously or asynchronously, with what protocol, in what shape — is one of the most important design decisions you'll make.</div>
+  </div>
+
+  <h2>The Core Question</h2>
+  <div class="card card-accent">
+    <div class="card-title">When Service A needs to talk to Service B, what are your options?</div>
+    <div class="card-body">Every API style and messaging pattern is an answer to this question. The right answer depends on your latency requirements, payload shape, team ownership, coupling tolerance, and whether both sides need to be online at the same time.</div>
+  </div>
+
+  <h2>Two Communication Styles</h2>
+  <div class="grid2">
+    <div class="card card-blue">
+      <div class="card-title">⚡ Synchronous</div>
+      <div class="card-body">Caller waits for a response before continuing. Tight coupling. Simple to reason about. Examples: <strong>REST, GraphQL, gRPC</strong>.<br><br>Good for: queries, user-facing reads, real-time responses.</div>
+    </div>
+    <div class="card card-orange">
+      <div class="card-title">📬 Asynchronous</div>
+      <div class="card-body">Caller sends a message and moves on. Loose coupling. Harder to debug. Examples: <strong>Message Queues, Event Streams</strong>.<br><br>Good for: writes, background jobs, event-driven workflows.</div>
+    </div>
+  </div>
+
+  <h2>The Communication Landscape</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 310" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="a1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#505a6e"/></marker>
+      </defs>
+      <!-- Central node -->
+      <rect x="255" y="120" width="150" height="60" rx="10" fill="#1e2535" stroke="#2e3748" stroke-width="2"/>
+      <text x="330" y="146" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">Your Service</text>
+      <text x="330" y="166" text-anchor="middle" fill="#505a6e" font-size="11">needs to communicate</text>
+
+      <!-- REST -->
+      <rect x="30" y="20" width="120" height="55" rx="8" fill="#1a1f2e" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="90" y="44" text-anchor="middle" fill="#00a8ff" font-weight="600">REST API</text>
+      <text x="90" y="62" text-anchor="middle" fill="#505a6e" font-size="11">HTTP · JSON</text>
+      <line x1="150" y1="47" x2="253" y2="140" stroke="#00a8ff" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+
+      <!-- GraphQL -->
+      <rect x="30" y="125" width="120" height="55" rx="8" fill="#1a1f2e" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="90" y="149" text-anchor="middle" fill="#f5a623" font-weight="600">GraphQL</text>
+      <text x="90" y="167" text-anchor="middle" fill="#505a6e" font-size="11">HTTP · Typed Query</text>
+      <line x1="150" y1="152" x2="253" y2="152" stroke="#f5a623" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+
+      <!-- gRPC -->
+      <rect x="30" y="230" width="120" height="55" rx="8" fill="#1a1f2e" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="90" y="254" text-anchor="middle" fill="#9b6dff" font-weight="600">gRPC</text>
+      <text x="90" y="272" text-anchor="middle" fill="#505a6e" font-size="11">HTTP/2 · Protobuf</text>
+      <line x1="150" y1="257" x2="253" y2="165" stroke="#9b6dff" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+
+      <!-- Message Queue -->
+      <rect x="510" y="50" width="140" height="55" rx="8" fill="#1a1f2e" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="580" y="73" text-anchor="middle" fill="#e85d75" font-weight="600">Message Queue</text>
+      <text x="580" y="91" text-anchor="middle" fill="#505a6e" font-size="11">Async · Decoupled</text>
+      <line x1="407" y1="140" x2="508" y2="77" stroke="#e85d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+
+      <!-- Event Stream -->
+      <rect x="510" y="195" width="140" height="55" rx="8" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="580" y="218" text-anchor="middle" fill="#00c96e" font-weight="600">Event Stream</text>
+      <text x="580" y="236" text-anchor="middle" fill="#505a6e" font-size="11">Kafka · Pub/Sub</text>
+      <line x1="407" y1="165" x2="508" y2="210" stroke="#00c96e" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+
+      <!-- Legend -->
+      <text x="330" y="295" text-anchor="middle" fill="#505a6e" font-size="11">Dashed = synchronous request  ·  Double-dashed = async fire-and-forget</text>
+    </svg>
+  </div>
+
+  <h2>Quick Comparison at a Glance</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Style</th><th>Transport</th><th>Payload</th><th>Coupling</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">REST</td><td>HTTP/1.1+</td><td>JSON / XML</td><td><span class="pill pill-orange">Medium</span></td><td>Public APIs, CRUD, browsers</td></tr>
+        <tr><td class="td-name">GraphQL</td><td>HTTP</td><td>JSON (typed query)</td><td><span class="pill pill-orange">Medium</span></td><td>Complex UIs, mobile, multi-data</td></tr>
+        <tr><td class="td-name">gRPC</td><td>HTTP/2</td><td>Protobuf (binary)</td><td><span class="pill pill-pink">Tight</span></td><td>Internal microservices, low latency</td></tr>
+        <tr><td class="td-name">Message Queue</td><td>AMQP / custom</td><td>Any (JSON/bytes)</td><td><span class="pill pill-green">Loose</span></td><td>Background jobs, decoupling, scale</td></tr>
+        <tr><td class="td-name">Event Stream</td><td>TCP (Kafka)</td><td>Any</td><td><span class="pill pill-green">Loose</span></td><td>Audit log, fan-out, analytics</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-green"><strong>Interview mindset:</strong> When an interviewer asks "how should Service A talk to Service B?" — walk through sync vs async first, then pick the right protocol. Justify your choice with tradeoffs. That's what distinguishes a senior answer.</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 2 — REST API
+════════════════════════════════════════════════════════ -->
+<section id="sec-rest" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.1);color:var(--blue)">🌐 Topic 2 — API Paradigm</div>
+    <div class="hero-title">REST API</div>
+    <div class="hero-desc">REST (Representational State Transfer) is the dominant style for building web APIs. It uses standard HTTP methods on resource-based URLs to create a uniform, stateless interface between client and server.</div>
+  </div>
+
+  <h2>What is REST?</h2>
+  <div class="card card-blue">
+    <div class="card-title">The Big Idea</div>
+    <div class="card-body">REST is not a protocol — it's an <strong>architectural style</strong> with 6 constraints. Resources are nouns (<code>/users</code>, <code>/orders</code>). HTTP verbs are actions (GET, POST, PUT, DELETE). The server holds no session state between requests.</div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">HTTP/HTTPS</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">JSON / XML</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">Stateless</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">Resource-based URLs</span>
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">Cacheable</span>
+  </div>
+
+  <h2>REST Constraints (The 6 Rules)</h2>
+  <div class="layer-stack">
+    <div class="layer" style="border-color:var(--blue);background:rgba(0,168,255,.05)">
+      <div class="layer-name" style="color:var(--blue)">1. Client-Server</div>
+      <div class="layer-desc">Separation of concerns. Client handles UI; server handles data. They evolve independently.</div>
+    </div>
+    <div class="layer" style="border-color:var(--green);background:rgba(0,201,110,.05)">
+      <div class="layer-name" style="color:var(--green)">2. Stateless</div>
+      <div class="layer-desc">Every request contains all info needed. No server-side session. Client sends auth token every time.</div>
+    </div>
+    <div class="layer" style="border-color:var(--orange);background:rgba(245,166,35,.05)">
+      <div class="layer-name" style="color:var(--orange)">3. Cacheable</div>
+      <div class="layer-desc">Responses must declare if they're cacheable. GET /users/1 with Cache-Control max-age=60 is cached by the browser.</div>
+    </div>
+    <div class="layer" style="border-color:var(--purple);background:rgba(155,109,255,.05)">
+      <div class="layer-name" style="color:var(--purple)">4. Uniform Interface</div>
+      <div class="layer-desc">Resources identified by URIs. Standard verbs (GET/POST/PUT/DELETE). Self-descriptive messages. HATEOAS links.</div>
+    </div>
+    <div class="layer" style="border-color:var(--pink);background:rgba(232,93,117,.05)">
+      <div class="layer-name" style="color:var(--pink)">5. Layered System</div>
+      <div class="layer-desc">Client doesn't know if it's talking to origin server or a proxy/CDN/load balancer. Enables scalability.</div>
+    </div>
+    <div class="layer" style="border-color:var(--text-muted);background:rgba(80,90,110,.05)">
+      <div class="layer-name" style="color:var(--text-secondary)">6. Code on Demand (optional)</div>
+      <div class="layer-desc">Server can send executable code to client (e.g., JavaScript). Rarely used explicitly.</div>
+    </div>
+  </div>
+
+  <h2>REST in Action — Example API</h2>
+  <div class="code-block"><span class="cmt">// ── USERS RESOURCE ──────────────────────────────────────</span>
+
+<span class="kw">GET</span>    /users          <span class="cmt">→ List all users</span>
+<span class="kw">POST</span>   /users          <span class="cmt">→ Create a new user</span>
+<span class="kw">GET</span>    /users/<span class="cls">{id}</span>     <span class="cmt">→ Get a specific user</span>
+<span class="kw">PUT</span>    /users/<span class="cls">{id}</span>     <span class="cmt">→ Replace user entirely</span>
+<span class="kw">PATCH</span>  /users/<span class="cls">{id}</span>     <span class="cmt">→ Update user partially</span>
+<span class="kw">DELETE</span> /users/<span class="cls">{id}</span>     <span class="cmt">→ Delete user</span>
+
+<span class="cmt">// ── NESTED RESOURCE ─────────────────────────────────────</span>
+
+<span class="kw">GET</span>    /users/<span class="cls">{id}</span>/orders     <span class="cmt">→ Orders for a user</span>
+<span class="kw">POST</span>   /users/<span class="cls">{id}</span>/orders     <span class="cmt">→ Create order for user</span>
+
+<span class="cmt">// ── REQUEST / RESPONSE ──────────────────────────────────</span>
+
+<span class="dir">POST /users HTTP/1.1</span>
+Content-Type: application/json
+
+{ <span class="str">"name"</span>: <span class="str">"Alice"</span>, <span class="str">"email"</span>: <span class="str">"alice@example.com"</span> }
+
+<span class="cmt">HTTP/1.1 201 Created</span>
+Location: /users/42
+
+{ <span class="str">"id"</span>: 42, <span class="str">"name"</span>: <span class="str">"Alice"</span>, <span class="str">"createdAt"</span>: <span class="str">"2025-01-01"</span> }</div>
+
+  <h2>Request-Response Lifecycle</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="ra1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00a8ff"/></marker>
+        <marker id="ra2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00c96e"/></marker>
+      </defs>
+      <!-- Client -->
+      <rect x="10" y="65" width="110" height="65" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="65" y="95" text-anchor="middle" fill="#e8eaf0" font-weight="600">Client</text>
+      <text x="65" y="112" text-anchor="middle" fill="#505a6e" font-size="11">Browser / App</text>
+      <!-- Auth middleware -->
+      <rect x="175" y="65" width="110" height="65" rx="8" fill="#1e2535" stroke="#2e3748"/>
+      <text x="230" y="92" text-anchor="middle" fill="#f5a623" font-weight="600">Auth</text>
+      <text x="230" y="108" text-anchor="middle" fill="#505a6e" font-size="11">Middleware</text>
+      <text x="230" y="122" text-anchor="middle" fill="#505a6e" font-size="10">JWT / API key</text>
+      <!-- Controller -->
+      <rect x="340" y="65" width="110" height="65" rx="8" fill="#1e2535" stroke="#2e3748"/>
+      <text x="395" y="92" text-anchor="middle" fill="#9b6dff" font-weight="600">Controller</text>
+      <text x="395" y="108" text-anchor="middle" fill="#505a6e" font-size="11">Route Handler</text>
+      <text x="395" y="122" text-anchor="middle" fill="#505a6e" font-size="10">Validate input</text>
+      <!-- DB -->
+      <rect x="505" y="65" width="110" height="65" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="560" y="92" text-anchor="middle" fill="#00c96e" font-weight="600">Database</text>
+      <text x="560" y="108" text-anchor="middle" fill="#505a6e" font-size="11">Postgres/Redis</text>
+      <text x="560" y="122" text-anchor="middle" fill="#505a6e" font-size="10">Query + Cache</text>
+      <!-- Arrows -->
+      <line x1="120" y1="92" x2="173" y2="92" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#ra1)"/>
+      <line x1="285" y1="92" x2="338" y2="92" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#ra1)"/>
+      <line x1="450" y1="92" x2="503" y2="92" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#ra1)"/>
+      <!-- Return -->
+      <line x1="503" y1="108" x2="450" y2="108" stroke="#00c96e" stroke-width="1.5" marker-end="url(#ra2)"/>
+      <line x1="338" y1="108" x2="285" y2="108" stroke="#00c96e" stroke-width="1.5" marker-end="url(#ra2)"/>
+      <line x1="173" y1="108" x2="120" y2="108" stroke="#00c96e" stroke-width="1.5" marker-end="url(#ra2)"/>
+      <!-- Labels -->
+      <text x="146" y="86" text-anchor="middle" fill="#00a8ff" font-size="10">request</text>
+      <text x="311" y="86" text-anchor="middle" fill="#00a8ff" font-size="10">validate</text>
+      <text x="476" y="86" text-anchor="middle" fill="#00a8ff" font-size="10">query</text>
+      <text x="476" y="123" text-anchor="middle" fill="#00c96e" font-size="10">data</text>
+      <text x="311" y="123" text-anchor="middle" fill="#00c96e" font-size="10">serialize</text>
+      <text x="146" y="123" text-anchor="middle" fill="#00c96e" font-size="10">200 OK</text>
+      <text x="330" y="180" text-anchor="middle" fill="#505a6e" font-size="11">Every REST request carries full context — no server-side session needed</text>
+    </svg>
+  </div>
+
+  <h2>REST Problems — Where it Breaks Down</h2>
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">Over-fetching</div>
+      <div class="mini-body"><code>GET /users/42</code> returns all 30 fields. The mobile app only needs <code>name</code> and <code>avatar</code>. Wasted bandwidth on every request.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">Under-fetching / N+1</div>
+      <div class="mini-body">To show a feed of 20 posts with author names: 1 call for posts + 20 calls for each author. That's the N+1 problem.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">Versioning Complexity</div>
+      <div class="mini-body"><code>/v1/users</code>, <code>/v2/users</code> — versioning sprawls. Breaking changes force URL or header version bumps.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">No Real-Time</div>
+      <div class="mini-body">REST is request-response. For live data you need polling, SSE, or WebSockets — outside the REST model.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-blue"><strong>💡 REST is still the default:</strong> Despite its weaknesses, REST is battle-tested, universally understood, works over HTTP caches, and has tooling everywhere. Use GraphQL or gRPC when REST's pain points are actually hurting you — not speculatively.</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Use nouns for resource URLs, not verbs</li>
+      <li>Return the right HTTP status codes always</li>
+      <li>Version your API from day one (/v1/)</li>
+      <li>Use pagination for list endpoints</li>
+      <li>Document with OpenAPI / Swagger</li>
+      <li>Use HTTPS always, even internally</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Use GET /getUser or POST /deleteUser</li>
+      <li>Return 200 for errors with error in body</li>
+      <li>Put actions in URLs (use verbs in body)</li>
+      <li>Return unbounded lists without pagination</li>
+      <li>Ignore caching headers (huge perf win)</li>
+    </ul></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 3 — GRAPHQL
+════════════════════════════════════════════════════════ -->
+<section id="sec-graphql" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.1);color:var(--orange)">🔷 Topic 3 — API Paradigm</div>
+    <div class="hero-title">GraphQL</div>
+    <div class="hero-desc">GraphQL is a query language for your API. Instead of fixed endpoints returning fixed shapes, clients ask for exactly the data they need — no more, no less — in a single request.</div>
+  </div>
+
+  <h2>What is GraphQL?</h2>
+  <div class="card card-orange">
+    <div class="card-title">The Big Idea</div>
+    <div class="card-body">GraphQL was created by Facebook in 2012 to solve the mobile data problem. With REST, the server decides what data to return. With GraphQL, <strong>the client decides</strong>. One endpoint (<code>POST /graphql</code>), infinite flexibility.</div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">Single Endpoint</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Strongly Typed Schema</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">Client-Driven Queries</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">Introspectable</span>
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">No Over/Under-fetching</span>
+  </div>
+
+  <h2>REST vs GraphQL — The Core Difference</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 240" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="ga1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#505a6e"/></marker>
+      </defs>
+      <!-- REST side -->
+      <text x="160" y="22" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">REST — 3 Round Trips</text>
+      <rect x="20" y="38" width="80" height="36" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="60" y="61" text-anchor="middle" fill="#e8eaf0">Client</text>
+      <!-- REST arrows -->
+      <line x1="100" y1="53" x2="173" y2="53" stroke="#00a8ff" stroke-width="1.2" marker-end="url(#ga1)"/>
+      <text x="136" y="47" text-anchor="middle" fill="#00a8ff" font-size="10">GET /user/1</text>
+      <line x1="100" y1="100" x2="173" y2="100" stroke="#00a8ff" stroke-width="1.2" marker-end="url(#ga1)"/>
+      <text x="136" y="94" text-anchor="middle" fill="#00a8ff" font-size="10">GET /posts?user=1</text>
+      <line x1="100" y1="147" x2="173" y2="147" stroke="#00a8ff" stroke-width="1.2" marker-end="url(#ga1)"/>
+      <text x="136" y="141" text-anchor="middle" fill="#00a8ff" font-size="10">GET /followers/1</text>
+      <rect x="175" y="38" width="100" height="36" rx="6" fill="#1e2535" stroke="#2e3748"/>
+      <text x="225" y="62" text-anchor="middle" fill="#505a6e" font-size="11">/user</text>
+      <rect x="175" y="85" width="100" height="36" rx="6" fill="#1e2535" stroke="#2e3748"/>
+      <text x="225" y="109" text-anchor="middle" fill="#505a6e" font-size="11">/posts</text>
+      <rect x="175" y="132" width="100" height="36" rx="6" fill="#1e2535" stroke="#2e3748"/>
+      <text x="225" y="156" text-anchor="middle" fill="#505a6e" font-size="11">/followers</text>
+      <text x="160" y="215" text-anchor="middle" fill="#e85d75" font-size="11">3 requests, extra fields, slow</text>
+
+      <!-- Divider -->
+      <line x1="330" y1="20" x2="330" y2="220" stroke="#252d3d" stroke-width="1" stroke-dasharray="4,3"/>
+
+      <!-- GraphQL side -->
+      <text x="500" y="22" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">GraphQL — 1 Round Trip</text>
+      <rect x="360" y="75" width="80" height="80" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="400" y="110" text-anchor="middle" fill="#e8eaf0">Client</text>
+      <text x="400" y="126" text-anchor="middle" fill="#505a6e" font-size="10">1 query</text>
+      <rect x="520" y="55" width="120" height="120" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="580" y="82" text-anchor="middle" fill="#f5a623" font-weight="600">/graphql</text>
+      <text x="580" y="100" text-anchor="middle" fill="#505a6e" font-size="10">user.name</text>
+      <text x="580" y="116" text-anchor="middle" fill="#505a6e" font-size="10">user.posts.title</text>
+      <text x="580" y="132" text-anchor="middle" fill="#505a6e" font-size="10">user.followers</text>
+      <text x="580" y="148" text-anchor="middle" fill="#505a6e" font-size="10">only these fields</text>
+      <line x1="440" y1="115" x2="518" y2="115" stroke="#f5a623" stroke-width="1.5" marker-end="url(#ga1)"/>
+      <text x="500" y="215" text-anchor="middle" fill="#00c96e" font-size="11">1 request, exact fields, fast</text>
+    </svg>
+  </div>
+
+  <h2>GraphQL Query Syntax</h2>
+  <div class="code-block"><span class="cmt"># ── Query (Read) ─────────────────────────────────────────</span>
+<span class="kw">query</span> GetUserProfile {
+  user(id: <span class="str">"42"</span>) {
+    name
+    email
+    avatar
+    posts(last: 5) {
+      title
+      createdAt
+      likes
+    }
+    followers {
+      count
+    }
+  }
+}
+
+<span class="cmt"># ── Mutation (Write) ──────────────────────────────────────</span>
+<span class="kw">mutation</span> CreatePost {
+  createPost(input: {
+    title: <span class="str">"Hello World"</span>
+    body:  <span class="str">"My first post"</span>
+  }) {
+    id
+    title
+    createdAt
+  }
+}
+
+<span class="cmt"># ── Subscription (Real-time) ──────────────────────────────</span>
+<span class="kw">subscription</span> OnNewMessage {
+  newMessage(roomId: <span class="str">"room-1"</span>) {
+    text
+    sender { name }
+    timestamp
+  }
+}</div>
+
+  <h2>GraphQL Schema Definition</h2>
+  <div class="code-block"><span class="kw">type</span> <span class="cls">User</span> {
+  id:        <span class="str">ID!</span>
+  name:      <span class="str">String!</span>
+  email:     <span class="str">String!</span>
+  posts:     [<span class="cls">Post</span>!]!
+  followers: <span class="cls">FollowerCount</span>!
+}
+
+<span class="kw">type</span> <span class="cls">Post</span> {
+  id:        <span class="str">ID!</span>
+  title:     <span class="str">String!</span>
+  body:      <span class="str">String!</span>
+  author:    <span class="cls">User!</span>
+  likes:     <span class="str">Int!</span>
+  createdAt: <span class="str">String!</span>
+}
+
+<span class="kw">type</span> <span class="cls">Query</span> {
+  user(id: <span class="str">ID!</span>): <span class="cls">User</span>
+  posts(limit: <span class="str">Int</span>): [<span class="cls">Post</span>!]!
+}
+
+<span class="kw">type</span> <span class="cls">Mutation</span> {
+  createPost(input: <span class="cls">PostInput</span>!): <span class="cls">Post</span>!
+  deletePost(id: <span class="str">ID!</span>): <span class="str">Boolean!</span>
+}</div>
+
+  <h2>GraphQL Architecture</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs><marker id="ga2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#f5a623"/></marker></defs>
+      <!-- Client -->
+      <rect x="10" y="75" width="100" height="50" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="60" y="97" text-anchor="middle" fill="#e8eaf0" font-weight="600">Client</text>
+      <text x="60" y="113" text-anchor="middle" fill="#505a6e" font-size="11">query/mutation</text>
+      <!-- GraphQL Server -->
+      <rect x="175" y="55" width="160" height="90" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="255" y="78" text-anchor="middle" fill="#f5a623" font-weight="600">GraphQL Server</text>
+      <text x="255" y="96" text-anchor="middle" fill="#505a6e" font-size="11">Parse → Validate → Execute</text>
+      <text x="255" y="112" text-anchor="middle" fill="#505a6e" font-size="11">Resolvers per field</text>
+      <text x="255" y="128" text-anchor="middle" fill="#505a6e" font-size="11">Dataloader (batch)</text>
+      <!-- Data sources -->
+      <rect x="420" y="30" width="110" height="40" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="475" y="55" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="600">PostgreSQL</text>
+      <rect x="420" y="85" width="110" height="40" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="475" y="110" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="600">REST API</text>
+      <rect x="420" y="140" width="110" height="40" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="475" y="165" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="600">Redis Cache</text>
+      <!-- Arrows -->
+      <line x1="110" y1="100" x2="173" y2="100" stroke="#f5a623" stroke-width="1.5" marker-end="url(#ga2)"/>
+      <line x1="335" y1="85" x2="418" y2="52" stroke="#505a6e" stroke-width="1" marker-end="url(#ga2)"/>
+      <line x1="335" y1="100" x2="418" y2="105" stroke="#505a6e" stroke-width="1" marker-end="url(#ga2)"/>
+      <line x1="335" y1="118" x2="418" y2="155" stroke="#505a6e" stroke-width="1" marker-end="url(#ga2)"/>
+    </svg>
+  </div>
+
+  <h2>GraphQL Pros &amp; Cons</h2>
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">✅ Strengths</div>
+      <div class="mini-body">No over/under-fetching · Single endpoint · Self-documenting schema · Strongly typed · Great for mobile · Subscriptions for real-time · Works across multiple data sources</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">⚠️ Weaknesses</div>
+      <div class="mini-body">Complex queries can hit DB hard · HTTP caching doesn't work naturally · N+1 problem without DataLoader · Overkill for simple CRUD · Learning curve for teams</div>
+    </div>
+  </div>
+
+  <div class="callout callout-orange"><strong>DataLoader Pattern:</strong> GraphQL's Achilles heel is the N+1 problem — each post resolver might query its author separately. DataLoader batches these into a single <code>SELECT * FROM users WHERE id IN (...)</code>. Essential for production GraphQL.</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Use DataLoader to batch &amp; cache DB calls</li>
+      <li>Set query depth and complexity limits</li>
+      <li>Use persisted queries in production</li>
+      <li>Implement field-level authorization in resolvers</li>
+      <li>Use schema-first design (SDL first)</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Allow unbounded nested queries (DoS risk)</li>
+      <li>Skip authorization checks in resolvers</li>
+      <li>Use GraphQL for simple CRUD APIs</li>
+      <li>Ignore N+1 query performance issues</li>
+      <li>Expose internal DB schema directly</li>
+    </ul></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 4 — gRPC
+════════════════════════════════════════════════════════ -->
+<section id="sec-grpc" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(155,109,255,.1);color:var(--purple)">⚙️ Topic 4 — API Paradigm</div>
+    <div class="hero-title">gRPC</div>
+    <div class="hero-desc">gRPC is a high-performance, open-source Remote Procedure Call framework by Google. It uses HTTP/2 for transport and Protocol Buffers (Protobuf) for serialization — making it 5–10× faster than REST+JSON for internal microservice communication.</div>
+  </div>
+
+  <h2>What is gRPC?</h2>
+  <div class="card card-purple">
+    <div class="card-title">The Big Idea</div>
+    <div class="card-body">gRPC lets you call a function on a remote server as if it were a local function. You define a contract in a <code>.proto</code> file. The framework auto-generates client and server code in 10+ languages. No JSON. Binary wire format. Bidirectional streaming.</div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">HTTP/2</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">Protocol Buffers</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Code Generation</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">Streaming</span>
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">Polyglot</span>
+  </div>
+
+  <h2>Defining a Service — .proto file</h2>
+  <div class="code-block"><span class="cmt">// user.proto ─────────────────────────────────────────────</span>
+syntax = <span class="str">"proto3"</span>;
+
+<span class="kw">package</span> user;
+
+<span class="cmt">// 1. Define your data structures</span>
+<span class="kw">message</span> <span class="cls">GetUserRequest</span> {
+  <span class="str">string</span> user_id = 1;
+}
+
+<span class="kw">message</span> <span class="cls">UserResponse</span> {
+  <span class="str">string</span> id        = 1;
+  <span class="str">string</span> name      = 2;
+  <span class="str">string</span> email     = 3;
+  <span class="str">int32</span>  follower_count = 4;
+}
+
+<span class="kw">message</span> <span class="cls">UserStream</span> {
+  <span class="str">string</span> user_id   = 1;
+  <span class="str">string</span> event     = 2;
+  <span class="str">int64</span>  timestamp = 3;
+}
+
+<span class="cmt">// 2. Define your service methods</span>
+<span class="kw">service</span> <span class="cls">UserService</span> {
+  <span class="cmt">// Unary RPC — standard request/response</span>
+  rpc <span class="fn">GetUser</span>(<span class="cls">GetUserRequest</span>) <span class="kw">returns</span> (<span class="cls">UserResponse</span>);
+
+  <span class="cmt">// Server streaming — server sends many responses</span>
+  rpc <span class="fn">StreamUserEvents</span>(<span class="cls">GetUserRequest</span>) <span class="kw">returns</span> (<span class="kw">stream</span> <span class="cls">UserStream</span>);
+
+  <span class="cmt">// Client streaming — client sends many, server replies once</span>
+  rpc <span class="fn">UploadUsers</span>(<span class="kw">stream</span> <span class="cls">UserResponse</span>) <span class="kw">returns</span> (<span class="cls">UploadSummary</span>);
+
+  <span class="cmt">// Bidirectional streaming — both sides stream</span>
+  rpc <span class="fn">Chat</span>(<span class="kw">stream</span> <span class="cls">Message</span>) <span class="kw">returns</span> (<span class="kw">stream</span> <span class="cls">Message</span>);
+}</div>
+
+  <h2>4 Types of gRPC Communication</h2>
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Unary RPC</div>
+      <div class="mini-body">Classic request → response. Client sends one message, server replies once. Like a standard HTTP call but over HTTP/2 with Protobuf. Most common.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">Server Streaming</div>
+      <div class="mini-body">Client sends one request, server replies with a <em>stream</em> of messages. Example: subscribe to live stock price feed or event log tail.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">Client Streaming</div>
+      <div class="mini-body">Client sends a stream of messages, server replies once when done. Example: upload a large file in chunks or batch-insert rows.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">Bidirectional Streaming</div>
+      <div class="mini-body">Both sides send independent streams over one connection. Example: real-time chat, collaborative editing, duplex IoT sensor data.</div>
+    </div>
+  </div>
+
+  <h2>gRPC vs REST vs GraphQL</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>REST</th><th>GraphQL</th><th>gRPC</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Protocol</td><td>HTTP/1.1</td><td>HTTP/1.1</td><td>HTTP/2</td></tr>
+        <tr><td class="td-name">Payload</td><td>JSON (text)</td><td>JSON (text)</td><td>Protobuf (binary)</td></tr>
+        <tr><td class="td-name">Speed</td><td><span class="pill pill-orange">Baseline</span></td><td><span class="pill pill-orange">Similar to REST</span></td><td><span class="pill pill-green">5-10× faster</span></td></tr>
+        <tr><td class="td-name">Typing</td><td>None (OpenAPI opt.)</td><td>Strong (schema)</td><td><span class="pill pill-green">Strict (proto)</span></td></tr>
+        <tr><td class="td-name">Streaming</td><td>❌ (no native)</td><td>✅ (Subscriptions)</td><td>✅ (native 4 types)</td></tr>
+        <tr><td class="td-name">Browser support</td><td><span class="pill pill-green">Native</span></td><td><span class="pill pill-green">Native</span></td><td><span class="pill pill-pink">Needs grpc-web</span></td></tr>
+        <tr><td class="td-name">Code generation</td><td>Optional (OpenAPI)</td><td>Optional</td><td><span class="pill pill-green">First-class</span></td></tr>
+        <tr><td class="td-name">Best for</td><td>Public APIs, browsers</td><td>Complex UIs, mobile</td><td>Internal microservices</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>gRPC in Microservices Architecture</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="gra1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#9b6dff"/></marker></defs>
+      <!-- API Gateway -->
+      <rect x="260" y="10" width="140" height="45" rx="8" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="330" y="31" text-anchor="middle" fill="#00c96e" font-weight="600" font-size="12">API Gateway</text>
+      <text x="330" y="47" text-anchor="middle" fill="#505a6e">REST / HTTP (public)</text>
+      <!-- Internal services -->
+      <rect x="30" y="105" width="130" height="55" rx="8" fill="#1a1f2e" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="95" y="129" text-anchor="middle" fill="#9b6dff" font-weight="600">User Service</text>
+      <text x="95" y="147" text-anchor="middle" fill="#505a6e">:50051 gRPC</text>
+
+      <rect x="200" y="105" width="130" height="55" rx="8" fill="#1a1f2e" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="265" y="129" text-anchor="middle" fill="#9b6dff" font-weight="600">Order Service</text>
+      <text x="265" y="147" text-anchor="middle" fill="#505a6e">:50052 gRPC</text>
+
+      <rect x="370" y="105" width="130" height="55" rx="8" fill="#1a1f2e" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="435" y="129" text-anchor="middle" fill="#9b6dff" font-weight="600">Payment Service</text>
+      <text x="435" y="147" text-anchor="middle" fill="#505a6e">:50053 gRPC</text>
+
+      <rect x="540" y="105" width="110" height="55" rx="8" fill="#1a1f2e" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="595" y="129" text-anchor="middle" fill="#9b6dff" font-weight="600">Notif. Service</text>
+      <text x="595" y="147" text-anchor="middle" fill="#505a6e">:50054 gRPC</text>
+      <!-- Gateway to services -->
+      <line x1="280" y1="55" x2="110" y2="103" stroke="#9b6dff" stroke-width="1.2" marker-end="url(#gra1)"/>
+      <line x1="310" y1="55" x2="265" y2="103" stroke="#9b6dff" stroke-width="1.2" marker-end="url(#gra1)"/>
+      <line x1="345" y1="55" x2="420" y2="103" stroke="#9b6dff" stroke-width="1.2" marker-end="url(#gra1)"/>
+      <line x1="370" y1="55" x2="565" y2="103" stroke="#9b6dff" stroke-width="1.2" marker-end="url(#gra1)"/>
+      <!-- Inter-service calls -->
+      <line x1="160" y1="145" x2="198" y2="145" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#gra1)"/>
+      <line x1="330" y1="145" x2="368" y2="145" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#gra1)"/>
+      <line x1="500" y1="145" x2="538" y2="145" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#gra1)"/>
+      <text x="330" y="215" text-anchor="middle" fill="#505a6e">All internal communication uses gRPC (binary, fast, type-safe)</text>
+      <text x="330" y="230" text-anchor="middle" fill="#505a6e">Public-facing edge uses REST or GraphQL</text>
+    </svg>
+  </div>
+
+  <div class="callout callout-purple"><strong>Why not gRPC everywhere?</strong> Browsers don't support HTTP/2 binary framing natively. You need <code>grpc-web</code> proxy for browser clients. For public APIs that must be consumed by any HTTP client — stick with REST. gRPC shines purely in the internal service mesh.</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Use gRPC for internal microservice calls</li>
+      <li>Define shared .proto files in a separate repo</li>
+      <li>Use deadlines/timeouts on every RPC call</li>
+      <li>Use interceptors for auth, logging, tracing</li>
+      <li>Version proto files carefully (backward compat)</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Use gRPC as your public API (browser pain)</li>
+      <li>Remove fields from proto without deprecation</li>
+      <li>Skip error handling — use gRPC status codes</li>
+      <li>Ignore load balancing (L7 needed for gRPC)</li>
+      <li>Use gRPC for simple scripts or quick tools</li>
+    </ul></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     SECTION 5 — MESSAGE QUEUES
+════════════════════════════════════════════════════════ -->
+<section id="sec-mq" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(232,93,117,.1);color:var(--pink)">📬 Topic 5 — Async Communication</div>
+    <div class="hero-title">Message Queues</div>
+    <div class="hero-desc">A message queue is a form of asynchronous service-to-service communication. The sender (producer) puts a message in a queue and moves on immediately. The receiver (consumer) picks it up whenever it's ready. No waiting. No coupling.</div>
+  </div>
+
+  <h2>What is a Message Queue?</h2>
+  <div class="card card-pink">
+    <div class="card-title">The Big Idea</div>
+    <div class="card-body">Think of it as a <strong>post office</strong>. You drop off a letter (message), the post office holds it (queue), and the recipient (consumer) picks it up on their schedule. Producer and consumer <em>never need to be online simultaneously</em>. This is the key difference from synchronous APIs.</div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag" style="background:rgba(232,93,117,.1);border-color:rgba(232,93,117,.25);color:var(--pink)">Asynchronous</span>
+    <span class="tag" style="background:rgba(0,201,110,.1);border-color:rgba(0,201,110,.25);color:var(--green)">Decoupled</span>
+    <span class="tag" style="background:rgba(0,168,255,.1);border-color:rgba(0,168,255,.25);color:var(--blue)">Durable</span>
+    <span class="tag" style="background:rgba(155,109,255,.1);border-color:rgba(155,109,255,.25);color:var(--purple)">At-least-once delivery</span>
+    <span class="tag" style="background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--orange)">Load Leveling</span>
+  </div>
+
+  <h2>Core Concepts Explained</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="mqa1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e85d75"/></marker>
+        <marker id="mqa2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00c96e"/></marker>
+      </defs>
+      <!-- Producer -->
+      <rect x="10" y="75" width="110" height="55" rx="8" fill="#1a1f2e" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="65" y="98" text-anchor="middle" fill="#e85d75" font-weight="600">Producer</text>
+      <text x="65" y="116" text-anchor="middle" fill="#505a6e" font-size="11">Order Service</text>
+      <!-- Queue -->
+      <rect x="190" y="55" width="280" height="95" rx="8" fill="#1e2535" stroke="#2e3748" stroke-width="1.5"/>
+      <text x="245" y="78" text-anchor="middle" fill="#505a6e" font-size="10">QUEUE (durable)</text>
+      <rect x="205" y="85" width="50" height="40" rx="4" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="230" y="110" text-anchor="middle" fill="#f5a623" font-size="11">msg 1</text>
+      <rect x="263" y="85" width="50" height="40" rx="4" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="288" y="110" text-anchor="middle" fill="#f5a623" font-size="11">msg 2</text>
+      <rect x="321" y="85" width="50" height="40" rx="4" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="346" y="110" text-anchor="middle" fill="#f5a623" font-size="11">msg 3</text>
+      <rect x="379" y="85" width="50" height="40" rx="4" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="404" y="110" text-anchor="middle" fill="#505a6e" font-size="11">msg 4</text>
+      <text x="330" y="143" text-anchor="middle" fill="#505a6e" font-size="11">RabbitMQ / SQS / Kafka</text>
+      <!-- Consumer group -->
+      <rect x="540" y="40" width="110" height="45" rx="8" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="595" y="60" text-anchor="middle" fill="#00c96e" font-weight="600">Consumer 1</text>
+      <text x="595" y="76" text-anchor="middle" fill="#505a6e" font-size="11">Email Service</text>
+      <rect x="540" y="120" width="110" height="45" rx="8" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="595" y="140" text-anchor="middle" fill="#00c96e" font-weight="600">Consumer 2</text>
+      <text x="595" y="156" text-anchor="middle" fill="#505a6e" font-size="11">Invoice Service</text>
+      <!-- Arrows -->
+      <line x1="120" y1="102" x2="188" y2="102" stroke="#e85d75" stroke-width="1.5" marker-end="url(#mqa1)"/>
+      <text x="154" y="96" text-anchor="middle" fill="#e85d75" font-size="10">publish</text>
+      <line x1="470" y1="85" x2="538" y2="62" stroke="#00c96e" stroke-width="1.5" marker-end="url(#mqa2)"/>
+      <line x1="470" y1="115" x2="538" y2="138" stroke="#00c96e" stroke-width="1.5" marker-end="url(#mqa2)"/>
+      <text x="504" y="84" text-anchor="middle" fill="#00c96e" font-size="10">consume</text>
+      <text x="330" y="190" text-anchor="middle" fill="#505a6e" font-size="11">Producer and consumers are completely decoupled — run independently</text>
+    </svg>
+  </div>
+
+  <h2>Why Use a Message Queue?</h2>
+  <ul class="rule-list">
+    <li><strong>Decoupling</strong> — Order Service doesn't need to know Email Service exists. It just fires an event. Add new consumers without touching the producer.</li>
+    <li><strong>Load Leveling</strong> — A traffic spike produces 10,000 orders/second. The queue absorbs the burst. Consumers process at their own pace. No dropped requests.</li>
+    <li><strong>Reliability</strong> — If the consumer crashes, messages persist in the queue. When it restarts, it picks up where it left off. Nothing is lost.</li>
+    <li><strong>Parallel Processing</strong> — Multiple consumers in a group each get different messages. Scale consumers horizontally to drain the queue faster.</li>
+    <li><strong>Retry Logic</strong> — Failed messages go to a Dead Letter Queue (DLQ) for inspection and manual replay. Automatic retries with backoff.</li>
+  </ul>
+
+  <h2>Queue vs Pub/Sub vs Stream</h2>
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">📬 Queue (Point-to-Point)</div>
+      <div class="mini-body">One producer, one consumer group. Each message is processed by exactly one consumer. Example: SQS, RabbitMQ. Good for task workers.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">📢 Pub/Sub (Fan-out)</div>
+      <div class="mini-body">One producer, many independent consumers all get every message. Example: SNS, Redis Pub/Sub. Good for notifications, webhooks.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">🌊 Event Stream</div>
+      <div class="mini-body">Ordered, persistent log. Consumers read at their own position. Can replay history. Example: Kafka. Good for audit logs, analytics.</div>
+    </div>
+  </div>
+
+  <h2>Real-World: Order Processing System</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 660 260" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="mqf" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#505a6e"/></marker></defs>
+      <!-- Order API -->
+      <rect x="250" y="10" width="160" height="45" rx="8" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="330" y="31" text-anchor="middle" fill="#00a8ff" font-weight="600">Order API</text>
+      <text x="330" y="47" text-anchor="middle" fill="#505a6e">POST /orders → 202 Accepted</text>
+      <!-- Message Bus -->
+      <rect x="180" y="95" width="300" height="45" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="330" y="116" text-anchor="middle" fill="#f5a623" font-weight="600">Message Queue / Event Bus</text>
+      <text x="330" y="132" text-anchor="middle" fill="#505a6e">order.created event published</text>
+      <!-- Arrow from API to queue -->
+      <line x1="330" y1="55" x2="330" y2="93" stroke="#f5a623" stroke-width="1.5" marker-end="url(#mqf)"/>
+      <!-- Consumers -->
+      <rect x="20" y="185" width="110" height="55" rx="8" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="75" y="209" text-anchor="middle" fill="#00c96e" font-weight="600">Payment</text>
+      <text x="75" y="227" text-anchor="middle" fill="#505a6e">charge card</text>
+      <rect x="155" y="185" width="110" height="55" rx="8" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="210" y="209" text-anchor="middle" fill="#00c96e" font-weight="600">Inventory</text>
+      <text x="210" y="227" text-anchor="middle" fill="#505a6e">decrement stock</text>
+      <rect x="290" y="185" width="110" height="55" rx="8" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="345" y="209" text-anchor="middle" fill="#00c96e" font-weight="600">Email</text>
+      <text x="345" y="227" text-anchor="middle" fill="#505a6e">confirmation</text>
+      <rect x="425" y="185" width="110" height="55" rx="8" fill="#1a1f2e" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="480" y="209" text-anchor="middle" fill="#00c96e" font-weight="600">Analytics</text>
+      <text x="480" y="227" text-anchor="middle" fill="#505a6e">log to data lake</text>
+      <rect x="560" y="185" width="90" height="55" rx="8" fill="#1a1f2e" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="605" y="209" text-anchor="middle" fill="#e85d75" font-weight="600">DLQ</text>
+      <text x="605" y="227" text-anchor="middle" fill="#505a6e">failed msgs</text>
+      <!-- Queue to consumers -->
+      <line x1="230" y1="140" x2="90" y2="183" stroke="#505a6e" stroke-width="1" marker-end="url(#mqf)"/>
+      <line x1="270" y1="140" x2="222" y2="183" stroke="#505a6e" stroke-width="1" marker-end="url(#mqf)"/>
+      <line x1="330" y1="140" x2="345" y2="183" stroke="#505a6e" stroke-width="1" marker-end="url(#mqf)"/>
+      <line x1="380" y1="140" x2="462" y2="183" stroke="#505a6e" stroke-width="1" marker-end="url(#mqf)"/>
+      <line x1="430" y1="140" x2="590" y2="183" stroke="#e85d75" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#mqf)"/>
+    </svg>
+  </div>
+
+  <h2>Popular Message Queue Systems</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>System</th><th>Model</th><th>Strengths</th><th>Use When</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">RabbitMQ</td><td>Queue / Pub-Sub</td><td>Flexible routing, AMQP, mature</td><td>Complex routing, task queues</td></tr>
+        <tr><td class="td-name">Apache Kafka</td><td>Event Stream (log)</td><td>Extremely high throughput, replay, durable</td><td>Event sourcing, analytics, audit log</td></tr>
+        <tr><td class="td-name">AWS SQS</td><td>Queue</td><td>Managed, scales to infinity, cheap</td><td>AWS workloads, simple decoupling</td></tr>
+        <tr><td class="td-name">AWS SNS</td><td>Pub/Sub</td><td>Fan-out, pushes to SQS/Lambda/email</td><td>Notifications, fan-out patterns</td></tr>
+        <tr><td class="td-name">Redis Pub/Sub</td><td>Pub/Sub</td><td>Ultra-fast, in-memory, very simple</td><td>Ephemeral notifications (no persistence)</td></tr>
+        <tr><td class="td-name">Google Pub/Sub</td><td>Pub/Sub + Stream</td><td>Managed, global, at-least-once</td><td>GCP workloads, real-time analytics</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Delivery Guarantees — Critical to Know</h2>
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">At-most-once</div>
+      <div class="mini-body">Message is sent once. May be lost if consumer crashes. No retry. Lowest overhead. OK for metrics where loss is tolerable.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">At-least-once</div>
+      <div class="mini-body">Message <em>will</em> be delivered, possibly more than once (retry on failure). Consumer must be <strong>idempotent</strong>. Most common guarantee.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Exactly-once</div>
+      <div class="mini-body">Delivered exactly once, never duplicated. Very hard and expensive to implement. Kafka supports it with transactions. Use sparingly.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-pink"><strong>⚡ Design insight:</strong> <strong>At-least-once delivery is the norm.</strong> Design your consumers to be <strong>idempotent</strong> — processing the same message twice produces the same result. Use a deduplication key (message ID) to detect and skip duplicates.</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Make consumers idempotent always</li>
+      <li>Set up a Dead Letter Queue (DLQ) for failures</li>
+      <li>Add message IDs for deduplication</li>
+      <li>Set message TTL to avoid stale processing</li>
+      <li>Monitor queue depth as a key metric</li>
+      <li>Use consumer groups for parallel processing</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Use a queue for synchronous request-response</li>
+      <li>Put large blobs in messages (use URL + S3)</li>
+      <li>Ignore poison pill messages (DLQ them)</li>
+      <li>Skip monitoring — silent queue backup = disaster</li>
+      <li>Assume at-most-once delivery in business logic</li>
+    </ul></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700)closeSidebar();
+}
+const hamburger=document.getElementById('hamburger');
+const sidebar=document.getElementById('sidebar');
+const overlay=document.getElementById('overlay');
+function openSidebar(){sidebar.classList.add('open');overlay.classList.add('open')}
+function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('open')}
+hamburger.addEventListener('click',()=>sidebar.classList.contains('open')?closeSidebar():openSidebar());
+overlay.addEventListener('click',closeSidebar);
+</script>
+</body>
+</html>

@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design — Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-dark:#0f1117;--bg-sidebar:#141820;--bg-card:#1a1f2e;--bg-card2:#1e2535;
+  --bg-hover:#252d3d;--accent:#00c96e;--accent2:#00a8ff;--accent3:#f5a623;
+  --accent4:#e85d75;--accent5:#9b6dff;--text-primary:#e8eaf0;--text-secondary:#8892a4;
+  --text-muted:#505a6e;--border:#252d3d;--border2:#2e3748;
+  --green:#00c96e;--blue:#00a8ff;--orange:#f5a623;--pink:#e85d75;--purple:#9b6dff;
+  --sidebar-w:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg-dark);color:var(--text-primary);line-height:1.6;overflow-x:hidden}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 0}
+.topbar-brand{display:flex;align-items:center;gap:0;width:var(--sidebar-w);padding:0 24px;border-right:1px solid var(--border);height:100%}
+.brand-icon{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-weight:600;font-size:14px;color:#000;margin-right:10px}
+.brand-text{font-weight:600;font-size:15px;color:var(--text-primary)}
+.brand-sub{font-size:11px;color:var(--text-muted)}
+.topbar-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--text-secondary)}
+.progress-pill{background:rgba(0,201,110,.12);color:var(--accent);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(0,201,110,.25)}
+.topic-count{color:var(--text-muted);font-size:12px}
+.layout{display:flex;padding-top:56px;min-height:100vh}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--bg-sidebar);border-right:1px solid var(--border);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sidebar-section-header{padding:20px 20px 8px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase}
+.sidebar-section-header:first-child{padding-top:16px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .15s;text-decoration:none}
+.nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+.nav-item.active{color:var(--accent);background:rgba(0,201,110,.08);border-left-color:var(--accent);font-weight:500}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nav-badge{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.badge-beginner{background:rgba(0,201,110,.15);color:var(--green)}
+.badge-inter{background:rgba(0,168,255,.15);color:var(--blue)}
+.badge-adv{background:rgba(155,109,255,.15);color:var(--purple)}
+.main{margin-left:var(--sidebar-w);flex:1;padding:40px 48px 80px;max-width:900px}
+.section{display:none}
+.section.active{display:block}
+.section-hero{margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.hero-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:6px;margin-bottom:14px}
+.hero-title{font-size:28px;font-weight:600;color:var(--text-primary);line-height:1.25;margin-bottom:10px}
+.hero-desc{font-size:15px;color:var(--text-secondary);line-height:1.7;max-width:680px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
+.card-body{font-size:14px;color:var(--text-secondary);line-height:1.7}
+.card-accent{border-left:3px solid var(--accent);background:rgba(0,201,110,.05)}
+.card-blue{border-left:3px solid var(--blue);background:rgba(0,168,255,.05)}
+.card-orange{border-left:3px solid var(--orange);background:rgba(245,166,35,.05)}
+.card-purple{border-left:3px solid var(--purple);background:rgba(155,109,255,.05)}
+.card-pink{border-left:3px solid var(--pink);background:rgba(232,93,117,.05)}
+.code-block{background:#0a0e16;border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin:14px 0;font-family:'DM Mono',monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;white-space:pre}
+.code-block .dir{color:#00a8ff}
+.code-block .cmt{color:#505a6e}
+.code-block .kw{color:#9b6dff}
+.code-block .str{color:#00c96e}
+.code-block .fn{color:#e85d75}
+code{font-family:'DM Mono',monospace;font-size:12.5px;background:rgba(255,255,255,.06);color:var(--accent);padding:1px 6px;border-radius:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.mini-card{background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.mini-title{font-size:13px;font-weight:600;margin-bottom:6px}
+.mini-body{font-size:12px;color:var(--text-secondary);line-height:1.55}
+.flow-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0}
+.flow-box{padding:7px 14px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid;text-align:center}
+.flow-arrow{color:var(--text-muted);font-size:16px}
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--bg-card2)}
+th{text-align:left;padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border2)}
+td{padding:11px 16px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.td-name{color:var(--text-primary);font-weight:500}
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.pill-green{background:rgba(0,201,110,.15);color:var(--green)}
+.pill-blue{background:rgba(0,168,255,.15);color:var(--blue)}
+.pill-orange{background:rgba(245,166,35,.15);color:var(--orange)}
+.pill-purple{background:rgba(155,109,255,.15);color:var(--purple)}
+.pill-pink{background:rgba(232,93,117,.15);color:var(--pink)}
+.callout{border-radius:8px;padding:14px 18px;margin:14px 0;font-size:13px;line-height:1.65}
+.callout-green{background:rgba(0,201,110,.08);border:1px solid rgba(0,201,110,.2);color:#7ddcaa}
+.callout-blue{background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.2);color:#7dc8f0}
+.callout-orange{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#f0c87a}
+.callout-purple{background:rgba(155,109,255,.08);border:1px solid rgba(155,109,255,.2);color:#c4aafe}
+.callout strong{color:inherit;font-weight:600}
+.step{display:flex;gap:14px;margin-bottom:18px}
+.step-num{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:var(--accent);color:#000;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.step-num-blue{background:var(--blue)}
+.step-num-purple{background:var(--purple)}
+.step-content{flex:1}
+.step-title{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.divider{height:1px;background:var(--border);margin:32px 0}
+h2{font-size:20px;font-weight:600;color:var(--text-primary);margin:28px 0 12px}
+h2:first-child{margin-top:0}
+h3{font-size:15px;font-weight:600;color:var(--text-primary);margin:22px 0 10px}
+p{font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px}
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.do-box,.dont-box{border-radius:8px;padding:14px 16px}
+.do-box{background:rgba(0,201,110,.07);border:1px solid rgba(0,201,110,.2)}
+.dont-box{background:rgba(232,93,117,.07);border:1px solid rgba(232,93,117,.2)}
+.do-box h4{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.dont-box h4{font-size:11px;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.do-box li,.dont-box li{font-size:12px;color:var(--text-secondary);list-style:none;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.do-box li::before{content:"✓";position:absolute;left:0;color:var(--green);font-size:11px}
+.dont-box li::before{content:"✗";position:absolute;left:0;color:var(--pink);font-size:11px}
+.rule-list{list-style:none;margin:10px 0}
+.rule-list li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-secondary)}
+.rule-list li:last-child{border-bottom:none}
+.rule-list li::before{content:"→";color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px}
+.rule-list li strong{color:var(--text-primary);font-weight:600}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.tag{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;border:1px solid}
+/* DIAGRAM BOX */
+.diagram-wrap{background:#0a0e16;border:1px solid var(--border);border-radius:10px;padding:24px;margin:16px 0;overflow-x:auto}
+.diagram-wrap svg{display:block;margin:0 auto}
+/* LAYER STACK */
+.layer-stack{display:flex;flex-direction:column;gap:3px;margin:14px 0}
+.layer{border-radius:6px;padding:12px 16px;border-left:4px solid;font-size:13px}
+.layer-name{font-weight:600;margin-bottom:2px}
+.layer-desc{font-size:12px;color:var(--text-secondary)}
+/* HAMBURGER */
+.hamburger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.hamburger span{display:block;width:20px;height:2px;background:var(--text-secondary);border-radius:1px;transition:.2s}
+.sidebar-overlay{display:none}
+/* ANIMATIONS */
+.section.active .card,.section.active .mini-card,.section.active .section-hero{animation:fadeUp .3s ease both}
+.section.active .card:nth-child(2){animation-delay:.05s}
+.section.active .card:nth-child(3){animation-delay:.1s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* RESPONSIVE */
+@media(max-width:900px){.main{padding:28px 24px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sidebar-w:260px}
+  .main{margin-left:0;padding:24px 18px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .25s;z-index:90}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.5);z-index:89}
+  .sidebar-overlay.open{display:block}
+  .hamburger{display:flex}
+  .topbar-brand{width:auto;border-right:none}
+  .grid2{grid-template-columns:1fr}
+  .grid3{grid-template-columns:1fr 1fr}
+  .do-dont{grid-template-columns:1fr}
+  .flow-row{flex-direction:column;align-items:flex-start}
+  .flow-arrow{transform:rotate(90deg)}
+}
+@media(max-width:480px){
+  .grid3{grid-template-columns:1fr}
+  .hero-title{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">SD</div>
+    <div>
+      <div class="brand-text">SysDesign</div>
+      <div class="brand-sub">System Design Fundamentals</div>
+    </div>
+  </div>
+  <div class="topbar-meta">
+    <button class="hamburger" id="hamburger" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="topic-count">9 topics · Design Goals</span>
+    <span class="progress-pill">Study Guide</span>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-section-header">Network Foundations</div>
+  <a class="nav-item active" onclick="show('ip')">
+    <span class="nav-dot" style="background:var(--green)"></span> IP Address
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="show('dns')">
+    <span class="nav-dot" style="background:var(--green)"></span> DNS
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="show('clientserver')">
+    <span class="nav-dot" style="background:var(--blue)"></span> Client &amp; Server
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+
+  <div class="sidebar-section-header">Protocols</div>
+  <a class="nav-item" onclick="show('proto-intro')">
+    <span class="nav-dot" style="background:var(--blue)"></span> Introduction
+    <span class="nav-badge badge-beginner">Beginner</span>
+  </a>
+  <a class="nav-item" onclick="show('tcp')">
+    <span class="nav-dot" style="background:var(--blue)"></span> TCP
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+  <a class="nav-item" onclick="show('udp')">
+    <span class="nav-dot" style="background:var(--blue)"></span> UDP
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+  <a class="nav-item" onclick="show('http')">
+    <span class="nav-dot" style="background:var(--orange)"></span> HTTP
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+  <a class="nav-item" onclick="show('websocket')">
+    <span class="nav-dot" style="background:var(--purple)"></span> WebSocket
+    <span class="nav-badge badge-adv">Adv</span>
+  </a>
+
+  <div class="sidebar-section-header">Infrastructure</div>
+  <a class="nav-item" onclick="show('proxy')">
+    <span class="nav-dot" style="background:var(--pink)"></span> Forward &amp; Reverse Proxy
+    <span class="nav-badge badge-inter">Mid</span>
+  </a>
+</nav>
+
+<main class="main">
+
+<!-- ==================== IP ADDRESS ==================== -->
+<section id="sec-ip" class="section active">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.1);color:var(--green)">🌐 Topic 1 — Foundations</div>
+    <div class="hero-title">IP Address</div>
+    <div class="hero-desc">An IP address is the fundamental addressing system that lets devices find and communicate with each other across networks. Every device on the internet has one.</div>
+  </div>
+
+  <h2>What is an IP Address?</h2>
+  <div class="card card-accent">
+    <div class="card-title">Definition</div>
+    <div class="card-body">An <strong>IP (Internet Protocol) address</strong> is a unique numerical label assigned to every device connected to a computer network. Think of it like a <em>home address</em> — it tells the network exactly where to deliver data packets.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">IPv4</div>
+      <div class="mini-body">32-bit address written as 4 octets. Example: <code>192.168.1.1</code>. Supports ~4.3 billion unique addresses. Now mostly exhausted.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">IPv6</div>
+      <div class="mini-body">128-bit address written in hex. Example: <code>2001:0db8::1</code>. Supports 340 undecillion addresses. The long-term solution.</div>
+    </div>
+  </div>
+
+  <h2>How it Works — Diagram</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 640 220" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <!-- Device A -->
+      <rect x="20" y="70" width="130" height="80" rx="8" fill="#1a1f2e" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="85" y="100" text-anchor="middle" fill="#e8eaf0" font-size="12" font-weight="600">Your Device</text>
+      <text x="85" y="118" text-anchor="middle" fill="#00c96e" font-size="11" font-family="DM Mono,monospace">192.168.1.5</text>
+      <text x="85" y="135" text-anchor="middle" fill="#505a6e" font-size="10">Source IP</text>
+      <!-- Arrow 1 -->
+      <line x1="150" y1="110" x2="230" y2="110" stroke="#252d3d" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <polygon points="230,105 240,110 230,115" fill="#505a6e"/>
+      <!-- Router -->
+      <rect x="240" y="70" width="130" height="80" rx="8" fill="#1e2535" stroke="#2e3748" stroke-width="1.5"/>
+      <text x="305" y="100" text-anchor="middle" fill="#e8eaf0" font-size="12" font-weight="600">Router</text>
+      <text x="305" y="118" text-anchor="middle" fill="#f5a623" font-size="11" font-family="DM Mono,monospace">203.0.113.1</text>
+      <text x="305" y="135" text-anchor="middle" fill="#505a6e" font-size="10">Public IP (NAT)</text>
+      <!-- Arrow 2 -->
+      <line x1="370" y1="110" x2="450" y2="110" stroke="#252d3d" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <polygon points="450,105 460,110 450,115" fill="#505a6e"/>
+      <!-- Server -->
+      <rect x="460" y="70" width="130" height="80" rx="8" fill="#1a1f2e" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="525" y="100" text-anchor="middle" fill="#e8eaf0" font-size="12" font-weight="600">Web Server</text>
+      <text x="525" y="118" text-anchor="middle" fill="#00a8ff" font-size="11" font-family="DM Mono,monospace">142.250.80.46</text>
+      <text x="525" y="135" text-anchor="middle" fill="#505a6e" font-size="10">Destination IP</text>
+      <!-- Labels -->
+      <text x="320" y="195" text-anchor="middle" fill="#505a6e" font-size="11">Data packet travels across routers using IP addresses</text>
+    </svg>
+  </div>
+
+  <h2>Why it Matters in System Design</h2>
+  <ul class="rule-list">
+    <li><strong>Routing</strong> — routers use IP addresses to forward packets hop-by-hop toward the destination.</li>
+    <li><strong>Private vs Public IPs</strong> — private IPs (10.x, 172.x, 192.168.x) are used inside networks; NAT maps them to a public IP for internet access.</li>
+    <li><strong>Static vs Dynamic</strong> — servers use static IPs; home devices get dynamic IPs via DHCP.</li>
+    <li><strong>Subnetting</strong> — large networks split into subnets using a subnet mask. Essential for VPC design in cloud.</li>
+  </ul>
+
+  <h2>IPv4 vs IPv6 Comparison</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>IPv4</th><th>IPv6</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Bits</td><td>32-bit</td><td>128-bit</td></tr>
+        <tr><td class="td-name">Format</td><td>Dotted decimal (4 octets)</td><td>Hex colon-separated (8 groups)</td></tr>
+        <tr><td class="td-name">Addresses</td><td>~4.3 Billion</td><td>340 undecillion</td></tr>
+        <tr><td class="td-name">NAT needed?</td><td><span class="pill pill-pink">Yes</span></td><td><span class="pill pill-green">No</span></td></tr>
+        <tr><td class="td-name">Header size</td><td>20 bytes</td><td>40 bytes (fixed)</td></tr>
+        <tr><td class="td-name">Adoption</td><td><span class="pill pill-orange">Widespread</span></td><td><span class="pill pill-blue">Growing</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-blue"><strong>💡 Interview Tip:</strong> Know the difference between private/public IPs and understand how NAT works. When designing cloud systems, explain how VPCs use private IP ranges with a NAT gateway for outbound internet access.</div>
+</section>
+
+<!-- ==================== DNS ==================== -->
+<section id="sec-dns" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.1);color:var(--blue)">🔍 Topic 2 — Foundations</div>
+    <div class="hero-title">DNS — Domain Name System</div>
+    <div class="hero-desc">DNS is the internet's phone book. It translates human-readable domain names like <code>google.com</code> into machine-readable IP addresses like <code>142.250.80.46</code>.</div>
+  </div>
+
+  <h2>What is DNS?</h2>
+  <div class="card card-blue">
+    <div class="card-title">The Big Idea</div>
+    <div class="card-body">Humans remember <code>github.com</code>. Computers need <code>140.82.121.4</code>. DNS is the distributed system that bridges this gap — performing the lookup billions of times per day, globally.</div>
+  </div>
+
+  <h2>DNS Resolution — Step by Step</h2>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">Browser Cache Check</div>
+      <div class="step-desc">Browser checks its own DNS cache. If <code>github.com</code> was visited recently and the TTL hasn't expired, uses the cached IP immediately.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">OS / Recursive Resolver</div>
+      <div class="step-desc">OS checks its cache, then asks your ISP's recursive resolver (or 8.8.8.8 if using Google DNS). The resolver does the heavy lifting.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--blue)">3</div>
+    <div class="step-content">
+      <div class="step-title">Root Name Server</div>
+      <div class="step-desc">The recursive resolver asks one of 13 root server clusters. The root doesn't know the IP — but it knows who manages <code>.com</code> TLDs.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--orange)">4</div>
+    <div class="step-content">
+      <div class="step-title">TLD Name Server</div>
+      <div class="step-desc">The <code>.com</code> TLD server points to GitHub's authoritative nameserver.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" style="background:var(--purple)">5</div>
+    <div class="step-content">
+      <div class="step-title">Authoritative Name Server</div>
+      <div class="step-desc">GitHub's authoritative nameserver finally returns the actual IP address. The resolver caches it for the TTL duration and returns it to your browser.</div>
+    </div>
+  </div>
+
+  <h2>DNS Resolution Diagram</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 640 280" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#505a6e"/></marker></defs>
+      <!-- Client -->
+      <rect x="10" y="100" width="100" height="50" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="60" y="121" text-anchor="middle" fill="#e8eaf0" font-weight="600">Browser</text>
+      <text x="60" y="137" text-anchor="middle" fill="#505a6e">Client</text>
+      <!-- Recursive -->
+      <rect x="170" y="100" width="110" height="50" rx="6" fill="#1e2535" stroke="#2e3748"/>
+      <text x="225" y="121" text-anchor="middle" fill="#e8eaf0" font-weight="600">Recursive</text>
+      <text x="225" y="137" text-anchor="middle" fill="#00a8ff">Resolver</text>
+      <!-- Root -->
+      <rect x="340" y="20" width="100" height="50" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="390" y="41" text-anchor="middle" fill="#e8eaf0" font-weight="600">Root NS</text>
+      <text x="390" y="57" text-anchor="middle" fill="#505a6e">13 clusters</text>
+      <!-- TLD -->
+      <rect x="340" y="105" width="100" height="50" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="390" y="126" text-anchor="middle" fill="#e8eaf0" font-weight="600">TLD NS</text>
+      <text x="390" y="142" text-anchor="middle" fill="#f5a623">.com</text>
+      <!-- Auth -->
+      <rect x="340" y="190" width="100" height="50" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="390" y="211" text-anchor="middle" fill="#e8eaf0" font-weight="600">Auth NS</text>
+      <text x="390" y="227" text-anchor="middle" fill="#00c96e">github.com</text>
+      <!-- Result -->
+      <rect x="490" y="190" width="130" height="50" rx="6" fill="#1e2535" stroke="#2e3748"/>
+      <text x="555" y="208" text-anchor="middle" fill="#e8eaf0" font-weight="600">IP Returned</text>
+      <text x="555" y="224" text-anchor="middle" fill="#00c96e" font-family="DM Mono,monospace">140.82.121.4</text>
+      <!-- Arrows -->
+      <line x1="110" y1="120" x2="168" y2="120" stroke="#505a6e" marker-end="url(#arr)"/>
+      <text x="139" y="114" text-anchor="middle" fill="#505a6e">1</text>
+      <line x1="280" y1="112" x2="338" y2="62" stroke="#505a6e" marker-end="url(#arr)"/>
+      <text x="305" y="82" text-anchor="middle" fill="#505a6e">2</text>
+      <line x1="338" y1="72" x2="282" y2="118" stroke="#00a8ff" stroke-dasharray="3,2" marker-end="url(#arr)"/>
+      <line x1="280" y1="128" x2="338" y2="128" stroke="#505a6e" marker-end="url(#arr)"/>
+      <text x="308" y="123" fill="#505a6e">3</text>
+      <line x1="338" y1="138" x2="282" y2="132" stroke="#00a8ff" stroke-dasharray="3,2" marker-end="url(#arr)"/>
+      <line x1="280" y1="138" x2="338" y2="200" stroke="#505a6e" marker-end="url(#arr)"/>
+      <text x="303" y="165" fill="#505a6e">4</text>
+      <line x1="338" y1="208" x2="282" y2="143" stroke="#00a8ff" stroke-dasharray="3,2" marker-end="url(#arr)"/>
+      <line x1="440" y1="215" x2="488" y2="215" stroke="#505a6e" marker-end="url(#arr)"/>
+      <text x="464" y="209" fill="#505a6e">5</text>
+    </svg>
+  </div>
+
+  <h2>DNS Record Types</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Record</th><th>Purpose</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">A</td><td>Maps domain → IPv4 address</td><td><code>github.com → 140.82.121.4</code></td></tr>
+        <tr><td class="td-name">AAAA</td><td>Maps domain → IPv6 address</td><td><code>github.com → 2606:50c0::36</code></td></tr>
+        <tr><td class="td-name">CNAME</td><td>Alias to another domain</td><td><code>www → github.com</code></td></tr>
+        <tr><td class="td-name">MX</td><td>Mail server routing</td><td><code>github.com → mail.github.com</code></td></tr>
+        <tr><td class="td-name">TXT</td><td>Arbitrary text (SPF, verification)</td><td><code>"v=spf1 include:..."</code></td></tr>
+        <tr><td class="td-name">NS</td><td>Delegates to nameserver</td><td><code>ns1.github.com</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-orange"><strong>⚡ TTL Matters:</strong> DNS records have a TTL (Time-to-Live) in seconds. Low TTL = faster propagation but more DNS queries. High TTL = fewer queries but slow to update. During a server migration, lower TTL first.</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Use CDN with Anycast DNS for global performance</li>
+      <li>Lower TTL before a migration, raise after</li>
+      <li>Use health checks with DNS failover</li>
+      <li>Understand split-horizon DNS for internal/external</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Hardcode IP addresses in code (use DNS)</li>
+      <li>Set TTL=0 in production (hammers servers)</li>
+      <li>Rely on DNS alone for failover speed</li>
+      <li>Forget DNS propagation delay during deploys</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ==================== CLIENT & SERVER ==================== -->
+<section id="sec-clientserver" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,201,110,.1);color:var(--green)">🖥️ Topic 3 — Foundations</div>
+    <div class="hero-title">Client &amp; Server</div>
+    <div class="hero-desc">The client-server model is the backbone of the internet. Understanding this split — who requests, who responds — is step one in every system design interview.</div>
+  </div>
+
+  <h2>The Model</h2>
+  <div class="grid2">
+    <div class="card card-accent">
+      <div class="card-title">🖱️ Client</div>
+      <div class="card-body">The <strong>requester</strong>. Initiates communication. Examples: browser, mobile app, CLI tool, another server. A client says <em>"give me X"</em>.</div>
+    </div>
+    <div class="card card-blue">
+      <div class="card-title">🗄️ Server</div>
+      <div class="card-body">The <strong>responder</strong>. Listens for requests, processes them, returns data. Examples: web server, API server, database. A server says <em>"here is X"</em>.</div>
+    </div>
+  </div>
+
+  <h2>Request-Response Cycle</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 600 180" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <!-- Client box -->
+      <rect x="20" y="50" width="150" height="80" rx="8" fill="#1a1f2e" stroke="#252d3d" stroke-width="1.5"/>
+      <text x="95" y="85" text-anchor="middle" fill="#e8eaf0" font-size="13" font-weight="600">Client</text>
+      <text x="95" y="103" text-anchor="middle" fill="#505a6e" font-size="11">Browser / App</text>
+      <!-- Server box -->
+      <rect x="430" y="50" width="150" height="80" rx="8" fill="#1e2535" stroke="#2e3748" stroke-width="1.5"/>
+      <text x="505" y="85" text-anchor="middle" fill="#e8eaf0" font-size="13" font-weight="600">Server</text>
+      <text x="505" y="103" text-anchor="middle" fill="#505a6e" font-size="11">API / Web Server</text>
+      <!-- Request arrow -->
+      <line x1="170" y1="80" x2="428" y2="80" stroke="#00c96e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <defs><marker id="arr2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00c96e"/></marker></defs>
+      <text x="299" y="72" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="500">REQUEST (GET /data)</text>
+      <!-- Response arrow -->
+      <defs><marker id="arr3" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00a8ff"/></marker></defs>
+      <line x1="430" y1="108" x2="172" y2="108" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#arr3)"/>
+      <text x="299" y="125" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="500">RESPONSE (200 OK + JSON)</text>
+      <!-- Network cloud label -->
+      <text x="299" y="165" text-anchor="middle" fill="#505a6e" font-size="11">— Internet / Network —</text>
+    </svg>
+  </div>
+
+  <h2>Types of Clients</h2>
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Thin Client</div>
+      <div class="mini-body">Minimal local processing. Relies heavily on the server. Example: web browser rendering HTML from server. Low compute cost on the client side.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">Thick Client</div>
+      <div class="mini-body">Does heavy processing locally. Desktop apps, mobile apps, games. Server mainly stores data. Faster UX but harder to update.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">Server as Client</div>
+      <div class="mini-body">A server can be a client to another server. Microservices call each other. Your API calls Stripe's API — your server is the client there.</div>
+    </div>
+  </div>
+
+  <h2>Stateful vs Stateless Servers</h2>
+  <div class="grid2">
+    <div class="card card-orange">
+      <div class="card-title">Stateful</div>
+      <div class="card-body">Server remembers client state between requests. Example: WebSocket connections, gaming servers. Harder to scale horizontally.</div>
+    </div>
+    <div class="card card-accent">
+      <div class="card-title">Stateless</div>
+      <div class="card-body">Each request is self-contained with all info needed. Example: REST APIs with JWT tokens. Easy to scale — any server can handle any request.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-green"><strong>System Design Principle:</strong> Prefer <strong>stateless servers</strong> for horizontal scalability. Move state to a shared layer (Redis, DB) instead of keeping it in server memory. This lets you spin up any number of server instances behind a load balancer.</div>
+</section>
+
+<!-- ==================== PROTOCOLS INTRO ==================== -->
+<section id="sec-proto-intro" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.1);color:var(--blue)">📡 Topic 4 — Protocols</div>
+    <div class="hero-title">Protocols — Introduction</div>
+    <div class="hero-desc">A protocol is a set of rules that governs how data is transmitted between devices. Without agreed-upon protocols, devices couldn't communicate reliably.</div>
+  </div>
+
+  <h2>What is a Protocol?</h2>
+  <div class="card card-blue">
+    <div class="card-title">Definition</div>
+    <div class="card-body">A <strong>protocol</strong> defines the format, order, and meaning of messages exchanged between communicating entities. It's a contract: "if you send data in this exact format, I'll understand it."</div>
+  </div>
+
+  <h2>The OSI Model — 7 Layers</h2>
+  <div class="layer-stack">
+    <div class="layer" style="border-color:var(--pink);background:rgba(232,93,117,.06)">
+      <div class="layer-name" style="color:var(--pink)">Layer 7 — Application</div>
+      <div class="layer-desc">Protocols: HTTP, HTTPS, FTP, SMTP, DNS, WebSocket. What you use in code.</div>
+    </div>
+    <div class="layer" style="border-color:var(--purple);background:rgba(155,109,255,.06)">
+      <div class="layer-name" style="color:var(--purple)">Layer 6 — Presentation</div>
+      <div class="layer-desc">Encryption (TLS/SSL), compression, encoding (JSON → binary). Data formatting.</div>
+    </div>
+    <div class="layer" style="border-color:var(--orange);background:rgba(245,166,35,.06)">
+      <div class="layer-name" style="color:var(--orange)">Layer 5 — Session</div>
+      <div class="layer-desc">Manages sessions between applications. Authentication, reconnection.</div>
+    </div>
+    <div class="layer" style="border-color:var(--blue);background:rgba(0,168,255,.06)">
+      <div class="layer-name" style="color:var(--blue)">Layer 4 — Transport</div>
+      <div class="layer-desc">Protocols: TCP, UDP. Handles ports, segmentation, reliability (TCP) or speed (UDP).</div>
+    </div>
+    <div class="layer" style="border-color:var(--green);background:rgba(0,201,110,.06)">
+      <div class="layer-name" style="color:var(--green)">Layer 3 — Network</div>
+      <div class="layer-desc">Protocols: IP, ICMP. Logical addressing and routing between networks.</div>
+    </div>
+    <div class="layer" style="border-color:#e8eaf0;background:rgba(232,234,240,.04)">
+      <div class="layer-name" style="color:var(--text-primary)">Layer 2 — Data Link</div>
+      <div class="layer-desc">Protocols: Ethernet, WiFi (802.11). MAC addresses, frames, switching.</div>
+    </div>
+    <div class="layer" style="border-color:var(--text-muted);background:rgba(80,90,110,.06)">
+      <div class="layer-name" style="color:var(--text-muted)">Layer 1 — Physical</div>
+      <div class="layer-desc">Bits over wire, fiber optic, or radio waves. Cables, hubs, repeaters.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-blue"><strong>Interview shortcut:</strong> You mainly care about layers 3 (IP), 4 (TCP/UDP), and 7 (HTTP/WebSocket) in system design. Know which protocol lives at which layer.</div>
+
+  <h2>Protocol Stack in a Real Request</h2>
+  <div class="flow-row">
+    <div class="flow-box" style="border-color:rgba(232,93,117,.4);color:var(--pink)">HTTP Request</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box" style="border-color:rgba(155,109,255,.4);color:var(--purple)">TLS Encrypt</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box" style="border-color:rgba(0,168,255,.4);color:var(--blue)">TCP Segment</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box" style="border-color:rgba(0,201,110,.4);color:var(--green)">IP Packet</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box" style="border-color:rgba(245,166,35,.4);color:var(--orange)">Ethernet Frame</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box" style="border-color:rgba(80,90,110,.4);color:var(--text-muted)">Physical Bits</div>
+  </div>
+</section>
+
+<!-- ==================== TCP ==================== -->
+<section id="sec-tcp" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(0,168,255,.1);color:var(--blue)">🔗 Topic 5 — Transport Protocol</div>
+    <div class="hero-title">TCP — Transmission Control Protocol</div>
+    <div class="hero-desc">TCP is the reliable, ordered, connection-oriented transport protocol. It's the foundation of HTTP and most internet communication where data integrity matters.</div>
+  </div>
+
+  <h2>Key Characteristics</h2>
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">✅ Reliable</div>
+      <div class="mini-body">Every packet is acknowledged. If no ACK received, sender retransmits. Data is guaranteed to arrive.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">🔢 Ordered</div>
+      <div class="mini-body">Packets are numbered with sequence numbers. Receiver reorders them. Data arrives in the exact order sent.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">🔌 Connection-Based</div>
+      <div class="mini-body">Must establish a connection (3-way handshake) before data flows. More overhead but ensures both sides are ready.</div>
+    </div>
+  </div>
+
+  <h2>TCP 3-Way Handshake</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 560 260" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs><marker id="a4" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00a8ff"/></marker>
+      <marker id="a5" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00c96e"/></marker></defs>
+      <!-- Columns -->
+      <text x="110" y="25" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">Client</text>
+      <line x1="110" y1="30" x2="110" y2="255" stroke="#252d3d" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="430" y="25" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">Server</text>
+      <line x1="430" y1="30" x2="430" y2="255" stroke="#252d3d" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <!-- SYN -->
+      <line x1="115" y1="65" x2="425" y2="95" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#a4)"/>
+      <text x="270" y="72" text-anchor="middle" fill="#00a8ff" font-weight="600">SYN (seq=0)</text>
+      <rect x="30" y="55" width="80" height="22" rx="4" fill="#1e2535" stroke="#2e3748"/>
+      <text x="70" y="70" text-anchor="middle" fill="#505a6e" font-size="10">SYNC_SENT</text>
+      <!-- SYN-ACK -->
+      <line x1="425" y1="115" x2="115" y2="145" stroke="#00c96e" stroke-width="1.5" marker-end="url(#a5)"/>
+      <text x="270" y="122" text-anchor="middle" fill="#00c96e" font-weight="600">SYN-ACK (seq=0,ack=1)</text>
+      <rect x="450" y="105" width="90" height="22" rx="4" fill="#1e2535" stroke="#2e3748"/>
+      <text x="495" y="120" text-anchor="middle" fill="#505a6e" font-size="10">SYNC_RCVD</text>
+      <!-- ACK -->
+      <line x1="115" y1="165" x2="425" y2="195" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#a4)"/>
+      <text x="270" y="172" text-anchor="middle" fill="#00a8ff" font-weight="600">ACK (ack=1)</text>
+      <!-- Established -->
+      <rect x="40" y="205" width="140" height="28" rx="6" fill="rgba(0,201,110,.1)" stroke="rgba(0,201,110,.3)"/>
+      <text x="110" y="223" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="600">ESTABLISHED ✓</text>
+      <rect x="360" y="205" width="140" height="28" rx="6" fill="rgba(0,201,110,.1)" stroke="rgba(0,201,110,.3)"/>
+      <text x="430" y="223" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="600">ESTABLISHED ✓</text>
+      <text x="270" y="253" text-anchor="middle" fill="#505a6e" font-size="11">Data can now flow both ways</text>
+    </svg>
+  </div>
+
+  <h2>TCP Flow Control &amp; Congestion Control</h2>
+  <div class="grid2">
+    <div class="card card-blue">
+      <div class="card-title">Flow Control (Window Size)</div>
+      <div class="card-body">Receiver tells sender how much buffer space it has (window size). Sender won't exceed this. Prevents receiver from being overwhelmed.</div>
+    </div>
+    <div class="card card-orange">
+      <div class="card-title">Congestion Control (Slow Start)</div>
+      <div class="card-body">TCP starts sending slowly, doubles window each RTT until loss detected, then backs off. Prevents network congestion.</div>
+    </div>
+  </div>
+
+  <h2>Use Cases</h2>
+  <ul class="rule-list">
+    <li><strong>HTTP/HTTPS</strong> — all web traffic uses TCP. Every request guarantees complete, ordered data.</li>
+    <li><strong>Email (SMTP, IMAP)</strong> — emails must arrive in full and in order.</li>
+    <li><strong>File Transfer (FTP, SSH)</strong> — missing a byte would corrupt the file.</li>
+    <li><strong>Databases</strong> — queries and transactions must be perfectly reliable.</li>
+  </ul>
+
+  <div class="callout callout-orange"><strong>⚠️ TCP Overhead:</strong> The 3-way handshake adds latency. HTTPS adds TLS handshake on top. For latency-critical, loss-tolerant apps (gaming, video streaming), TCP overhead is why UDP is preferred.</div>
+</section>
+
+<!-- ==================== UDP ==================== -->
+<section id="sec-udp" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.1);color:var(--orange)">⚡ Topic 6 — Transport Protocol</div>
+    <div class="hero-title">UDP — User Datagram Protocol</div>
+    <div class="hero-desc">UDP is the fast, connectionless transport protocol. It sacrifices reliability for speed — perfect when a dropped packet is better than a delayed one.</div>
+  </div>
+
+  <h2>Key Characteristics</h2>
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">⚡ Fast</div>
+      <div class="mini-body">No handshake, no ACK, no retransmit. Just send. Much lower latency than TCP for the same network conditions.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">❌ Unreliable</div>
+      <div class="mini-body">Packets may be lost, arrive out of order, or be duplicated. No delivery guarantee. App must handle this if needed.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">📤 Connectionless</div>
+      <div class="mini-body">No connection established. Each datagram is independent. Can send to multiple destinations easily (broadcast/multicast).</div>
+    </div>
+  </div>
+
+  <h2>TCP vs UDP Side-by-Side</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>TCP</th><th>UDP</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Connection</td><td>Connection-oriented (3-way handshake)</td><td>Connectionless</td></tr>
+        <tr><td class="td-name">Reliability</td><td><span class="pill pill-green">Guaranteed</span></td><td><span class="pill pill-pink">Best-effort</span></td></tr>
+        <tr><td class="td-name">Ordering</td><td>Ordered</td><td>No guarantee</td></tr>
+        <tr><td class="td-name">Speed</td><td><span class="pill pill-orange">Slower (overhead)</span></td><td><span class="pill pill-green">Faster</span></td></tr>
+        <tr><td class="td-name">Header Size</td><td>20 bytes</td><td>8 bytes</td></tr>
+        <tr><td class="td-name">Use Cases</td><td>HTTP, Email, File transfer</td><td>Video, Gaming, DNS, VoIP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Where UDP Wins</h2>
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">🎮 Online Gaming</div>
+      <div class="mini-body">A stale position update is useless. Better to drop it than retransmit. Games use UDP with custom reliability on top.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">📹 Video Streaming</div>
+      <div class="mini-body">A dropped video frame causes a glitch, not corruption. WebRTC uses UDP. A retransmit would cause worse stuttering.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">📡 DNS Queries</div>
+      <div class="mini-body">Simple request-response. Small payload. If no reply, client just resends. No need for a TCP connection setup overhead.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">📞 VoIP / Video Calls</div>
+      <div class="mini-body">Skype, Zoom, WhatsApp calls use UDP. A 20ms audio gap sounds better than a 200ms retransmit delay.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-purple"><strong>QUIC Protocol:</strong> Modern HTTP/3 is built on QUIC, which runs over UDP but adds reliability, ordering, and multiplexing at the application layer — getting the best of both worlds. Used by Google since 2013.</div>
+</section>
+
+<!-- ==================== HTTP ==================== -->
+<section id="sec-http" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(245,166,35,.1);color:var(--orange)">🌍 Topic 7 — Application Protocol</div>
+    <div class="hero-title">HTTP — HyperText Transfer Protocol</div>
+    <div class="hero-desc">HTTP is the foundation of data communication on the web. Every time you visit a website or call an API, HTTP is the language being spoken between client and server.</div>
+  </div>
+
+  <h2>HTTP Request Structure</h2>
+  <div class="code-block"><span class="kw">GET</span> <span class="str">/api/users/42</span> HTTP/1.1
+<span class="dir">Host:</span>          api.example.com
+<span class="dir">Accept:</span>        application/json
+<span class="dir">Authorization:</span> Bearer eyJhbGci...
+<span class="dir">User-Agent:</span>    Mozilla/5.0</div>
+
+  <h2>HTTP Response Structure</h2>
+  <div class="code-block">HTTP/1.1 <span class="str">200 OK</span>
+<span class="dir">Content-Type:</span>  application/json
+<span class="dir">Cache-Control:</span> max-age=3600
+<span class="dir">X-Request-Id:</span>  abc-123
+
+{
+  <span class="str">"id"</span>: 42,
+  <span class="str">"name"</span>: <span class="str">"Alice"</span>,
+  <span class="str">"email"</span>: <span class="str">"alice@example.com"</span>
+}</div>
+
+  <h2>HTTP Methods</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Purpose</th><th>Idempotent?</th><th>Body?</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">GET</td><td>Retrieve a resource</td><td><span class="pill pill-green">Yes</span></td><td>No</td></tr>
+        <tr><td class="td-name">POST</td><td>Create a resource</td><td><span class="pill pill-pink">No</span></td><td>Yes</td></tr>
+        <tr><td class="td-name">PUT</td><td>Replace a resource fully</td><td><span class="pill pill-green">Yes</span></td><td>Yes</td></tr>
+        <tr><td class="td-name">PATCH</td><td>Update part of a resource</td><td>Depends</td><td>Yes</td></tr>
+        <tr><td class="td-name">DELETE</td><td>Delete a resource</td><td><span class="pill pill-green">Yes</span></td><td>Optional</td></tr>
+        <tr><td class="td-name">HEAD</td><td>Like GET but no body (metadata only)</td><td><span class="pill pill-green">Yes</span></td><td>No</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>HTTP Status Codes</h2>
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">2xx — Success</div>
+      <div class="mini-body"><code>200</code> OK · <code>201</code> Created · <code>204</code> No Content. Request succeeded.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">3xx — Redirect</div>
+      <div class="mini-body"><code>301</code> Moved Permanently · <code>302</code> Found · <code>304</code> Not Modified (cache hit).</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">4xx — Client Error</div>
+      <div class="mini-body"><code>400</code> Bad Request · <code>401</code> Unauthorized · <code>403</code> Forbidden · <code>404</code> Not Found · <code>429</code> Rate Limited.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">5xx — Server Error</div>
+      <div class="mini-body"><code>500</code> Internal Error · <code>502</code> Bad Gateway · <code>503</code> Service Unavailable · <code>504</code> Gateway Timeout.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--purple)">HTTP/1.1 vs HTTP/2</div>
+      <div class="mini-body">HTTP/2 adds multiplexing (multiple requests on one connection), header compression (HPACK), server push. Major perf gain.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--text-secondary)">HTTP/3 (QUIC)</div>
+      <div class="mini-body">Runs over UDP instead of TCP. Eliminates head-of-line blocking. 0-RTT resumption. The future of HTTP.</div>
+    </div>
+  </div>
+
+  <h2>HTTPS = HTTP + TLS</h2>
+  <div class="flow-row">
+    <div class="flow-box" style="border-color:rgba(0,201,110,.4);color:var(--green)">TCP Handshake</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box" style="border-color:rgba(155,109,255,.4);color:var(--purple)">TLS Handshake</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box" style="border-color:rgba(0,168,255,.4);color:var(--blue)">Encrypted HTTP</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box" style="border-color:rgba(245,166,35,.4);color:var(--orange)">Response</div>
+  </div>
+
+  <div class="callout callout-green"><strong>Caching headers matter:</strong> <code>Cache-Control</code>, <code>ETag</code>, and <code>Last-Modified</code> are critical for performance. A <code>304 Not Modified</code> response saves bandwidth and latency.</div>
+</section>
+
+<!-- ==================== WEBSOCKET ==================== -->
+<section id="sec-websocket" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(155,109,255,.1);color:var(--purple)">🔄 Topic 8 — Application Protocol</div>
+    <div class="hero-title">WebSocket</div>
+    <div class="hero-desc">WebSocket enables full-duplex, persistent communication over a single TCP connection. The server can push data to clients anytime — no polling needed.</div>
+  </div>
+
+  <h2>HTTP vs WebSocket</h2>
+  <div class="grid2">
+    <div class="card card-blue">
+      <div class="card-title">HTTP (Request-Response)</div>
+      <div class="card-body">Client asks → Server answers → Connection closes (or reused briefly). Server can NEVER initiate. For live data you must poll: <code>GET /updates</code> every second. Wasteful.</div>
+    </div>
+    <div class="card card-purple">
+      <div class="card-title">WebSocket (Full-Duplex)</div>
+      <div class="card-body">Connection stays open. Server can send messages anytime. Client can send anytime. Both directions simultaneously. One long-lived TCP connection.</div>
+    </div>
+  </div>
+
+  <h2>WebSocket Handshake</h2>
+  <div class="code-block"><span class="cmt">// 1. Client sends an HTTP Upgrade request</span>
+<span class="kw">GET</span> <span class="str">/chat</span> HTTP/1.1
+<span class="dir">Host:</span>                   ws.example.com
+<span class="dir">Upgrade:</span>               websocket
+<span class="dir">Connection:</span>            Upgrade
+<span class="dir">Sec-WebSocket-Key:</span>     dGhlIHNhbXBsZS...
+<span class="dir">Sec-WebSocket-Version:</span> 13
+
+<span class="cmt">// 2. Server accepts the upgrade</span>
+HTTP/1.1 <span class="str">101 Switching Protocols</span>
+<span class="dir">Upgrade:</span>               websocket
+<span class="dir">Connection:</span>            Upgrade
+<span class="dir">Sec-WebSocket-Accept:</span>  s3pPLMBi...
+
+<span class="cmt">// 3. Now it's a raw TCP pipe — HTTP is done</span></div>
+
+  <h2>WebSocket Lifecycle Diagram</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 560 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs>
+        <marker id="aw1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#9b6dff"/></marker>
+        <marker id="aw2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00c96e"/></marker>
+      </defs>
+      <text x="110" y="22" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">Client</text>
+      <line x1="110" y1="28" x2="110" y2="280" stroke="#252d3d" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="430" y="22" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">Server</text>
+      <line x1="430" y1="28" x2="430" y2="280" stroke="#252d3d" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <!-- HTTP Upgrade -->
+      <line x1="115" y1="55" x2="425" y2="75" stroke="#9b6dff" stroke-width="1.5" marker-end="url(#aw1)"/>
+      <text x="270" y="56" text-anchor="middle" fill="#9b6dff" font-weight="600">HTTP GET + Upgrade: websocket</text>
+      <!-- 101 -->
+      <line x1="425" y1="92" x2="115" y2="112" stroke="#00c96e" stroke-width="1.5" marker-end="url(#aw2)"/>
+      <text x="270" y="98" text-anchor="middle" fill="#00c96e" font-weight="600">101 Switching Protocols</text>
+      <!-- Bracket for persistent -->
+      <rect x="50" y="125" width="460" height="110" rx="6" fill="none" stroke="#252d3d" stroke-dasharray="4,2"/>
+      <text x="270" y="140" text-anchor="middle" fill="#505a6e" font-size="10">persistent connection open</text>
+      <!-- Client msg 1 -->
+      <line x1="115" y1="155" x2="425" y2="155" stroke="#9b6dff" stroke-width="1.5" marker-end="url(#aw1)"/>
+      <text x="270" y="149" text-anchor="middle" fill="#9b6dff">{type: "message", text: "Hello"}</text>
+      <!-- Server push -->
+      <line x1="425" y1="175" x2="115" y2="175" stroke="#00c96e" stroke-width="1.5" marker-end="url(#aw2)"/>
+      <text x="270" y="190" text-anchor="middle" fill="#00c96e">{type: "broadcast", users: 42}</text>
+      <!-- Server push 2 -->
+      <line x1="425" y1="210" x2="115" y2="210" stroke="#00c96e" stroke-width="1.5" marker-end="url(#aw2)"/>
+      <text x="270" y="224" text-anchor="middle" fill="#00c96e">{type: "new_message", from: "Bob"}</text>
+      <!-- Close -->
+      <line x1="115" y1="250" x2="425" y2="250" stroke="#505a6e" stroke-width="1.5" marker-end="url(#aw1)"/>
+      <text x="270" y="266" text-anchor="middle" fill="#505a6e">Close frame → connection ends</text>
+    </svg>
+  </div>
+
+  <h2>When to Use WebSocket</h2>
+  <div class="grid2">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">✅ Good Fit</div>
+      <div class="mini-body">Chat apps · Live dashboards · Collaborative editing (Google Docs) · Online gaming · Stock price tickers · Live sports scores</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--pink)">❌ Not a Fit</div>
+      <div class="mini-body">Standard REST APIs · One-time requests · Infrequent updates (use Server-Sent Events) · File uploads · Static content</div>
+    </div>
+  </div>
+
+  <div class="callout callout-purple"><strong>Scaling WebSockets:</strong> WebSockets are stateful — a client is connected to ONE server. To scale horizontally, use a pub/sub broker (Redis, Kafka) so any server can push to any client. This is the key design insight.</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Use Redis Pub/Sub to broadcast across server instances</li>
+      <li>Implement heartbeat/ping-pong to detect dead connections</li>
+      <li>Reconnect with exponential backoff on client side</li>
+      <li>Namespace connections by rooms/channels</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Store connection state only in server memory</li>
+      <li>Use WebSocket for simple request-response patterns</li>
+      <li>Forget authentication on the WebSocket handshake</li>
+      <li>Send unbounded data without flow control</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ==================== PROXY ==================== -->
+<section id="sec-proxy" class="section">
+  <div class="section-hero">
+    <div class="hero-label" style="background:rgba(232,93,117,.1);color:var(--pink)">🔀 Topic 9 — Infrastructure</div>
+    <div class="hero-title">Forward Proxy &amp; Reverse Proxy</div>
+    <div class="hero-desc">Proxies sit in the middle of communication. A forward proxy acts on behalf of clients. A reverse proxy acts on behalf of servers. Different direction, different purpose.</div>
+  </div>
+
+  <h2>Forward Proxy</h2>
+  <div class="card card-orange">
+    <div class="card-title">What it is</div>
+    <div class="card-body">A forward proxy sits between a <strong>client and the internet</strong>. The server sees the proxy's IP, not the client's. The client explicitly configures it. Used for anonymity, content filtering, caching, and bypassing restrictions.</div>
+  </div>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 620 180" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="afp" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#f5a623"/></marker></defs>
+      <!-- Clients -->
+      <rect x="10" y="30" width="110" height="40" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="65" y="55" text-anchor="middle" fill="#e8eaf0" font-weight="600">Client A</text>
+      <rect x="10" y="95" width="110" height="40" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="65" y="120" text-anchor="middle" fill="#e8eaf0" font-weight="600">Client B</text>
+      <!-- Arrows to proxy -->
+      <line x1="120" y1="50" x2="218" y2="80" stroke="#f5a623" stroke-width="1.5" marker-end="url(#afp)"/>
+      <line x1="120" y1="115" x2="218" y2="90" stroke="#f5a623" stroke-width="1.5" marker-end="url(#afp)"/>
+      <!-- Forward Proxy -->
+      <rect x="220" y="60" width="130" height="50" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="285" y="82" text-anchor="middle" fill="#f5a623" font-weight="600">Forward Proxy</text>
+      <text x="285" y="98" text-anchor="middle" fill="#505a6e">Hides client IP</text>
+      <!-- Arrow to Internet -->
+      <line x1="350" y1="85" x2="418" y2="85" stroke="#f5a623" stroke-width="1.5" marker-end="url(#afp)"/>
+      <!-- Internet -->
+      <rect x="420" y="60" width="80" height="50" rx="8" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="460" y="82" text-anchor="middle" fill="#505a6e">Internet</text>
+      <text x="460" y="97" text-anchor="middle" fill="#505a6e">🌐</text>
+      <!-- Arrow to Server -->
+      <line x1="500" y1="85" x2="558" y2="85" stroke="#f5a623" stroke-width="1.5" marker-end="url(#afp)"/>
+      <!-- Server -->
+      <rect x="560" y="60" width="50" height="50" rx="6" fill="#1e2535" stroke="#2e3748"/>
+      <text x="585" y="82" text-anchor="middle" fill="#e8eaf0">Web</text>
+      <text x="585" y="97" text-anchor="middle" fill="#e8eaf0">Server</text>
+      <!-- Label -->
+      <text x="310" y="160" text-anchor="middle" fill="#505a6e">Server only sees the proxy's IP address — clients are hidden</text>
+    </svg>
+  </div>
+
+  <div class="grid3">
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--orange)">Anonymity</div>
+      <div class="mini-body">Client's real IP is hidden from the destination. Used by VPNs, Tor, corporate privacy tools.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--blue)">Content Filtering</div>
+      <div class="mini-body">Corporations route employee traffic through a forward proxy to block social media or malicious sites.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:var(--green)">Caching</div>
+      <div class="mini-body">Shared cache of responses for many clients. If 100 users visit the same site, proxy serves it from cache once.</div>
+    </div>
+  </div>
+
+  <h2>Reverse Proxy</h2>
+  <div class="card card-pink">
+    <div class="card-title">What it is</div>
+    <div class="card-body">A reverse proxy sits between the <strong>internet and your servers</strong>. The client sees the proxy's IP, not the server's. The client has no idea multiple servers may be behind it. Used for load balancing, SSL termination, caching, and DDoS protection.</div>
+  </div>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 640 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="arp" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e85d75"/></marker></defs>
+      <!-- Clients -->
+      <rect x="10" y="40" width="90" height="34" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="55" y="62" text-anchor="middle" fill="#e8eaf0" font-weight="600">User A</text>
+      <rect x="10" y="90" width="90" height="34" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="55" y="112" text-anchor="middle" fill="#e8eaf0" font-weight="600">User B</text>
+      <rect x="10" y="140" width="90" height="34" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="55" y="162" text-anchor="middle" fill="#e8eaf0" font-weight="600">User C</text>
+      <!-- Arrows to proxy -->
+      <line x1="100" y1="57" x2="198" y2="90" stroke="#e85d75" stroke-width="1.5" marker-end="url(#arp)"/>
+      <line x1="100" y1="107" x2="198" y2="100" stroke="#e85d75" stroke-width="1.5" marker-end="url(#arp)"/>
+      <line x1="100" y1="157" x2="198" y2="113" stroke="#e85d75" stroke-width="1.5" marker-end="url(#arp)"/>
+      <!-- Reverse Proxy -->
+      <rect x="200" y="65" width="140" height="70" rx="8" fill="#1e2535" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="270" y="90" text-anchor="middle" fill="#e85d75" font-weight="600" font-size="12">Reverse Proxy</text>
+      <text x="270" y="107" text-anchor="middle" fill="#505a6e">(nginx / Cloudflare)</text>
+      <text x="270" y="122" text-anchor="middle" fill="#505a6e">SSL · Cache · LB</text>
+      <!-- Arrows to servers -->
+      <line x1="340" y1="88" x2="428" y2="60" stroke="#e85d75" stroke-width="1.5" marker-end="url(#arp)"/>
+      <line x1="340" y1="100" x2="428" y2="100" stroke="#e85d75" stroke-width="1.5" marker-end="url(#arp)"/>
+      <line x1="340" y1="112" x2="428" y2="140" stroke="#e85d75" stroke-width="1.5" marker-end="url(#arp)"/>
+      <!-- Servers -->
+      <rect x="430" y="38" width="100" height="40" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="480" y="63" text-anchor="middle" fill="#e8eaf0">Server 1</text>
+      <rect x="430" y="80" width="100" height="40" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="480" y="105" text-anchor="middle" fill="#e8eaf0">Server 2</text>
+      <rect x="430" y="122" width="100" height="40" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="480" y="147" text-anchor="middle" fill="#e8eaf0">Server 3</text>
+      <!-- Label -->
+      <text x="320" y="185" text-anchor="middle" fill="#505a6e">Clients only see the proxy's IP — server fleet is hidden</text>
+    </svg>
+  </div>
+
+  <h2>What a Reverse Proxy Does</h2>
+  <ul class="rule-list">
+    <li><strong>Load Balancing</strong> — distributes incoming requests across multiple backend servers using round-robin, least-connections, or IP-hash strategies.</li>
+    <li><strong>SSL/TLS Termination</strong> — handles HTTPS at the proxy. Backend servers communicate over plain HTTP internally, reducing their CPU load.</li>
+    <li><strong>Caching</strong> — stores responses and serves them without hitting the backend. Nginx and Varnish do this excellently.</li>
+    <li><strong>DDoS Protection</strong> — absorbs and filters malicious traffic before it reaches your servers. Cloudflare is a global reverse proxy.</li>
+    <li><strong>Compression</strong> — gzip/brotli responses before sending to clients, reducing bandwidth.</li>
+    <li><strong>Rate Limiting</strong> — enforce request limits per IP/user at the proxy level before requests even reach your app.</li>
+  </ul>
+
+  <h2>Forward vs Reverse — Quick Comparison</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Aspect</th><th>Forward Proxy</th><th>Reverse Proxy</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Sits between</td><td>Client ↔ Internet</td><td>Internet ↔ Servers</td></tr>
+        <tr><td class="td-name">Represents</td><td>The <strong>client</strong></td><td>The <strong>server</strong></td></tr>
+        <tr><td class="td-name">Who configures it</td><td>The client (knowingly)</td><td>Server-side (client unaware)</td></tr>
+        <tr><td class="td-name">What's hidden</td><td>Client IP from server</td><td>Server IPs from client</td></tr>
+        <tr><td class="td-name">Common tools</td><td>Squid, VPN, Tor</td><td>Nginx, HAProxy, Cloudflare, AWS ALB</td></tr>
+        <tr><td class="td-name">Use cases</td><td>Anonymity, filtering, caching</td><td>Load balancing, SSL, DDoS, caching</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-blue"><strong>💡 In System Design Interviews:</strong> When asked to design any large-scale system, always mention a reverse proxy / load balancer as the entry point. Nginx or an AWS Application Load Balancer in front of your fleet is expected. Explain SSL termination and horizontal scaling.</div>
+
+  <div class="do-dont">
+    <div class="do-box"><h4>Do</h4><ul>
+      <li>Use a reverse proxy as the single entry point</li>
+      <li>Terminate TLS at the proxy (not app servers)</li>
+      <li>Configure health checks on backend servers</li>
+      <li>Enable response caching at the proxy layer</li>
+      <li>Rate-limit at the proxy before reaching app code</li>
+    </ul></div>
+    <div class="dont-box"><h4>Don't</h4><ul>
+      <li>Expose backend server IPs publicly</li>
+      <li>Skip the proxy layer "to reduce latency" (wrong)</li>
+      <li>Handle TLS in every individual app server</li>
+      <li>Ignore sticky sessions for stateful backends</li>
+      <li>Forget logging access at the proxy level</li>
+    </ul></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (window.innerWidth <= 700) closeSidebar();
+}
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
+function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+hamburger.addEventListener('click', () => sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+overlay.addEventListener('click', closeSidebar);
+</script>
+</body>
+</html>
