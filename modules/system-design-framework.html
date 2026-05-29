@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design — Interview Framework</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117;--sb:#141820;--card:#1a1f2e;--card2:#1e2535;--hov:#252d3d;
+  --txt:#e8eaf0;--txt2:#8892a4;--mu:#505a6e;--bd:#252d3d;--bd2:#2e3748;
+  --gr:#00c96e;--bl:#00a8ff;--or:#f5a623;--pk:#e85d75;--pu:#9b6dff;--sw:290px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;overflow-x:hidden}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;background:var(--sb);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 0}
+.tbl{display:flex;align-items:center;width:var(--sw);padding:0 20px;border-right:1px solid var(--bd);height:100%}
+.bico{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--pk),var(--or));display:flex;align-items:center;justify-content:center;font-size:15px;margin-right:11px;flex-shrink:0}
+.btx{font-weight:600;font-size:15px;color:var(--txt)}.bsx{font-size:11px;color:var(--mu)}
+.tbr{display:flex;align-items:center;gap:14px}
+.tpill{background:rgba(245,166,35,.12);color:var(--or);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(245,166,35,.25)}
+.tc{color:var(--mu);font-size:12px}
+.layout{display:flex;padding-top:56px;min-height:100vh}
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--sb);border-right:1px solid var(--bd);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--bd2) transparent}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+.sh{padding:16px 20px 7px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--mu);text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 20px;cursor:pointer;font-size:13px;color:var(--txt2);border-left:3px solid transparent;transition:all .15s;text-decoration:none;user-select:none}
+.ni:hover{background:var(--hov);color:var(--txt)}
+.ni.active{color:var(--or);background:rgba(245,166,35,.08);border-left-color:var(--or);font-weight:500}
+.ni-sub{padding-left:36px;font-size:12px}
+.ni-sub.active{color:var(--gr);background:rgba(0,201,110,.07);border-left-color:var(--gr)}
+.nstep{width:22px;height:22px;border-radius:6px;flex-shrink:0;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#000}
+.ndot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nb{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.nbg{background:rgba(0,201,110,.15);color:var(--gr)}.nbm{background:rgba(0,168,255,.15);color:var(--bl)}
+.nba{background:rgba(155,109,255,.15);color:var(--pu)}.nbk{background:rgba(245,166,35,.15);color:var(--or)}
+.main{margin-left:var(--sw);flex:1;padding:38px 46px 80px;max-width:920px}
+.sec{display:none}.sec.active{display:block}
+.hero{margin-bottom:34px;padding-bottom:26px;border-bottom:1px solid var(--bd)}
+.hl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:6px;margin-bottom:12px}
+.ht{font-size:27px;font-weight:600;color:var(--txt);line-height:1.25;margin-bottom:9px}
+.hd{font-size:15px;color:var(--txt2);line-height:1.7;max-width:680px}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:20px 22px;margin-bottom:15px}
+.ct{font-size:15px;font-weight:600;color:var(--txt);margin-bottom:5px}
+.cb{font-size:14px;color:var(--txt2);line-height:1.7}
+.cg{border-left:3px solid var(--gr);background:rgba(0,201,110,.05)}
+.cbl{border-left:3px solid var(--bl);background:rgba(0,168,255,.05)}
+.co{border-left:3px solid var(--or);background:rgba(245,166,35,.05)}
+.cp{border-left:3px solid var(--pu);background:rgba(155,109,255,.05)}
+.cpk{border-left:3px solid var(--pk);background:rgba(232,93,117,.05)}
+/* METRIC HERO CARD */
+.mhero{border-radius:12px;padding:22px 26px;margin-bottom:20px;border:1px solid}
+.mhero-title{font-size:22px;font-weight:700;margin-bottom:6px}
+.mhero-sub{font-size:13px;color:var(--txt2);line-height:1.65}
+/* CODE */
+.code{background:#0a0e16;border:1px solid var(--bd);border-radius:8px;padding:16px 18px;margin:12px 0;font-family:'DM Mono',monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;white-space:pre}
+.kw{color:#9b6dff}.st{color:#00c96e}.cm{color:#505a6e}.dr{color:#00a8ff}.fn{color:#e85d75}.cl{color:#f5a623}
+code{font-family:'DM Mono',monospace;font-size:12px;background:rgba(255,255,255,.07);color:var(--or);padding:1px 6px;border-radius:4px}
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mc{background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:15px}
+.mt{font-size:13px;font-weight:600;margin-bottom:5px}
+.mb{font-size:12px;color:var(--txt2);line-height:1.55}
+/* TABLE */
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--card2)}
+th{text-align:left;padding:9px 14px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);border-bottom:1px solid var(--bd2)}
+td{padding:10px 14px;border-bottom:1px solid var(--bd);color:var(--txt2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.tn{color:var(--txt);font-weight:500}
+.p{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.pg{background:rgba(0,201,110,.15);color:var(--gr)}.pb{background:rgba(0,168,255,.15);color:var(--bl)}
+.po{background:rgba(245,166,35,.15);color:var(--or)}.pp{background:rgba(155,109,255,.15);color:var(--pu)}
+.ppk{background:rgba(232,93,117,.15);color:var(--pk)}
+.cal{border-radius:8px;padding:13px 17px;margin:12px 0;font-size:13px;line-height:1.65}
+.cag{background:rgba(0,201,110,.08);border:1px solid rgba(0,201,110,.2);color:#7ddcaa}
+.cab{background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.2);color:#7dc8f0}
+.cao{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#f0c87a}
+.cap{background:rgba(155,109,255,.08);border:1px solid rgba(155,109,255,.2);color:#c4aafe}
+.capk{background:rgba(232,93,117,.08);border:1px solid rgba(232,93,117,.2);color:#f0a0b0}
+.cal strong{color:inherit;font-weight:600}
+.step{display:flex;gap:13px;margin-bottom:16px}
+.snum{width:27px;height:27px;border-radius:50%;flex-shrink:0;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;color:#000}
+.stit{font-size:14px;font-weight:600;color:var(--txt);margin-bottom:4px}
+.sdesc{font-size:13px;color:var(--txt2);line-height:1.6}
+.dw{background:#0a0e16;border:1px solid var(--bd);border-radius:10px;padding:20px 16px;margin:14px 0;overflow-x:auto}
+.dw svg{display:block;margin:0 auto}
+.ls{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.lay{border-radius:6px;padding:11px 14px;border-left:4px solid;font-size:13px}
+.ln{font-weight:600;margin-bottom:2px}.ld{font-size:12px;color:var(--txt2)}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:12px 0}
+.dob{border-radius:8px;padding:13px 15px;background:rgba(0,201,110,.07);border:1px solid rgba(0,201,110,.2)}
+.dnb{border-radius:8px;padding:13px 15px;background:rgba(232,93,117,.07);border:1px solid rgba(232,93,117,.2)}
+.dob h4{font-size:11px;font-weight:700;color:var(--gr);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.dnb h4{font-size:11px;font-weight:700;color:var(--pk);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.dob li,.dnb li{font-size:12px;color:var(--txt2);list-style:none;padding:3px 0 3px 13px;position:relative;line-height:1.5}
+.dob li::before{content:"✓";position:absolute;left:0;color:var(--gr);font-size:11px}
+.dnb li::before{content:"✗";position:absolute;left:0;color:var(--pk);font-size:11px}
+.rl{list-style:none;margin:8px 0}
+.rl li{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px;color:var(--txt2)}
+.rl li:last-child{border-bottom:none}
+.rl li::before{content:"→";color:var(--or);font-weight:700;flex-shrink:0;margin-top:1px}
+.rl li strong{color:var(--txt);font-weight:600}
+/* STAT BARS */
+.sb2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:13px 0}
+.sb3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}
+.sb4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:13px 0}
+.sb5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:13px 0}
+.si{background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:11px 13px;text-align:center}
+.sl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.sv{font-size:13px;font-weight:600}
+.tr{display:flex;flex-wrap:wrap;gap:5px;margin:11px 0}
+.tg{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;border:1px solid}
+/* FORMULA BOX */
+.fbox{background:rgba(0,0,0,.4);border:1px solid var(--bd2);border-radius:8px;padding:14px 18px;margin:12px 0;font-family:'DM Mono',monospace;font-size:13px;color:var(--txt2);line-height:1.8}
+.fbox .fname{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin-bottom:6px}
+.fbox span.fv{color:var(--or);font-weight:500}
+.fbox span.fa{color:var(--gr)}
+/* BENCHMARK BAR */
+.bm-bar{margin:14px 0}
+.bm-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.bm-label{font-size:12px;color:var(--txt2);min-width:140px;flex-shrink:0}
+.bm-track{flex:1;height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden}
+.bm-fill{height:100%;border-radius:5px}
+.bm-val{font-size:11px;font-family:'DM Mono',monospace;color:var(--txt2);min-width:80px;text-align:right}
+/* FRAMEWORK BOX */
+.fw-banner{background:linear-gradient(135deg,rgba(232,93,117,.12),rgba(245,166,35,.08),rgba(155,109,255,.08));border:1px solid rgba(245,166,35,.2);border-radius:12px;padding:22px 26px;margin-bottom:26px}
+.fw-title{font-size:22px;font-weight:700;background:linear-gradient(90deg,var(--pk),var(--or),var(--pu));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.fw-sub{font-size:13px;color:var(--txt2);line-height:1.6}
+/* CHECKLISTS */
+.chk{list-style:none;margin:10px 0}
+.chk li{display:flex;gap:10px;align-items:flex-start;padding:7px 12px;border-radius:6px;margin-bottom:5px;font-size:13px;line-height:1.55}
+.chk li.req{background:rgba(0,201,110,.07);border:1px solid rgba(0,201,110,.15);color:var(--txt2)}
+.chk li.nreq{background:rgba(0,168,255,.07);border:1px solid rgba(0,168,255,.15);color:var(--txt2)}
+.chk li .ico{font-size:14px;flex-shrink:0;margin-top:1px}
+/* TMPL */
+.tmpl{background:var(--card2);border:1px solid var(--bd2);border-radius:8px;padding:16px 18px;margin:12px 0}
+.tmpl-title{font-size:12px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.tmpl-row{display:flex;gap:8px;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--bd)}
+.tmpl-row:last-child{border-bottom:none}
+.tmpl-k{font-size:12px;font-weight:600;color:var(--txt);min-width:140px;flex-shrink:0}
+.tmpl-v{font-size:12px;color:var(--txt2)}
+/* REAL WORLD TABLE */
+.rw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.rw-box{background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:14px}
+.rw-app{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.rw-row{display:flex;justify-content:space-between;padding:3px 0;font-size:11.5px}
+.rw-k{color:var(--mu)}.rw-v{color:var(--txt2);font-family:'DM Mono',monospace}
+/* HIGHLIGHT BOX */
+.hbox{border-radius:8px;padding:16px 18px;margin:14px 0}
+.div{height:1px;background:var(--bd);margin:26px 0}
+h2{font-size:19px;font-weight:600;color:var(--txt);margin:26px 0 11px}
+h2:first-child{margin-top:0}
+h3{font-size:15px;font-weight:600;color:var(--txt);margin:20px 0 9px}
+p{font-size:14px;color:var(--txt2);line-height:1.7;margin-bottom:11px}
+/* HAMBURGER */
+.hb{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.hb span{display:block;width:20px;height:2px;background:var(--txt2);border-radius:1px}
+.ov{display:none}
+.sec.active .card,.sec.active .mc{animation:fu .3s ease both}
+.sec.active .card:nth-child(2){animation-delay:.05s}
+.sec.active .card:nth-child(3){animation-delay:.1s}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.main{padding:26px 22px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:270px}
+  .main{margin-left:0;padding:22px 16px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .25s;z-index:90}
+  .sidebar.open{transform:translateX(0)}
+  .ov{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.5);z-index:89}
+  .ov.open{display:block}
+  .hb{display:flex}
+  .tbl{width:auto;border-right:none}
+  .g2,.g3,.g4,.dd,.sb2,.sb3,.sb4,.sb5,.rw-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){.ht{font-size:22px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tbl">
+    <div class="bico">🏗️</div>
+    <div><div class="btx">SysDesign</div><div class="bsx">Interview Framework · 5 Steps</div></div>
+  </div>
+  <div class="tbr">
+    <button class="hb" id="hbtn" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="tc">5 steps · 9 topics</span>
+    <span class="tpill">Study Guide</span>
+  </div>
+</header>
+
+<div class="ov" id="ov"></div>
+<div class="layout">
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sh">Framework</div>
+  <a class="ni active" onclick="show('overview')">
+    <span class="nstep" style="background:linear-gradient(135deg,var(--pk),var(--or))">🗺</span>Overview<span class="nb nbk">Intro</span></a>
+  <a class="ni" onclick="show('s1')">
+    <span class="nstep" style="background:var(--pk)">1</span>Deciding Requirements<span class="nb" style="background:rgba(232,93,117,.15);color:var(--pk)">Step 1</span></a>
+
+  <div class="sh">Step 2 — Capacity</div>
+  <a class="ni" onclick="show('s2')">
+    <span class="nstep" style="background:var(--gr)">2</span>Capacity Overview<span class="nb nbg">Step 2</span></a>
+  <a class="ni ni-sub" onclick="show('dau')">
+    <span class="ndot" style="background:var(--gr)"></span>DAU / MAU<span class="nb nbg">Metric</span></a>
+  <a class="ni ni-sub" onclick="show('throughput')">
+    <span class="ndot" style="background:var(--bl)"></span>Throughput / RPS<span class="nb nbm">Metric</span></a>
+  <a class="ni ni-sub" onclick="show('storage')">
+    <span class="ndot" style="background:var(--or)"></span>Storage / Memory<span class="nb nbk">Metric</span></a>
+  <a class="ni ni-sub" onclick="show('bandwidth')">
+    <span class="ndot" style="background:var(--pu)"></span>Network / Bandwidth<span class="nb nba">Metric</span></a>
+
+  <div class="sh">Design</div>
+  <a class="ni" onclick="show('s3')">
+    <span class="nstep" style="background:var(--or)">3</span>API Design<span class="nb nbk">Step 3</span></a>
+  <a class="ni" onclick="show('s4')">
+    <span class="nstep" style="background:var(--bl)">4</span>High-Level Design<span class="nb nbm">Step 4</span></a>
+  <a class="ni" onclick="show('s5')">
+    <span class="nstep" style="background:var(--pu)">5</span>Deep Dive<span class="nb nba">Step 5</span></a>
+</nav>
+
+<main class="main">
+
+<!-- ══════════════════════════════════════════════
+     OVERVIEW
+══════════════════════════════════════════════ -->
+<section id="sec-overview" class="sec active">
+  <div class="hero">
+    <div class="hl" style="background:rgba(245,166,35,.1);color:var(--or)">🏗️ System Design Interview</div>
+    <div class="ht">The Interview Framework</div>
+    <div class="hd">System design interviews test your ability to architect large-scale distributed systems. Most candidates fail not from lack of knowledge, but from lack of structure. This 5-step framework gives you a repeatable, confident approach every single time.</div>
+  </div>
+
+  <div class="fw-banner">
+    <div class="fw-title">SYSTEM DESIGN INTERVIEW FRAMEWORK</div>
+    <div class="fw-sub">A battle-tested 5-step framework used by engineers at Google, Meta, Amazon, and Netflix. Follow every step in order — each one builds on the previous. Skipping any step signals junior-level thinking to your interviewer.</div>
+  </div>
+
+  <h2>The 5-Step Flow</h2>
+  <div class="dw">
+    <svg viewBox="0 0 640 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="a1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#f5a623"/></marker>
+        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#e85d75;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#f5a623;stop-opacity:1"/>
+        </linearGradient>
+      </defs>
+      <rect x="10" y="8" width="620" height="40" rx="8" fill="url(#g1)" opacity="0.13"/>
+      <rect x="10" y="8" width="620" height="40" rx="8" fill="none" stroke="url(#g1)" stroke-width="1.5"/>
+      <text x="320" y="25" text-anchor="middle" fill="#f5a623" font-weight="700" font-size="13">SYSTEM DESIGN INTERVIEW FRAMEWORK</text>
+      <text x="320" y="39" text-anchor="middle" fill="#505a6e" font-size="11">Apply these 5 steps sequentially in every interview</text>
+      <!-- Step boxes -->
+      <rect x="10" y="62" width="112" height="65" rx="8" fill="#1e2535" stroke="#e85d75" stroke-width="2"/>
+      <text x="66" y="82" text-anchor="middle" fill="#e85d75" font-size="11" font-weight="700">STEP 1</text>
+      <text x="66" y="96" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Deciding</text>
+      <text x="66" y="110" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Requirements</text>
+      <text x="66" y="140" text-anchor="middle" fill="#505a6e" font-size="10">Functional</text>
+      <text x="66" y="152" text-anchor="middle" fill="#505a6e" font-size="10">Non-Functional</text>
+      <line x1="122" y1="94" x2="137" y2="94" stroke="#f5a623" stroke-width="1.5" marker-end="url(#a1)"/>
+
+      <rect x="139" y="62" width="112" height="65" rx="8" fill="#1e2535" stroke="#00c96e" stroke-width="2"/>
+      <text x="195" y="82" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="700">STEP 2</text>
+      <text x="195" y="96" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Capacity</text>
+      <text x="195" y="110" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Estimation</text>
+      <text x="195" y="140" text-anchor="middle" fill="#505a6e" font-size="10">DAU·MAU·RPS</text>
+      <text x="195" y="152" text-anchor="middle" fill="#505a6e" font-size="10">Storage·BW</text>
+      <line x1="251" y1="94" x2="266" y2="94" stroke="#f5a623" stroke-width="1.5" marker-end="url(#a1)"/>
+
+      <rect x="268" y="62" width="112" height="65" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="2"/>
+      <text x="324" y="82" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="700">STEP 3</text>
+      <text x="324" y="96" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">API</text>
+      <text x="324" y="110" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Design</text>
+      <text x="324" y="140" text-anchor="middle" fill="#505a6e" font-size="10">Endpoints</text>
+      <text x="324" y="152" text-anchor="middle" fill="#505a6e" font-size="10">REST/gRPC</text>
+      <line x1="380" y1="94" x2="395" y2="94" stroke="#f5a623" stroke-width="1.5" marker-end="url(#a1)"/>
+
+      <rect x="397" y="62" width="112" height="65" rx="8" fill="#1e2535" stroke="#00a8ff" stroke-width="2"/>
+      <text x="453" y="82" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="700">STEP 4</text>
+      <text x="453" y="96" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">High-Level</text>
+      <text x="453" y="110" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Design</text>
+      <text x="453" y="140" text-anchor="middle" fill="#505a6e" font-size="10">LB→App→DB</text>
+      <text x="453" y="152" text-anchor="middle" fill="#505a6e" font-size="10">Cache→Queue</text>
+      <line x1="509" y1="94" x2="524" y2="94" stroke="#f5a623" stroke-width="1.5" marker-end="url(#a1)"/>
+
+      <rect x="526" y="62" width="104" height="65" rx="8" fill="#1e2535" stroke="#9b6dff" stroke-width="2"/>
+      <text x="578" y="82" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="700">STEP 5</text>
+      <text x="578" y="96" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Deep</text>
+      <text x="578" y="110" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Dive</text>
+      <text x="578" y="140" text-anchor="middle" fill="#505a6e" font-size="10">Bottlenecks</text>
+      <text x="578" y="152" text-anchor="middle" fill="#505a6e" font-size="10">Tradeoffs</text>
+
+      <!-- TIME ALLOCATION -->
+      <rect x="10" y="170" width="620" height="50" rx="8" fill="rgba(0,0,0,.3)" stroke="#252d3d"/>
+      <text x="320" y="187" text-anchor="middle" fill="#505a6e" font-size="11" font-weight="600">TIME ALLOCATION (45-min interview)</text>
+      <rect x="20" y="195" width="90" height="16" rx="3" fill="rgba(232,93,117,.3)"/><text x="65" y="207" text-anchor="middle" fill="#e85d75" font-size="10">5 min · Reqs</text>
+      <rect x="117" y="195" width="95" height="16" rx="3" fill="rgba(0,201,110,.3)"/><text x="164" y="207" text-anchor="middle" fill="#00c96e" font-size="10">5 min · Capacity</text>
+      <rect x="219" y="195" width="95" height="16" rx="3" fill="rgba(245,166,35,.3)"/><text x="266" y="207" text-anchor="middle" fill="#f5a623" font-size="10">10 min · API</text>
+      <rect x="321" y="195" width="155" height="16" rx="3" fill="rgba(0,168,255,.3)"/><text x="398" y="207" text-anchor="middle" fill="#00a8ff" font-size="10">10 min · High-Level</text>
+      <rect x="483" y="195" width="147" height="16" rx="3" fill="rgba(155,109,255,.3)"/><text x="556" y="207" text-anchor="middle" fill="#9b6dff" font-size="10">15 min · Deep Dive</text>
+
+      <text x="320" y="245" text-anchor="middle" fill="#505a6e" font-size="11">Never jump straight to drawing — always clarify requirements first</text>
+      <text x="320" y="263" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="600">✓ Works for: URL Shortener · Twitter · Netflix · Uber · WhatsApp · YouTube · Instagram</text>
+      <text x="320" y="280" text-anchor="middle" fill="#505a6e" font-size="11">The interviewer is evaluating your thought process — not just the final diagram</text>
+    </svg>
+  </div>
+
+  <h2>Why Structure Beats Raw Knowledge</h2>
+  <div class="g3">
+    <div class="mc"><div class="mt" style="color:var(--pk)">Shows Senior Thinking</div><div class="mb">Interviewers at FAANG evaluate HOW you think, not just what you know. A clear structured approach signals you've designed real production systems before.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--gr)">Prevents Scope Creep</div><div class="mb">Most candidates start drawing boxes and rabbit-hole into one component. The framework forces scope clarity first — you'll never waste 30 minutes on the wrong problem.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--pu)">Drives the Conversation</div><div class="mb">Following these steps puts YOU in control. You guide the interviewer through your reasoning at each stage — you're the architect, not a student being quizzed.</div></div>
+  </div>
+
+  <div class="cal cao"><strong>The #1 mistake in system design interviews:</strong> Starting to design without clarifying requirements. Interviewers intentionally give vague prompts like "Design Twitter." Always spend 5 minutes asking clarifying questions — it's the difference between passing and failing a senior-level interview.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     STEP 1 — REQUIREMENTS
+══════════════════════════════════════════════ -->
+<section id="sec-s1" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(232,93,117,.1);color:var(--pk)">❓ Step 1 of 5 — ~5 minutes</div>
+    <div class="ht">Deciding Requirements</div>
+    <div class="hd">Requirements define the boundaries and goals of your system. Every architecture decision you make later should trace back to a requirement. Get this wrong and you'll spend 40 minutes designing the wrong system.</div>
+  </div>
+
+  <div class="sb2">
+    <div class="si"><div class="sl">Time Budget</div><div class="sv" style="color:var(--pk)">5 minutes</div></div>
+    <div class="si"><div class="sl">Output</div><div class="sv" style="color:var(--or)">Written scope + constraints</div></div>
+  </div>
+
+  <h2>Two Types of Requirements</h2>
+  <div class="g2">
+    <div class="card cpk">
+      <div class="ct">📋 Functional Requirements</div>
+      <div class="cb"><strong>What the system does.</strong> User-facing behaviours and features. Think in terms of: what actions can users perform? What data flows in and out?<br><br>
+      These are the <em>features</em> — "Users can post tweets", "Users can follow others", "Users see a feed". Write these as numbered bullet points on the board.</div>
+    </div>
+    <div class="card cbl">
+      <div class="ct">⚡ Non-Functional Requirements</div>
+      <div class="cb"><strong>How well the system does it.</strong> Quality attributes that constrain the architecture — availability, latency, consistency, durability, scalability.<br><br>
+      These are the <em>constraints</em> — "99.99% uptime", "Timeline loads in &lt;200ms", "10M DAU", "Messages never lost". These drive your technology choices.</div>
+    </div>
+  </div>
+
+  <h2>The Questions to Ask (Script)</h2>
+  <div class="ls">
+    <div class="lay" style="border-color:var(--pk);background:rgba(232,93,117,.05)">
+      <div class="ln" style="color:var(--pk)">Scope: "What features are in scope?"</div>
+      <div class="ld">Don't try to design all of Twitter. Ask: "Should I design the full product or a specific subset like the timeline and posting?" Interviewers often want a focused design. Narrow scope = deeper design = better interview.</div>
+    </div>
+    <div class="lay" style="border-color:var(--or);background:rgba(245,166,35,.05)">
+      <div class="ln" style="color:var(--or)">Scale: "How many users? What's the read vs write ratio?"</div>
+      <div class="ld">1K users vs 100M users are entirely different systems. Read-heavy (social feed: 100:1) vs write-heavy (logging: 1:100) changes every architectural decision. Always ask — never assume scale.</div>
+    </div>
+    <div class="lay" style="border-color:var(--bl);background:rgba(0,168,255,.05)">
+      <div class="ln" style="color:var(--bl)">Consistency: "Is strong consistency required?"</div>
+      <div class="ld">Social timeline: eventual consistency OK (1-2s delay is fine). Bank balance: strong consistency required (never show wrong amount). This drives your CAP theorem choice and database selection.</div>
+    </div>
+    <div class="lay" style="border-color:var(--gr);background:rgba(0,201,110,.05)">
+      <div class="ln" style="color:var(--gr)">SLA: "What are the availability and latency targets?"</div>
+      <div class="ld">99.9% uptime = 8.7 hours downtime/year. 99.99% = 52 minutes/year. 99.999% = 5 minutes/year. Each 9 costs dramatically more. Latency targets drive caching and CDN decisions.</div>
+    </div>
+    <div class="lay" style="border-color:var(--pu);background:rgba(155,109,255,.05)">
+      <div class="ln" style="color:var(--pu)">Geography: "Single region or global?"</div>
+      <div class="ld">Global distribution changes everything — multi-region databases, cross-region replication, CDN edge nodes, data residency requirements. Single region is much simpler to start with.</div>
+    </div>
+  </div>
+
+  <h2>Opening Script — Use This Word for Word</h2>
+  <div class="tmpl">
+    <div class="tmpl-title">🎙️ Interview Script: Deciding Requirements</div>
+    <div class="tmpl-row"><div class="tmpl-k">Open with:</div><div class="tmpl-v">"Before I start designing, let me clarify requirements so I'm solving the right problem."</div></div>
+    <div class="tmpl-row"><div class="tmpl-k">Functional:</div><div class="tmpl-v">"What are the core features? Which should I prioritise? What's explicitly out of scope?"</div></div>
+    <div class="tmpl-row"><div class="tmpl-k">Scale:</div><div class="tmpl-v">"How many DAU? What's the expected read/write ratio? Any seasonal spikes?"</div></div>
+    <div class="tmpl-row"><div class="tmpl-k">Consistency:</div><div class="tmpl-v">"Is eventual consistency acceptable, or do we need strong consistency?"</div></div>
+    <div class="tmpl-row"><div class="tmpl-k">Availability:</div><div class="tmpl-v">"What's the uptime SLA? What's the acceptable latency at p99?"</div></div>
+    <div class="tmpl-row"><div class="tmpl-k">Close with:</div><div class="tmpl-v">"So to summarise: [repeat requirements]. I'll prioritise X, Y, Z and leave A, B out of scope. Does that sound right?"</div></div>
+  </div>
+
+  <h2>Worked Example — Design Twitter</h2>
+  <div class="g2">
+    <div>
+      <h3 style="color:var(--pk)">✅ Functional Requirements</h3>
+      <ul class="chk">
+        <li class="req"><span class="ico">✅</span>Users can post tweets (text + optional image)</li>
+        <li class="req"><span class="ico">✅</span>Users can follow/unfollow other users</li>
+        <li class="req"><span class="ico">✅</span>Users see a home timeline (recent posts from followed)</li>
+        <li class="req"><span class="ico">✅</span>Users can like and retweet</li>
+        <li class="nreq"><span class="ico">🚫</span>Direct messages — out of scope</li>
+        <li class="nreq"><span class="ico">🚫</span>Trending topics, search — out of scope</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:var(--bl)">⚡ Non-Functional Requirements</h3>
+      <ul class="chk">
+        <li class="req"><span class="ico">✅</span>300M DAU · 100:1 read/write ratio</li>
+        <li class="req"><span class="ico">✅</span>99.99% availability (write path)</li>
+        <li class="req"><span class="ico">✅</span>Timeline loads in &lt;200ms at p99</li>
+        <li class="req"><span class="ico">✅</span>Eventual consistency OK (1–2s delay fine)</li>
+        <li class="req"><span class="ico">✅</span>Tweets are durable — never lost once posted</li>
+        <li class="nreq"><span class="ico">🔵</span>Single region (not global for this design)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dd">
+    <div class="dob"><h4>Do</h4><ul>
+      <li>Spend a full 5 minutes — don't rush this step</li>
+      <li>Write all requirements visibly on the whiteboard</li>
+      <li>Explicitly state what's OUT of scope</li>
+      <li>Ask about read vs write ratio — drives architecture</li>
+      <li>Confirm understanding before proceeding</li>
+      <li>Define the scale explicitly: "300M DAU, 100:1 ratio"</li>
+    </ul></div>
+    <div class="dnb"><h4>Don't</h4><ul>
+      <li>Start drawing boxes before requirements are clear</li>
+      <li>Assume scale — always ask even if it seems obvious</li>
+      <li>Try to design every feature — pick a focused subset</li>
+      <li>Skip non-functional requirements (often more important)</li>
+      <li>Forget to verify your understanding with the interviewer</li>
+    </ul></div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     STEP 2 — CAPACITY OVERVIEW
+══════════════════════════════════════════════ -->
+<section id="sec-s2" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,201,110,.1);color:var(--gr)">📐 Step 2 of 5 — ~5 minutes</div>
+    <div class="ht">Capacity Estimation</div>
+    <div class="hd">Capacity estimation translates user scale into concrete technical numbers. These numbers justify every architecture decision: why you need a cache, why you need database sharding, why you need a CDN. Interviewers expect back-of-envelope math — confident and approximate is better than hesitant and exact.</div>
+  </div>
+
+  <div class="sb4">
+    <div class="si"><div class="sl">DAU / MAU</div><div class="sv" style="color:var(--gr)">👥 User Scale</div></div>
+    <div class="si"><div class="sl">Throughput</div><div class="sv" style="color:var(--bl)">⚡ RPS</div></div>
+    <div class="si"><div class="sl">Storage</div><div class="sv" style="color:var(--or)">💾 GB / TB</div></div>
+    <div class="si"><div class="sl">Bandwidth</div><div class="sv" style="color:var(--pu)">🌐 GB/s</div></div>
+  </div>
+
+  <h2>The 4-Pillar Estimation Framework</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="cap1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#f5a623"/></marker></defs>
+      <!-- DAU/MAU -->
+      <rect x="10" y="20" width="130" height="85" rx="8" fill="#1e2535" stroke="#00c96e" stroke-width="2"/>
+      <text x="75" y="43" text-anchor="middle" fill="#00c96e" font-size="13" font-weight="700">DAU / MAU</text>
+      <text x="75" y="60" text-anchor="middle" fill="#505a6e" font-size="10">Daily/Monthly</text>
+      <text x="75" y="73" text-anchor="middle" fill="#505a6e" font-size="10">Active Users</text>
+      <text x="75" y="90" text-anchor="middle" fill="#00c96e" font-size="10" font-weight="600">→ Foundation metric</text>
+      <text x="75" y="103" text-anchor="middle" fill="#505a6e" font-size="10">Everything derives from this</text>
+      <!-- Arrow 1 -->
+      <line x1="140" y1="62" x2="158" y2="62" stroke="#f5a623" stroke-width="1.5" marker-end="url(#cap1)"/>
+      <!-- Throughput -->
+      <rect x="160" y="20" width="130" height="85" rx="8" fill="#1e2535" stroke="#00a8ff" stroke-width="2"/>
+      <text x="225" y="43" text-anchor="middle" fill="#00a8ff" font-size="13" font-weight="700">Throughput</text>
+      <text x="225" y="60" text-anchor="middle" fill="#505a6e" font-size="10">Requests/second</text>
+      <text x="225" y="73" text-anchor="middle" fill="#505a6e" font-size="10">Read RPS + Write RPS</text>
+      <text x="225" y="90" text-anchor="middle" fill="#00a8ff" font-size="10" font-weight="600">→ Server count</text>
+      <text x="225" y="103" text-anchor="middle" fill="#505a6e" font-size="10">Load balancer decisions</text>
+      <!-- Arrow 2 -->
+      <line x1="290" y1="62" x2="308" y2="62" stroke="#f5a623" stroke-width="1.5" marker-end="url(#cap1)"/>
+      <!-- Storage -->
+      <rect x="310" y="20" width="130" height="85" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="2"/>
+      <text x="375" y="43" text-anchor="middle" fill="#f5a623" font-size="13" font-weight="700">Storage</text>
+      <text x="375" y="60" text-anchor="middle" fill="#505a6e" font-size="10">GB/day → TB/year</text>
+      <text x="375" y="73" text-anchor="middle" fill="#505a6e" font-size="10">Metadata vs Media</text>
+      <text x="375" y="90" text-anchor="middle" fill="#f5a623" font-size="10" font-weight="600">→ DB + S3 decisions</text>
+      <text x="375" y="103" text-anchor="middle" fill="#505a6e" font-size="10">Sharding, cold storage</text>
+      <!-- Arrow 3 -->
+      <line x1="440" y1="62" x2="458" y2="62" stroke="#f5a623" stroke-width="1.5" marker-end="url(#cap1)"/>
+      <!-- Bandwidth -->
+      <rect x="460" y="20" width="150" height="85" rx="8" fill="#1e2535" stroke="#9b6dff" stroke-width="2"/>
+      <text x="535" y="43" text-anchor="middle" fill="#9b6dff" font-size="13" font-weight="700">Bandwidth</text>
+      <text x="535" y="60" text-anchor="middle" fill="#505a6e" font-size="10">Inbound + Outbound</text>
+      <text x="535" y="73" text-anchor="middle" fill="#505a6e" font-size="10">MB/s or GB/s</text>
+      <text x="535" y="90" text-anchor="middle" fill="#9b6dff" font-size="10" font-weight="600">→ CDN decisions</text>
+      <text x="535" y="103" text-anchor="middle" fill="#505a6e" font-size="10">Network hardware sizing</text>
+      <!-- Bottom label -->
+      <rect x="10" y="125" width="600" height="55" rx="8" fill="rgba(0,0,0,.3)" stroke="#252d3d"/>
+      <text x="310" y="145" text-anchor="middle" fill="#e8eaf0" font-size="12" font-weight="600">How they chain together</text>
+      <text x="310" y="162" text-anchor="middle" fill="#505a6e" font-size="11">Start with DAU → derive RPS → derive Storage → derive Bandwidth</text>
+      <text x="310" y="175" text-anchor="middle" fill="#f5a623" font-size="11">Every number feeds the next — that's why DAU is always your starting point</text>
+    </svg>
+  </div>
+
+  <h2>Essential Numbers to Memorise</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Constant</th><th>Value</th><th>Use in Interviews</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Seconds in a day</td><td><code>86,400 ≈ 10⁵</code></td><td>Converting DAU to RPS</td></tr>
+      <tr><td class="tn">Seconds in a month</td><td><code>~2.5 × 10⁶</code></td><td>Monthly storage estimation</td></tr>
+      <tr><td class="tn">Seconds in a year</td><td><code>~3 × 10⁷</code></td><td>Long-term storage estimation</td></tr>
+      <tr><td class="tn">1 character</td><td><code>1 byte</code></td><td>Text storage (tweet = ~300 bytes)</td></tr>
+      <tr><td class="tn">1 small image</td><td><code>~100–300 KB</code></td><td>Profile pics, thumbnails</td></tr>
+      <tr><td class="tn">1 HD photo</td><td><code>~3–5 MB</code></td><td>Instagram posts, uploads</td></tr>
+      <tr><td class="tn">1 min video (compressed)</td><td><code>~50–100 MB</code></td><td>YouTube, TikTok storage</td></tr>
+      <tr><td class="tn">1 app server</td><td><code>~1K–5K RPS</code></td><td>Server count estimation</td></tr>
+      <tr><td class="tn">Postgres throughput</td><td><code>~10K–100K QPS</code></td><td>DB scaling decisions</td></tr>
+      <tr><td class="tn">Redis throughput</td><td><code>~100K–1M ops/s</code></td><td>Cache justification</td></tr>
+      <tr><td class="tn">Kafka throughput</td><td><code>~1M msgs/s</code></td><td>Event stream sizing</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cal cag"><strong>Interview mindset:</strong> Round aggressively and state assumptions loudly. Say <em>"I'll assume 10⁵ seconds per day to keep the math clean"</em>. Being off by 2× is fine — the interviewer cares about your methodology, not the exact number.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     DAU / MAU DEEP DIVE
+══════════════════════════════════════════════ -->
+<section id="sec-dau" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,201,110,.1);color:var(--gr)">👥 Step 2 · Metric 1 of 4</div>
+    <div class="ht">DAU &amp; MAU — User Scale</div>
+    <div class="hd">DAU (Daily Active Users) and MAU (Monthly Active Users) are the foundational metrics in capacity estimation. They are your single starting number — every other calculation (RPS, storage, bandwidth) is derived directly from them.</div>
+  </div>
+
+  <div class="mhero" style="background:rgba(0,201,110,.06);border-color:rgba(0,201,110,.25)">
+    <div class="mhero-title" style="color:var(--gr)">👥 DAU / MAU</div>
+    <div class="mhero-sub"><strong style="color:var(--txt)">DAU</strong> = number of unique users who interact with your product on a <em>given day</em>.<br>
+    <strong style="color:var(--txt)">MAU</strong> = number of unique users who interact with your product in a <em>given month</em>.<br>
+    <strong style="color:var(--txt)">DAU/MAU ratio</strong> = product stickiness. 50%+ is excellent; below 20% means users aren't habitual.</div>
+  </div>
+
+  <h2>What DAU and MAU Tell You</h2>
+  <div class="g3">
+    <div class="mc"><div class="mt" style="color:var(--gr)">Scale of Infrastructure</div><div class="mb">1K DAU = a single server. 1M DAU = a small cluster. 100M DAU = hundreds of servers, sharding, CDN, global edge nodes. DAU is the primary scaling driver for every component.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--bl)">Product Engagement</div><div class="mb">DAU/MAU = stickiness ratio. WhatsApp: ~90% (people use it daily). E-commerce: ~5% (people shop monthly). This ratio informs read/write patterns and peak load assumptions.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--or)">Business Validation</div><div class="mb">The interviewer gives you DAU to validate your capacity estimate. "Does this system need 1000 servers or 10?" The answer starts with: "We have 100M DAU, so..."</div></div>
+  </div>
+
+  <h2>DAU → RPS Conversion Formula</h2>
+  <div class="fbox">
+    <div class="fname">The Core Formula</div>
+    <span class="fv">RPS</span> = (<span class="fv">DAU</span> × <span class="fv">actions_per_user_per_day</span>) ÷ <span class="fa">86,400</span>
+
+    <br><br>
+    <span class="fv">Read_RPS</span>  = (DAU × reads_per_user)  ÷ 86,400
+    <span class="fv">Write_RPS</span> = (DAU × writes_per_user) ÷ 86,400
+
+    <br><br>
+    <span class="cm">Peak_RPS = Average_RPS × 2 to 3  (traffic spikes in mornings/evenings)</span>
+    <span class="cm">Example: 300M DAU, 100 reads/day, 1 write/day →</span>
+    <span class="fa">  Read RPS  = 300M × 100  ÷ 86,400 ≈ 347,000 RPS</span>
+    <span class="fa">  Write RPS = 300M × 1    ÷ 86,400 ≈   3,470 RPS</span>
+    <span class="fa">  Peak read = 347,000 × 3          ≈ 1,000,000 RPS</span>
+  </div>
+
+  <h2>Real-World DAU/MAU Benchmarks</h2>
+  <div class="rw-grid">
+    <div class="rw-box">
+      <div class="rw-app">🐦 Twitter / X</div>
+      <div class="rw-row"><div class="rw-k">DAU</div><div class="rw-v">~250M</div></div>
+      <div class="rw-row"><div class="rw-k">MAU</div><div class="rw-v">~540M</div></div>
+      <div class="rw-row"><div class="rw-k">DAU/MAU</div><div class="rw-v">~46%</div></div>
+      <div class="rw-row"><div class="rw-k">Read:Write</div><div class="rw-v">100:1</div></div>
+    </div>
+    <div class="rw-box">
+      <div class="rw-app">📸 Instagram</div>
+      <div class="rw-row"><div class="rw-k">DAU</div><div class="rw-v">~500M</div></div>
+      <div class="rw-row"><div class="rw-k">MAU</div><div class="rw-v">~2B</div></div>
+      <div class="rw-row"><div class="rw-k">DAU/MAU</div><div class="rw-v">~25%</div></div>
+      <div class="rw-row"><div class="rw-k">Uploads/day</div><div class="rw-v">100M photos</div></div>
+    </div>
+    <div class="rw-box">
+      <div class="rw-app">📱 WhatsApp</div>
+      <div class="rw-row"><div class="rw-k">DAU</div><div class="rw-v">~2B</div></div>
+      <div class="rw-row"><div class="rw-k">MAU</div><div class="rw-v">~2.3B</div></div>
+      <div class="rw-row"><div class="rw-k">DAU/MAU</div><div class="rw-v">~87%</div></div>
+      <div class="rw-row"><div class="rw-k">Msgs/day</div><div class="rw-v">100B</div></div>
+    </div>
+    <div class="rw-box">
+      <div class="rw-app">▶️ YouTube</div>
+      <div class="rw-row"><div class="rw-k">DAU</div><div class="rw-v">~122M</div></div>
+      <div class="rw-row"><div class="rw-k">MAU</div><div class="rw-v">~2.5B</div></div>
+      <div class="rw-row"><div class="rw-k">DAU/MAU</div><div class="rw-v">~5%</div></div>
+      <div class="rw-row"><div class="rw-k">Hours watched</div><div class="rw-v">1B hrs/day</div></div>
+    </div>
+    <div class="rw-box">
+      <div class="rw-app">🎵 TikTok</div>
+      <div class="rw-row"><div class="rw-k">DAU</div><div class="rw-v">~600M</div></div>
+      <div class="rw-row"><div class="rw-k">MAU</div><div class="rw-v">~1.5B</div></div>
+      <div class="rw-row"><div class="rw-k">DAU/MAU</div><div class="rw-v">~40%</div></div>
+      <div class="rw-row"><div class="rw-k">Videos/day</div><div class="rw-v">34M uploads</div></div>
+    </div>
+    <div class="rw-box">
+      <div class="rw-app">🚗 Uber</div>
+      <div class="rw-row"><div class="rw-k">DAU</div><div class="rw-v">~28M</div></div>
+      <div class="rw-row"><div class="rw-k">Trips/day</div><div class="rw-v">~25M</div></div>
+      <div class="rw-row"><div class="rw-k">Peak</div><div class="rw-v">Fri 5–7pm</div></div>
+      <div class="rw-row"><div class="rw-k">Location updates</div><div class="rw-v">every 4s/driver</div></div>
+    </div>
+  </div>
+
+  <div class="cal cag"><strong>Interview answer pattern:</strong> When given the prompt <em>"Design Instagram"</em>, immediately say: <em>"I'll assume 500M DAU. That gives us roughly 5,800 RPS for feed reads at average load, peaking at ~17K RPS. That's the baseline for my server count."</em> — You've just anchored every future decision to a concrete number.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     THROUGHPUT / RPS
+══════════════════════════════════════════════ -->
+<section id="sec-throughput" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,168,255,.1);color:var(--bl)">⚡ Step 2 · Metric 2 of 4</div>
+    <div class="ht">Throughput — RPS &amp; QPS</div>
+    <div class="hd">Throughput is the number of requests your system must handle per second. It's the metric that directly determines how many servers you need, whether you need a cache, and how to design your load balancer. Always separate reads from writes.</div>
+  </div>
+
+  <div class="mhero" style="background:rgba(0,168,255,.06);border-color:rgba(0,168,255,.25)">
+    <div class="mhero-title" style="color:var(--bl)">⚡ Throughput / RPS</div>
+    <div class="mhero-sub"><strong style="color:var(--txt)">RPS</strong> = Requests Per Second — total inbound requests your system handles.<br>
+    <strong style="color:var(--txt)">QPS</strong> = Queries Per Second — database-specific term, same concept.<br>
+    <strong style="color:var(--txt)">TPS</strong> = Transactions Per Second — used for write-heavy or financial systems.<br>
+    Always calculate <strong style="color:var(--txt)">Read RPS</strong> and <strong style="color:var(--txt)">Write RPS</strong> separately — they drive different infrastructure.</div>
+  </div>
+
+  <h2>Throughput Formulas</h2>
+  <div class="fbox">
+    <div class="fname">Throughput Calculations</div>
+    <span class="fv">Read_RPS</span>  = (DAU × avg_reads_per_user)  ÷ 86,400
+    <span class="fv">Write_RPS</span> = (DAU × avg_writes_per_user) ÷ 86,400
+
+    <span class="cm">Apply peak multiplier:</span>
+    <span class="fv">Peak_RPS</span>  = Average_RPS × <span class="fa">2–3</span>  <span class="cm">(morning/evening spikes)</span>
+
+    <span class="cm">Derive server count:</span>
+    <span class="fv">Servers_needed</span> = Peak_RPS ÷ RPS_per_server
+    <span class="cm">1 app server ≈ 1K–5K RPS (depends on CPU/memory workload)</span>
+
+    <span class="cm">DB servers (after cache offload):</span>
+    <span class="fv">DB_RPS</span> = Read_RPS × (1 - cache_hit_rate)
+    <span class="cm">With 95% cache hit: DB sees only 5% of read traffic</span>
+  </div>
+
+  <h2>Throughput Benchmarks — Know These</h2>
+  <div class="bm-bar">
+    <div class="bm-row"><div class="bm-label">1 App Server</div><div class="bm-track"><div class="bm-fill" style="width:2%;background:var(--pk)"></div></div><div class="bm-val" style="color:var(--pk)">1K–5K RPS</div></div>
+    <div class="bm-row"><div class="bm-label">Nginx (proxy)</div><div class="bm-track"><div class="bm-fill" style="width:15%;background:var(--or)"></div></div><div class="bm-val" style="color:var(--or)">~50K RPS</div></div>
+    <div class="bm-row"><div class="bm-label">PostgreSQL</div><div class="bm-track"><div class="bm-fill" style="width:20%;background:var(--bl)"></div></div><div class="bm-val" style="color:var(--bl)">10K–100K QPS</div></div>
+    <div class="bm-row"><div class="bm-label">Redis (single)</div><div class="bm-track"><div class="bm-fill" style="width:60%;background:var(--gr)"></div></div><div class="bm-val" style="color:var(--gr)">100K–1M ops/s</div></div>
+    <div class="bm-row"><div class="bm-label">Kafka cluster</div><div class="bm-track"><div class="bm-fill" style="width:90%;background:var(--pu)"></div></div><div class="bm-val" style="color:var(--pu)">~1M msgs/s</div></div>
+  </div>
+
+  <h2>Read vs Write Patterns — By System Type</h2>
+  <div class="tw"><table>
+    <thead><tr><th>System</th><th>Read:Write Ratio</th><th>Dominant Operation</th><th>Design Implication</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Twitter/Feed</td><td>100:1</td><td>Timeline reads</td><td>Heavy caching, read replicas</td></tr>
+      <tr><td class="tn">Instagram</td><td>50:1</td><td>Photo fetches</td><td>CDN critical, image storage</td></tr>
+      <tr><td class="tn">URL Shortener</td><td>1000:1</td><td>Redirect lookups</td><td>Cache almost everything</td></tr>
+      <tr><td class="tn">Uber/Location</td><td>1:10</td><td>Location updates</td><td>Write-optimised DB, time-series</td></tr>
+      <tr><td class="tn">WhatsApp</td><td>5:1</td><td>Message delivery</td><td>Message persistence, push notifications</td></tr>
+      <tr><td class="tn">Logging/Analytics</td><td>1:100</td><td>Event ingestion</td><td>Write-optimised (Kafka), batch reads</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Worked Example — Twitter Throughput</h2>
+  <div class="code"><span class="cm">── TWITTER THROUGHPUT ESTIMATION ───────────────────────</span>
+  DAU = <span class="cl">300M</span> users
+  Avg reads/user/day  = <span class="cl">100</span> (scroll timeline, view tweets)
+  Avg writes/user/day = <span class="cl">1</span>   (post 1 tweet per day on average)
+
+  Read  RPS = 300M × 100  ÷ 86,400 ≈ <span class="st">347,000 RPS</span>
+  Write RPS = 300M × 1    ÷ 86,400 ≈ <span class="st">3,470 RPS</span>
+  Read:Write ratio                  ≈ <span class="st">100:1</span>
+
+  Peak (3× multiplier):
+    Peak Read  RPS                  ≈ <span class="st">~1,000,000 RPS</span>
+    Peak Write RPS                  ≈ <span class="st">~10,000 RPS</span>
+
+<span class="cm">── SERVER SIZING ────────────────────────────────────────</span>
+  API servers (1K RPS each)         ≈ <span class="st">1,000 servers</span>  (naive, no cache)
+  With 95% cache hit rate:
+    DB-hitting Read RPS             ≈ <span class="st">17,350 RPS</span>
+  DB read replicas (10K QPS each)   ≈ <span class="st">2–3 read replicas</span>
+  DB primary (write only)           ≈ <span class="st">1 primary</span> (10K WPS capacity)</div>
+
+  <div class="cal cab"><strong>Cache impact on throughput:</strong> A 95% cache hit rate reduces DB load from 347K RPS to just 17K RPS — a <strong>20× reduction</strong>. This is why caching is the single most impactful optimization. Always mention cache hit rate when discussing throughput in interviews.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     STORAGE / MEMORY
+══════════════════════════════════════════════ -->
+<section id="sec-storage" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(245,166,35,.1);color:var(--or)">💾 Step 2 · Metric 3 of 4</div>
+    <div class="ht">Storage &amp; Memory Estimation</div>
+    <div class="hd">Storage estimation tells you how much disk space and memory your system needs now and in the future. It's the key driver for database sharding decisions, object storage vs relational DB choices, and whether you need tiered storage (hot/warm/cold).</div>
+  </div>
+
+  <div class="mhero" style="background:rgba(245,166,35,.06);border-color:rgba(245,166,35,.25)">
+    <div class="mhero-title" style="color:var(--or)">💾 Storage / Memory</div>
+    <div class="mhero-sub"><strong style="color:var(--txt)">Storage</strong> = persistent disk space for your data (database rows, media files, logs).<br>
+    <strong style="color:var(--txt)">Memory (RAM)</strong> = fast in-memory space for caches, sessions, queues (Redis, Memcached).<br>
+    Always estimate <strong style="color:var(--txt)">metadata separately from media</strong> — media is typically 1000× larger but stored differently (S3 vs DB).</div>
+  </div>
+
+  <h2>Storage Formulas</h2>
+  <div class="fbox">
+    <div class="fname">Storage Calculation Chain</div>
+    <span class="cm">Step 1 — Daily storage growth:</span>
+    <span class="fv">Storage_per_day</span> = Write_RPS × <span class="fa">86,400</span> × avg_object_size
+
+    <span class="cm">Step 2 — Long-term storage:</span>
+    <span class="fv">Total_storage</span> = Storage_per_day × <span class="fa">365</span> × years_retention
+
+    <span class="cm">Step 3 — Account for replication:</span>
+    <span class="fv">Physical_storage</span> = Total_storage × <span class="fa">replication_factor</span>  <span class="cm">(typically 3)</span>
+
+    <span class="cm">Step 4 — Cache memory sizing:</span>
+    <span class="fv">Cache_RAM</span> = hot_data_fraction × total_working_set_size
+    <span class="cm">The "80/20 rule": 20% of data gets 80% of reads → cache that 20%</span>
+  </div>
+
+  <h2>Data Size Reference Card</h2>
+  <div class="g4">
+    <div class="mc" style="border-top:2px solid var(--gr)">
+      <div class="mt" style="color:var(--gr)">Text / Metadata</div>
+      <div class="mb">
+        1 char = 1 byte<br>
+        Tweet = ~300 bytes<br>
+        DB row = ~1–5 KB<br>
+        UUID = 36 bytes<br>
+        Timestamp = 8 bytes
+      </div>
+    </div>
+    <div class="mc" style="border-top:2px solid var(--bl)">
+      <div class="mt" style="color:var(--bl)">Images</div>
+      <div class="mb">
+        Avatar = ~20 KB<br>
+        Thumbnail = ~50 KB<br>
+        Profile pic = ~200 KB<br>
+        Instagram post = ~3 MB<br>
+        Raw DSLR = ~20 MB
+      </div>
+    </div>
+    <div class="mc" style="border-top:2px solid var(--or)">
+      <div class="mt" style="color:var(--or)">Video</div>
+      <div class="mb">
+        1 min 720p = ~50 MB<br>
+        1 min 1080p = ~150 MB<br>
+        1 min 4K = ~375 MB<br>
+        TikTok clip = ~5–30 MB<br>
+        YouTube (5 resolutions) = ×5
+      </div>
+    </div>
+    <div class="mc" style="border-top:2px solid var(--pu)">
+      <div class="mt" style="color:var(--pu)">Audio / Other</div>
+      <div class="mb">
+        1 min MP3 = ~1 MB<br>
+        WhatsApp voice = ~0.5 MB/min<br>
+        Log line = ~200 bytes<br>
+        JSON event = ~500 bytes<br>
+        Protobuf = 3–10× smaller
+      </div>
+    </div>
+  </div>
+
+  <h2>Storage Tiers — Hot / Warm / Cold</h2>
+  <div class="ls">
+    <div class="lay" style="border-color:var(--pk);background:rgba(232,93,117,.05)">
+      <div class="ln" style="color:var(--pk)">🔥 Hot Storage — In-Memory (Redis, RAM)</div>
+      <div class="ld">Accessed in milliseconds. Extremely fast but expensive (~$10/GB vs $0.02/GB for cold storage). Store: session tokens, timeline caches, trending data, rate-limiting counters. Typically keep last 30 days of hot data.</div>
+    </div>
+    <div class="lay" style="border-color:var(--or);background:rgba(245,166,35,.05)">
+      <div class="ln" style="color:var(--or)">☀️ Warm Storage — SSD Database (Postgres, Cassandra)</div>
+      <div class="ld">Accessed in milliseconds to tens of milliseconds. Balance of speed and cost. Store: active user records, recent posts, metadata, business data. Index carefully for your query patterns.</div>
+    </div>
+    <div class="lay" style="border-color:var(--bl);background:rgba(0,168,255,.05)">
+      <div class="ln" style="color:var(--bl)">❄️ Cold Storage — Object Store (S3, GCS Nearline)</div>
+      <div class="ld">Accessed in seconds. Very cheap ($0.004/GB/month). Store: media files (images, videos), archived posts, audit logs, backups, ML training data. Never query this with millisecond SLA expectations.</div>
+    </div>
+  </div>
+
+  <h2>Worked Example — Instagram Storage</h2>
+  <div class="code"><span class="cm">── INSTAGRAM STORAGE ESTIMATION ─────────────────────────</span>
+  DAU = <span class="cl">500M</span> · Photo uploads/day = <span class="cl">100M</span> photos (20% of users)
+  Avg photo size (compressed) = <span class="cl">3MB</span>
+  Thumbnails (5 sizes per photo) = <span class="cl">3MB × 0.3</span> = ~1MB extra
+
+<span class="cm">── DAILY GROWTH ─────────────────────────────────────────</span>
+  Photo storage/day    = 100M × 3MB          = <span class="st">300 TB/day</span>
+  Thumbnail storage/day= 100M × 1MB          = <span class="st">100 TB/day</span>
+  Metadata (DB rows)   = 100M × 5KB          = <span class="st">500 GB/day</span>
+  Total raw            = 300 + 100 TB         ≈ <span class="st">400 TB/day</span>
+
+<span class="cm">── LONG-TERM (5 years, 3× replication) ──────────────────</span>
+  5-year storage       = 400TB × 365 × 5     ≈ <span class="st">730 PB raw</span>
+  With 3× replication                        ≈ <span class="st">~2.2 Exabytes</span>
+  Stored on S3 (cold)  @ $0.023/GB/month     ≈ <span class="st">~$50M/month</span>
+
+<span class="cm">── CACHE MEMORY SIZING ──────────────────────────────────</span>
+  Hot data (last 7 days feed metadata only)
+  100M posts × 7 days × 5KB                  ≈ <span class="st">3.5 TB RAM</span>
+  Redis cluster (~100GB/node)                ≈ <span class="st">~35 Redis nodes</span></div>
+
+  <div class="cal cao"><strong>Key insight:</strong> Split metadata (fast DB, small) from media (slow object store, enormous). Instagram's DB stores 5KB of metadata per photo. The 3MB photo goes to S3. This separation is fundamental — mention it explicitly in interviews.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     NETWORK / BANDWIDTH
+══════════════════════════════════════════════ -->
+<section id="sec-bandwidth" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(155,109,255,.1);color:var(--pu)">🌐 Step 2 · Metric 4 of 4</div>
+    <div class="ht">Network &amp; Bandwidth</div>
+    <div class="hd">Bandwidth is the volume of data transferred per second. It drives CDN decisions, justifies edge caching, determines internal network hardware requirements, and reveals whether your system needs content offloading. Outbound bandwidth almost always dominates.</div>
+  </div>
+
+  <div class="mhero" style="background:rgba(155,109,255,.06);border-color:rgba(155,109,255,.25)">
+    <div class="mhero-title" style="color:var(--pu)">🌐 Network / Bandwidth</div>
+    <div class="mhero-sub"><strong style="color:var(--txt)">Inbound bandwidth</strong> = data flowing INTO your system (uploads, write requests). Driven by Write RPS.<br>
+    <strong style="color:var(--txt)">Outbound bandwidth</strong> = data flowing OUT of your system (downloads, read responses). Driven by Read RPS — usually 10–100× inbound.<br>
+    Outbound is expensive (cloud egress fees) and is the primary justification for CDNs.</div>
+  </div>
+
+  <h2>Bandwidth Formulas</h2>
+  <div class="fbox">
+    <div class="fname">Bandwidth Calculation</div>
+    <span class="fv">Inbound_BW</span>  = Write_RPS × avg_request_payload_size
+    <span class="fv">Outbound_BW</span> = Read_RPS  × avg_response_payload_size
+
+    <span class="cm">Peak bandwidth:</span>
+    <span class="fv">Peak_BW</span> = Average_BW × <span class="fa">2–3</span>  <span class="cm">(same peak multiplier as RPS)</span>
+
+    <span class="cm">After CDN offload (assumes 90%+ of static traffic served from edge):</span>
+    <span class="fv">Origin_BW</span> = Outbound_BW × (1 - cdn_offload_ratio)
+    <span class="cm">CDN offloads ~90–99% of static content. Origin handles dynamic only.</span>
+  </div>
+
+  <h2>Bandwidth Quick Reference</h2>
+  <div class="sb4">
+    <div class="si"><div class="sl">1 Gbps link</div><div class="sv" style="color:var(--bl)">~125 MB/s</div></div>
+    <div class="si"><div class="sl">10 Gbps link</div><div class="sv" style="color:var(--gr)">~1.25 GB/s</div></div>
+    <div class="si"><div class="sl">AWS egress</div><div class="sv" style="color:var(--pk)">$0.09/GB</div></div>
+    <div class="si"><div class="sl">CDN egress</div><div class="sv" style="color:var(--or)">$0.01–0.04/GB</div></div>
+  </div>
+
+  <h2>Inbound vs Outbound — Why Outbound Dominates</h2>
+  <div class="g2">
+    <div class="card cpk">
+      <div class="ct">📤 Inbound (Upload)</div>
+      <div class="cb">Users write text (300 bytes), occasionally upload photos (3 MB) or videos (50+ MB). Inbound bandwidth is usually small — very few users upload compared to how many users read.<br><br>
+      <strong>Twitter example:</strong> 3,470 write RPS × 300 bytes = ~1 MB/s inbound (trivial)</div>
+    </div>
+    <div class="card cp">
+      <div class="ct">📥 Outbound (Download)</div>
+      <div class="cb">Every user viewing their feed downloads text + thumbnails. Video streaming multiplies this enormously. Outbound is always the bottleneck and the CDN justification.<br><br>
+      <strong>Twitter example:</strong> 347K read RPS × 300 bytes = ~100 MB/s just for text feeds</div>
+    </div>
+  </div>
+
+  <h2>Worked Example — YouTube Bandwidth</h2>
+  <div class="code"><span class="cm">── YOUTUBE BANDWIDTH ESTIMATION ─────────────────────────</span>
+  DAU = <span class="cl">122M</span> · Avg watch time = <span class="cl">40 min/user/day</span>
+  Video bitrate (1080p) = <span class="cl">5 Mbps</span>
+
+<span class="cm">── INBOUND (Uploads) ────────────────────────────────────</span>
+  Uploads/day = <span class="cl">500 hours of video per minute</span> = 720,000 hrs/day
+  Avg 1hr video = 2GB after processing
+  Raw inbound BW = 720,000 × 2GB ÷ 86,400 ≈ <span class="st">~17 GB/s inbound</span>
+
+<span class="cm">── OUTBOUND (Streams) ───────────────────────────────────</span>
+  Concurrent viewers = 122M × (40min ÷ 1440min) ≈ <span class="st">3.4M concurrent</span>
+  Outbound BW = 3.4M × 5Mbps                    ≈ <span class="st">~17 Tbps (raw)</span>
+
+<span class="cm">── CDN OFFLOAD ──────────────────────────────────────────</span>
+  CDN offloads ~99% of video delivery
+  Origin bandwidth                               ≈ <span class="st">~170 Gbps</span>
+  CDN serves                                     ≈ <span class="st">~16.8 Tbps</span>
+
+<span class="cm">── COST IMPLICATION ─────────────────────────────────────</span>
+  Without CDN @ $0.09/GB: 17 Tbps × $0.09       ≈ <span class="st">$~200M/day</span>
+  With CDN    @ $0.02/GB                         ≈ <span class="st">$~45M/day</span>
+  CDN saves YouTube                              ≈ <span class="st">$55B+/year</span>  ← cost justification</div>
+
+  <h2>Network Topology — Where Bandwidth Matters</h2>
+  <div class="ls">
+    <div class="lay" style="border-color:var(--bl);background:rgba(0,168,255,.05)">
+      <div class="ln" style="color:var(--bl)">Client ↔ CDN Edge Node (~50ms, 1–10 Gbps per edge)</div>
+      <div class="ld">Serve all static content (images, videos, JS, CSS) from CDN. Users get the nearest edge node, not your origin. This is your first and most impactful bandwidth optimisation.</div>
+    </div>
+    <div class="lay" style="border-color:var(--gr);background:rgba(0,201,110,.05)">
+      <div class="ln" style="color:var(--gr)">CDN Edge ↔ Origin (~50–150ms, 1–100 Gbps)</div>
+      <div class="ld">CDN pulls content from your origin on first request, then serves from cache. Origin handles only cache misses (typically &lt;1% of requests for popular content).</div>
+    </div>
+    <div class="lay" style="border-color:var(--or);background:rgba(245,166,35,.05)">
+      <div class="ln" style="color:var(--or)">App Server ↔ Database (&lt;1ms same DC, 10 Gbps internal)</div>
+      <div class="ld">Internal bandwidth is cheap and fast. Use 10 Gbps NIC on DB servers. Minimize large result sets with pagination — don't SELECT * when you need 5 columns.</div>
+    </div>
+    <div class="lay" style="border-color:var(--pu);background:rgba(155,109,255,.05)">
+      <div class="ln" style="color:var(--pu)">Cross-Region Replication (50–150ms, expensive egress)</div>
+      <div class="ld">AWS charges $0.02–0.09/GB for cross-region data transfer. Multi-region active/passive adds ~5–15% to DB storage costs. Design replication to be async and batched where consistency allows.</div>
+    </div>
+  </div>
+
+  <div class="cal cap"><strong>Interview answer pattern:</strong> When asked about a video platform, say: <em>"The outbound bandwidth is enormous — 3.4M concurrent viewers at 5Mbps each is ~17 Tbps. We absolutely need a CDN to offload 99% of this. The CDN also moves content closer to users, reducing latency from 200ms to &lt;20ms. Without it, origin bandwidth costs alone would be unsustainable."</em></div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     STEP 3 — API DESIGN
+══════════════════════════════════════════════ -->
+<section id="sec-s3" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(245,166,35,.1);color:var(--or)">🔌 Step 3 of 5 — ~10 minutes</div>
+    <div class="ht">API Design</div>
+    <div class="hd">API design translates functional requirements into concrete endpoints. Defining the API before drawing architecture forces you to think in terms of data contracts — what flows in, what flows out — which directly reveals which components you need and how they communicate.</div>
+  </div>
+
+  <h2>Why API Design Comes Before Architecture</h2>
+  <div class="card co">
+    <div class="ct">The API is the Contract</div>
+    <div class="cb">Think of the API as a signed contract between your system and its clients. Once published, you can't break it without versioning. Defining it first forces crisp thinking about: what data does each operation need? How granular should operations be? What's the payload shape? These questions reveal your data model and component boundaries before you've drawn a single box.</div>
+  </div>
+
+  <h2>REST API Principles</h2>
+  <div class="ls">
+    <div class="lay" style="border-color:var(--or);background:rgba(245,166,35,.05)">
+      <div class="ln" style="color:var(--or)">Nouns as Resources, HTTP Methods as Verbs</div>
+      <div class="ld"><code>GET /tweets/{id}</code> — not <code>GET /getTweet</code>. URL = the resource (noun). HTTP method = the action (verb). GET = read. POST = create. PUT/PATCH = update. DELETE = delete.</div>
+    </div>
+    <div class="lay" style="border-color:var(--gr);background:rgba(0,201,110,.05)">
+      <div class="ln" style="color:var(--gr)">Cursor-Based Pagination on All List Endpoints</div>
+      <div class="ld"><code>?limit=20&cursor=lastSeenId</code>. Never return unbounded lists (DB will die). Cursor-based &gt; offset-based for real-time feeds — no duplicate/missed items when new content arrives during pagination.</div>
+    </div>
+    <div class="lay" style="border-color:var(--bl);background:rgba(0,168,255,.05)">
+      <div class="ln" style="color:var(--bl)">Version from Day One: /v1/</div>
+      <div class="ld">Always prefix with <code>/v1/</code>. When you need breaking changes, ship <code>/v2/</code> while keeping <code>/v1/</code> alive. Clients on old versions keep working. Never silently break external clients.</div>
+    </div>
+    <div class="lay" style="border-color:var(--pu);background:rgba(155,109,255,.05)">
+      <div class="ln" style="color:var(--pu)">Idempotency Keys on All Writes</div>
+      <div class="ld">Header: <code>Idempotency-Key: uuid-v4</code>. Client sends the same key on retry after network failure. Server deduplicates using the key — returns the same result without creating a duplicate. Critical for payment APIs.</div>
+    </div>
+  </div>
+
+  <h2>Complete Twitter API Example</h2>
+  <div class="code"><span class="cm">─── TWEETS ──────────────────────────────────────────────</span>
+<span class="kw">POST</span>   /v1/tweets
+       Headers: Authorization: Bearer &lt;jwt&gt;
+                Idempotency-Key: &lt;uuid&gt;
+       Body:    { text: string(280), mediaIds?: string[], replyToId?: string }
+       Returns: 201 { tweetId, text, author, createdAt }
+
+<span class="kw">GET</span>    /v1/tweets/<span class="cl">{tweetId}</span>
+       Returns: 200 { id, text, author, likeCount, retweetCount, createdAt }
+
+<span class="kw">DELETE</span> /v1/tweets/<span class="cl">{tweetId}</span>       <span class="cm">// 403 if not owner</span>
+       Returns: 204 No Content
+
+<span class="cm">─── TIMELINE ────────────────────────────────────────────</span>
+<span class="kw">GET</span>    /v1/timeline/home
+       Query: ?limit=20&amp;cursor=<span class="cl">{lastSeenTweetId}</span>
+       Returns: 200 { tweets: Tweet[], nextCursor: string, hasMore: bool }
+
+<span class="kw">GET</span>    /v1/timeline/user/<span class="cl">{userId}</span>
+       Query: ?limit=20&amp;cursor=<span class="cl">{cursor}</span>
+
+<span class="cm">─── SOCIAL GRAPH ────────────────────────────────────────</span>
+<span class="kw">POST</span>   /v1/users/<span class="cl">{userId}</span>/follow     <span class="cm">// 200 or 409 already following</span>
+<span class="kw">DELETE</span> /v1/users/<span class="cl">{userId}</span>/follow     <span class="cm">// 200 or 404</span>
+<span class="kw">GET</span>    /v1/users/<span class="cl">{userId}</span>/followers   <span class="cm">// paginated list</span>
+
+<span class="cm">─── INTERACTIONS ────────────────────────────────────────</span>
+<span class="kw">POST</span>   /v1/tweets/<span class="cl">{tweetId}</span>/like
+<span class="kw">DELETE</span> /v1/tweets/<span class="cl">{tweetId}</span>/like
+<span class="kw">POST</span>   /v1/tweets/<span class="cl">{tweetId}</span>/retweet</div>
+
+  <div class="cal cao"><strong>Interview tip:</strong> You don't need to list every endpoint. Show 5–7 core endpoints that demonstrate you understand the data model and access patterns. Then say: <em>"I'll add authentication headers, rate limiting, and pagination throughout. These endpoints cover the core functional requirements we defined."</em></div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     STEP 4 — HIGH-LEVEL DESIGN
+══════════════════════════════════════════════ -->
+<section id="sec-s4" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,168,255,.1);color:var(--bl)">🏛️ Step 4 of 5 — ~10 minutes</div>
+    <div class="ht">High-Level Design</div>
+    <div class="hd">The high-level design is your system's architecture at the component level. You're drawing how data flows through the main building blocks — not implementation details. Narrate while you draw: "Requests enter via the load balancer, hit the API Gateway for auth, then route to stateless app servers..."</div>
+  </div>
+
+  <h2>The Standard Architecture</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 260" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs>
+        <marker id="h1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#00a8ff"/></marker>
+        <marker id="h2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#505a6e"/></marker>
+      </defs>
+      <!-- CDN -->
+      <rect x="10" y="10" width="80" height="32" rx="5" fill="#1e2535" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="50" y="30" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">CDN</text>
+      <!-- Client -->
+      <rect x="10" y="105" width="80" height="38" rx="6" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="50" y="121" text-anchor="middle" fill="#e8eaf0" font-size="11" font-weight="600">Client</text>
+      <text x="50" y="135" text-anchor="middle" fill="#505a6e" font-size="10">Web/Mobile</text>
+      <!-- DNS -->
+      <rect x="115" y="105" width="75" height="38" rx="5" fill="#1e2535" stroke="#505a6e"/>
+      <text x="152" y="122" text-anchor="middle" fill="#505a6e" font-size="11">DNS</text>
+      <text x="152" y="135" text-anchor="middle" fill="#505a6e" font-size="10">Route 53</text>
+      <!-- Load Balancer -->
+      <rect x="215" y="97" width="90" height="55" rx="8" fill="#1e2535" stroke="#00c96e" stroke-width="2"/>
+      <text x="260" y="119" text-anchor="middle" fill="#00c96e" font-size="12" font-weight="600">Load</text>
+      <text x="260" y="133" text-anchor="middle" fill="#00c96e" font-size="12" font-weight="600">Balancer</text>
+      <text x="260" y="145" text-anchor="middle" fill="#505a6e" font-size="10">ALB / nginx</text>
+      <!-- API Gateway -->
+      <rect x="330" y="97" width="100" height="55" rx="8" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="380" y="116" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="600">API Gateway</text>
+      <text x="380" y="130" text-anchor="middle" fill="#505a6e" font-size="10">Auth · Rate Limit</text>
+      <text x="380" y="143" text-anchor="middle" fill="#505a6e" font-size="10">SSL · Routing</text>
+      <!-- App Servers -->
+      <rect x="460" y="55" width="80" height="32" rx="5" fill="#1e2535" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="500" y="75" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">App-1</text>
+      <rect x="460" y="100" width="80" height="32" rx="5" fill="#1e2535" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="500" y="120" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">App-2</text>
+      <rect x="460" y="145" width="80" height="32" rx="5" fill="#1e2535" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="500" y="165" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">App-N</text>
+      <!-- Data layer -->
+      <rect x="555" y="40" width="58" height="32" rx="5" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="584" y="58" text-anchor="middle" fill="#f5a623" font-size="10" font-weight="600">Redis</text>
+      <rect x="555" y="90" width="58" height="32" rx="5" fill="#1e2535" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="584" y="108" text-anchor="middle" fill="#e85d75" font-size="10" font-weight="600">DB Primary</text>
+      <rect x="555" y="138" width="58" height="32" rx="5" fill="#1a1f2e" stroke="#252d3d"/>
+      <text x="584" y="156" text-anchor="middle" fill="#505a6e" font-size="10" font-weight="600">DB Replica</text>
+      <!-- MQ -->
+      <rect x="370" y="185" width="145" height="32" rx="6" fill="#1e2535" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="442" y="203" text-anchor="middle" fill="#e85d75" font-size="11" font-weight="600">Message Queue</text>
+      <!-- S3 -->
+      <rect x="175" y="185" width="145" height="32" rx="6" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="247" y="203" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="600">Object Store (S3)</text>
+      <!-- Arrows -->
+      <line x1="90" y1="122" x2="113" y2="122" stroke="#00a8ff" stroke-width="1.2" marker-end="url(#h1)"/>
+      <line x1="190" y1="122" x2="213" y2="122" stroke="#00a8ff" stroke-width="1.2" marker-end="url(#h1)"/>
+      <line x1="305" y1="122" x2="328" y2="122" stroke="#00a8ff" stroke-width="1.2" marker-end="url(#h1)"/>
+      <line x1="430" y1="112" x2="458" y2="72" stroke="#00a8ff" stroke-width="1.2" marker-end="url(#h1)"/>
+      <line x1="430" y1="122" x2="458" y2="117" stroke="#00a8ff" stroke-width="1.2" marker-end="url(#h1)"/>
+      <line x1="430" y1="135" x2="458" y2="158" stroke="#00a8ff" stroke-width="1.2" marker-end="url(#h1)"/>
+      <line x1="540" y1="75" x2="553" y2="58" stroke="#505a6e" stroke-width="1" marker-end="url(#h2)"/>
+      <line x1="540" y1="117" x2="553" y2="108" stroke="#505a6e" stroke-width="1" marker-end="url(#h2)"/>
+      <line x1="540" y1="157" x2="553" y2="152" stroke="#505a6e" stroke-width="1" marker-end="url(#h2)"/>
+      <line x1="500" y1="177" x2="442" y2="183" stroke="#505a6e" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#h2)"/>
+      <line x1="90" y1="26" x2="553" y2="55" stroke="#9b6dff" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="247" y1="177" x2="247" y2="183" stroke="#00a8ff" stroke-width="1" marker-end="url(#h2)"/>
+      <!-- Read/Write labels -->
+      <text x="310" y="242" text-anchor="middle" fill="#505a6e" font-size="11">READ PATH: Client → LB → GW → App → Redis → (miss) → DB Replica</text>
+      <text x="310" y="257" text-anchor="middle" fill="#505a6e" font-size="11">WRITE PATH: Client → LB → GW → App → DB Primary → async → MQ → Workers</text>
+    </svg>
+  </div>
+
+  <h2>Components Explained</h2>
+  <div class="g2">
+    <div class="mc"><div class="mt" style="color:var(--pu)">🌐 CDN</div><div class="mb">Serves static assets (JS/CSS/images/video) from 200+ edge nodes worldwide. Reduces origin bandwidth by 90–99%. Users get &lt;20ms latency instead of 150ms from origin.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--gr)">⚖️ Load Balancer</div><div class="mb">Distributes traffic across app servers. Auto-removes unhealthy servers. Enables seamless horizontal scaling — add servers without touching DNS. Use Layer 7 (ALB) for microservices routing.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--or)">🚪 API Gateway</div><div class="mb">Validates JWT tokens once for all services. Enforces rate limits (1000 req/min per API key). Terminates SSL. Routes <code>/users/*</code> to User Service, <code>/orders/*</code> to Order Service.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--bl)">🖥️ App Servers</div><div class="mb">Stateless — any server handles any request. Store no session state in memory. Auto-scale group adds/removes instances based on CPU. Target: 60–70% CPU utilization.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--pk)">📬 Message Queue</div><div class="mb">Decouples writes from background processing. App writes to queue and responds instantly. Workers process async (email, notifications, encoding). Absorbs traffic spikes without dropping requests.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--or)">⚡ Cache (Redis)</div><div class="mb">&lt;1ms reads. Cache hot data: user profiles, timelines, sessions. Cache-aside pattern. 95% hit rate offloads 95% of DB read traffic. TTL + explicit invalidation on writes.</div></div>
+  </div>
+
+  <div class="cal cab"><strong>While drawing:</strong> Narrate each component and WHY it's there. Don't silently draw boxes. Say: <em>"I'm adding a Redis cache here because our read:write ratio is 100:1 and the DB can't handle 350K read RPS. With a 95% cache hit rate, only 17K RPS reach the database — well within Postgres capacity."</em></div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     STEP 5 — DEEP DIVE
+══════════════════════════════════════════════ -->
+<section id="sec-s5" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(155,109,255,.1);color:var(--pu)">🔬 Step 5 of 5 — ~15 minutes</div>
+    <div class="ht">Deep Dive</div>
+    <div class="hd">The deep dive is where you earn the senior-level evaluation. You identify bottlenecks, justify every design decision with numbers, and articulate tradeoffs explicitly. This is where candidates get differentiated — shallow responses lose, deep justified decisions win.</div>
+  </div>
+
+  <div class="sb3">
+    <div class="si"><div class="sl">Time Budget</div><div class="sv" style="color:var(--pu)">15 minutes</div></div>
+    <div class="si"><div class="sl">Primary Signal</div><div class="sv" style="color:var(--pk)">Tradeoffs</div></div>
+    <div class="si"><div class="sl">Reference</div><div class="sv" style="color:var(--bl)">Your Step 2 numbers</div></div>
+  </div>
+
+  <h2>The 6 Deep Dive Focus Areas</h2>
+  <div class="ls">
+    <div class="lay" style="border-color:var(--or);background:rgba(245,166,35,.05)">
+      <div class="ln" style="color:var(--or)">1. Database Schema &amp; Indexing</div>
+      <div class="ld">Show key tables, primary keys, indexes. Explain: <em>"Timeline queries filter by user_id and sort by created_at DESC — composite index (user_id, created_at DESC) reduces scan from O(n) to O(log n)."</em> Connect index choices to your access patterns.</div>
+    </div>
+    <div class="lay" style="border-color:var(--pk);background:rgba(232,93,117,.05)">
+      <div class="ln" style="color:var(--pk)">2. Feed Generation — Push vs Pull vs Hybrid</div>
+      <div class="ld"><strong>Push (fan-out on write)</strong>: pre-populate follower timelines when a tweet is posted. O(1) reads, O(followers) writes. Breaks for celebrities with 50M followers.<br><strong>Pull (fan-out on read)</strong>: merge feeds at query time. O(following) reads, O(1) writes. Too slow at scale.<br><strong>Hybrid</strong>: push for &lt;1M followers, pull for celebrities. Twitter uses this.</div>
+    </div>
+    <div class="lay" style="border-color:var(--bl);background:rgba(0,168,255,.05)">
+      <div class="ln" style="color:var(--bl)">3. Caching Strategy</div>
+      <div class="ld">What to cache (hot reads: timelines, profiles, sessions), what TTL (session: 24h, timeline: 60s, product: 5min), how to invalidate (DEL key on write, event-driven invalidation via Kafka), how to handle stampede (mutex lock + TTL jitter ±5%).</div>
+    </div>
+    <div class="lay" style="border-color:var(--gr);background:rgba(0,201,110,.05)">
+      <div class="ln" style="color:var(--gr)">4. Database Sharding &amp; Replication</div>
+      <div class="ld">Add read replicas first (reads = 90% of DB traffic). Shard by user_id (hash-based, consistent hashing) only when write throughput exceeds primary DB capacity. Cross-shard joins = impossible, so denormalise early.</div>
+    </div>
+    <div class="lay" style="border-color:var(--pu);background:rgba(155,109,255,.05)">
+      <div class="ln" style="color:var(--pu)">5. Failure Scenarios &amp; Reliability</div>
+      <div class="ld">Walk through: DB down → replica promoted (60s downtime), writes queued in MQ. Cache fails → circuit breaker falls back to DB, potential stampede mitigated by jitter. MQ full → back-pressure via 429 to API, auto-scale consumers.</div>
+    </div>
+    <div class="lay" style="border-color:var(--bl);background:rgba(0,168,255,.05)">
+      <div class="ln" style="color:var(--bl)">6. CAP Theorem Trade-off</div>
+      <div class="ld">State explicitly: <em>"For the timeline, eventual consistency is fine — a 1–2s delay is acceptable. I choose AP (Cassandra) here. For the payment ledger, strong consistency is non-negotiable — I choose CP (Postgres with ACID transactions) there."</em></div>
+    </div>
+  </div>
+
+  <h2>Deep Dive Checklist — Use in Every Interview</h2>
+  <ul class="rl">
+    <li><strong>Name the bottleneck before solving it</strong> — "The timeline read at 350K RPS is our bottleneck — the DB can't handle this without help."</li>
+    <li><strong>Reference Step 2 numbers</strong> — "We estimated 350K RPS in capacity estimation. With 95% cache hit rate, only 17K reach the DB — within Postgres limits."</li>
+    <li><strong>Justify with specifics</strong> — "I chose Redis sorted sets because ZRANGEBYSCORE gives us O(log N + M) timeline queries — optimal for cursor pagination."</li>
+    <li><strong>State tradeoffs explicitly</strong> — "Fan-out on write adds write latency for celebrities but makes reads O(1). I'm accepting that tradeoff because reads are 100× more frequent."</li>
+    <li><strong>Cover failure modes</strong> — "If the cache cluster loses a node, consistent hashing means only 1/N keys remap — the rest are unaffected. Cache miss spike is manageable."</li>
+    <li><strong>Close strongly</strong> — "To summarise: the system handles 300M DAU through a cache-first architecture with hybrid fan-out. What area would you like to explore deeper?"</li>
+  </ul>
+
+  <h2>Deep Dive Topics by System</h2>
+  <div class="tw"><table>
+    <thead><tr><th>System</th><th>Primary Deep Dive</th><th>Key Numbers to Quote</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Twitter / Feed</td><td>Hybrid fan-out, celebrity problem</td><td>300M DAU, 350K RPS, 95% cache hit</td></tr>
+      <tr><td class="tn">YouTube</td><td>Async encoding pipeline, CDN delivery</td><td>500hrs uploaded/min, 17 Tbps outbound</td></tr>
+      <tr><td class="tn">URL Shortener</td><td>Key generation (no collisions), 301 vs 302</td><td>1000:1 read:write, ~100K RPS</td></tr>
+      <tr><td class="tn">Uber</td><td>Geospatial indexing (QuadTree/S2), matching</td><td>25M trips/day, location every 4s per driver</td></tr>
+      <tr><td class="tn">WhatsApp</td><td>Message ordering, delivery guarantees</td><td>100B msgs/day, 2B DAU, WebSocket fan-out</td></tr>
+      <tr><td class="tn">Netflix</td><td>CDN strategy, adaptive bitrate streaming</td><td>220M subscribers, 15% of global internet traffic</td></tr>
+      <tr><td class="tn">Instagram</td><td>Photo storage tiers, feed ranking</td><td>100M uploads/day, 300 TB/day media</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="dd">
+    <div class="dob"><h4>Do</h4><ul>
+      <li>Reference your Step 2 capacity numbers throughout</li>
+      <li>Name the bottleneck before proposing the solution</li>
+      <li>State every tradeoff explicitly — "X is better for reads but costs Y on writes"</li>
+      <li>Ask which component the interviewer wants deeper</li>
+      <li>Use real product examples (Cassandra, Redis, Kafka)</li>
+      <li>Cover at least one failure mode per critical component</li>
+    </ul></div>
+    <div class="dnb"><h4>Don't</h4><ul>
+      <li>Jump to solutions without naming the problem first</li>
+      <li>Say "I'd use microservices" without justifying when/why</li>
+      <li>Use Kafka as the answer to every problem</li>
+      <li>Skip consistency/availability trade-offs</li>
+      <li>Forget to mention monitoring/alerting for critical paths</li>
+      <li>Rush through — depth here wins senior interviews</li>
+    </ul></div>
+  </div>
+
+  <div class="cal cap"><strong>The closing statement that wins interviews:</strong> <em>"To summarise: we handle 300M DAU through a cache-first architecture with 95% Redis hit rate, hybrid fan-out for tweet distribution addressing the celebrity problem, and 3 DB read replicas absorbing the remaining 17K RPS. The system scales horizontally at every layer. Primary risks are cache stampede (mitigated by TTL jitter) and fan-out queue backup during viral spikes (mitigated by write-behind buffering). What aspect would you like to go deeper on?"</em></div>
+</section>
+
+</main>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700)closeSB();
+}
+const hbtn=document.getElementById('hbtn'),sb=document.getElementById('sidebar'),ov=document.getElementById('ov');
+function openSB(){sb.classList.add('open');ov.classList.add('open')}
+function closeSB(){sb.classList.remove('open');ov.classList.remove('open')}
+hbtn.addEventListener('click',()=>sb.classList.contains('open')?closeSB():openSB());
+ov.addEventListener('click',closeSB);
+</script>
+</body>
+</html>
