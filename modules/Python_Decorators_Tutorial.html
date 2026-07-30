@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Decorators — Core Concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<style>
+
+  :root{
+    --bg:#0f172a;
+    --bg-2:#1e293b;
+    --card:#1e293b;
+    --code-bg:#0d1117;
+    --code-head:#161b22;
+    --line:#334155;
+    --line-2:#21262d;
+    --text:#f1f5f9;
+    --text-2:#94a3b8;
+    --text-3:#64748b;
+    --blue:#38bdf8;
+    --cyan:#22d3ee;
+    --green:#4ade80;
+    --yellow:#facc15;
+    --orange:#fb923c;
+    --pink:#f472b6;
+    --purple:#a78bfa;
+    --red:#f87171;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.2);
+    --shadow-md:0 10px 24px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.25);
+    --maxw:1180px;
+    --content:720px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:80px;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+    font-size:17px;line-height:1.72;-webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;overflow-x:hidden;
+  }
+  ::selection{background:rgba(56,189,248,.25);color:#fff;}
+
+  #progress{
+    position:fixed;top:0;left:0;height:4px;width:0%;
+    background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green));
+    box-shadow:0 0 10px rgba(56,189,248,.5);z-index:120;transition:width .12s ease-out;
+  }
+  .topbar{
+    position:sticky;top:0;z-index:100;
+    background:rgba(15,23,42,.85);
+    backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .topbar-inner{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;gap:16px;padding:12px 24px;}
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;font-weight:800;font-size:1.2rem;}
+  .snake{font-size:1.5rem;line-height:1;}
+  .snake-sm{font-size:1.05rem;}
+  .logo-text{
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    letter-spacing:-.01em;
+  }
+  .logo-text small{
+    display:block;-webkit-text-fill-color:var(--text-3);color:var(--text-3);
+    font-weight:400;font-size:12px;margin-top:-3px;letter-spacing:0;
+  }
+  .topbar .spacer{flex:1;}
+  .toc-toggle{
+    display:none;font-size:14px;font-weight:500;background:var(--bg-2);
+    border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 14px;cursor:pointer;
+  }
+  .toc-toggle:hover{background:rgba(255,255,255,.06);}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;padding:0 24px 120px;}
+  .sidebar{
+    position:sticky;top:82px;align-self:start;height:calc(100vh - 100px);overflow-y:auto;
+    padding:36px 4px 40px 0;scrollbar-width:thin;
+  }
+  .sidebar h4{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--text-3);font-weight:700;margin:0 0 14px 2px;}
+  .toc{list-style:none;margin:0;padding:0;}
+  .toc a{
+    display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--text-2);
+    font-size:13.5px;line-height:1.35;font-weight:500;padding:7px 12px;border-radius:8px;
+    border-left:2px solid transparent;transition:background .15s,color .15s,border-color .15s;
+  }
+  .toc a .num{font-family:"Fira Code",monospace;font-size:11px;color:var(--text-3);flex:none;width:18px;}
+  .toc a:hover{background:rgba(255,255,255,.06);color:var(--text);}
+  .toc a.active{background:rgba(56,189,248,.1);color:var(--blue);border-left-color:var(--blue);}
+  .toc a.active .num{color:var(--blue);}
+
+  main{min-width:0;padding-top:8px;}
+  section{scroll-margin-top:82px;padding-top:34px;}
+
+  .hero{padding:56px 0 34px;border-bottom:1px solid var(--line);margin-bottom:6px;position:relative;overflow:hidden;}
+  .hero::before{
+    content:"";position:absolute;top:-40px;left:50%;transform:translateX(-50%);
+    width:760px;height:360px;max-width:120%;
+    background:radial-gradient(circle,rgba(56,189,248,.15) 0%,transparent 70%);pointer-events:none;
+  }
+  .hero>*{position:relative;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);color:var(--blue);
+    padding:.4rem 1rem;border-radius:100px;font-size:.78rem;font-weight:600;letter-spacing:.5px;
+    font-family:"Fira Code",monospace;margin-bottom:22px;
+  }
+  .eyebrow::before{content:"";width:0;height:0;}
+  .hero h1{
+    font-weight:800;font-size:clamp(2.4rem,6vw,4rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 22px;
+    background:linear-gradient(135deg,var(--text) 0%,var(--blue) 55%,var(--cyan) 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero h1 .wrap-word{color:inherit;-webkit-text-fill-color:transparent;white-space:nowrap;}
+  .hero h1 .wrap-word::after{display:none;}
+  .lede{font-size:1.18rem;line-height:1.65;color:var(--text-2);max-width:640px;margin:0 0 12px;font-weight:400;}
+  .lede b{color:var(--text);font-weight:600;}
+
+  .wrapviz{margin:38px 0 4px;background:var(--code-bg);border:1px solid var(--line);border-radius:18px;padding:34px 28px;box-shadow:var(--shadow-md);overflow:hidden;}
+  .wrapviz .caption{font-family:"Fira Code",monospace;font-size:12.5px;color:var(--text-2);margin:0 0 22px;text-align:center;}
+  .layers{display:grid;place-items:center;padding:6px;}
+  .layer{width:100%;max-width:520px;border-radius:14px;text-align:center;font-family:"Fira Code",monospace;position:relative;animation:rise .7s cubic-bezier(.2,.8,.2,1) both;}
+  .layer.l1{background:rgba(56,189,248,.12);border:1.5px dashed rgba(56,189,248,.55);padding:18px 18px 20px;animation-delay:.05s;}
+  .layer.l2{background:rgba(34,211,238,.12);border:1.5px solid rgba(34,211,238,.5);padding:16px;margin-top:14px;animation-delay:.2s;}
+  .layer.l3{background:#0b0f16;border:1.5px solid var(--line);padding:16px 14px;margin-top:14px;animation-delay:.35s;}
+  .layer .tag{position:absolute;top:-10px;left:16px;font-size:10.5px;padding:2px 9px;border-radius:20px;letter-spacing:.03em;font-weight:600;}
+  .layer.l1 .tag{background:var(--blue);color:#04121c;}
+  .layer.l2 .tag{background:var(--cyan);color:#04161a;}
+  .layer.l3 .tag{background:var(--line);color:#c7cfdd;}
+  .layer .code{color:#e6edf3;font-size:13.5px;line-height:1.7;}
+  .layer .cmt{color:#8b949e;}
+  .layer .gold{color:var(--pink);}
+  .layer .teal{color:#79c0ff;}
+  @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion:reduce){.layer{animation:none;}}
+
+  h2.sec{font-weight:700;font-size:clamp(1.7rem,4vw,2.2rem);letter-spacing:-.02em;line-height:1.14;margin:8px 0 8px;color:var(--text);display:flex;align-items:baseline;gap:14px;}
+  h2.sec .idx{font-family:"Fira Code",monospace;font-size:15px;font-weight:600;color:var(--blue);flex:none;}
+  h3.sub{font-weight:700;font-size:1.3rem;letter-spacing:-.01em;margin:34px 0 6px;color:var(--text);}
+  .sec-intro{color:var(--text-2);font-size:1.12rem;max-width:var(--content);margin:0 0 8px;}
+  main p{max-width:var(--content);margin:16px 0;color:var(--text);}
+  main ul,main ol{max-width:var(--content);padding-left:24px;color:var(--text);}
+  main li{margin:8px 0;}
+  main a.inline{color:var(--blue);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
+  code.ic{font-family:"Fira Code",monospace;font-size:.82em;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:5px;padding:1.5px 6px;color:#7dd3fc;white-space:nowrap;}
+  strong{font-weight:600;color:var(--text);}
+  em{color:var(--text);}
+  hr.divider{border:none;border-top:1px solid var(--line);margin:52px 0 0;max-width:none;}
+
+  .codewrap{max-width:var(--content);margin:22px 0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--line-2);}
+  .codewrap.wide{max-width:none;}
+  .code-head{background:var(--code-head);display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line-2);}
+  .dots{display:flex;gap:6px;}
+  .dots i{width:11px;height:11px;border-radius:50%;display:block;}
+  .dots i:nth-child(1){background:#FF5F57;}
+  .dots i:nth-child(2){background:#FEBC2E;}
+  .dots i:nth-child(3){background:#28C840;}
+  .code-head .fname{font-family:"Fira Code",monospace;font-size:12px;color:var(--text-3);margin-left:4px;}
+  .code-head .copy{margin-left:auto;font-family:"Inter",sans-serif;font-size:11.5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text-2);border-radius:6px;padding:4px 11px;cursor:pointer;transition:.15s;}
+  .code-head .copy:hover{background:rgba(255,255,255,.12);color:var(--text);border-color:rgba(255,255,255,.2);}
+  .code-head .copy.done{background:rgba(74,222,128,.15);color:var(--green);border-color:rgba(74,222,128,.3);}
+  pre[class*="language-"]{margin:0;padding:18px;background:var(--code-bg)!important;font-family:"Fira Code",monospace!important;font-size:13.5px!important;line-height:1.7!important;overflow-x:auto;}
+  code[class*="language-"]{font-family:"Fira Code",monospace!important;text-shadow:none!important;font-size:13.5px!important;color:#e6edf3;}
+  pre[class*="language-"]::-webkit-scrollbar{height:9px;}
+  pre[class*="language-"]::-webkit-scrollbar-thumb{background:#30363d;border-radius:6px;}
+  pre[class*="language-"]::-webkit-scrollbar-track{background:#0d1117;}
+
+  .token.comment,.token.prolog,.token.doctype,.token.cdata{color:#8b949e!important;font-style:italic;}
+  .token.punctuation{color:#c9d1d9!important;}
+  .token.keyword,.token.control{color:#ff7b72!important;}
+  .token.boolean,.token.number{color:#79c0ff!important;}
+  .token.string,.token.char,.token.triple-quoted-string,.token.attr-value{color:#a5d6ff!important;}
+  .token.builtin{color:#f472b6!important;}
+  .token.function{color:#d2a8ff!important;}
+  .token.class-name{color:#ffa657!important;}
+  .token.operator,.token.entity,.token.url{color:#ff7b72!important;background:none!important;}
+  .token.decorator,.token.decorator .token.punctuation,.token.annotation{color:#f472b6!important;font-weight:600;}
+  .token.decorator .token.function{color:#f472b6!important;}
+  .token.parameter,.token.property{color:#e6edf3!important;}
+
+  .output{max-width:var(--content);margin:-24px 0 22px;background:var(--code-bg);border:1px solid var(--line-2);border-top:1px solid var(--line-2);border-radius:0 0 14px 14px;padding:14px 18px;font-family:"Fira Code",monospace;font-size:12.5px;line-height:1.7;color:#adbac7;box-shadow:var(--shadow-sm);position:relative;z-index:1;}
+  .output .label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;}
+  .output .o-line{white-space:pre-wrap;}
+  .output em{color:var(--green);font-style:normal;}
+
+  .callout{max-width:var(--content);margin:24px 0;border-radius:14px;padding:18px 20px 18px 22px;position:relative;font-size:1.02rem;line-height:1.55;box-shadow:var(--shadow-sm);border:1px solid var(--line);background:var(--card);}
+  .callout .ct{display:flex;align-items:center;gap:9px;font-weight:700;font-size:.92rem;letter-spacing:.01em;margin-bottom:6px;}
+  .callout .ct .ico{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:13px;flex:none;color:#0b1220;font-weight:800;}
+  .callout p{margin:6px 0 0;max-width:none;font-size:1rem;color:var(--text-2);}
+  .callout.key{border-left:4px solid var(--yellow);background:linear-gradient(135deg,rgba(250,204,21,.08),rgba(30,41,59,.4));}
+  .callout.key .ct{color:var(--yellow);} .callout.key .ico{background:var(--yellow);}
+  .callout.tip{border-left:4px solid var(--blue);background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(30,41,59,.4));}
+  .callout.tip .ct{color:var(--blue);} .callout.tip .ico{background:var(--blue);}
+  .callout.warn{border-left:4px solid var(--orange);background:linear-gradient(135deg,rgba(251,146,60,.08),rgba(30,41,59,.4));}
+  .callout.warn .ct{color:var(--orange);} .callout.warn .ico{background:var(--orange);}
+  .callout.plain{border-left:4px solid var(--green);background:linear-gradient(135deg,rgba(74,222,128,.08),rgba(30,41,59,.4));}
+  .callout.plain .ct{color:var(--green);} .callout.plain .ico{background:var(--green);}
+
+  .flow{max-width:var(--content);margin:26px 0;display:grid;gap:12px;}
+  .flow .step{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow-sm);}
+  .flow .step .n{font-family:"Fira Code",monospace;font-weight:700;font-size:14px;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--bg);color:var(--blue);border:1px solid var(--line);flex:none;}
+  .flow .step .t{font-weight:700;font-size:1.02rem;margin:2px 0 2px;color:var(--text);}
+  .flow .step p{margin:0;font-size:.98rem;color:var(--text-2);max-width:none;}
+  .flow .step code.ic{font-size:13px;}
+
+  .cards{max-width:var(--content);display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:24px 0;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 16px 18px;box-shadow:var(--shadow-sm);}
+  .card .cn{font-family:"Fira Code",monospace;font-size:13.5px;color:var(--blue);font-weight:500;margin-bottom:7px;}
+  .card p{margin:0;font-size:.92rem;line-height:1.5;color:var(--text-2);max-width:none;}
+
+  .cheat{max-width:var(--content);margin:26px 0;background:var(--code-bg);border:1px solid var(--line-2);border-radius:14px;padding:8px 6px;box-shadow:var(--shadow-md);overflow-x:auto;}
+  .cheat table{width:100%;border-collapse:collapse;font-family:"Fira Code",monospace;}
+  .cheat td,.cheat th{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line-2);vertical-align:top;}
+  .cheat th{color:var(--text-3);font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;}
+  .cheat td:first-child{color:var(--pink);font-size:13px;white-space:nowrap;}
+  .cheat td:last-child{color:var(--text-2);font-size:14px;font-family:"Inter",sans-serif;}
+  .cheat tr:last-child td{border-bottom:none;}
+  .cheat code.ic{background:rgba(255,255,255,.06);}
+
+  /* NEW: Analogy boxes */
+  .analogy{max-width:var(--content);margin:24px 0;border-radius:14px;padding:20px 22px;position:relative;font-size:1rem;line-height:1.6;box-shadow:var(--shadow-sm);border:1px solid var(--line);background:linear-gradient(135deg,rgba(167,139,250,.08),rgba(30,41,59,.4));border-left:4px solid var(--purple);}
+  .analogy .ct{display:flex;align-items:center;gap:9px;font-weight:700;font-size:.92rem;letter-spacing:.01em;margin-bottom:8px;color:var(--purple);}
+  .analogy .ct .ico{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:13px;flex:none;color:#0b1220;font-weight:800;background:var(--purple);}
+  .analogy p{margin:6px 0 0;max-width:none;font-size:1rem;color:var(--text-2);}
+
+  /* NEW: Visual diagram boxes */
+  .vizbox{max-width:var(--content);margin:24px 0;background:var(--code-bg);border:1px solid var(--line-2);border-radius:14px;padding:24px;box-shadow:var(--shadow-sm);}
+  .vizbox-title{font-family:"Fira Code",monospace;font-size:12px;color:var(--text-3);text-align:center;margin-bottom:18px;letter-spacing:.05em;}
+  .viz-row{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0;flex-wrap:wrap;}
+  .viz-item{background:var(--card);border:2px solid var(--line);border-radius:10px;padding:12px 16px;font-family:"Fira Code",monospace;font-size:13px;text-align:center;min-width:120px;}
+  .viz-arrow{font-size:18px;color:var(--text-3);}
+  .viz-label{font-size:11px;color:var(--text-3);margin-top:4px;font-family:"Inter",sans-serif;}
+  .viz-decorator{border-color:var(--pink)!important;background:rgba(244,114,182,.08)!important;color:var(--pink);}
+  .viz-wrapper{border-color:var(--cyan)!important;background:rgba(34,211,238,.08)!important;color:var(--cyan);}
+  .viz-original{border-color:var(--green)!important;background:rgba(74,222,128,.08)!important;color:var(--green);}
+  .viz-result{border-color:var(--yellow)!important;background:rgba(250,204,21,.08)!important;color:var(--yellow);}
+
+  /* NEW: Q&A style */
+  .qa{max-width:var(--content);margin:20px 0;}
+  .qa-q{font-weight:700;color:var(--text);font-size:1.05rem;margin-bottom:6px;display:flex;gap:8px;align-items:center;}
+  .qa-q::before{content:"Q:";font-family:"Fira Code",monospace;color:var(--blue);font-weight:700;}
+  .qa-a{color:var(--text-2);padding-left:28px;border-left:2px solid var(--line);margin-left:4px;}
+  .qa-a::before{content:"A: ";font-family:"Fira Code",monospace;color:var(--green);font-weight:700;}
+
+  /* NEW: Step-by-step mini cards */
+  .ministep{max-width:var(--content);margin:16px 0;display:grid;grid-template-columns:1fr;gap:10px;}
+  .ministep-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .ministep-num{display:inline-block;font-family:"Fira Code",monospace;font-size:11px;font-weight:700;color:var(--blue);background:rgba(56,189,248,.1);padding:2px 8px;border-radius:6px;margin-bottom:6px;}
+  .ministep-text{color:var(--text-2);font-size:.95rem;line-height:1.55;}
+  .ministep-text strong{color:var(--text);}
+
+  footer{max-width:var(--maxw);margin:0 auto;padding:40px 24px 60px;border-top:1px solid var(--line);font-size:14px;color:var(--text-3);display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;}
+  footer .snake-sm{margin-right:2px;}
+
+  @media (max-width:900px){
+    :root{--content:100%;}
+    .shell{grid-template-columns:1fr;gap:0;}
+    .toc-toggle{display:inline-block;}
+    .sidebar{position:fixed;top:0;left:0;right:0;bottom:0;height:100vh;z-index:110;background:var(--bg-2);padding:80px 24px 40px;display:none;border-right:1px solid var(--line);box-shadow:var(--shadow-md);overflow-y:auto;}
+    .sidebar.open{display:block;}
+    .sidebar .close{position:absolute;top:18px;right:20px;background:var(--card);border:1px solid var(--line);border-radius:8px;font-size:20px;line-height:1;padding:6px 12px;cursor:pointer;color:var(--text);}
+    .toc a{font-size:15px;padding:9px 12px;}
+    body{font-size:16px;}
+    .cards{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:560px){
+    .topbar-inner{padding:10px 16px;}
+    .shell{padding:0 16px 90px;}
+    .logo-text small{display:none;}
+    .wrapviz{padding:24px 16px;}
+    .hero{padding:38px 0 26px;}
+    pre[class*="language-"]{font-size:12.5px!important;padding:15px 14px;}
+    .cards{grid-template-columns:1fr;}
+  }
+  .sidebar .close{display:none;}
+  @media (max-width:900px){.sidebar .close{display:block;}}
+
+
+/* ===== palette retheme (added) ===== */
+:root{--bg:#0f1117;--bg-2:#141820;--card:#1a1f2e;--code-bg:#0a0e16;--code-head:#141820;--line:#252d3d;--line-2:#2e3748;--text:#e8eaf0;--text-2:#8892a4;--text-3:#505a6e;--blue:#00a8ff;--green:#00c96e;--yellow:#f5a623;--orange:#f5a623;}
+
+/* keep Prism code readable on the dark theme */
+.sd-main pre[class*="language-"],.sd-main code[class*="language-"]{background:transparent;text-shadow:none;}
+
+
+/* ===== system-design shell (added) ===== */
+:root{--sd-bg:#0f1117;--sd-sb:#141820;--sd-card:#1a1f2e;--sd-card2:#1e2535;--sd-hov:#252d3d;
+--sd-txt:#e8eaf0;--sd-txt2:#8892a4;--sd-muted:#505a6e;--sd-bdr:#252d3d;--sd-bdr2:#2e3748;
+--sd-bl:#00a8ff;--sd-gr:#00c96e;--sd-or:#f5a623;--sd-pu:#9b6dff;--sd-pk:#e85d75;--sd-sw:280px;}
+html{scroll-behavior:smooth;}
+body{background:var(--sd-bg)!important;color:var(--sd-txt)!important;font-family:'DM Sans',sans-serif!important;overflow-x:hidden;margin:0!important;line-height:1.65;}
+.sd-main,.sd-main p,.sd-main li,.sd-main h1,.sd-main h2,.sd-main h3,.sd-main h4,.sd-main span,.sd-main strong,.sd-main em,.sd-main div{font-family:'DM Sans',sans-serif;}
+.sd-main pre,.sd-main code,.sd-main pre *,.sd-main code *{font-family:'DM Mono',monospace!important;}
+.sd-topbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:var(--sd-sb)!important;border-bottom:1px solid var(--sd-bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px 0 0;box-shadow:none;}
+.sd-brand{display:flex;align-items:center;width:var(--sd-sw);padding:0 20px;border-right:1px solid var(--sd-bdr);height:100%;box-sizing:border-box;}
+.sd-ico{width:34px;height:34px;border-radius:8px;background:var(--sd-bl);display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:11px;flex-shrink:0;}
+.sd-bt{font-weight:600;font-size:15px;color:var(--sd-txt);line-height:1.2;}
+.sd-bs{font-size:11px;color:var(--sd-muted);}
+.sd-meta{display:flex;align-items:center;gap:14px;}
+.sd-pill{background:rgba(0,168,255,.12);color:var(--sd-bl);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(0,168,255,.25);}
+.sd-tc{color:var(--sd-muted);font-size:12px;}
+.sd-layout{display:flex;padding-top:56px;min-height:100vh;}
+.sd-sidebar{width:var(--sd-sw);flex-shrink:0;background:var(--sd-sb)!important;border-right:1px solid var(--sd-bdr);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;z-index:90;padding:0 0 30px;margin:0;}
+.sd-sidebar::-webkit-scrollbar{width:4px;}
+.sd-sidebar::-webkit-scrollbar-thumb{background:var(--sd-bdr2);border-radius:2px;}
+.sd-sh{padding:16px 20px 7px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--sd-muted);text-transform:uppercase;}
+.sd-ni{display:flex;align-items:center;gap:9px;padding:8px 20px;cursor:pointer;font-size:13px;color:var(--sd-txt2);border-left:3px solid transparent;transition:all .15s;text-decoration:none;user-select:none;}
+.sd-ni:hover{background:var(--sd-hov);color:var(--sd-txt);}
+.sd-ni.active{color:var(--sd-bl);background:rgba(0,168,255,.08);border-left-color:var(--sd-bl);font-weight:500;}
+.sd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sd-nl{flex:1;}
+.sd-main{margin-left:var(--sd-sw);flex:1;padding:34px 46px 90px;max-width:940px;box-sizing:border-box;width:100%;}
+.sd-sec{display:none;}
+.sd-sec.active{display:block;animation:sdfu .32s ease both;}
+@keyframes sdfu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sd-hb{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px;}
+.sd-hb span{display:block;width:20px;height:2px;background:var(--sd-txt2);border-radius:1px;}
+.sd-ov{display:none;}
+/* harmonise reused hero + footer inside the new shell */
+.sd-main .hero,.sd-main header.hero,.sd-main section.hero{max-width:100%!important;margin:0 0 26px 0!important;min-height:auto!important;width:auto!important;border-radius:12px;}
+.sd-main footer{margin-top:34px;border-top:1px solid var(--sd-bdr);}
+@media(max-width:760px){
+ :root{--sd-sw:262px;}
+ .sd-brand{width:auto;border-right:none;}
+ .sd-main{margin-left:0;padding:22px 16px 60px;max-width:100%;}
+ .sd-sidebar{transform:translateX(-100%);transition:transform .25s;}
+ .sd-sidebar.open{transform:translateX(0);}
+ .sd-ov{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.55);z-index:89;}
+ .sd-ov.open{display:block;}
+ .sd-hb{display:flex;}
+}
+
+</style>
+</head>
+<body>
+
+<header class="sd-topbar">
+  <div class="sd-brand">
+    <div class="sd-ico">🎁</div>
+    <div><div class="sd-bt">Decorators</div><div class="sd-bs">Python · Intermediate</div></div>
+  </div>
+  <div class="sd-meta">
+    <button class="sd-hb" id="sdhb" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="sd-tc">14 topics · ~25 min</span>
+    <span class="sd-pill">Tutorial</span>
+  </div>
+</header>
+
+<div class="sd-ov" id="sdov"></div>
+<div class="sd-layout">
+<aside class="sd-sidebar" id="sdsb">
+<div class="sd-sh">Foundations</div>
+<a class="sd-ni" data-t="intro" onclick="show('intro')"><span class="sd-dot" style="background:var(--sd-gr)"></span><span class="sd-nl">What is a decorator?</span></a>
+<a class="sd-ni" data-t="first-class" onclick="show('first-class')"><span class="sd-dot" style="background:var(--sd-bl)"></span><span class="sd-nl">Functions are first-class</span></a>
+<a class="sd-ni" data-t="closures" onclick="show('closures')"><span class="sd-dot" style="background:var(--sd-or)"></span><span class="sd-nl">Nested functions &amp; closures</span></a>
+<div class="sd-sh">Building Decorators</div>
+<a class="sd-ni" data-t="build" onclick="show('build')"><span class="sd-dot" style="background:var(--sd-pu)"></span><span class="sd-nl">Build one by hand</span></a>
+<a class="sd-ni" data-t="syntax" onclick="show('syntax')"><span class="sd-dot" style="background:var(--sd-pk)"></span><span class="sd-nl">The @ syntax</span></a>
+<a class="sd-ni" data-t="args" onclick="show('args')"><span class="sd-dot" style="background:var(--sd-gr)"></span><span class="sd-nl">Args, kwargs &amp; returns</span></a>
+<a class="sd-ni" data-t="wraps" onclick="show('wraps')"><span class="sd-dot" style="background:var(--sd-bl)"></span><span class="sd-nl">Preserving metadata</span></a>
+<a class="sd-ni" data-t="factory" onclick="show('factory')"><span class="sd-dot" style="background:var(--sd-or)"></span><span class="sd-nl">Decorators with arguments</span></a>
+<div class="sd-sh">Advanced Patterns</div>
+<a class="sd-ni" data-t="realworld" onclick="show('realworld')"><span class="sd-dot" style="background:var(--sd-pu)"></span><span class="sd-nl">Real-world decorators</span></a>
+<a class="sd-ni" data-t="classbased" onclick="show('classbased')"><span class="sd-dot" style="background:var(--sd-pk)"></span><span class="sd-nl">Class-based decorators</span></a>
+<a class="sd-ni" data-t="stacking" onclick="show('stacking')"><span class="sd-dot" style="background:var(--sd-gr)"></span><span class="sd-nl">Stacking decorators</span></a>
+<a class="sd-ni" data-t="builtin" onclick="show('builtin')"><span class="sd-dot" style="background:var(--sd-bl)"></span><span class="sd-nl">Built-in decorators</span></a>
+<div class="sd-sh">Reference</div>
+<a class="sd-ni" data-t="pitfalls" onclick="show('pitfalls')"><span class="sd-dot" style="background:var(--sd-or)"></span><span class="sd-nl">Common pitfalls</span></a>
+<a class="sd-ni" data-t="cheat" onclick="show('cheat')"><span class="sd-dot" style="background:var(--sd-pu)"></span><span class="sd-nl">Cheat sheet</span></a>
+</aside>
+<div class="sd-main" role="main">
+<header class="hero" id="hero">
+      <span class="eyebrow">PYTHON · INTERMEDIATE · ~25 MIN READ</span>
+      <h1>Understand <span class="wrap-word">decorators</span> by watching them wrap</h1>
+      <p class="lede">A decorator is just a function that <b>takes another function, adds behavior around it, and hands you back a new one</b>. Master that single sentence and everything else — <code class="ic">@wraps</code>, factories, class decorators — falls into place.</p>
+
+      <div class="wrapviz" aria-hidden="true">
+        <p class="caption"># what really happens when you write @timer above a function</p>
+        <div class="layers">
+          <div class="layer l1">
+            <span class="tag">the decorator</span>
+            <div class="code"><span class="gold">@timer</span> &nbsp;<span class="cmt"># wraps everything below</span></div>
+          </div>
+          <div class="layer l2">
+            <span class="tag">the wrapper it adds</span>
+            <div class="code"><span class="cmt"># start clock →</span> &nbsp;call &nbsp;<span class="cmt">← stop clock</span></div>
+          </div>
+          <div class="layer l3">
+            <span class="tag">your original function</span>
+            <div class="code"><span class="teal">def</span> greet(): <span class="cmt"># runs untouched</span></div>
+          </div>
+        </div>
+      </div>
+    </header>
+<section id="intro" class="sd-sec active">
+      <h2 class="sec"><span class="idx">00</span>What is a decorator?</h2>
+      <p class="sec-intro">A <strong>decorator</strong> is a function that modifies or extends another function (or class) <em>without changing that function's source code</em>. You "wrap" the original in extra behavior and get an enhanced version back.</p>
+
+      <p>Imagine you have a plain sandwich. You want to add lettuce, tomato, and mayo. You could take the sandwich apart, insert the ingredients, and put it back together. Or... you could just wrap the whole thing in a bigger sandwich that already has those ingredients.</p>
+
+      <p>Decorators are that bigger sandwich. They take your original function (the inner sandwich), add stuff around it (the lettuce and tomato), and give you back the whole package. Your original function never changes — it just gets <em>wrapped</em>.</p>
+
+      <p>Say you have a plain function and you want to time how long it runs, log every call, cache its results, or check permissions first. You <em>could</em> edit the function and paste that logic inside. But you'd repeat yourself for every function that needs it, and you'd tangle the core logic with side concerns.</p>
+
+      <p>Decorators let you write that extra behavior <strong>once</strong> and apply it anywhere with a single line:</p>
+
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">the whole idea, in four lines</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">@timer                       # ← apply the decorator
+def crunch_numbers():
+    return sum(range(10_000_000))
+
+crunch_numbers()             # runs your code AND prints the timing</code></pre>
+      </div>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🎁</span>The Gift Wrap Analogy</div>
+        <p>Think of a decorator like gift wrap. You have a toy (your function). You put it in a box (the wrapper). The box might have a ribbon, a card, and bubble wrap — but the toy inside is still the same toy. When someone "opens the gift" (calls the function), they see the box first, then the toy, then the box again. The toy never knows it was wrapped.</p>
+      </div>
+
+      <div class="callout key">
+        <div class="ct"><span class="ico">★</span>The one sentence to remember</div>
+        <p>A decorator takes a function as input, defines a new function that adds behavior around it, and returns that new function. The <code class="ic">@</code> symbol is just a shortcut for that hand-off.</p>
+      </div>
+
+      <p>Before we can build one, we need two Python features that make decorators possible. If you already know that functions are objects and what a closure is, skip to <a class="inline" href="#build">section 03</a>.</p>
+    </section>
+<section id="first-class" class="sd-sec">
+      <h2 class="sec"><span class="idx">01</span>Functions are first-class objects</h2>
+      <p class="sec-intro">In Python, functions are values like any other. You can store them in variables, pass them into other functions, and return them from functions. This is the foundation decorators are built on.</p>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🎫</span>Think of functions as tickets</div>
+        <p>A function is like a ticket to a movie. You can hold it in your hand (store in a variable), give it to a friend (pass as an argument), or get a new ticket back from the box office (return from a function). The ticket <em>represents</em> the movie — it doesn't start playing until you walk into the theater (add parentheses).</p>
+      </div>
+
+      <h3 class="sub">Assign a function to a variable</h3>
+      <p>Referencing a function <em>without</em> parentheses gives you the function object itself, not its result:</p>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">first_class.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">def shout(text):
+    return text.upper() + "!"
+
+yell = shout          # no parentheses → grab the function object
+print(yell("hello"))  # call it through the new name</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">HELLO!</span></div>
+
+      <div class="ministep">
+        <div class="ministep-item">
+          <span class="ministep-num">Step 1</span>
+          <div class="ministep-text">We defined <code class="ic">shout</code>. It lives in memory as a function object.</div>
+        </div>
+        <div class="ministep-item">
+          <span class="ministep-num">Step 2</span>
+          <div class="ministep-text">We wrote <code class="ic">yell = shout</code> — no parentheses! This means "make <code class="ic">yell</code> point to the same function object as <code class="ic">shout</code>."</div>
+        </div>
+        <div class="ministep-item">
+          <span class="ministep-num">Step 3</span>
+          <div class="ministep-text">Now <code class="ic">yell</code> and <code class="ic">shout</code> are two names for the exact same function. Calling either one does the same thing.</div>
+        </div>
+      </div>
+
+      <h3 class="sub">Pass a function as an argument</h3>
+      <p>Because a function is just a value, it can be handed to another function. The receiver decides when (and whether) to call it:</p>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">higher_order.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">def do_twice(func, value):
+    func(value)
+    func(value)
+
+def announce(name):
+    print(f"Welcome, {name}!")
+
+do_twice(announce, "Ada")   # pass the function, don't call it here</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">Welcome, Ada!<br>Welcome, Ada!</span></div>
+
+      <div class="vizbox">
+        <div class="vizbox-title">What just happened?</div>
+        <div class="viz-row">
+          <div class="viz-item">You<br><span class="viz-label">caller</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item">do_twice()<br><span class="viz-label">the boss</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item">announce()<br><span class="viz-label">the worker</span></div>
+        </div>
+        <p style="text-align:center;color:var(--text-2);font-size:.9rem;margin-top:12px;">You hand the boss a worker. The boss decides when to make the worker do the job.</p>
+      </div>
+
+      <div class="callout tip">
+        <div class="ct"><span class="ico">→</span>Call vs. reference</div>
+        <p><code class="ic">announce</code> is the function object (the ticket). <code class="ic">announce("Ada")</code> <em>runs</em> it (walks into the theater). That single pair of parentheses is the whole difference — and it's the mistake people make most often with decorators.</p>
+      </div>
+    </section>
+<section id="closures" class="sd-sec">
+      <h2 class="sec"><span class="idx">02</span>Nested functions &amp; closures</h2>
+      <p class="sec-intro">A function can be defined <em>inside</em> another function and returned from it. When the inner function remembers variables from the enclosing function, that's a <strong>closure</strong> — and it's exactly how a decorator "carries" the original function around.</p>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🎒</span>The Backpack Analogy</div>
+        <p>Imagine a teacher gives a student a backpack containing a calculator. The student walks out of the classroom. Even though class is over, the student still has the calculator in their backpack. A closure is like that backpack — the inner function carries variables from the outer function even after the outer function has finished running.</p>
+      </div>
+
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">closures.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">def make_multiplier(factor):
+    def multiply(number):        # inner function
+        return number * factor   # "remembers" factor from outside
+    return multiply              # return the function, uncalled
+
+triple = make_multiplier(3)      # triple is a closure over factor=3
+double = make_multiplier(2)
+
+print(triple(10))   # 30
+print(double(10))   # 20</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">30<br>20</span></div>
+
+      <div class="ministep">
+        <div class="ministep-item">
+          <span class="ministep-num">Step 1</span>
+          <div class="ministep-text">We call <code class="ic">make_multiplier(3)</code>. Inside, <code class="ic">factor</code> becomes 3.</div>
+        </div>
+        <div class="ministep-item">
+          <span class="ministep-num">Step 2</span>
+          <div class="ministep-text">We define <code class="ic">multiply</code> inside. It "sees" <code class="ic">factor = 3</code> because it's inside the same scope.</div>
+        </div>
+        <div class="ministep-item">
+          <span class="ministep-num">Step 3</span>
+          <div class="ministep-text">We return <code class="ic">multiply</code> — but we don't call it yet! We just hand back the function object.</div>
+        </div>
+        <div class="ministep-item">
+          <span class="ministep-num">Step 4</span>
+          <div class="ministep-text"><code class="ic">make_multiplier</code> finishes. Normally, <code class="ic">factor</code> would be thrown away. But <code class="ic">multiply</code> still remembers it!</div>
+        </div>
+        <div class="ministep-item">
+          <span class="ministep-num">Step 5</span>
+          <div class="ministep-text">Later, we call <code class="ic">triple(10)</code>. The closure opens its backpack, finds <code class="ic">factor = 3</code>, and calculates 10 × 3 = 30.</div>
+        </div>
+      </div>
+
+      <p>Notice how <code class="ic">triple</code> still knows that <code class="ic">factor</code> is 3, long after <code class="ic">make_multiplier</code> finished running. The inner function <em>closed over</em> that variable and keeps it alive.</p>
+
+      <div class="callout key">
+        <div class="ct"><span class="ico">★</span>Why this matters for decorators</div>
+        <p>A decorator receives your function as an argument, defines an inner "wrapper" that closes over it, and returns the wrapper. Closures are the mechanism that lets the wrapper reach back and call your original function.</p>
+      </div>
+    </section>
+<section id="build" class="sd-sec">
+      <h2 class="sec"><span class="idx">03</span>Build a decorator by hand</h2>
+      <p class="sec-intro">Now combine both ideas. A decorator is a function that (1) accepts a function, (2) defines a wrapper that adds behavior and calls the original, and (3) returns that wrapper.</p>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🥪</span>The Sandwich Shop Analogy</div>
+        <p>Imagine a sandwich shop. You hand them your plain sandwich (the function). They put it on a plate, add fries on the side, pour a drink, and hand the whole tray back to you. Your original sandwich is still there — but now it comes with extras. You didn't change the sandwich; you just got a better meal.</p>
+      </div>
+
+      <div class="flow">
+        <div class="step"><span class="n">1</span><div><div class="t">Accept a function</div><p>The outer function takes the function you want to enhance as its parameter, conventionally named <code class="ic">func</code>.</p></div></div>
+        <div class="step"><span class="n">2</span><div><div class="t">Define a wrapper inside</div><p>An inner function adds behavior <em>before</em> and/or <em>after</em>, and calls <code class="ic">func()</code> in the middle.</p></div></div>
+        <div class="step"><span class="n">3</span><div><div class="t">Return the wrapper</div><p>Return the wrapper function itself — not its result. The caller now uses the wrapped version.</p></div></div>
+      </div>
+
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">my_first_decorator.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">def announce(func):              # 1. accept a function
+    def wrapper():               # 2. define the wrapper
+        print("→ before the function runs")
+        func()                   #    call the original
+        print("← after the function runs")
+    return wrapper               # 3. return the wrapper (no parentheses!)
+
+def say_hello():
+    print("Hello, world!")
+
+# manually wrap it:
+say_hello = announce(say_hello)  # reassign the name to the wrapped version
+say_hello()</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">→ before the function runs<br>Hello, world!<br>← after the function runs</span></div>
+
+      <div class="vizbox">
+        <div class="vizbox-title">What happened line by line?</div>
+        <div class="viz-row">
+          <div class="viz-item viz-original">say_hello<br><span class="viz-label">your function</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item viz-decorator">announce()<br><span class="viz-label">the decorator</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item viz-wrapper">wrapper()<br><span class="viz-label">the new function</span></div>
+        </div>
+        <div class="viz-row" style="margin-top:16px;">
+          <div class="viz-item viz-wrapper">wrapper<br><span class="viz-label">returned</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item viz-original">say_hello<br><span class="viz-label">reassigned to</span></div>
+        </div>
+      </div>
+
+      <p>That last step — <code class="ic">say_hello = announce(say_hello)</code> — is the entire trick. We passed <code class="ic">say_hello</code> into <code class="ic">announce</code>, got a <code class="ic">wrapper</code> back, and rebound the name <code class="ic">say_hello</code> to point at it. Python has a cleaner way to write exactly this.</p>
+    </section>
+<section id="syntax" class="sd-sec">
+      <h2 class="sec"><span class="idx">04</span>The <code class="ic" style="font-size:.7em">@</code> syntax is just sugar</h2>
+      <p class="sec-intro">Putting <code class="ic">@decorator</code> on the line above a function <strong>is identical</strong> to defining the function and then writing <code class="ic">func = decorator(func)</code>. Nothing magic — just a tidy shorthand.</p>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">📝</span>The Sticky Note Analogy</div>
+        <p>Writing <code class="ic">@announce</code> above a function is like putting a sticky note on a package that says "Please gift-wrap this." You could also hand the package to the gift-wrap counter and say "wrap this, please" — both do the same thing. The sticky note is just faster and more visible.</p>
+      </div>
+
+      <div class="cards">
+        <div class="card" style="grid-column:1 / -1">
+          <div class="cn">These two blocks do the exact same thing</div>
+          <p>The <code class="ic">@</code> form is preferred because the decoration is visible right where the function is defined.</p>
+        </div>
+      </div>
+
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">the_at_syntax.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python"># ── verbose form ─────────────────────────
+def say_hi():
+    print("Hi!")
+say_hi = announce(say_hi)
+
+# ── @ form (identical result) ────────────
+@announce
+def say_hi():
+    print("Hi!")
+
+say_hi()   # already wrapped, just call it</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">→ before the function runs<br>Hi!<br>← after the function runs</span></div>
+
+      <div class="callout tip">
+        <div class="ct"><span class="ico">→</span>Read <code class="ic" style="font-size:.85em">@announce</code> as…</div>
+        <p>"Take the function defined below me, pass it through <code class="ic">announce</code>, and bind the result to the same name." The line runs <em>once</em>, at definition time.</p>
+      </div>
+
+      <div class="qa">
+        <div class="qa-q">Does the @ symbol do anything special?</div>
+        <div class="qa-a">No! It's just shorthand. Python sees <code class="ic">@announce</code> and immediately rewrites it as <code class="ic">say_hi = announce(say_hi)</code> in its head. The @ symbol exists only to make your code prettier and easier to read.</div>
+      </div>
+    </section>
+<section id="args" class="sd-sec">
+      <h2 class="sec"><span class="idx">05</span>Arguments &amp; return values</h2>
+      <p class="sec-intro">Our first wrapper only worked for functions that take no arguments and return nothing. To decorate <em>any</em> function, the wrapper must accept arbitrary arguments with <code class="ic">*args</code> / <code class="ic">**kwargs</code> and pass along the return value.</p>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">📦</span>The Mail Forwarding Analogy</div>
+        <p>Imagine you're a receptionist. People hand you packages with all sorts of labels — some have one address, some have many, some have special instructions. Instead of writing a rule for every possible package, you just say "I'll accept ANY package and forward it to the right person." <code class="ic">*args</code> and <code class="ic">**kwargs</code> are that "any package" rule.</p>
+      </div>
+
+      <h3 class="sub">The universal wrapper pattern</h3>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">universal_wrapper.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">def announce(func):
+    def wrapper(*args, **kwargs):        # accept ANY arguments
+        print(f"→ calling {func.__name__}")
+        result = func(*args, **kwargs)   # forward them; capture the result
+        print(f"← {func.__name__} returned {result!r}")
+        return result                    # hand the result back to the caller
+    return wrapper
+
+@announce
+def add(a, b):
+    return a + b
+
+total = add(3, 4)      # arguments flow through the wrapper
+print("total =", total)</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">→ calling add<br>← add returned 7<br>total = 7</span></div>
+
+      <div class="vizbox">
+        <div class="vizbox-title">How arguments travel through the wrapper</div>
+        <div class="viz-row">
+          <div class="viz-item">add(3, 4)<br><span class="viz-label">you call</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item viz-wrapper">wrapper(*args, **kwargs)<br><span class="viz-label">catches (3, 4)</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item viz-original">func(*args, **kwargs)<br><span class="viz-label">forwards (3, 4)</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item viz-result">return 7<br><span class="viz-label">result comes back</span></div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <div class="ct"><span class="ico">!</span>Two things people forget</div>
+        <p><strong>1.</strong> The wrapper must <code class="ic">return result</code>, or every decorated function silently returns <code class="ic">None</code>. &nbsp;<strong>2.</strong> Always forward <code class="ic">*args, **kwargs</code> so keyword and positional arguments both survive the trip.</p>
+      </div>
+
+      <div class="qa">
+        <div class="qa-q">What are *args and **kwargs exactly?</div>
+        <div class="qa-a"><code class="ic">*args</code> catches all positional arguments (like <code class="ic">3, 4</code>) into a tuple. <code class="ic">**kwargs</code> catches all keyword arguments (like <code class="ic">name="Ada"</code>) into a dictionary. Using both means "I'll accept whatever you give me."</div>
+      </div>
+    </section>
+<section id="wraps" class="sd-sec">
+      <h2 class="sec"><span class="idx">06</span>Preserve metadata with <code class="ic" style="font-size:.7em">@wraps</code></h2>
+      <p class="sec-intro">When you wrap a function, the wrapper's identity replaces the original's. The function's name, docstring, and signature now report as the wrapper's — which breaks debugging and documentation tools. <code class="ic">functools.wraps</code> copies that metadata back.</p>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🎭</span>The Mask Analogy</div>
+        <p>When you wrap a function, it's like putting a mask on someone. From the outside, everyone sees the mask (the wrapper's name and docs) instead of the real person (your original function). <code class="ic">@wraps</code> is like writing the real person's name on the mask so everyone still knows who they are.</p>
+      </div>
+
+      <h3 class="sub">The problem</h3>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">metadata_lost.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">def announce(func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+@announce
+def greet(name):
+    """Return a friendly greeting."""
+    return f"Hi {name}"
+
+print(greet.__name__)   # 'wrapper'  ← identity lost!
+print(greet.__doc__)    # None       ← docstring gone!</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">wrapper<br>None</span></div>
+
+      <div class="ministep">
+        <div class="ministep-item">
+          <span class="ministep-num">What went wrong?</span>
+          <div class="ministep-text">Python looks at <code class="ic">greet</code> and sees... <code class="ic">wrapper</code>. Because <code class="ic">wrapper</code> is the function object that got returned and assigned to the name <code class="ic">greet</code>. The original <code class="ic">greet</code> is hidden inside, but Python doesn't know that.</div>
+        </div>
+      </div>
+
+      <h3 class="sub">The fix</h3>
+      <p>Decorate your <em>wrapper</em> with <code class="ic">@functools.wraps(func)</code>. It's a decorator for decorators — it copies <code class="ic">__name__</code>, <code class="ic">__doc__</code>, and more from the original onto the wrapper.</p>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">metadata_kept.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">import functools
+
+def announce(func):
+    @functools.wraps(func)           # ← copy identity from func onto wrapper
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+@announce
+def greet(name):
+    """Return a friendly greeting."""
+    return f"Hi {name}"
+
+print(greet.__name__)   # 'greet'  ✓
+print(greet.__doc__)    # 'Return a friendly greeting.'  ✓</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">greet<br>Return a friendly greeting.</span></div>
+
+      <div class="callout key">
+        <div class="ct"><span class="ico">★</span>Make it a habit</div>
+        <p>Use <code class="ic">@functools.wraps(func)</code> on <em>every</em> wrapper you write. It costs one line and prevents a whole category of confusing bugs in logging, introspection, and frameworks that read function names.</p>
+      </div>
+
+      <div class="qa">
+        <div class="qa-q">Why is it called "wraps"?</div>
+        <div class="qa-a">Because it "wraps" your wrapper with the original function's identity. It's a decorator that fixes the side effects of using decorators. Very meta!</div>
+      </div>
+    </section>
+<section id="factory" class="sd-sec">
+      <h2 class="sec"><span class="idx">07</span>Decorators that take arguments</h2>
+      <p class="sec-intro">Sometimes you want to configure a decorator, like <code class="ic">@repeat(3)</code> or <code class="ic">@retry(times=5)</code>. That needs <strong>one more layer</strong>: a function that takes the arguments and <em>returns a decorator</em>. It's a decorator factory.</p>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🏭</span>The Factory Analogy</div>
+        <p>Imagine a factory that makes gift wrap machines. You tell the factory "I want a machine that uses red paper." The factory builds that specific machine and hands it to you. Then you use that machine to wrap your gift. The factory doesn't wrap the gift itself — it builds the wrapper.</p>
+      </div>
+
+      <div class="flow">
+        <div class="step"><span class="n">1</span><div><div class="t">Outer: takes the config</div><p><code class="ic">repeat(times)</code> receives the argument and returns the actual decorator.</p></div></div>
+        <div class="step"><span class="n">2</span><div><div class="t">Middle: the decorator</div><p><code class="ic">decorator(func)</code> receives the function, like every decorator so far.</p></div></div>
+        <div class="step"><span class="n">3</span><div><div class="t">Inner: the wrapper</div><p><code class="ic">wrapper(*args, **kwargs)</code> does the work and can see <em>both</em> <code class="ic">times</code> and <code class="ic">func</code>.</p></div></div>
+      </div>
+
+      <div class="vizbox">
+        <div class="vizbox-title">Three layers of a decorator with arguments</div>
+        <div class="viz-row">
+          <div class="viz-item" style="border-color:var(--yellow);background:rgba(250,204,21,.08);color:var(--yellow)">repeat(3)<br><span class="viz-label">factory (outer)</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item viz-decorator">decorator(func)<br><span class="viz-label">decorator (middle)</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item viz-wrapper">wrapper()<br><span class="viz-label">wrapper (inner)</span></div>
+        </div>
+      </div>
+
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">decorator_factory.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">import functools
+
+def repeat(times):                       # 1. takes the argument
+    def decorator(func):                   # 2. the real decorator
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):    # 3. the wrapper
+            for _ in range(times):
+                result = func(*args, **kwargs)
+            return result
+        return wrapper
+    return decorator
+
+@repeat(times=3)                         # note the parentheses → it's called
+def cheer(team):
+    print(f"Go {team}!")
+
+cheer("Python")</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">Go Python!<br>Go Python!<br>Go Python!</span></div>
+
+      <div class="callout tip">
+        <div class="ct"><span class="ico">→</span>Spot the difference</div>
+        <p><code class="ic">@announce</code> (no parens) uses the decorator directly. <code class="ic">@repeat(3)</code> (with parens) <em>calls</em> <code class="ic">repeat</code> first, and the decorator it returns is what actually wraps your function.</p>
+      </div>
+
+      <div class="qa">
+        <div class="qa-q">Why three layers instead of two?</div>
+        <div class="qa-a">Because decorators are functions that take functions and return functions. If you want the decorator itself to take arguments, you need an extra layer: one to take the arguments, one to take the function, and one to be the wrapper. Think of it like: factory → machine → wrapped gift.</div>
+      </div>
+    </section>
+<section id="realworld" class="sd-sec">
+      <h2 class="sec"><span class="idx">08</span>Real-world decorators</h2>
+      <p class="sec-intro">These are the patterns you'll actually reach for. Each is a complete, copy-paste-ready example built from everything above.</p>
+
+      <h3 class="sub">A. Timing how long a function takes</h3>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">timer.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">import functools, time
+
+def timer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        print(f"{func.__name__} took {elapsed:.4f}s")
+        return result
+    return wrapper
+
+@timer
+def slow_square(n):
+    time.sleep(0.5)
+    return n * n
+
+print(slow_square(9))</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">slow_square took 0.5003s<br>81</span></div>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">⏱️</span>What's happening?</div>
+        <p>The wrapper is a stopwatch. It presses "start" before your function runs, presses "stop" after it finishes, and tells you the time. Your function doesn't know it's being timed — it just does its job.</p>
+      </div>
+
+      <h3 class="sub">B. Logging every call</h3>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">logger.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">import functools
+
+def log_calls(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        signature = ", ".join(
+            [repr(a) for a in args] +
+            [f"{k}={v!r}" for k, v in kwargs.items()]
+        )
+        print(f"CALL  {func.__name__}({signature})")
+        result = func(*args, **kwargs)
+        print(f"RET   {func.__name__} -> {result!r}")
+        return result
+    return wrapper
+
+@log_calls
+def power(base, exponent=2):
+    return base ** exponent
+
+power(3, exponent=4)</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">CALL  power(3, exponent=4)<br>RET   power -> 81</span></div>
+
+      <h3 class="sub">C. Caching results (memoization)</h3>
+      <p>Store results keyed by arguments so repeated calls with the same input return instantly. (For real code, prefer the built-in <code class="ic">functools.lru_cache</code> shown in section 11 — this shows how it works underneath.)</p>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">memoize.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">import functools
+
+def memoize(func):
+    cache = {}                           # closure keeps the cache alive
+    @functools.wraps(func)
+    def wrapper(*args):
+        if args not in cache:
+            cache[args] = func(*args)    # compute once, store it
+        return cache[args]               # reuse thereafter
+    return wrapper
+
+@memoize
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+print(fib(35))   # fast, even though it's naive recursion</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">9227465</span></div>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🗂️</span>The Filing Cabinet Analogy</div>
+        <p>Every time your function computes a result, the wrapper writes it down in a filing cabinet (the cache) indexed by the arguments. Next time the same arguments come in, it just looks up the filing cabinet instead of computing again. This turns an impossibly slow calculation into an instant lookup.</p>
+      </div>
+
+      <h3 class="sub">D. Retrying on failure</h3>
+      <p>A configurable decorator (a factory, from section 07) that re-runs a function if it raises an exception:</p>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">retry.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">import functools, time
+
+def retry(times=3, delay=1.0):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, times + 1):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as err:
+                    print(f"attempt {attempt} failed: {err}")
+                    if attempt == times:
+                        raise            # give up, re-raise the last error
+                    time.sleep(delay)
+        return wrapper
+    return decorator
+
+@retry(times=3, delay=0.2)
+def flaky():
+    import random
+    if random.random() < 0.7:
+        raise ConnectionError("network hiccup")
+    return "success"
+
+print(flaky())</code></pre>
+      </div>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🔄</span>The Patient Parent Analogy</div>
+        <p>This decorator is like a patient parent teaching a child to ride a bike. The kid falls (raises an exception). The parent says "try again" up to 3 times. If the kid still can't do it after 3 tries, the parent accepts defeat and lets the error happen.</p>
+      </div>
+
+      <h3 class="sub">E. Access control</h3>
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">requires_role.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">import functools
+
+def requires_role(role):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(user, *args, **kwargs):
+            if user.get("role") != role:
+                raise PermissionError(f"{role} role required")
+            return func(user, *args, **kwargs)
+        return wrapper
+    return decorator
+
+@requires_role("admin")
+def delete_database(user):
+    return "database deleted"
+
+admin = {"name": "Ada", "role": "admin"}
+print(delete_database(admin))          # works
+# delete_database({"role": "guest"})   # -> PermissionError</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">database deleted</span></div>
+    </section>
+<section id="classbased" class="sd-sec">
+      <h2 class="sec"><span class="idx">09</span>Class-based decorators</h2>
+      <p class="sec-intro">A decorator just has to be <em>callable</em> — and any class with a <code class="ic">__call__</code> method is callable. Classes shine when your decorator needs to hold state, like a counter, across calls.</p>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🤖</span>The Robot Analogy</div>
+        <p>A function decorator is like a tool that does one job. A class decorator is like a robot that does the job AND keeps a notebook of everything it did. The robot (class) remembers how many times it was called because it has a notebook (instance variable).</p>
+      </div>
+
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">count_calls.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">import functools
+
+class CountCalls:
+    def __init__(self, func):
+        functools.update_wrapper(self, func)  # class-form of @wraps
+        self.func = func
+        self.count = 0
+
+    def __call__(self, *args, **kwargs):       # runs on every call
+        self.count += 1
+        print(f"call #{self.count} of {self.func.__name__}")
+        return self.func(*args, **kwargs)
+
+@CountCalls
+def hello():
+    print("Hello!")
+
+hello()
+hello()
+print("total calls:", hello.count)   # state lives on the instance</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">call #1 of hello<br>Hello!<br>call #2 of hello<br>Hello!<br>total calls: 2</span></div>
+
+      <div class="ministep">
+        <div class="ministep-item">
+          <span class="ministep-num">Step 1</span>
+          <div class="ministep-text">Python sees <code class="ic">@CountCalls</code> and calls <code class="ic">CountCalls(hello)</code>. This creates an instance of the class.</div>
+        </div>
+        <div class="ministep-item">
+          <span class="ministep-num">Step 2</span>
+          <div class="ministep-text"><code class="ic">__init__</code> stores the original function in <code class="ic">self.func</code> and sets <code class="ic">self.count = 0</code>.</div>
+        </div>
+        <div class="ministep-item">
+          <span class="ministep-num">Step 3</span>
+          <div class="ministep-text">The instance is assigned to the name <code class="ic">hello</code>. Now <code class="ic">hello</code> is an object, not a function.</div>
+        </div>
+        <div class="ministep-item">
+          <span class="ministep-num">Step 4</span>
+          <div class="ministep-text">When you call <code class="ic">hello()</code>, Python runs <code class="ic">hello.__call__()</code> — which increments the counter and calls the original function.</div>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <div class="ct"><span class="ico">→</span>Function or class?</div>
+        <p>Use a <strong>function</strong> decorator for most cases — it's lighter. Reach for a <strong>class</strong> when you need to expose state or methods on the decorated object (like reading <code class="ic">hello.count</code> above).</p>
+      </div>
+    </section>
+<section id="stacking" class="sd-sec">
+      <h2 class="sec"><span class="idx">10</span>Stacking decorators</h2>
+      <p class="sec-intro">You can apply several decorators to one function. They wrap from the <strong>inside out</strong> — the one closest to the function runs first at definition time, and its wrapper sits innermost at call time.</p>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🥞</span>The Layer Cake Analogy</div>
+        <p>Imagine putting on clothes: underwear first, then pants, then a jacket. The jacket goes on last but is the outermost layer. When you undress, the jacket comes off first. Decorators work the same way — the last one applied becomes the outermost wrapper.</p>
+      </div>
+
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">stacking.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">def bold(func):
+    @functools.wraps(func)
+    def wrapper(*a, **k):
+        return "<b>" + func(*a, **k) + "</b>"
+    return wrapper
+
+def italic(func):
+    @functools.wraps(func)
+    def wrapper(*a, **k):
+        return "<i>" + func(*a, **k) + "</i>"
+    return wrapper
+
+import functools
+
+@bold          # applied second (outer)
+@italic        # applied first  (inner)
+def greet():
+    return "hi"
+
+print(greet())</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">&lt;b&gt;&lt;i&gt;hi&lt;/i&gt;&lt;/b&gt;</span></div>
+
+      <div class="vizbox">
+        <div class="vizbox-title">How the wrapping happens (bottom to top)</div>
+        <div class="viz-row">
+          <div class="viz-item viz-original">greet()<br><span class="viz-label">original</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item" style="border-color:var(--cyan);background:rgba(34,211,238,.08);color:var(--cyan)">italic()<br><span class="viz-label">wraps first</span></div>
+          <div class="viz-arrow">→</div>
+          <div class="viz-item" style="border-color:var(--pink);background:rgba(244,114,182,.08);color:var(--pink)">bold()<br><span class="viz-label">wraps second</span></div>
+        </div>
+        <p style="text-align:center;color:var(--text-2);font-size:.9rem;margin-top:12px;">Result: <code class="ic">greet = bold(italic(greet))</code></p>
+      </div>
+
+      <div class="callout key">
+        <div class="ct"><span class="ico">★</span>Reading the stack</div>
+        <p>Stacked decorators are equivalent to <code class="ic">greet = bold(italic(greet))</code>. Bottom-up at definition; the topmost decorator becomes the outermost layer at call time. Order matters when the decorators interact.</p>
+      </div>
+
+      <div class="qa">
+        <div class="qa-q">What if I swap the order?</div>
+        <div class="qa-a">Then you get <code class="ic">greet = italic(bold(greet))</code> instead. The result would be <code class="ic">"&lt;i&gt;&lt;b&gt;hi&lt;/b&gt;&lt;/i&gt;"</code>. Same ingredients, different order, different result.</div>
+      </div>
+    </section>
+<section id="builtin" class="sd-sec">
+      <h2 class="sec"><span class="idx">11</span>Built-in decorators you'll use</h2>
+      <p class="sec-intro">Python and its standard library ship with decorators you'll meet constantly. Recognizing them is half the battle.</p>
+
+      <div class="cards">
+        <div class="card"><div class="cn">@property</div><p>Turns a method into a read-only attribute. Access <code class="ic">obj.area</code> with no parentheses while logic runs behind it.</p></div>
+        <div class="card"><div class="cn">@staticmethod</div><p>A method that takes no <code class="ic">self</code> or <code class="ic">cls</code> — just a plain function living in a class's namespace.</p></div>
+        <div class="card"><div class="cn">@classmethod</div><p>Receives the class as <code class="ic">cls</code> instead of an instance. Common for alternative constructors.</p></div>
+        <div class="card"><div class="cn">@functools.lru_cache</div><p>Production-ready memoization. Caches results automatically with an optional size limit.</p></div>
+        <div class="card"><div class="cn">@functools.wraps</div><p>The metadata-preserving helper from section 06. Use it in every wrapper.</p></div>
+        <div class="card"><div class="cn">@dataclass</div><p>From <code class="ic">dataclasses</code>: auto-generates <code class="ic">__init__</code>, <code class="ic">__repr__</code>, and more for data-holding classes.</p></div>
+      </div>
+
+      <div class="codewrap">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span class="fname">builtins_in_action.py</span><button class="copy">Copy</button></div>
+<pre class="language-python"><code class="language-python">import functools
+
+class Circle:
+    def __init__(self, radius):
+        self.radius = radius
+
+    @property                       # access as circle.area, not circle.area()
+    def area(self):
+        return 3.14159 * self.radius ** 2
+
+    @classmethod                    # alternative constructor
+    def unit(cls):
+        return cls(radius=1)
+
+    @staticmethod                   # no self / cls needed
+    def describe():
+        return "A circle is round."
+
+@functools.lru_cache(maxsize=None)  # automatic caching
+def fib(n):
+    return n if n < 2 else fib(n - 1) + fib(n - 2)
+
+c = Circle(5)
+print(c.area)          # 78.53975  (no parentheses)
+print(Circle.unit().radius)   # 1
+print(Circle.describe())
+print(fib(50))         # instant, thanks to lru_cache</code></pre>
+      </div>
+      <div class="output"><span class="label">Output</span><span class="o-line">78.53975<br>1<br>A circle is round.<br>12586269025</span></div>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🔧</span>Built-in = Batteries Included</div>
+        <p>Python gives you these decorators for free because they're so commonly needed. You don't have to write your own caching or property logic — just slap on the decorator and Python handles the hard parts.</p>
+      </div>
+    </section>
+<section id="pitfalls" class="sd-sec">
+      <h2 class="sec"><span class="idx">12</span>Common pitfalls</h2>
+      <p class="sec-intro">A short list of the mistakes that trip people up. Each one has a quick fix you've already seen above.</p>
+
+      <div class="callout warn">
+        <div class="ct"><span class="ico">!</span>Forgetting to return the result</div>
+        <p>If your wrapper calls <code class="ic">func(*args, **kwargs)</code> but never returns it, the decorated function returns <code class="ic">None</code>. Always capture and <code class="ic">return result</code>.</p>
+      </div>
+      <div class="callout warn">
+        <div class="ct"><span class="ico">!</span>Returning <code class="ic" style="font-size:.85em">wrapper()</code> instead of <code class="ic" style="font-size:.85em">wrapper</code></div>
+        <p>The decorator must return the wrapper function <em>object</em>. Adding parentheses calls it immediately and returns whatever it produced — a classic bug.</p>
+      </div>
+      <div class="callout warn">
+        <div class="ct"><span class="ico">!</span>Skipping <code class="ic" style="font-size:.85em">@functools.wraps</code></div>
+        <p>Without it, <code class="ic">__name__</code>, <code class="ic">__doc__</code>, and the signature report as the wrapper's. Breaks debuggers, docs, and some frameworks.</p>
+      </div>
+      <div class="callout warn">
+        <div class="ct"><span class="ico">!</span>Confusing <code class="ic" style="font-size:.85em">@deco</code> with <code class="ic" style="font-size:.85em">@deco()</code></div>
+        <p>A plain decorator takes no parentheses. A decorator <em>factory</em> (one that takes arguments) must be called: <code class="ic">@repeat(3)</code>. Mixing these up gives cryptic "missing argument" or "not callable" errors.</p>
+      </div>
+      <div class="callout warn">
+        <div class="ct"><span class="ico">!</span>Not forwarding <code class="ic" style="font-size:.85em">*args, **kwargs</code></div>
+        <p>A wrapper with a fixed signature can only decorate functions with that exact signature. Use <code class="ic">*args, **kwargs</code> to stay general.</p>
+      </div>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🩹</span>Quick Fixes Cheat Sheet</div>
+        <p><strong>Function returns None?</strong> → Add <code class="ic">return result</code>.<br><strong>Function runs immediately on import?</strong> → Remove parentheses from <code class="ic">return wrapper</code>.<br><strong>Getting "not callable" errors?</strong> → Check if you wrote <code class="ic">@deco()</code> when you meant <code class="ic">@deco</code>, or vice versa.<br><strong>Function name shows as "wrapper"?</strong> → Add <code class="ic">@functools.wraps(func)</code>.</p>
+      </div>
+    </section>
+<section id="cheat" class="sd-sec">
+      <h2 class="sec"><span class="idx">13</span>Cheat sheet</h2>
+      <p class="sec-intro">Everything in one glance. Keep this nearby until the patterns feel automatic.</p>
+
+      <div class="cheat">
+        <table>
+          <thead><tr><th>Pattern</th><th>What it's for</th></tr></thead>
+          <tbody>
+            <tr><td>func = deco(func)</td><td>What <code class="ic">@deco</code> actually does, spelled out</td></tr>
+            <tr><td>@deco</td><td>Apply a decorator that takes no arguments</td></tr>
+            <tr><td>@deco(x)</td><td>Apply a configurable decorator (a factory)</td></tr>
+            <tr><td>def wrapper(*args, **kwargs)</td><td>Accept and forward any arguments</td></tr>
+            <tr><td>return func(*args, **kwargs)</td><td>Call the original and pass its result back</td></tr>
+            <tr><td>@functools.wraps(func)</td><td>Preserve name, docstring &amp; signature</td></tr>
+            <tr><td>outer → decorator → wrapper</td><td>Three layers = a decorator with arguments</td></tr>
+            <tr><td>class D: __call__(self, ...)</td><td>Class-based decorator that can hold state</td></tr>
+            <tr><td>@a @b def f</td><td>Stacking: same as <code class="ic">f = a(b(f))</code></td></tr>
+            <tr><td>@property / @classmethod</td><td>Built-ins you'll use inside classes</td></tr>
+            <tr><td>@functools.lru_cache</td><td>Drop-in caching for pure functions</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout key">
+        <div class="ct"><span class="ico">★</span>You now know decorators</div>
+        <p>Every decorator — no matter how fancy — is still just <em>a function that takes a function, wraps it, and returns the wrapped version</em>. When one looks confusing, mentally rewrite it as <code class="ic">func = deco(func)</code> and it will make sense.</p>
+      </div>
+
+      <div class="analogy">
+        <div class="ct"><span class="ico">🎓</span>Final Thought</div>
+        <p>If you remember nothing else, remember this: <strong>a decorator is a gift wrapper for functions.</strong> It takes your function, puts a box around it, and hands back the box. When someone calls the box, the box does its thing first, then calls your function, then does more stuff, then returns the result. That's it. Everything else is just details about what kind of box you want.</p>
+      </div>
+    </section>
+<footer>
+  <span><span class="snake-sm">🐍</span> Python Decorators — a complete, visual tutorial</span>
+  <span>Built for learners · Python 3.x</span>
+</footer>
+</div>
+</div>
+
+<script>
+
+function show(id){
+  document.querySelectorAll('.sd-sec').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.sd-ni').forEach(function(n){n.classList.remove('active');});
+  var el=document.getElementById(id); if(el) el.classList.add('active');
+  var ni=document.querySelector('.sd-ni[data-t="'+id+'"]'); if(ni) ni.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=760) closeSB();
+}
+var _hb=document.getElementById('sdhb'),_sb=document.getElementById('sdsb'),_ov=document.getElementById('sdov');
+function openSB(){_sb.classList.add('open');_ov.classList.add('open');}
+function closeSB(){_sb.classList.remove('open');_ov.classList.remove('open');}
+if(_hb){_hb.addEventListener('click',function(){_sb.classList.contains('open')?closeSB():openSB();});}
+if(_ov){_ov.addEventListener('click',closeSB);}
+function copyCode(btn){
+  var wrap=btn.closest('.code-block,.codewrap');
+  var code=wrap?wrap.querySelector('code,pre'):null;
+  if(!code){var p=btn.parentElement;while(p&&!code){code=p.querySelector('pre code,code,pre');p=p.parentElement;}}
+  var t=code?code.innerText:'';
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){var o=btn.textContent;btn.textContent='\u2713 Copied';btn.classList.add('done');setTimeout(function(){btn.textContent=o;btn.classList.remove('done');},1500);});}
+}
+document.querySelectorAll('.copy').forEach(function(b){if(!b.getAttribute('onclick'))b.addEventListener('click',function(){copyCode(b);});});
+function checkAnswer(element,isCorrect){
+  var parent=element.parentElement,siblings=parent.children;
+  for(var i=0;i<siblings.length;i++){siblings[i].classList.remove('correct','wrong');siblings[i].classList.add('disabled');}
+  if(isCorrect){element.classList.add('correct');}
+  else{element.classList.add('wrong');
+    for(var j=0;j<siblings.length;j++){var oc=siblings[j].getAttribute('onclick')||'';if(oc.indexOf('true')>=0)siblings[j].classList.add('correct');}}
+  var q=element.closest('.quiz-question');var ex=q?q.querySelector('.explanation'):null;if(ex)ex.style.display='block';
+}
+document.querySelectorAll('.sd-main a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var id=a.getAttribute('href').slice(1);var t=document.getElementById(id);
+    if(t&&t.classList.contains('sd-sec')){e.preventDefault();show(id);}
+  });
+});
+
+
+if(window.Prism){Prism.highlightAll();}
+
+</script>
+</body>
+</html>

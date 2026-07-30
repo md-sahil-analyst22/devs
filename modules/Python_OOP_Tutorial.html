@@ -1,0 +1,2829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python OOP — Core Concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-code: #0d1117;
+            --border-color: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-blue: #38bdf8;
+            --accent-cyan: #22d3ee;
+            --accent-green: #4ade80;
+            --accent-yellow: #facc15;
+            --accent-orange: #fb923c;
+            --accent-pink: #f472b6;
+            --accent-purple: #a78bfa;
+            --accent-red: #f87171;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: rgba(255,255,255,0.05);
+            z-index: 10000;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan), var(--accent-green));
+            width: 0%;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px rgba(56,189,248,0.5);
+        }
+
+        /* ===== NAVIGATION ===== */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            z-index: 9999;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo::before {
+            content: '🐍';
+            -webkit-text-fill-color: initial;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.25rem;
+            list-style: none;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.06);
+        }
+        .nav-links a.active {
+            color: var(--accent-blue);
+            background: rgba(56,189,248,0.1);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        .mobile-menu-btn:hover { background: rgba(255,255,255,0.06); }
+
+        /* ===== HERO ===== */
+        .hero {
+            margin-top: 64px;
+            padding: 5rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 800px; height: 400px;
+            background: radial-gradient(circle, rgba(56,189,248,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(56,189,248,0.1);
+            border: 1px solid rgba(56,189,248,0.2);
+            color: var(--accent-blue);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 50%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+        }
+        .hero-tags {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .hero-tag {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .hero-tag.highlight {
+            background: rgba(250, 204, 21, 0.1);
+            border-color: rgba(250, 204, 21, 0.3);
+            color: var(--accent-yellow);
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            margin: 3rem 0;
+            padding: 2.5rem;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+            opacity: 0.6;
+        }
+        .section h2 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+        }
+        .section h2 .icon { font-size: 1.75rem; filter: drop-shadow(0 0 8px rgba(56,189,248,0.3)); }
+        .section h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(56,189,248,0.15);
+        }
+        .section h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-yellow);
+            margin: 1.5rem 0 0.75rem;
+        }
+        .section p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        .section ul, .section ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: var(--text-secondary);
+        }
+        .section li { margin-bottom: 0.5rem; }
+        .section strong { color: var(--text-primary); font-weight: 600; }
+
+        /* ===== VIDEO INFO ===== */
+        .video-info {
+            background: linear-gradient(135deg, rgba(56,189,248,0.08), rgba(34,211,238,0.05));
+            border: 1px solid rgba(56,189,248,0.15);
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .video-info::before { content: '🎬'; font-size: 1.1rem; }
+
+        /* ===== CODE BLOCKS ===== */
+        .code-block {
+            background: var(--bg-code);
+            border-radius: 14px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border: 1px solid #21262d;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: #161b22;
+            border-bottom: 1px solid #21262d;
+        }
+        .code-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .code-title::before {
+            content: '';
+            display: inline-block;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+        .copy-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .copy-btn.copied {
+            background: rgba(74,222,128,0.15);
+            color: var(--accent-green);
+            border-color: rgba(74,222,128,0.3);
+        }
+        pre {
+            margin: 0;
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        .code-keyword { color: #ff7b72; }
+        .code-string { color: #a5d6ff; }
+        .code-comment { color: #8b949e; font-style: italic; }
+        .code-function { color: #d2a8ff; }
+        .code-class { color: #ffa657; }
+        .code-variable { color: #79c0ff; }
+        .code-number { color: #79c0ff; }
+        .code-decorator { color: #f472b6; }
+        .code-builtin { color: #f472b6; }
+
+        /* Inline code */
+        p code, li code, td code {
+            background: rgba(56,189,248,0.1);
+            color: var(--accent-cyan);
+            padding: 0.15rem 0.4rem;
+            border-radius: 5px;
+            font-size: 0.85em;
+            border: 1px solid rgba(56,189,248,0.15);
+        }
+
+        /* ===== OUTPUT BLOCK ===== */
+        .output-block {
+            background: #0d1117;
+            border-left: 3px solid var(--accent-green);
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+        }
+        .output-label {
+            color: var(--accent-green);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .output-label::before { content: '▸'; }
+
+        /* ===== INFO BOXES ===== */
+        .info-box {
+            padding: 1.25rem 1.5rem;
+            border-radius: 14px;
+            margin: 1.25rem 0;
+            border: 1px solid;
+            position: relative;
+        }
+        .info-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 4px;
+            border-radius: 14px 0 0 14px;
+        }
+        .info-box.tip {
+            background: rgba(74,222,128,0.06);
+            border-color: rgba(74,222,128,0.15);
+        }
+        .info-box.tip::before { background: var(--accent-green); }
+        .info-box.warning {
+            background: rgba(251,146,60,0.06);
+            border-color: rgba(251,146,60,0.15);
+        }
+        .info-box.warning::before { background: var(--accent-orange); }
+        .info-box.note {
+            background: rgba(56,189,248,0.06);
+            border-color: rgba(56,189,248,0.15);
+        }
+        .info-box.note::before { background: var(--accent-blue); }
+        .info-box.danger {
+            background: rgba(248,113,113,0.06);
+            border-color: rgba(248,113,113,0.15);
+        }
+        .info-box.danger::before { background: var(--accent-red); }
+        .info-box-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .info-box.tip .info-box-title { color: var(--accent-green); }
+        .info-box.warning .info-box-title { color: var(--accent-orange); }
+        .info-box.note .info-box-title { color: var(--accent-blue); }
+        .info-box.danger .info-box-title { color: var(--accent-red); }
+        .info-box p, .info-box ul { color: var(--text-secondary); margin: 0; }
+        .info-box ul { margin-left: 1.25rem; margin-top: 0.5rem; }
+
+        /* ===== DIAGRAMS ===== */
+        .diagram {
+            background: var(--bg-code);
+            padding: 1.5rem;
+            border-radius: 14px;
+            margin: 1.5rem 0;
+            text-align: center;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.9;
+            border: 1px solid #21262d;
+            color: var(--text-secondary);
+        }
+        .diagram-title {
+            color: var(--accent-yellow);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ===== TABLES ===== */
+        .styled-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            background: var(--bg-code);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #21262d;
+            font-size: 0.9rem;
+        }
+        .styled-table th {
+            background: rgba(56,189,248,0.1);
+            color: var(--accent-blue);
+            padding: 0.9rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #21262d;
+        }
+        .styled-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #21262d;
+            color: var(--text-secondary);
+        }
+        .styled-table tr:last-child td { border-bottom: none; }
+        .styled-table tr:hover td { background: rgba(56,189,248,0.03); }
+
+        /* ===== PILLAR CARDS ===== */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .pillar-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+        .pillar-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .pillar-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(56,189,248,0.3);
+            box-shadow: var(--shadow-glow);
+        }
+        .pillar-card:hover::after { transform: scaleX(1); }
+        .pillar-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+        .pillar-card h3 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin: 0 0 0.5rem;
+            border: none;
+            padding: 0;
+        }
+        .pillar-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+        .pillar-card .tag {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tag.green { background: rgba(74,222,128,0.12); color: var(--accent-green); }
+        .tag.orange { background: rgba(251,146,60,0.12); color: var(--accent-orange); }
+        .tag.red { background: rgba(248,113,113,0.12); color: var(--accent-red); }
+        .tag.blue { background: rgba(56,189,248,0.12); color: var(--accent-blue); }
+        .tag.purple { background: rgba(167,139,250,0.12); color: var(--accent-purple); }
+
+        /* ===== COMPARISON ===== */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .comparison-box {
+            padding: 1.5rem;
+            border-radius: 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+        }
+        .comparison-box h4 {
+            color: var(--accent-yellow);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .comparison-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .comparison-box li {
+            padding: 0.4rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        /* ===== QUIZ ===== */
+        .quiz-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .quiz-question {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--bg-code);
+            border-radius: 12px;
+            border: 1px solid #21262d;
+        }
+        .quiz-question:first-child { margin-top: 0; }
+        .quiz-question h4 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .quiz-options {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .quiz-options li {
+            padding: 0.85rem 1rem;
+            margin: 0.5rem 0;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .quiz-options li::before {
+            content: '○';
+            color: var(--text-muted);
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .quiz-options li:hover {
+            background: rgba(56,189,248,0.06);
+            border-color: rgba(56,189,248,0.2);
+            color: var(--text-primary);
+        }
+        .quiz-options li.correct {
+            background: rgba(74,222,128,0.1);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+        .quiz-options li.correct::before { content: '✓'; color: var(--accent-green); }
+        .quiz-options li.wrong {
+            background: rgba(248,113,113,0.1);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+        .quiz-options li.wrong::before { content: '✗'; color: var(--accent-red); }
+        .quiz-options li.disabled { pointer-events: none; opacity: 0.7; }
+        .explanation {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(56,189,248,0.06);
+            border-radius: 10px;
+            border: 1px solid rgba(56,189,248,0.15);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .explanation strong { color: var(--accent-blue); }
+
+        /* ===== HIGHLIGHTS & TAGS ===== */
+        .highlight {
+            background: linear-gradient(120deg, rgba(250,204,21,0.2) 0%, rgba(250,204,21,0.05) 100%);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent-yellow);
+            font-weight: 600;
+            border-bottom: 2px solid rgba(250,204,21,0.3);
+        }
+
+        /* ===== SCROLL TOP ===== */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            font-size: 1.25rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 9998;
+        }
+        .scroll-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .scroll-top:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        footer .footer-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar { padding: 0 1rem; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                background: var(--bg-primary);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.25rem;
+                border-bottom: 1px solid var(--border-color);
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+            .nav-links.active { display: flex; }
+            .nav-links a { width: 100%; padding: 0.75rem 1rem; }
+            .mobile-menu-btn { display: block; }
+            .hero { padding: 3rem 1rem 2.5rem; }
+            .container { padding: 0 1rem 2rem; }
+            .section { padding: 1.5rem; margin: 2rem 0; }
+            .comparison { grid-template-columns: 1fr; }
+            .pillars-grid { grid-template-columns: 1fr; }
+            pre { font-size: 0.8rem; padding: 1rem; }
+            .scroll-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .section {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.15s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.25s; }
+        .section:nth-child(5) { animation-delay: 0.3s; }
+        .section:nth-child(6) { animation-delay: 0.35s; }
+        .section:nth-child(7) { animation-delay: 0.4s; }
+        .section:nth-child(8) { animation-delay: 0.45s; }
+        .section:nth-child(9) { animation-delay: 0.5s; }
+
+        /* ===== TABLE OF CONTENTS SIDEBAR (Desktop) ===== */
+        .toc-sidebar {
+            display: none;
+            position: fixed;
+            left: 2rem;
+            top: 100px;
+            width: 220px;
+            z-index: 100;
+        }
+        .toc-sidebar h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .toc-sidebar a {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.4rem 0;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+            padding-left: 0.75rem;
+            margin-left: -0.75rem;
+        }
+        .toc-sidebar a:hover, .toc-sidebar a.active {
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+        }
+        @media (min-width: 1300px) {
+            .toc-sidebar { display: block; }
+            .container { margin-left: 260px; }
+        }
+    
+
+/* ===== palette retheme (added) ===== */
+:root{--bg-primary:#0f1117;--bg-secondary:#141820;--bg-card:#1a1f2e;--bg-code:#0a0e16;--border-color:#252d3d;--text-primary:#e8eaf0;--text-secondary:#8892a4;--text-muted:#505a6e;--accent-blue:#00a8ff;--accent-cyan:#00a8ff;--accent-green:#00c96e;--accent-yellow:#f5a623;--accent-orange:#f5a623;--accent-pink:#e85d75;--accent-purple:#9b6dff;--accent-red:#e85d75;}
+
+
+/* ===== system-design shell (added) ===== */
+:root{--sd-bg:#0f1117;--sd-sb:#141820;--sd-card:#1a1f2e;--sd-card2:#1e2535;--sd-hov:#252d3d;
+--sd-txt:#e8eaf0;--sd-txt2:#8892a4;--sd-muted:#505a6e;--sd-bdr:#252d3d;--sd-bdr2:#2e3748;
+--sd-bl:#00a8ff;--sd-gr:#00c96e;--sd-or:#f5a623;--sd-pu:#9b6dff;--sd-pk:#e85d75;--sd-sw:280px;}
+html{scroll-behavior:smooth;}
+body{background:var(--sd-bg)!important;color:var(--sd-txt)!important;font-family:'DM Sans',sans-serif!important;overflow-x:hidden;margin:0!important;line-height:1.65;}
+.sd-main,.sd-main p,.sd-main li,.sd-main h1,.sd-main h2,.sd-main h3,.sd-main h4,.sd-main span,.sd-main strong,.sd-main em,.sd-main div{font-family:'DM Sans',sans-serif;}
+.sd-main pre,.sd-main code,.sd-main pre *,.sd-main code *{font-family:'DM Mono',monospace!important;}
+.sd-topbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:var(--sd-sb)!important;border-bottom:1px solid var(--sd-bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px 0 0;box-shadow:none;}
+.sd-brand{display:flex;align-items:center;width:var(--sd-sw);padding:0 20px;border-right:1px solid var(--sd-bdr);height:100%;box-sizing:border-box;}
+.sd-ico{width:34px;height:34px;border-radius:8px;background:var(--sd-bl);display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:11px;flex-shrink:0;}
+.sd-bt{font-weight:600;font-size:15px;color:var(--sd-txt);line-height:1.2;}
+.sd-bs{font-size:11px;color:var(--sd-muted);}
+.sd-meta{display:flex;align-items:center;gap:14px;}
+.sd-pill{background:rgba(0,168,255,.12);color:var(--sd-bl);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(0,168,255,.25);}
+.sd-tc{color:var(--sd-muted);font-size:12px;}
+.sd-layout{display:flex;padding-top:56px;min-height:100vh;}
+.sd-sidebar{width:var(--sd-sw);flex-shrink:0;background:var(--sd-sb)!important;border-right:1px solid var(--sd-bdr);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;z-index:90;padding:0 0 30px;margin:0;}
+.sd-sidebar::-webkit-scrollbar{width:4px;}
+.sd-sidebar::-webkit-scrollbar-thumb{background:var(--sd-bdr2);border-radius:2px;}
+.sd-sh{padding:16px 20px 7px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--sd-muted);text-transform:uppercase;}
+.sd-ni{display:flex;align-items:center;gap:9px;padding:8px 20px;cursor:pointer;font-size:13px;color:var(--sd-txt2);border-left:3px solid transparent;transition:all .15s;text-decoration:none;user-select:none;}
+.sd-ni:hover{background:var(--sd-hov);color:var(--sd-txt);}
+.sd-ni.active{color:var(--sd-bl);background:rgba(0,168,255,.08);border-left-color:var(--sd-bl);font-weight:500;}
+.sd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sd-nl{flex:1;}
+.sd-main{margin-left:var(--sd-sw);flex:1;padding:34px 46px 90px;max-width:940px;box-sizing:border-box;width:100%;}
+.sd-sec{display:none;}
+.sd-sec.active{display:block;animation:sdfu .32s ease both;}
+@keyframes sdfu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sd-hb{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px;}
+.sd-hb span{display:block;width:20px;height:2px;background:var(--sd-txt2);border-radius:1px;}
+.sd-ov{display:none;}
+/* harmonise reused hero + footer inside the new shell */
+.sd-main .hero,.sd-main header.hero,.sd-main section.hero{max-width:100%!important;margin:0 0 26px 0!important;min-height:auto!important;width:auto!important;border-radius:12px;}
+.sd-main footer{margin-top:34px;border-top:1px solid var(--sd-bdr);}
+@media(max-width:760px){
+ :root{--sd-sw:262px;}
+ .sd-brand{width:auto;border-right:none;}
+ .sd-main{margin-left:0;padding:22px 16px 60px;max-width:100%;}
+ .sd-sidebar{transform:translateX(-100%);transition:transform .25s;}
+ .sd-sidebar.open{transform:translateX(0);}
+ .sd-ov{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.55);z-index:89;}
+ .sd-ov.open{display:block;}
+ .sd-hb{display:flex;}
+}
+
+</style>
+</head>
+<body>
+
+<header class="sd-topbar">
+  <div class="sd-brand">
+    <div class="sd-ico">🐍</div>
+    <div><div class="sd-bt">Python OOP</div><div class="sd-bs">Low Level Design · Lesson 1</div></div>
+  </div>
+  <div class="sd-meta">
+    <button class="sd-hb" id="sdhb" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="sd-tc">9 topics · Beginner→Adv</span>
+    <span class="sd-pill">Study Guide</span>
+  </div>
+</header>
+
+<div class="sd-ov" id="sdov"></div>
+<div class="sd-layout">
+<aside class="sd-sidebar" id="sdsb">
+<div class="sd-sh">Foundations</div>
+<a class="sd-ni" data-t="intro" onclick="show('intro')"><span class="sd-dot" style="background:var(--sd-gr)"></span><span class="sd-nl">Introduction to OOP</span></a>
+<a class="sd-ni" data-t="classes-objects" onclick="show('classes-objects')"><span class="sd-dot" style="background:var(--sd-bl)"></span><span class="sd-nl">Classes &amp; Objects</span></a>
+<a class="sd-ni" data-t="quiz1" onclick="show('quiz1')"><span class="sd-dot" style="background:var(--sd-or)"></span><span class="sd-nl">Quiz 1 — Checkpoint</span></a>
+<div class="sd-sh">The Four Pillars</div>
+<a class="sd-ni" data-t="inheritance" onclick="show('inheritance')"><span class="sd-dot" style="background:var(--sd-pu)"></span><span class="sd-nl">Inheritance</span></a>
+<a class="sd-ni" data-t="polymorphism" onclick="show('polymorphism')"><span class="sd-dot" style="background:var(--sd-pk)"></span><span class="sd-nl">Polymorphism</span></a>
+<a class="sd-ni" data-t="encapsulation" onclick="show('encapsulation')"><span class="sd-dot" style="background:var(--sd-gr)"></span><span class="sd-nl">Encapsulation</span></a>
+<a class="sd-ni" data-t="abstraction" onclick="show('abstraction')"><span class="sd-dot" style="background:var(--sd-bl)"></span><span class="sd-nl">Abstraction</span></a>
+<div class="sd-sh">Wrap-up</div>
+<a class="sd-ni" data-t="summary" onclick="show('summary')"><span class="sd-dot" style="background:var(--sd-or)"></span><span class="sd-nl">Summary</span></a>
+<a class="sd-ni" data-t="final-quiz" onclick="show('final-quiz')"><span class="sd-dot" style="background:var(--sd-pu)"></span><span class="sd-nl">Final Quiz</span></a>
+</aside>
+<div class="sd-main" role="main">
+<section class="hero">
+        <div class="hero-badge">🎯 COMPLETE BEGINNER GUIDE</div>
+        <h1>Python OOP Concepts</h1>
+        <p>The only tutorial you need to master Object-Oriented Programming in Python. From Classes & Objects to all 4 Pillars of OOP — explained with real-world analogies and hands-on code.</p>
+        <div class="hero-tags">
+            <span class="hero-tag highlight">#LLD</span>
+            <span class="hero-tag">#Python</span>
+            <span class="hero-tag">#OOP</span>
+            <span class="hero-tag">Low Level Design</span>
+            <span class="hero-tag highlight">Lesson 1</span>
+        </div>
+    </section>
+<section id="intro" class="sd-sec active">
+            <h2><span class="icon">📚</span> 1. Introduction to OOP</h2>
+
+            <div class="video-info">
+                <strong>Video Chapter:</strong> 0:00 - Introduction to OOP
+            </div>
+
+            <h3>What is Object-Oriented Programming?</h3>
+            <p>
+                <span class="highlight">Object-Oriented Programming (OOP)</span> is a way of writing code that organizes software around <span class="highlight">data (objects)</span> instead of just functions and logic. Think of it like this: instead of writing a long list of instructions, you create "things" that have both <strong>data</strong> (what they know) and <strong>methods</strong> (what they can do).
+            </p>
+
+            <div class="info-box note">
+                <div class="info-box-title">💡 Real-World Analogy</div>
+                <p>Think of a <strong>Car</strong> as an object. A car has:</p>
+                <ul>
+                    <li><strong>Attributes (Data):</strong> color, brand, model, speed, fuel_level</li>
+                    <li><strong>Methods (Behavior):</strong> accelerate(), brake(), honk(), refuel()</li>
+                </ul>
+            </div>
+
+            <h3>Why Should You Learn OOP?</h3>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <span class="pillar-icon">🔄</span>
+                    <h3>Reusability</h3>
+                    <p>Write code once, reuse it many times through classes and inheritance</p>
+                    <span class="tag green">Code Reuse</span>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">🧩</span>
+                    <h3>Modularity</h3>
+                    <p>Break big problems into smaller, manageable, self-contained pieces</p>
+                    <span class="tag blue">Organization</span>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">🔒</span>
+                    <h3>Security</h3>
+                    <p>Hide sensitive data inside objects and control who can access it</p>
+                    <span class="tag orange">Protection</span>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">🔧</span>
+                    <h3>Maintainability</h3>
+                    <p>Easy to update, debug, and extend your code without breaking things</p>
+                    <span class="tag purple">Scalability</span>
+                </div>
+            </div>
+
+            <h3>Procedural vs OOP — What's the Difference?</h3>
+            <div class="comparison">
+                <div class="comparison-box">
+                    <h4>📝 Procedural Programming</h4>
+                    <ul>
+                        <li>❌ Focus on functions and procedures</li>
+                        <li>❌ Data and functions are separate</li>
+                        <li>❌ Hard to maintain for large projects</li>
+                        <li>❌ Code repetition is common</li>
+                        <li>❌ Limited code reusability</li>
+                    </ul>
+                </div>
+                <div class="comparison-box">
+                    <h4>🐍 Object-Oriented Programming</h4>
+                    <ul>
+                        <li>✅ Focus on objects and data</li>
+                        <li>✅ Data and methods bundled together</li>
+                        <li>✅ Easy to scale and maintain</li>
+                        <li>✅ DRY principle (Don't Repeat Yourself)</li>
+                        <li>✅ High code reusability</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>The 4 Pillars of OOP</h3>
+            <p>Every OOP language is built on these four fundamental principles. Master these, and you master OOP:</p>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <span class="pillar-icon">👨‍👧</span>
+                    <h3>Inheritance</h3>
+                    <p>Create new classes from existing ones, reusing code</p>
+                    <span class="tag green">Code Reuse</span>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">🎭</span>
+                    <h3>Polymorphism</h3>
+                    <p>Same interface, different implementations</p>
+                    <span class="tag blue">Flexibility</span>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">🔐</span>
+                    <h3>Encapsulation</h3>
+                    <p>Hide internal details, expose only what's needed</p>
+                    <span class="tag orange">Security</span>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">🎨</span>
+                    <h3>Abstraction</h3>
+                    <p>Simplify complex reality by modeling classes</p>
+                    <span class="tag red">Simplicity</span>
+                </div>
+            </div>
+        </section>
+<section id="classes-objects" class="sd-sec">
+            <h2><span class="icon">🎯</span> 2. Classes & Objects</h2>
+
+            <div class="video-info">
+                <strong>Video Chapters:</strong> 2:42 - Concept | 3:45 - Example | 8:55 - Code Implementation
+            </div>
+
+            <h3>What is a Class?</h3>
+            <p>
+                A <span class="highlight">class</span> is a <strong>blueprint</strong> or template for creating objects. It defines what attributes (data) and methods (behavior) the objects will have. Think of a class as a cookie cutter, and objects as the actual cookies.
+            </p>
+
+            <h3>What is an Object?</h3>
+            <p>
+                An <span class="highlight">object</span> is an <strong>instance</strong> of a class. When a class is defined, no memory is used until you create an object from it. Each object has its own unique data but shares the same methods from the class.
+            </p>
+
+            <div class="diagram">
+                <div class="diagram-title">🏠 Class vs Object — The Blueprint Analogy</div>
+<pre>
+    CLASS (Blueprint)                    OBJECTS (Instances)
+    ┌─────────────────────┐             ┌─────────────────────┐
+    │      House          │             │     My House        │
+    ├─────────────────────┤             ├─────────────────────┤
+    │ - color             │             │ - color: "Blue"     │
+    │ - number_of_rooms   │    ───►     │ - rooms: 4          │
+    │ - address           │             │ - address: "123 St" │
+    │                     │             │                     │
+    │ + paint()           │             │ paint() ── works!   │
+    │ + addRoom()         │             │ addRoom() ── works! │
+    │ + getAddress()      │             │ getAddress() ─ works│
+    └─────────────────────┘             └─────────────────────┘
+
+    One Class  ──────►  Multiple Objects
+    (One Blueprint)      (Many Houses)
+</pre>
+            </div>
+
+            <div class="info-box tip">
+                <div class="info-box-title">💡 Key Point for Beginners</div>
+                <p>A class is like a <strong>recipe</strong>, and an object is the <strong>dish</strong> you make using that recipe. You can make many dishes from one recipe, each with different ingredients (attributes) but following the same instructions (methods).</p>
+            </div>
+
+            <h3>Creating Your First Class in Python</h3>
+            <p>In Python, we use the <code>class</code> keyword to define a class:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Basic Class Definition</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-comment"># Defining a simple class</span>
+<span class="code-keyword">class</span> <span class="code-class">Dog</span>:
+    <span class="code-comment"># Class attribute (shared by ALL instances)</span>
+    species = <span class="code-string">"Canis familiaris"</span>
+
+    <span class="code-comment"># Constructor — called when object is created</span>
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, name, age):
+        <span class="code-comment"># Instance attributes (unique to each object)</span>
+        <span class="code-variable">self</span>.name = name
+        <span class="code-variable">self</span>.age = age
+
+    <span class="code-comment"># Instance method</span>
+    <span class="code-keyword">def</span> <span class="code-function">bark</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} says: Woof! Woof!"</span>
+
+    <span class="code-comment"># Another instance method</span>
+    <span class="code-keyword">def</span> <span class="code-function">get_info</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} is {self.age} years old"</span>
+
+<span class="code-comment"># Creating objects (instances) of the Dog class</span>
+dog1 = Dog(<span class="code-string">"Buddy"</span>, <span class="code-number">3</span>)
+dog2 = Dog(<span class="code-string">"Max"</span>, <span class="code-number">5</span>)
+
+<span class="code-comment"># Accessing attributes</span>
+<span class="code-function">print</span>(dog1.name)      <span class="code-comment"># Output: Buddy</span>
+<span class="code-function">print</span>(dog2.age)       <span class="code-comment"># Output: 5</span>
+<span class="code-function">print</span>(dog1.species)   <span class="code-comment"># Output: Canis familiaris</span>
+
+<span class="code-comment"># Calling methods</span>
+<span class="code-function">print</span>(dog1.bark())       <span class="code-comment"># Output: Buddy says: Woof! Woof!</span>
+<span class="code-function">print</span>(dog2.get_info())   <span class="code-comment"># Output: Max is 5 years old</span></code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>Buddy
+5
+Canis familiaris
+Buddy says: Woof! Woof!
+Max is 5 years old</pre>
+            </div>
+
+            <h3>Understanding <code>self</code> — The Most Confusing Part for Beginners</h3>
+            <p>The <span class="highlight">self</span> parameter is a reference to the <strong>current instance</strong> of the class. It allows us to access the attributes and methods of the object. When you call <code>dog1.bark()</code>, Python automatically passes <code>dog1</code> as <code>self</code>.</p>
+
+            <div class="info-box warning">
+                <div class="info-box-title">⚠️ Important Rule</div>
+                <p>The <code>self</code> parameter must be the <strong>first parameter</strong> of any instance method. You don't pass it explicitly when calling the method — Python handles it automatically behind the scenes.</p>
+            </div>
+
+            <h3>The <code>__init__</code> Method (Constructor)</h3>
+            <p>The <code>__init__</code> method is a special method called <strong>automatically</strong> when a new object is created. It's used to set up the object's initial attributes. This is also known as the <span class="highlight">constructor</span>.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Constructor Deep Dive</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">class</span> <span class="code-class">Student</span>:
+    <span class="code-comment"># Class attribute — same for ALL students</span>
+    school_name = <span class="code-string">"Python High School"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, name, grade, student_id):
+        <span class="code-comment"># Instance attributes — unique for EACH student</span>
+        <span class="code-variable">self</span>.name = name
+        <span class="code-variable">self</span>.grade = grade
+        <span class="code-variable">self</span>.student_id = student_id
+        <span class="code-variable">self</span>.subjects = []  <span class="code-comment"># Can have default values</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">enroll_subject</span>(<span class="code-variable">self</span>, subject):
+        <span class="code-variable">self</span>.subjects.append(subject)
+        <span class="code-keyword">return</span> <span class="code-string">f"{subject} enrolled successfully!"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">get_report</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"""
+        Student Report
+        ==============
+        Name: {self.name}
+        ID: {self.student_id}
+        Grade: {self.grade}
+        School: {self.school_name}
+        Subjects: {', '.join(self.subjects)}
+        """</span>
+
+<span class="code-comment"># Creating student objects</span>
+student1 = Student(<span class="code-string">"Alice"</span>, <span class="code-string">"10th"</span>, <span class="code-string">"S001"</span>)
+student2 = Student(<span class="code-string">"Bob"</span>, <span class="code-string">"11th"</span>, <span class="code-string">"S002"</span>)
+
+<span class="code-comment"># Each student has unique data</span>
+student1.enroll_subject(<span class="code-string">"Math"</span>)
+student1.enroll_subject(<span class="code-string">"Science"</span>)
+student2.enroll_subject(<span class="code-string">"History"</span>)
+
+<span class="code-function">print</span>(student1.get_report())</code></pre>
+            </div>
+
+            <h3>Class Attribute vs Instance Attribute</h3>
+            <p>This is a common source of confusion. Here's the clear difference:</p>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Class Attribute</th>
+                        <th>Instance Attribute</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Where defined?</strong></td>
+                        <td>Inside class, outside methods</td>
+                        <td>Inside <code>__init__</code> using <code>self</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Shared?</strong></td>
+                        <td>Shared across ALL instances</td>
+                        <td>Unique to EACH instance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>How to access?</strong></td>
+                        <td><code>ClassName.attr</code> or <code>obj.attr</code></td>
+                        <td>Only via <code>obj.attr</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Memory</strong></td>
+                        <td>One copy for all objects</td>
+                        <td>Separate copy per object</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Use Case</strong></td>
+                        <td>Constants, default values</td>
+                        <td>Object-specific data</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Real-World Example: Bank Account</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Bank Account Class</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">class</span> <span class="code-class">BankAccount</span>:
+    <span class="code-comment"># Class attribute — interest rate for ALL accounts</span>
+    interest_rate = <span class="code-number">0.05</span>  <span class="code-comment"># 5% interest</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, owner, balance=<span class="code-number">0</span>):
+        <span class="code-variable">self</span>.owner = owner
+        <span class="code-variable">self</span>.balance = balance
+        <span class="code-variable">self</span>.transaction_history = []
+
+    <span class="code-keyword">def</span> <span class="code-function">deposit</span>(<span class="code-variable">self</span>, amount):
+        <span class="code-keyword">if</span> amount > <span class="code-number">0</span>:
+            <span class="code-variable">self</span>.balance += amount
+            <span class="code-variable">self</span>.transaction_history.append(<span class="code-string">f"Deposited: ${amount}"</span>)
+            <span class="code-keyword">return</span> <span class="code-string">f"Deposit successful! New balance: ${self.balance}"</span>
+        <span class="code-keyword">return</span> <span class="code-string">"Invalid deposit amount!"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">withdraw</span>(<span class="code-variable">self</span>, amount):
+        <span class="code-keyword">if</span> <span class="code-number">0</span> < amount <= <span class="code-variable">self</span>.balance:
+            <span class="code-variable">self</span>.balance -= amount
+            <span class="code-variable">self</span>.transaction_history.append(<span class="code-string">f"Withdrawn: ${amount}"</span>)
+            <span class="code-keyword">return</span> <span class="code-string">f"Withdrawal successful! Remaining: ${self.balance}"</span>
+        <span class="code-keyword">return</span> <span class="code-string">"Insufficient funds or invalid amount!"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">get_balance</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"Current balance: ${self.balance}"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">apply_interest</span>(<span class="code-variable">self</span>):
+        interest = <span class="code-variable">self</span>.balance * BankAccount.interest_rate
+        <span class="code-variable">self</span>.balance += interest
+        <span class="code-keyword">return</span> <span class="code-string">f"Interest applied! New balance: ${self.balance}"</span>
+
+<span class="code-comment"># Creating bank accounts</span>
+account1 = BankAccount(<span class="code-string">"John Doe"</span>, <span class="code-number">1000</span>)
+account2 = BankAccount(<span class="code-string">"Jane Smith"</span>, <span class="code-number">500</span>)
+
+<span class="code-comment"># Performing transactions</span>
+<span class="code-function">print</span>(account1.deposit(<span class="code-number">500</span>))
+<span class="code-function">print</span>(account1.withdraw(<span class="code-number">200</span>))
+<span class="code-function">print</span>(account1.get_balance())
+<span class="code-function">print</span>(account1.apply_interest())</code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>Deposit successful! New balance: $1500
+Withdrawal successful! Remaining: $1300
+Current balance: $1300
+Interest applied! New balance: $1365.0</pre>
+            </div>
+
+            <h3>Special Methods (Dunder Methods)</h3>
+            <p>Python provides special methods that start and end with double underscores (<code>__</code>). These let you define how objects behave with built-in operations:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Special Methods</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">class</span> <span class="code-class">Vector</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, x, y):
+        <span class="code-variable">self</span>.x = x
+        <span class="code-variable">self</span>.y = y
+
+    <span class="code-comment"># String representation — used by print() and str()</span>
+    <span class="code-keyword">def</span> <span class="code-function">__str__</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"Vector({self.x}, {self.y})"</span>
+
+    <span class="code-comment"># Official representation — used by repr()</span>
+    <span class="code-keyword">def</span> <span class="code-function">__repr__</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"Vector({self.x}, {self.y})"</span>
+
+    <span class="code-comment"># Addition operator (+)</span>
+    <span class="code-keyword">def</span> <span class="code-function">__add__</span>(<span class="code-variable">self</span>, other):
+        <span class="code-keyword">return</span> Vector(<span class="code-variable">self</span>.x + other.x, <span class="code-variable">self</span>.y + other.y)
+
+    <span class="code-comment"># Equality operator (==)</span>
+    <span class="code-keyword">def</span> <span class="code-function">__eq__</span>(<span class="code-variable">self</span>, other):
+        <span class="code-keyword">return</span> <span class="code-variable">self</span>.x == other.x <span class="code-keyword">and</span> <span class="code-variable">self</span>.y == other.y
+
+    <span class="code-comment"># Length of vector</span>
+    <span class="code-keyword">def</span> <span class="code-function">__len__</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> int((<span class="code-variable">self</span>.x ** <span class="code-number">2</span> + <span class="code-variable">self</span>.y ** <span class="code-number">2</span>) ** <span class="code-number">0.5</span>)
+
+v1 = Vector(<span class="code-number">2</span>, <span class="code-number">3</span>)
+v2 = Vector(<span class="code-number">4</span>, <span class="code-number">5</span>)
+
+<span class="code-function">print</span>(v1)           <span class="code-comment"># Vector(2, 3) — uses __str__</span>
+v3 = v1 + v2        <span class="code-comment"># Uses __add__</span>
+<span class="code-function">print</span>(v3)           <span class="code-comment"># Vector(6, 8)</span>
+<span class="code-function">print</span>(v1 == v2)     <span class="code-comment"># False — uses __eq__</span>
+<span class="code-function">print</span>(<span class="code-function">len</span>(v3))    <span class="code-comment"># 10 — uses __len__</span></code></pre>
+            </div>
+
+            <div class="info-box note">
+                <div class="info-box-title">📋 Common Special Methods Cheat Sheet</div>
+                <table class="styled-table" style="margin: 0.5rem 0 0;">
+                    <tr><th>Method</th><th>What it does</th><th>When it's called</th></tr>
+                    <tr><td><code>__init__</code></td><td>Constructor</td><td>When you create an object</td></tr>
+                    <tr><td><code>__str__</code></td><td>User-friendly string</td><td><code>print()</code>, <code>str()</code></td></tr>
+                    <tr><td><code>__repr__</code></td><td>Official representation</td><td><code>repr()</code>, interactive shell</td></tr>
+                    <tr><td><code>__eq__</code></td><td>Equality check</td><td><code>==</code> operator</td></tr>
+                    <tr><td><code>__add__</code></td><td>Addition</td><td><code>+</code> operator</td></tr>
+                    <tr><td><code>__len__</code></td><td>Length</td><td><code>len()</code> function</td></tr>
+                    <tr><td><code>__lt__</code></td><td>Less than</td><td><code>&lt;</code> operator</td></tr>
+                </table>
+            </div>
+        </section>
+<section id="quiz1" class="sd-sec">
+            <h2><span class="icon">🧪</span> 3. Quiz 1 — Test Your Knowledge</h2>
+
+            <div class="video-info">
+                <strong>Video Chapter:</strong> 31:13 - Quiz 1
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <h4>Question 1: What is the correct way to create a class in Python?</h4>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, false)">A) <code>class = MyClass:</code></li>
+                        <li onclick="checkAnswer(this, true)">B) <code>class MyClass:</code></li>
+                        <li onclick="checkAnswer(this, false)">C) <code>def class MyClass:</code></li>
+                        <li onclick="checkAnswer(this, false)">D) <code>create class MyClass:</code></li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> In Python, classes are defined using the <code>class</code> keyword followed by the class name and a colon. The correct syntax is <code>class MyClass:</code>.
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 2: What is the purpose of the <code>__init__</code> method?</h4>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, false)">A) To delete an object</li>
+                        <li onclick="checkAnswer(this, false)">B) To import modules</li>
+                        <li onclick="checkAnswer(this, true)">C) To initialize object attributes</li>
+                        <li onclick="checkAnswer(this, false)">D) To create a class</li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> The <code>__init__</code> method is the constructor that gets called automatically when a new object is created. It's used to initialize the object's attributes.
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 3: What does the <code>self</code> parameter represent?</h4>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, false)">A) The class itself</li>
+                        <li onclick="checkAnswer(this, true)">B) The current instance of the class</li>
+                        <li onclick="checkAnswer(this, false)">C) A global variable</li>
+                        <li onclick="checkAnswer(this, false)">D) The parent class</li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> The <code>self</code> parameter represents the current instance of the class. It allows access to the object's attributes and methods. Python passes it automatically.
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 4: Which statement is true about class vs instance attributes?</h4>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, false)">A) Both are the same thing</li>
+                        <li onclick="checkAnswer(this, true)">B) Class attribute is shared; instance attribute is unique</li>
+                        <li onclick="checkAnswer(this, false)">C) Instance attribute is shared; class attribute is unique</li>
+                        <li onclick="checkAnswer(this, false)">D) Class attributes can only store numbers</li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> Class attributes are shared across all instances of the class, while instance attributes (defined in <code>__init__</code> with <code>self</code>) are unique to each object.
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 5: What will <code>print(dog1.species)</code> output if <code>species</code> is a class attribute?</h4>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, true)">A) The class attribute value</li>
+                        <li onclick="checkAnswer(this, false)">B) None</li>
+                        <li onclick="checkAnswer(this, false)">C) Error — Attribute not found</li>
+                        <li onclick="checkAnswer(this, false)">D) The instance attribute value</li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> Class attributes can be accessed using either the class name or any instance of the class. If not shadowed by an instance attribute, it returns the class attribute value.
+                    </div>
+                </div>
+            </div>
+        </section>
+<section id="inheritance" class="sd-sec">
+            <h2><span class="icon">👨‍👧</span> 4. Inheritance</h2>
+
+            <div class="video-info">
+                <strong>Video Chapters:</strong> 39:07 - Concept | 41:26 - Code Implementation
+            </div>
+
+            <h3>What is Inheritance?</h3>
+            <p>
+                <span class="highlight">Inheritance</span> is when a new class (child/subclass) gets properties and methods from an existing class (parent/superclass). It promotes code reusability and creates a natural hierarchy between classes.
+            </p>
+
+            <div class="info-box note">
+                <div class="info-box-title">💡 Real-World Analogy</div>
+                <p>A child inherits traits from their parents (eye color, height). Similarly, in OOP, a child class inherits attributes and methods from its parent class. The child can also have its own unique traits (new attributes/methods) or modify inherited ones.</p>
+            </div>
+
+            <div class="diagram">
+                <div class="diagram-title">🏗️ Inheritance Hierarchy</div>
+<pre>
+         Animal (Parent Class)
+         ┌─────────────────────┐
+         │ - name              │
+         │ - age               │
+         │                     │
+         │ + eat()             │
+         │ + sleep()           │
+         │ + make_sound()      │
+         └──────────┬──────────┘
+                    │
+        ┌──────────┼──────────┐
+        ▼          ▼          ▼
+      Dog        Cat       Bird
+   (Child)    (Child)    (Child)
+   ┌───────┐  ┌───────┐  ┌───────┐
+   │+ bark │  │+ meow │  │+ chirp│
+   │+ fetch│  │+ climb│  │+ fly  │
+   └───────┘  └───────┘  └───────┘
+</pre>
+            </div>
+
+            <h3>4 Types of Inheritance in Python</h3>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <span class="pillar-icon">1️⃣</span>
+                    <h3>Single Inheritance</h3>
+                    <p>One child class inherits from one parent class</p>
+                    <span class="tag blue">Basic</span>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">2️⃣</span>
+                    <h3>Multiple Inheritance</h3>
+                    <p>One child class inherits from multiple parent classes</p>
+                    <span class="tag purple">Advanced</span>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">3️⃣</span>
+                    <h3>Multilevel Inheritance</h3>
+                    <p>Grandchild → Child → Parent inheritance chain</p>
+                    <span class="tag green">Common</span>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">4️⃣</span>
+                    <h3>Hierarchical Inheritance</h3>
+                    <p>Multiple children inherit from one parent</p>
+                    <span class="tag orange">Flexible</span>
+                </div>
+            </div>
+
+            <h3>Single Inheritance Example</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Single Inheritance</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-comment"># Parent Class</span>
+<span class="code-keyword">class</span> <span class="code-class">Animal</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, name, age):
+        <span class="code-variable">self</span>.name = name
+        <span class="code-variable">self</span>.age = age
+
+    <span class="code-keyword">def</span> <span class="code-function">eat</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} is eating"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">sleep</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} is sleeping"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">make_sound</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Some generic animal sound"</span>
+
+<span class="code-comment"># Child Class — inherits from Animal</span>
+<span class="code-keyword">class</span> <span class="code-class">Dog</span>(Animal):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, name, age, breed):
+        <span class="code-comment"># Call parent constructor using super()</span>
+        <span class="code-keyword">super</span>().<span class="code-function">__init__</span>(name, age)
+        <span class="code-variable">self</span>.breed = breed
+
+    <span class="code-comment"># Override parent method</span>
+    <span class="code-keyword">def</span> <span class="code-function">make_sound</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} says: Woof! Woof!"</span>
+
+    <span class="code-comment"># New method specific to Dog</span>
+    <span class="code-keyword">def</span> <span class="code-function">fetch</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} is fetching the ball!"</span>
+
+<span class="code-comment"># Another Child Class</span>
+<span class="code-keyword">class</span> <span class="code-class">Cat</span>(Animal):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, name, age, color):
+        <span class="code-keyword">super</span>().<span class="code-function">__init__</span>(name, age)
+        <span class="code-variable">self</span>.color = color
+
+    <span class="code-keyword">def</span> <span class="code-function">make_sound</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} says: Meow!"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">climb</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} is climbing the tree!"</span>
+
+<span class="code-comment"># Using the classes</span>
+dog = Dog(<span class="code-string">"Buddy"</span>, <span class="code-number">3</span>, <span class="code-string">"Golden Retriever"</span>)
+cat = Cat(<span class="code-string">"Whiskers"</span>, <span class="code-number">2</span>, <span class="code-string">"Orange"</span>)
+
+<span class="code-function">print</span>(dog.eat())          <span class="code-comment"># Inherited from Animal</span>
+<span class="code-function">print</span>(dog.make_sound())   <span class="code-comment"># Overridden in Dog</span>
+<span class="code-function">print</span>(dog.fetch())        <span class="code-comment"># Unique to Dog</span>
+<span class="code-function">print</span>(cat.sleep())        <span class="code-comment"># Inherited from Animal</span>
+<span class="code-function">print</span>(cat.make_sound())   <span class="code-comment"># Overridden in Cat</span></code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>Buddy is eating
+Buddy says: Woof! Woof!
+Buddy is fetching the ball!
+Whiskers is sleeping
+Whiskers says: Meow!</pre>
+            </div>
+
+            <h3>Multiple Inheritance</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Multiple Inheritance</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-comment"># Parent Class 1</span>
+<span class="code-keyword">class</span> <span class="code-class">Flying</span>:
+    <span class="code-keyword">def</span> <span class="code-function">fly</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"I can fly!"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">take_off</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Taking off into the sky!"</span>
+
+<span class="code-comment"># Parent Class 2</span>
+<span class="code-keyword">class</span> <span class="code-class">Swimming</span>:
+    <span class="code-keyword">def</span> <span class="code-function">swim</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"I can swim!"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">dive</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Diving into the water!"</span>
+
+<span class="code-comment"># Child inherits from BOTH Flying and Swimming</span>
+<span class="code-keyword">class</span> <span class="code-class">Duck</span>(Flying, Swimming):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, name):
+        <span class="code-variable">self</span>.name = name
+
+    <span class="code-keyword">def</span> <span class="code-function">make_sound</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Quack! Quack!"</span>
+
+<span class="code-comment"># Duck can do everything!</span>
+donald = Duck(<span class="code-string">"Donald"</span>)
+
+<span class="code-function">print</span>(donald.fly())        <span class="code-comment"># From Flying class</span>
+<span class="code-function">print</span>(donald.swim())       <span class="code-comment"># From Swimming class</span>
+<span class="code-function">print</span>(donald.take_off())   <span class="code-comment"># From Flying class</span>
+<span class="code-function">print</span>(donald.dive())       <span class="code-comment"># From Swimming class</span>
+<span class="code-function">print</span>(donald.make_sound()) <span class="code-comment"># Duck's own method</span></code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>I can fly!
+I can swim!
+Taking off into the sky!
+Diving into the water!
+Quack! Quack!</pre>
+            </div>
+
+            <h3>Multilevel Inheritance</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Multilevel Inheritance</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-comment"># Grandparent Class</span>
+<span class="code-keyword">class</span> <span class="code-class">Vehicle</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, brand):
+        <span class="code-variable">self</span>.brand = brand
+
+    <span class="code-keyword">def</span> <span class="code-function">start</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.brand} vehicle starting..."</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">stop</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.brand} vehicle stopping..."</span>
+
+<span class="code-comment"># Parent Class (inherits from Vehicle)</span>
+<span class="code-keyword">class</span> <span class="code-class">Car</span>(Vehicle):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, brand, model):
+        <span class="code-keyword">super</span>().<span class="code-function">__init__</span>(brand)
+        <span class="code-variable">self</span>.model = model
+        <span class="code-variable">self</span>.wheels = <span class="code-number">4</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">honk</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Beep! Beep!"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">drift</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.model} is drifting!"</span>
+
+<span class="code-comment"># Child Class (inherits from Car)</span>
+<span class="code-keyword">class</span> <span class="code-class">ElectricCar</span>(Car):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, brand, model, battery_capacity):
+        <span class="code-keyword">super</span>().<span class="code-function">__init__</span>(brand, model)
+        <span class="code-variable">self</span>.battery_capacity = battery_capacity
+        <span class="code-variable">self</span>.charge_level = <span class="code-number">100</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">charge</span>(<span class="code-variable">self</span>):
+        <span class="code-variable">self</span>.charge_level = <span class="code-number">100</span>
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.model} is fully charged!"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">drive_eco</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.model} driving in eco mode ⚡"</span>
+
+<span class="code-comment"># ElectricCar has access to ALL methods!</span>
+tesla = ElectricCar(<span class="code-string">"Tesla"</span>, <span class="code-string">"Model S"</span>, <span class="code-string">"100 kWh"</span>)
+
+<span class="code-function">print</span>(tesla.start())        <span class="code-comment"># From Vehicle</span>
+<span class="code-function">print</span>(tesla.honk())         <span class="code-comment"># From Car</span>
+<span class="code-function">print</span>(tesla.charge())       <span class="code-comment"># From ElectricCar</span>
+<span class="code-function">print</span>(tesla.drive_eco())    <span class="code-comment"># From ElectricCar</span>
+<span class="code-function">print</span>(<span class="code-string">f"Battery: {tesla.battery_capacity}"</span>)
+<span class="code-function">print</span>(<span class="code-string">f"Wheels: {tesla.wheels}"</span>)</code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>Tesla vehicle starting...
+Beep! Beep!
+Model S is fully charged!
+Model S driving in eco mode ⚡
+Battery: 100 kWh
+Wheels: 4</pre>
+            </div>
+
+            <div class="info-box tip">
+                <div class="info-box-title">💡 The <code>super()</code> Function</div>
+                <p>The <code>super()</code> function calls the parent class method. It's commonly used in the child's <code>__init__</code> to initialize inherited attributes. This avoids duplicating code and makes maintenance easier.</p>
+            </div>
+
+            <h3>Method Resolution Order (MRO)</h3>
+            <p>When using multiple inheritance, Python follows the <span class="highlight">Method Resolution Order (MRO)</span> to determine which method to call. You can check the MRO using the <code>__mro__</code> attribute:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Checking MRO</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-function">print</span>(ElectricCar.<span class="code-variable">__mro__</span>)
+<span class="code-comment"># Output: (&lt;class 'ElectricCar'&gt;, &lt;class 'Car'&gt;, &lt;class 'Vehicle'&gt;, &lt;class 'object'&gt;)</span>
+
+<span class="code-comment"># Or use the mro() method</span>
+<span class="code-function">print</span>(ElectricCar.<span class="code-function">mro</span>())</code></pre>
+            </div>
+
+            <div class="info-box warning">
+                <div class="info-box-title">⚠️ The Diamond Problem</div>
+                <p>In multiple inheritance, if two parent classes inherit from the same grandparent, Python's MRO ensures each class is called only once. Python uses the <strong>C3 Linearization</strong> algorithm to resolve this.</p>
+            </div>
+        </section>
+<section id="polymorphism" class="sd-sec">
+            <h2><span class="icon">🎭</span> 5. Polymorphism</h2>
+
+            <div class="video-info">
+                <strong>Video Chapters:</strong> 50:20 - Concept | 52:04 - Code Implementation
+            </div>
+
+            <h3>What is Polymorphism?</h3>
+            <p>
+                <span class="highlight">Polymorphism</span> means "many forms." In OOP, it allows objects of different classes to be treated as objects of a common parent class. The same method call can behave differently based on the object's actual class.
+            </p>
+
+            <div class="info-box note">
+                <div class="info-box-title">💡 Real-World Analogy</div>
+                <p>Consider a <strong>+</strong> operator: with numbers it adds (<code>5 + 3 = 8</code>), with strings it concatenates (<code>"Hello" + " World" = "Hello World"</code>). The same operator behaves differently based on the operands — that's polymorphism!</p>
+            </div>
+
+            <div class="diagram">
+                <div class="diagram-title">🎭 Polymorphism in Action</div>
+<pre>
+    Same Message → Different Behaviors
+
+    for animal in [dog, cat, bird]:
+        animal.make_sound()
+
+    dog.make_sound()  ──►  "Woof! Woof!"
+    cat.make_sound()  ──►  "Meow!"
+    bird.make_sound() ──►  "Chirp! Chirp!"
+
+    Same method name, different implementations!
+</pre>
+            </div>
+
+            <h3>Polymorphism with Inheritance (Method Overriding)</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Polymorphism with Method Overriding</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">class</span> <span class="code-class">Animal</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, name):
+        <span class="code-variable">self</span>.name = name
+
+    <span class="code-comment"># Base method — will be overridden by children</span>
+    <span class="code-keyword">def</span> <span class="code-function">make_sound</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Some sound"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">move</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} is moving"</span>
+
+<span class="code-keyword">class</span> <span class="code-class">Dog</span>(Animal):
+    <span class="code-keyword">def</span> <span class="code-function">make_sound</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} says: Woof! Woof! 🐕"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">move</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} is running on 4 legs 🐾"</span>
+
+<span class="code-keyword">class</span> <span class="code-class">Cat</span>(Animal):
+    <span class="code-keyword">def</span> <span class="code-function">make_sound</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} says: Meow! 🐱"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">move</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} is sneaking quietly 🐾"</span>
+
+<span class="code-keyword">class</span> <span class="code-class">Bird</span>(Animal):
+    <span class="code-keyword">def</span> <span class="code-function">make_sound</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} says: Chirp! Chirp! 🐦"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">move</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.name} is flying in the sky ✈️"</span>
+
+<span class="code-comment"># Polymorphism in action!</span>
+<span class="code-keyword">def</span> <span class="code-function">animal_concert</span>(animals):
+    <span class="code-function">print</span>(<span class="code-string">"
+🎵 Welcome to the Animal Concert! 🎵
+"</span>)
+    <span class="code-keyword">for</span> animal <span class="code-keyword">in</span> animals:
+        <span class="code-function">print</span>(animal.make_sound())
+        <span class="code-function">print</span>(animal.move())
+        <span class="code-function">print</span>(<span class="code-string">"-"</span> * <span class="code-number">30</span>)
+
+<span class="code-comment"># Create different animals</span>
+dog = Dog(<span class="code-string">"Buddy"</span>)
+cat = Cat(<span class="code-string">"Whiskers"</span>)
+bird = Bird(<span class="code-string">"Tweety"</span>)
+
+<span class="code-comment"># Same function, different behaviors!</span>
+animal_concert([dog, cat, bird])</code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>🎵 Welcome to the Animal Concert! 🎵
+
+Buddy says: Woof! Woof! 🐕
+Buddy is running on 4 legs 🐾
+------------------------------
+Whiskers says: Meow! 🐱
+Whiskers is sneaking quietly 🐾
+------------------------------
+Tweety says: Chirp! Chirp! 🐦
+Tweety is flying in the sky ✈️
+------------------------------</pre>
+            </div>
+
+            <h3>Polymorphism with Functions (Duck Typing)</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Polymorphic Functions & Duck Typing</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-comment"># Python is dynamically typed — polymorphism comes naturally</span>
+<span class="code-keyword">def</span> <span class="code-function">add</span>(a, b):
+    <span class="code-keyword">return</span> a + b
+
+<span class="code-comment"># Works with integers</span>
+<span class="code-function">print</span>(add(<span class="code-number">5</span>, <span class="code-number">3</span>))           <span class="code-comment"># 8</span>
+
+<span class="code-comment"># Works with strings</span>
+<span class="code-function">print</span>(add(<span class="code-string">"Hello, "</span>, <span class="code-string">"World!"</span>))  <span class="code-comment"># Hello, World!</span>
+
+<span class="code-comment"># Works with lists</span>
+<span class="code-function">print</span>(add([<span class="code-number">1</span>, <span class="code-number">2</span>], [<span class="code-number">3</span>, <span class="code-number">4</span>]))    <span class="code-comment"># [1, 2, 3, 4]</span>
+
+<span class="code-comment"># Polymorphic behavior with objects</span>
+<span class="code-keyword">class</span> <span class="code-class">Rectangle</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, width, height):
+        <span class="code-variable">self</span>.width = width
+        <span class="code-variable">self</span>.height = height
+
+    <span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-variable">self</span>.width * <span class="code-variable">self</span>.height
+
+    <span class="code-keyword">def</span> <span class="code-function">__str__</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"Rectangle({self.width}x{self.height})"</span>
+
+<span class="code-keyword">class</span> <span class="code-class">Circle</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, radius):
+        <span class="code-variable">self</span>.radius = radius
+        <span class="code-variable">self</span>.pi = <span class="code-number">3.14159</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-variable">self</span>.pi * <span class="code-variable">self</span>.radius ** <span class="code-number">2</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">__str__</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"Circle(r={self.radius})"</span>
+
+<span class="code-keyword">class</span> <span class="code-class">Triangle</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, base, height):
+        <span class="code-variable">self</span>.base = base
+        <span class="code-variable">self</span>.height = height
+
+    <span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-number">0.5</span> * <span class="code-variable">self</span>.base * <span class="code-variable">self</span>.height
+
+    <span class="code-keyword">def</span> <span class="code-function">__str__</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"Triangle(b={self.base}, h={self.height})"</span>
+
+<span class="code-comment"># Polymorphic function — works with ANY shape!</span>
+<span class="code-keyword">def</span> <span class="code-function">print_area</span>(shape):
+    <span class="code-function">print</span>(<span class="code-string">f"{shape} has area: {shape.area():.2f}"</span>)
+
+<span class="code-comment"># Create different shapes</span>
+shapes = [
+    Rectangle(<span class="code-number">5</span>, <span class="code-number">3</span>),
+    Circle(<span class="code-number">4</span>),
+    Triangle(<span class="code-number">6</span>, <span class="code-number">4</span>)
+]
+
+<span class="code-comment"># Same function, different calculations!</span>
+<span class="code-keyword">for</span> shape <span class="code-keyword">in</span> shapes:
+    print_area(shape)</code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>Rectangle(5x3) has area: 15.00
+Circle(r=4) has area: 50.27
+Triangle(b=6, h=4) has area: 12.00</pre>
+            </div>
+
+            <h3>Duck Typing in Python</h3>
+            <p>Python follows the principle: <span class="highlight">"If it looks like a duck and quacks like a duck, it is a duck."</span> This means Python doesn't check the type of object; it only checks if the required method exists.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Duck Typing</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-comment"># No inheritance needed — just need the same method!</span>
+<span class="code-keyword">class</span> <span class="code-class">Dog</span>:
+    <span class="code-keyword">def</span> <span class="code-function">speak</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Woof!"</span>
+
+<span class="code-keyword">class</span> <span class="code-class">Cat</span>:
+    <span class="code-keyword">def</span> <span class="code-function">speak</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Meow!"</span>
+
+<span class="code-keyword">class</span> <span class="code-class">Duck</span>:
+    <span class="code-keyword">def</span> <span class="code-function">speak</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Quack!"</span>
+
+<span class="code-keyword">class</span> <span class="code-class">Robot</span>:
+    <span class="code-keyword">def</span> <span class="code-function">speak</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Beep boop!"</span>
+
+<span class="code-comment"># This function doesn't care about the type!</span>
+<span class="code-keyword">def</span> <span class="code-function">make_it_speak</span>(thing):
+    <span class="code-function">print</span>(thing.speak())
+
+<span class="code-comment"># All these work — they all have a speak() method!</span>
+make_it_speak(Dog())
+make_it_speak(Cat())
+make_it_speak(Duck())
+make_it_speak(Robot())
+
+<span class="code-comment"># This is Python's duck typing — no common parent needed!</span></code></pre>
+            </div>
+
+            <div class="info-box tip">
+                <div class="info-box-title">💡 Types of Polymorphism</div>
+                <ul>
+                    <li><strong>Method Overriding:</strong> Child class redefines parent's method</li>
+                    <li><strong>Method Overloading:</strong> Same method name, different parameters (not natively supported in Python, but achievable with default args)</li>
+                    <li><strong>Operator Overloading:</strong> Using operators with custom objects (via dunder methods like <code>__add__</code>)</li>
+                    <li><strong>Duck Typing:</strong> Python's dynamic typing approach — "if it walks like a duck..."</li>
+                </ul>
+            </div>
+        </section>
+<section id="encapsulation" class="sd-sec">
+            <h2><span class="icon">🔐</span> 6. Encapsulation</h2>
+
+            <div class="video-info">
+                <strong>Video Chapters:</strong> 53:34 - Concept | 55:07 - Code Implementation
+            </div>
+
+            <h3>What is Encapsulation?</h3>
+            <p>
+                <span class="highlight">Encapsulation</span> is the bundling of data (attributes) and methods (functions) that operate on that data within a single unit (class). It restricts direct access to some of the object's components, which prevents accidental modification of data.
+            </p>
+
+            <div class="info-box note">
+                <div class="info-box-title">💡 Real-World Analogy</div>
+                <p>Consider a <strong>capsule medicine</strong> — the medicine is encapsulated inside a shell that protects it and controls how it's released. Similarly, in OOP, we encapsulate (protect) data inside a class and control access through methods.</p>
+            </div>
+
+            <h3>Access Modifiers in Python</h3>
+            <p>Python uses naming conventions to indicate access levels. Unlike Java, these are not strictly enforced — they are conventions that programmers follow:</p>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Syntax</th>
+                        <th>Access</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="tag green">Public</span></td>
+                        <td><code>self.name</code></td>
+                        <td>Anywhere</td>
+                        <td>Accessible from anywhere — no restrictions</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag orange">Protected</span></td>
+                        <td><code>self._name</code></td>
+                        <td>Class & Subclass</td>
+                        <td>Convention: "internal use only" — one underscore</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag red">Private</span></td>
+                        <td><code>self.__name</code></td>
+                        <td>Only inside class</td>
+                        <td>Name mangling prevents accidental access — two underscores</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="diagram">
+                <div class="diagram-title">🔐 Encapsulation Visualization</div>
+<pre>
+        Without Encapsulation                    With Encapsulation
+        ┌─────────────────────┐                 ┌─────────────────────┐
+        │     BankAccount     │                 │     BankAccount     │
+        │                     │                 │ ┌───────────────┐   │
+        │  balance = 1000     │    ───►         │ │  __balance    │   │
+        │                     │                 │ │  (Private)    │   │
+        │  (Direct access -   │                 │ └───────────────┘   │
+        │   unsafe!)          │                 │                     │
+        └─────────────────────┘                 │  + deposit()        │
+                                                │  + withdraw()       │
+                                                │  + get_balance()    │
+                                                │  (Controlled access)│
+                                                └─────────────────────┘
+</pre>
+            </div>
+
+            <h3>Public, Protected & Private Members</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Access Modifiers</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">class</span> <span class="code-class">Employee</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, name, salary, ssn):
+        <span class="code-variable">self</span>.name = name           <span class="code-comment"># Public — accessible anywhere</span>
+        <span class="code-variable">self</span>._department = <span class="code-string">"IT"</span>  <span class="code-comment"># Protected — convention, use in subclass</span>
+        <span class="code-variable">self</span>.__ssn = ssn           <span class="code-comment"># Private — only inside this class</span>
+        <span class="code-variable">self</span>.__salary = salary     <span class="code-comment"># Private — name mangling applied</span>
+
+    <span class="code-comment"># Getter method for private attribute</span>
+    <span class="code-keyword">def</span> <span class="code-function">get_salary</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"Salary: ${self.__salary}"</span>
+
+    <span class="code-comment"># Setter method with validation</span>
+    <span class="code-keyword">def</span> <span class="code-function">set_salary</span>(<span class="code-variable">self</span>, new_salary):
+        <span class="code-keyword">if</span> new_salary > <span class="code-number">0</span>:
+            <span class="code-variable">self</span>.__salary = new_salary
+            <span class="code-keyword">return</span> <span class="code-string">"Salary updated successfully!"</span>
+        <span class="code-keyword">return</span> <span class="code-string">"Invalid salary amount!"</span>
+
+    <span class="code-comment"># Getter for SSN (masked for security)</span>
+    <span class="code-keyword">def</span> <span class="code-function">get_ssn</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"XXX-XX-{self.__ssn[-4:]}"</span>
+
+    <span class="code-comment"># Public method</span>
+    <span class="code-keyword">def</span> <span class="code-function">display_info</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"Name: {self.name}, Dept: {self._department}"</span>
+
+<span class="code-comment"># Creating employee</span>
+emp = Employee(<span class="code-string">"John Doe"</span>, <span class="code-number">50000</span>, <span class="code-string">"123-45-6789"</span>)
+
+<span class="code-comment"># Accessing public member</span>
+<span class="code-function">print</span>(emp.name)              <span class="code-comment"># ✅ Works: John Doe</span>
+
+<span class="code-comment"># Accessing protected member (not recommended, but possible)</span>
+<span class="code-function">print</span>(emp._department)       <span class="code-comment"># ⚠️ Works but discouraged: IT</span>
+
+<span class="code-comment"># Accessing private member directly</span>
+<span class="code-comment"># print(emp.__salary)        # ❌ Error! Attribute doesn't exist</span>
+
+<span class="code-comment"># Access via getter/setter (proper way)</span>
+<span class="code-function">print</span>(emp.get_salary())      <span class="code-comment"># ✅ Salary: $50000</span>
+<span class="code-function">print</span>(emp.set_salary(<span class="code-number">60000</span>)) <span class="code-comment"># ✅ Salary updated!</span>
+<span class="code-function">print</span>(emp.get_ssn())         <span class="code-comment"># ✅ XXX-XX-6789 (masked)</span>
+
+<span class="code-comment"># Name mangling — can access but shouldn't!</span>
+<span class="code-function">print</span>(emp._Employee__ssn)    <span class="code-comment"># ⚠️ Works but bad practice!</span></code></pre>
+            </div>
+
+            <div class="info-box warning">
+                <div class="info-box-title">⚠️ Important Note for Beginners</div>
+                <p>Python doesn't enforce true privacy like Java or C++. The double underscore triggers <strong>name mangling</strong> (e.g., <code>__salary</code> becomes <code>_Employee__salary</code>), which makes it harder to accidentally access private members. However, a determined developer can still access them. Python follows the philosophy: <em>"We're all consenting adults here."</em></p>
+            </div>
+
+            <h3>Complete Encapsulation Example: Secure Bank Account</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Fully Encapsulated Bank Account</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">class</span> <span class="code-class">SecureBankAccount</span>:
+    <span class="code-comment"># Class-level private attribute</span>
+    __bank_name = <span class="code-string">"Secure Bank Ltd."</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, owner, initial_balance=<span class="code-number">0</span>):
+        <span class="code-variable">self</span>.owner = owner                    <span class="code-comment"># Public</span>
+        <span class="code-variable">self</span>._account_type = <span class="code-string">"Savings"</span>        <span class="code-comment"># Protected</span>
+        <span class="code-variable">self</span>.__balance = initial_balance      <span class="code-comment"># Private</span>
+        <span class="code-variable">self</span>.__pin = <span class="code-string">"0000"</span>                  <span class="code-comment"># Private</span>
+        <span class="code-variable">self</span>.__transaction_log = []           <span class="code-comment"># Private</span>
+
+    <span class="code-comment"># ============ GETTERS ============</span>
+    <span class="code-keyword">def</span> <span class="code-function">get_balance</span>(<span class="code-variable">self</span>, pin):
+        <span class="code-keyword">if</span> <span class="code-variable">self</span>.__verify_pin(pin):
+            <span class="code-keyword">return</span> <span class="code-string">f"Balance: ${self.__balance}"</span>
+        <span class="code-keyword">return</span> <span class="code-string">"Invalid PIN!"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">get_transaction_history</span>(<span class="code-variable">self</span>, pin):
+        <span class="code-keyword">if</span> <span class="code-variable">self</span>.__verify_pin(pin):
+            <span class="code-keyword">return</span> <span class="code-variable">self</span>.__transaction_log
+        <span class="code-keyword">return</span> <span class="code-string">"Access Denied!"</span>
+
+    <span class="code-comment"># ============ SETTERS ============</span>
+    <span class="code-keyword">def</span> <span class="code-function">set_pin</span>(<span class="code-variable">self</span>, old_pin, new_pin):
+        <span class="code-keyword">if</span> <span class="code-variable">self</span>.__verify_pin(old_pin):
+            <span class="code-keyword">if</span> <span class="code-function">len</span>(new_pin) == <span class="code-number">4</span> <span class="code-keyword">and</span> new_pin.isdigit():
+                <span class="code-variable">self</span>.__pin = new_pin
+                <span class="code-keyword">return</span> <span class="code-string">"PIN changed successfully!"</span>
+            <span class="code-keyword">return</span> <span class="code-string">"PIN must be 4 digits!"</span>
+        <span class="code-keyword">return</span> <span class="code-string">"Invalid old PIN!"</span>
+
+    <span class="code-comment"># ============ BUSINESS LOGIC ============</span>
+    <span class="code-keyword">def</span> <span class="code-function">deposit</span>(<span class="code-variable">self</span>, amount, pin):
+        <span class="code-keyword">if</span> <span class="code-keyword">not</span> <span class="code-variable">self</span>.__verify_pin(pin):
+            <span class="code-keyword">return</span> <span class="code-string">"Invalid PIN!"</span>
+        <span class="code-keyword">if</span> amount <= <span class="code-number">0</span>:
+            <span class="code-keyword">return</span> <span class="code-string">"Invalid amount!"</span>
+
+        <span class="code-variable">self</span>.__balance += amount
+        <span class="code-variable">self</span>.__log_transaction(<span class="code-string">f"DEPOSIT: +${amount}"</span>)
+        <span class="code-keyword">return</span> <span class="code-string">f"Deposited ${amount}. New balance: ${self.__balance}"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">withdraw</span>(<span class="code-variable">self</span>, amount, pin):
+        <span class="code-keyword">if</span> <span class="code-keyword">not</span> <span class="code-variable">self</span>.__verify_pin(pin):
+            <span class="code-keyword">return</span> <span class="code-string">"Invalid PIN!"</span>
+        <span class="code-keyword">if</span> amount <= <span class="code-number">0</span> <span class="code-keyword">or</span> amount > <span class="code-variable">self</span>.__balance:
+            <span class="code-keyword">return</span> <span class="code-string">"Invalid amount or insufficient funds!"</span>
+
+        <span class="code-variable">self</span>.__balance -= amount
+        <span class="code-variable">self</span>.__log_transaction(<span class="code-string">f"WITHDRAWAL: -${amount}"</span>)
+        <span class="code-keyword">return</span> <span class="code-string">f"Withdrawn ${amount}. Remaining: ${self.__balance}"</span>
+
+    <span class="code-comment"># ============ PRIVATE METHODS ============</span>
+    <span class="code-keyword">def</span> <span class="code-function">__verify_pin</span>(<span class="code-variable">self</span>, pin):
+        <span class="code-keyword">return</span> pin == <span class="code-variable">self</span>.__pin
+
+    <span class="code-keyword">def</span> <span class="code-function">__log_transaction</span>(<span class="code-variable">self</span>, transaction):
+        <span class="code-keyword">from</span> datetime <span class="code-keyword">import</span> datetime
+        timestamp = datetime.now().strftime(<span class="code-string">"%Y-%m-%d %H:%M:%S"</span>)
+        <span class="code-variable">self</span>.__transaction_log.append(<span class="code-string">f"[{timestamp}] {transaction}"</span>)
+
+<span class="code-comment"># Using the secure bank account</span>
+account = SecureBankAccount(<span class="code-string">"Alice"</span>, <span class="code-number">1000</span>)
+
+<span class="code-comment"># Set a secure PIN</span>
+<span class="code-function">print</span>(account.set_pin(<span class="code-string">"0000"</span>, <span class="code-string">"1234"</span>))
+
+<span class="code-comment"># Perform transactions</span>
+<span class="code-function">print</span>(account.deposit(<span class="code-number">500</span>, <span class="code-string">"1234"</span>))
+<span class="code-function">print</span>(account.withdraw(<span class="code-number">200</span>, <span class="code-string">"1234"</span>))
+<span class="code-function">print</span>(account.get_balance(<span class="code-string">"1234"</span>))
+
+<span class="code-comment"># Attempt unauthorized access</span>
+<span class="code-function">print</span>(account.get_balance(<span class="code-string">"9999"</span>))  <span class="code-comment"># Wrong PIN!</span>
+<span class="code-function">print</span>(account.withdraw(<span class="code-number">99999</span>, <span class="code-string">"1234"</span>))  <span class="code-comment"># Too much!</span></code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>PIN changed successfully!
+Deposited $500. New balance: $1500
+Withdrawn $200. Remaining: $1300
+Balance: $1300
+Invalid PIN!
+Invalid amount or insufficient funds!</pre>
+            </div>
+
+            <h3>The <code>@property</code> Decorator — Pythonic Getters & Setters</h3>
+            <p>Python provides the <code>@property</code> decorator to create methods that can be accessed like attributes. This is the Pythonic way to implement encapsulation:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Using @property</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">class</span> <span class="code-class">Temperature</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, celsius=<span class="code-number">0</span>):
+        <span class="code-variable">self</span>.__celsius = celsius
+
+    <span class="code-comment"># Getter — access like: temp.celsius</span>
+    <span class="code-decorator">@property</span>
+    <span class="code-keyword">def</span> <span class="code-function">celsius</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-variable">self</span>.__celsius
+
+    <span class="code-comment"># Setter — set like: temp.celsius = 25</span>
+    <span class="code-decorator">@celsius.setter</span>
+    <span class="code-keyword">def</span> <span class="code-function">celsius</span>(<span class="code-variable">self</span>, value):
+        <span class="code-keyword">if</span> value < <span class="code-number">-273.15</span>:
+            <span class="code-keyword">raise</span> <span class="code-class">ValueError</span>(<span class="code-string">"Below absolute zero!"</span>)
+        <span class="code-variable">self</span>.__celsius = value
+
+    <span class="code-comment"># Computed property — Fahrenheit</span>
+    <span class="code-decorator">@property</span>
+    <span class="code-keyword">def</span> <span class="code-function">fahrenheit</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> (<span class="code-variable">self</span>.__celsius * <span class="code-number">9</span>/<span class="code-number">5</span>) + <span class="code-number">32</span>
+
+    <span class="code-decorator">@fahrenheit.setter</span>
+    <span class="code-keyword">def</span> <span class="code-function">fahrenheit</span>(<span class="code-variable">self</span>, value):
+        <span class="code-variable">self</span>.__celsius = (value - <span class="code-number">32</span>) * <span class="code-number">5</span>/<span class="code-number">9</span>
+
+temp = Temperature(<span class="code-number">25</span>)
+<span class="code-function">print</span>(temp.celsius)      <span class="code-comment"># Access like attribute: 25</span>
+temp.celsius = <span class="code-number">30</span>        <span class="code-comment"># Set like attribute</span>
+<span class="code-function">print</span>(temp.fahrenheit)   <span class="code-comment"># Computed: 86.0</span>
+temp.fahrenheit = <span class="code-number">100</span>    <span class="code-comment"># Convert and set</span>
+<span class="code-function">print</span>(temp.celsius)      <span class="code-comment"># 37.78</span></code></pre>
+            </div>
+
+            <div class="info-box tip">
+                <div class="info-box-title">💡 Benefits of Encapsulation</div>
+                <ul>
+                    <li><strong>Data Hiding:</strong> Internal state is protected from external modification</li>
+                    <li><strong>Validation:</strong> Control what values can be set through setters</li>
+                    <li><strong>Flexibility:</strong> Internal implementation can change without affecting external code</li>
+                    <li><strong>Security:</strong> Sensitive data is protected from unauthorized access</li>
+                </ul>
+            </div>
+        </section>
+<section id="abstraction" class="sd-sec">
+            <h2><span class="icon">🎨</span> 7. Abstraction</h2>
+
+            <div class="video-info">
+                <strong>Video Chapters:</strong> 1:04:01 - Concept | 1:04:40 - Visual Explanation | 1:08:15 - Code Implementation
+            </div>
+
+            <h3>What is Abstraction?</h3>
+            <p>
+                <span class="highlight">Abstraction</span> is the concept of hiding complex implementation details and showing only the essential features of an object. It helps reduce programming complexity by allowing you to focus on <em>what</em> an object does rather than <em>how</em> it does it.
+            </p>
+
+            <div class="info-box note">
+                <div class="info-box-title">💡 Real-World Analogy</div>
+                <p>When you drive a car, you use the <strong>steering wheel, accelerator, and brake</strong> — these are the abstract interface. You don't need to understand the complex internal mechanics of the engine, transmission, or braking system. The complex details are <em>abstracted away</em> from you.</p>
+            </div>
+
+            <div class="diagram">
+                <div class="diagram-title">🎨 Abstraction Concept</div>
+<pre>
+    WITHOUT ABSTRACTION                    WITH ABSTRACTION
+
+    To send an email:                     To send an email:
+    ┌─────────────────────┐               ┌─────────────────────┐
+    │ 1. Connect to SMTP  │               │                     │
+    │ 2. Authenticate     │               │  email.send()       │
+    │ 3. Create packet    │    ───►       │                     │
+    │ 4. Encrypt data     │               │ (All complexity     │
+    │ 5. Send packet      │               │  hidden inside!)    │
+    │ 6. Verify delivery  │               │                     │
+    │ 7. Close connection │               │                     │
+    └─────────────────────┘               └─────────────────────┘
+
+    Abstraction = Show WHAT, Hide HOW
+</pre>
+            </div>
+
+            <h3>Abstraction vs Encapsulation — What's the Difference?</h3>
+            <div class="comparison">
+                <div class="comparison-box">
+                    <h4>🔐 Encapsulation</h4>
+                    <ul>
+                        <li>📦 Bundles data and methods together</li>
+                        <li>🔒 Hides data (private variables)</li>
+                        <li>🎯 Protects information</li>
+                        <li>💡 Focus: "How to protect"</li>
+                        <li>Example: Private variables, getters/setters</li>
+                    </ul>
+                </div>
+                <div class="comparison-box">
+                    <h4>🎨 Abstraction</h4>
+                    <ul>
+                        <li>🎭 Hides implementation details</li>
+                        <li>👁️ Shows only essential features</li>
+                        <li>🎯 Reduces complexity</li>
+                        <li>💡 Focus: "What to show"</li>
+                        <li>Example: Abstract classes, interfaces</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Abstract Classes in Python</h3>
+            <p>Python uses the <code>abc</code> module (Abstract Base Classes) to create abstract classes. An abstract class:</p>
+            <ul>
+                <li><strong>Cannot be instantiated directly</strong> — you can't create objects from it</li>
+                <li>Can have <strong>abstract methods</strong> (must be implemented by children)</li>
+                <li>Can have <strong>concrete methods</strong> (implemented, inherited by children)</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Abstract Base Class</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">from</span> abc <span class="code-keyword">import</span> ABC, abstractmethod
+
+<span class="code-keyword">class</span> <span class="code-class">Shape</span>(ABC):  <span class="code-comment"># Inherit from ABC</span>
+
+    <span class="code-comment"># Abstract method — MUST be implemented by all subclasses</span>
+    <span class="code-decorator">@abstractmethod</span>
+    <span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">pass</span>
+
+    <span class="code-comment"># Another abstract method</span>
+    <span class="code-decorator">@abstractmethod</span>
+    <span class="code-keyword">def</span> <span class="code-function">perimeter</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">pass</span>
+
+    <span class="code-comment"># Concrete method — can be used by all subclasses</span>
+    <span class="code-keyword">def</span> <span class="code-function">describe</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"I am a {self.__class__.__name__}"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">print_details</span>(<span class="code-variable">self</span>):
+        <span class="code-function">print</span>(<span class="code-string">f"{self.describe()}"</span>)
+        <span class="code-function">print</span>(<span class="code-string">f"Area: {self.area()}"</span>)
+        <span class="code-function">print</span>(<span class="code-string">f"Perimeter: {self.perimeter()}"</span>)
+
+<span class="code-comment"># Concrete implementations</span>
+<span class="code-keyword">class</span> <span class="code-class">Rectangle</span>(Shape):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, width, height):
+        <span class="code-variable">self</span>.width = width
+        <span class="code-variable">self</span>.height = height
+
+    <span class="code-comment"># Must implement abstract method!</span>
+    <span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-variable">self</span>.width * <span class="code-variable">self</span>.height
+
+    <span class="code-keyword">def</span> <span class="code-function">perimeter</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-number">2</span> * (<span class="code-variable">self</span>.width + <span class="code-variable">self</span>.height)
+
+<span class="code-keyword">class</span> <span class="code-class">Circle</span>(Shape):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, radius):
+        <span class="code-variable">self</span>.radius = radius
+
+    <span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-number">3.14159</span> * <span class="code-variable">self</span>.radius ** <span class="code-number">2</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">perimeter</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-number">2</span> * <span class="code-number">3.14159</span> * <span class="code-variable">self</span>.radius
+
+<span class="code-keyword">class</span> <span class="code-class">Triangle</span>(Shape):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, a, b, c):
+        <span class="code-variable">self</span>.a = a
+        <span class="code-variable">self</span>.b = b
+        <span class="code-variable">self</span>.c = c
+
+    <span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-variable">self</span>):
+        <span class="code-comment"># Heron's formula</span>
+        s = (<span class="code-variable">self</span>.a + <span class="code-variable">self</span>.b + <span class="code-variable">self</span>.c) / <span class="code-number">2</span>
+        <span class="code-keyword">return</span> (s * (s-<span class="code-variable">self</span>.a) * (s-<span class="code-variable">self</span>.b) * (s-<span class="code-variable">self</span>.c)) ** <span class="code-number">0.5</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">perimeter</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-variable">self</span>.a + <span class="code-variable">self</span>.b + <span class="code-variable">self</span>.c
+
+<span class="code-comment"># Using the shapes</span>
+rect = Rectangle(<span class="code-number">5</span>, <span class="code-number">3</span>)
+circle = Circle(<span class="code-number">4</span>)
+triangle = Triangle(<span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">5</span>)
+
+<span class="code-function">print</span>(<span class="code-string">"=== Rectangle ==="</span>)
+rect.print_details()
+
+<span class="code-function">print</span>(<span class="code-string">"
+=== Circle ==="</span>)
+circle.print_details()
+
+<span class="code-function">print</span>(<span class="code-string">"
+=== Triangle ==="</span>)
+triangle.print_details()
+
+<span class="code-comment"># This would raise an error!</span>
+<span class="code-comment"># shape = Shape()  # ❌ Can't instantiate abstract class!</span></code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>=== Rectangle ===
+I am a Rectangle
+Area: 15
+Perimeter: 16
+
+=== Circle ===
+I am a Circle
+Area: 50.26544
+Perimeter: 25.13272
+
+=== Triangle ===
+I am a Triangle
+Area: 6.0
+Perimeter: 12</pre>
+            </div>
+
+            <h3>Real-World Example: Payment System</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Payment System (Real-World Abstraction)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">from</span> abc <span class="code-keyword">import</span> ABC, abstractmethod
+<span class="code-keyword">from</span> datetime <span class="code-keyword">import</span> datetime
+
+<span class="code-keyword">class</span> <span class="code-class">Payment</span>(ABC):
+    <span class="code-string">"""Abstract base class for all payment methods"""</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, amount, currency=<span class="code-string">"USD"</span>):
+        <span class="code-variable">self</span>._amount = amount
+        <span class="code-variable">self</span>._currency = currency
+        <span class="code-variable">self</span>._timestamp = <span class="code-function">None</span>
+        <span class="code-variable">self</span>._status = <span class="code-string">"PENDING"</span>
+        <span class="code-variable">self</span>._transaction_id = <span class="code-function">None</span>
+
+    <span class="code-comment"># ============ ABSTRACT METHODS (must implement) ============</span>
+    <span class="code-decorator">@abstractmethod</span>
+    <span class="code-keyword">def</span> <span class="code-function">validate</span>(<span class="code-variable">self</span>):
+        <span class="code-string">"""Validate payment details"""</span>
+        <span class="code-keyword">pass</span>
+
+    <span class="code-decorator">@abstractmethod</span>
+    <span class="code-keyword">def</span> <span class="code-function">process_payment</span>(<span class="code-variable">self</span>):
+        <span class="code-string">"""Process the actual payment"""</span>
+        <span class="code-keyword">pass</span>
+
+    <span class="code-decorator">@abstractmethod</span>
+    <span class="code-keyword">def</span> <span class="code-function">generate_receipt</span>(<span class="code-variable">self</span>):
+        <span class="code-string">"""Generate payment receipt"""</span>
+        <span class="code-keyword">pass</span>
+
+    <span class="code-comment"># ============ CONCRETE METHODS (shared logic) ============</span>
+    <span class="code-keyword">def</span> <span class="code-function">execute</span>(<span class="code-variable">self</span>):
+        <span class="code-string">"""Template method — defines the payment workflow"""</span>
+        <span class="code-function">print</span>(<span class="code-string">f"
+💳 Processing ${self._amount} {self._currency} payment..."</span>)
+
+        <span class="code-keyword">try</span>:
+            <span class="code-comment"># Step 1: Validate</span>
+            <span class="code-keyword">if</span> <span class="code-keyword">not</span> <span class="code-variable">self</span>.validate():
+                <span class="code-variable">self</span>._status = <span class="code-string">"FAILED"</span>
+                <span class="code-keyword">return</span> <span class="code-string">"❌ Validation failed!"</span>
+
+            <span class="code-comment"># Step 2: Process</span>
+            result = <span class="code-variable">self</span>.process_payment()
+            <span class="code-variable">self</span>._timestamp = datetime.now()
+            <span class="code-variable">self</span>._status = <span class="code-string">"SUCCESS"</span>
+            <span class="code-variable">self</span>._transaction_id = <span class="code-variable">self</span>._generate_transaction_id()
+
+            <span class="code-comment"># Step 3: Generate Receipt</span>
+            receipt = <span class="code-variable">self</span>.generate_receipt()
+
+            <span class="code-function">print</span>(<span class="code-string">f"✅ Payment successful!"</span>)
+            <span class="code-function">print</span>(<span class="code-string">f"📄 Transaction ID: {self._transaction_id}"</span>)
+            <span class="code-keyword">return</span> receipt
+
+        <span class="code-keyword">except</span> <span class="code-class">Exception</span> <span class="code-keyword">as</span> e:
+            <span class="code-variable">self</span>._status = <span class="code-string">"ERROR"</span>
+            <span class="code-keyword">return</span> <span class="code-string">f"❌ Error: {str(e)}"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">get_status</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-variable">self</span>._status
+
+    <span class="code-keyword">def</span> <span class="code-function">_generate_transaction_id</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"TXN{datetime.now().strftime('%Y%m%d%H%M%S')}"</span>
+
+<span class="code-comment"># ============== CONCRETE IMPLEMENTATIONS ==============</span>
+
+<span class="code-keyword">class</span> <span class="code-class">CreditCardPayment</span>(Payment):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, amount, card_number, expiry, cvv):
+        <span class="code-keyword">super</span>().<span class="code-function">__init__</span>(amount)
+        <span class="code-variable">self</span>.__card_number = card_number
+        <span class="code-variable">self</span>.__expiry = expiry
+        <span class="code-variable">self</span>.__cvv = cvv
+
+    <span class="code-keyword">def</span> <span class="code-function">validate</span>(<span class="code-variable">self</span>):
+        <span class="code-function">print</span>(<span class="code-string">"  🔍 Validating credit card..."</span>)
+        <span class="code-keyword">return</span> <span class="code-function">len</span>(<span class="code-variable">self</span>.__card_number) == <span class="code-number">16</span> <span class="code-keyword">and</span> <span class="code-function">len</span>(<span class="code-variable">self</span>.__cvv) == <span class="code-number">3</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">process_payment</span>(<span class="code-variable">self</span>):
+        <span class="code-function">print</span>(<span class="code-string">"  💰 Charging credit card..."</span>)
+        <span class="code-keyword">return</span> <span class="code-string">f"Card ****{self.__card_number[-4:]} charged"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">generate_receipt</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"""
+╔════════════════════════════════╗
+║     CREDIT CARD RECEIPT        ║
+╠════════════════════════════════╣
+║ Amount: ${self._amount}               ║
+║ Card: ****{self.__card_number[-4:]}               ║
+║ Status: {self._status}               ║
+╚════════════════════════════════╝"""</span>
+
+<span class="code-keyword">class</span> <span class="code-class">PayPalPayment</span>(Payment):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, amount, email, password):
+        <span class="code-keyword">super</span>().<span class="code-function">__init__</span>(amount)
+        <span class="code-variable">self</span>.__email = email
+        <span class="code-variable">self</span>.__password = password
+
+    <span class="code-keyword">def</span> <span class="code-function">validate</span>(<span class="code-variable">self</span>):
+        <span class="code-function">print</span>(<span class="code-string">"  🔍 Authenticating with PayPal..."</span>)
+        <span class="code-keyword">return</span> <span class="code-string">"@"</span> <span class="code-keyword">in</span> <span class="code-variable">self</span>.__email <span class="code-keyword">and</span> <span class="code-function">len</span>(<span class="code-variable">self</span>.__password) > <span class="code-number">0</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">process_payment</span>(<span class="code-variable">self</span>):
+        <span class="code-function">print</span>(<span class="code-string">"  💰 Processing PayPal transaction..."</span>)
+        <span class="code-keyword">return</span> <span class="code-string">f"PayPal account {self.__email} debited"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">generate_receipt</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"""
+╔════════════════════════════════╗
+║      PAYPAL RECEIPT            ║
+╠════════════════════════════════╣
+║ Amount: ${self._amount}               ║
+║ Account: {self.__email}     ║
+║ Status: {self._status}               ║
+╚════════════════════════════════╝"""</span>
+
+<span class="code-keyword">class</span> <span class="code-class">CryptoPayment</span>(Payment):
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-variable">self</span>, amount, wallet_address, crypto_type=<span class="code-string">"BTC"</span>):
+        <span class="code-keyword">super</span>().<span class="code-function">__init__</span>(amount)
+        <span class="code-variable">self</span>.__wallet = wallet_address
+        <span class="code-variable">self</span>.__crypto = crypto_type
+
+    <span class="code-keyword">def</span> <span class="code-function">validate</span>(<span class="code-variable">self</span>):
+        <span class="code-function">print</span>(<span class="code-string">"  🔍 Validating wallet address..."</span>)
+        <span class="code-keyword">return</span> <span class="code-function">len</span>(<span class="code-variable">self</span>.__wallet) > <span class="code-number">10</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">process_payment</span>(<span class="code-variable">self</span>):
+        <span class="code-function">print</span>(<span class="code-string">"  ⛏️  Processing blockchain transaction..."</span>)
+        <span class="code-keyword">return</span> <span class="code-string">f"{self.__crypto} transfer initiated"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">generate_receipt</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">f"""
+╔════════════════════════════════╗
+║      CRYPTO RECEIPT            ║
+╠════════════════════════════════╣
+║ Amount: ${self._amount}               ║
+║ Crypto: {self.__crypto}                    ║
+║ Wallet: {self.__wallet[:10]}...        ║
+╚════════════════════════════════╝"""</span>
+
+<span class="code-comment"># ========== USING THE PAYMENT SYSTEM ==========</span>
+<span class="code-function">print</span>(<span class="code-string">"🛒 Checkout — Multiple Payment Methods"</span>)
+<span class="code-function">print</span>(<span class="code-string">"="</span> * <span class="code-number">50</span>)
+
+<span class="code-comment"># All payments are processed the same way!</span>
+payments = [
+    CreditCardPayment(<span class="code-number">100</span>, <span class="code-string">"1234567890123456"</span>, <span class="code-string">"12/25"</span>, <span class="code-string">"123"</span>),
+    PayPalPayment(<span class="code-number">50</span>, <span class="code-string">"user@email.com"</span>, <span class="code-string">"password123"</span>),
+    CryptoPayment(<span class="code-number">200</span>, <span class="code-string">"1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"</span>, <span class="code-string">"BTC"</span>)
+]
+
+<span class="code-keyword">for</span> payment <span class="code-keyword">in</span> payments:
+    receipt = payment.execute()
+    <span class="code-function">print</span>(receipt)
+    <span class="code-function">print</span>()</code></pre>
+            </div>
+
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                <pre>🛒 Checkout — Multiple Payment Methods
+==================================================
+
+💳 Processing $100 USD payment...
+  🔍 Validating credit card...
+  💰 Charging credit card...
+✅ Payment successful!
+📄 Transaction ID: TXN20260115143022
+
+╔════════════════════════════════╗
+║     CREDIT CARD RECEIPT        ║
+╠════════════════════════════════╣
+║ Amount: $100               ║
+║ Card: ****3456               ║
+║ Status: SUCCESS               ║
+╚════════════════════════════════╝
+
+💳 Processing $50 USD payment...
+  🔍 Authenticating with PayPal...
+  💰 Processing PayPal transaction...
+✅ Payment successful!
+📄 Transaction ID: TXN20260115143022
+
+╔════════════════════════════════╗
+║      PAYPAL RECEIPT            ║
+╠════════════════════════════════╣
+║ Amount: $50               ║
+║ Account: user@email.com     ║
+║ Status: SUCCESS               ║
+╚════════════════════════════════╝
+
+💳 Processing $200 USD payment...
+  🔍 Validating wallet address...
+  ⛏️  Processing blockchain transaction...
+✅ Payment successful!
+📄 Transaction ID: TXN20260115143022
+
+╔════════════════════════════════╗
+║      CRYPTO RECEIPT            ║
+╠════════════════════════════════╣
+║ Amount: $200               ║
+║ Crypto: BTC                    ║
+║ Wallet: 1A1zP1eP5Q...        ║
+╚════════════════════════════════╝</pre>
+            </div>
+
+            <h3>Interface-like Behavior in Python</h3>
+            <p>In Python, we can create interface-like behavior using abstract classes with all abstract methods:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-title">Python — Interface Pattern</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code><span class="code-keyword">from</span> abc <span class="code-keyword">import</span> ABC, abstractmethod
+
+<span class="code-keyword">class</span> <span class="code-class">DatabaseInterface</span>(ABC):
+    <span class="code-string">"""Interface for database operations — all methods are abstract"""</span>
+
+    <span class="code-decorator">@abstractmethod</span>
+    <span class="code-keyword">def</span> <span class="code-function">connect</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">pass</span>
+
+    <span class="code-decorator">@abstractmethod</span>
+    <span class="code-keyword">def</span> <span class="code-function">disconnect</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">pass</span>
+
+    <span class="code-decorator">@abstractmethod</span>
+    <span class="code-keyword">def</span> <span class="code-function">execute_query</span>(<span class="code-variable">self</span>, query):
+        <span class="code-keyword">pass</span>
+
+    <span class="code-decorator">@abstractmethod</span>
+    <span class="code-keyword">def</span> <span class="code-function">fetch_all</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">pass</span>
+
+<span class="code-keyword">class</span> <span class="code-class">MySQLDatabase</span>(DatabaseInterface):
+    <span class="code-keyword">def</span> <span class="code-function">connect</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Connected to MySQL"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">disconnect</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Disconnected from MySQL"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">execute_query</span>(<span class="code-variable">self</span>, query):
+        <span class="code-keyword">return</span> <span class="code-string">f"MySQL executing: {query}"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">fetch_all</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> [<span class="code-string">"MySQL Row 1"</span>, <span class="code-string">"MySQL Row 2"</span>]
+
+<span class="code-keyword">class</span> <span class="code-class">PostgreSQLDatabase</span>(DatabaseInterface):
+    <span class="code-keyword">def</span> <span class="code-function">connect</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Connected to PostgreSQL"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">disconnect</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> <span class="code-string">"Disconnected from PostgreSQL"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">execute_query</span>(<span class="code-variable">self</span>, query):
+        <span class="code-keyword">return</span> <span class="code-string">f"PostgreSQL executing: {query}"</span>
+
+    <span class="code-keyword">def</span> <span class="code-function">fetch_all</span>(<span class="code-variable">self</span>):
+        <span class="code-keyword">return</span> [<span class="code-string">"PG Row 1"</span>, <span class="code-string">"PG Row 2"</span>]
+
+<span class="code-comment"># Can swap databases without changing application code!</span>
+<span class="code-keyword">def</span> <span class="code-function">run_application</span>(db: DatabaseInterface):
+    <span class="code-function">print</span>(db.connect())
+    <span class="code-function">print</span>(db.execute_query(<span class="code-string">"SELECT * FROM users"</span>))
+    <span class="code-function">print</span>(db.fetch_all())
+    <span class="code-function">print</span>(db.disconnect())
+
+<span class="code-function">print</span>(<span class="code-string">"=== MySQL ==="</span>)
+run_application(MySQLDatabase())
+
+<span class="code-function">print</span>(<span class="code-string">"
+=== PostgreSQL ==="</span>)
+run_application(PostgreSQLDatabase())</code></pre>
+            </div>
+
+            <div class="info-box note">
+                <div class="info-box-title">📋 Abstract Class vs Interface</div>
+                <table class="styled-table" style="margin: 0.5rem 0 0;">
+                    <tr><th>Feature</th><th>Abstract Class</th><th>Interface</th></tr>
+                    <tr><td>Methods</td><td>Can have both abstract and concrete</td><td>Only abstract methods (traditionally)</td></tr>
+                    <tr><td>Attributes</td><td>Can have instance variables</td><td>Only constants</td></tr>
+                    <tr><td>Multiple Inheritance</td><td>Avoided (complexity)</td><td>Commonly used</td></tr>
+                    <tr><td>Purpose</td><td>"Is a" relationship</td><td>"Can do" relationship</td></tr>
+                </table>
+            </div>
+        </section>
+<section id="summary" class="sd-sec">
+            <h2><span class="icon">📋</span> 8. Summary — All 4 Pillars of OOP</h2>
+
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <span class="pillar-icon">👨‍👧</span>
+                    <h3>Inheritance</h3>
+                    <p>Acquire properties from a parent class</p>
+                    <code style="color:var(--accent-cyan);font-size:0.8rem;">class Child(Parent):</code>
+                    <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary);">Promotes code reuse and establishes hierarchy</p>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">🎭</span>
+                    <h3>Polymorphism</h3>
+                    <p>Same interface, different behaviors</p>
+                    <code style="color:var(--accent-cyan);font-size:0.8rem;">obj.method() # Varies by class</code>
+                    <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary);">Enables flexibility and dynamic behavior</p>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">🔐</span>
+                    <h3>Encapsulation</h3>
+                    <p>Hide data, expose controlled methods</p>
+                    <code style="color:var(--accent-cyan);font-size:0.8rem;">self.__private</code>
+                    <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary);">Protects data integrity and controls access</p>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">🎨</span>
+                    <h3>Abstraction</h3>
+                    <p>Hide complexity, show essentials</p>
+                    <code style="color:var(--accent-cyan);font-size:0.8rem;">@abstractmethod</code>
+                    <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary);">Reduces complexity, focuses on what matters</p>
+                </div>
+            </div>
+
+            <h3>Quick Reference Cheat Sheet</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Keyword/Decorator</th>
+                        <th>Purpose</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Class</td><td><code>class</code></td><td>Create blueprint</td><td><code>class Dog:</code></td></tr>
+                    <tr><td>Constructor</td><td><code>__init__</code></td><td>Initialize object</td><td><code>def __init__(self):</code></td></tr>
+                    <tr><td>Inheritance</td><td><code>class Child(Parent)</code></td><td>Code reuse</td><td><code>class Dog(Animal):</code></td></tr>
+                    <tr><td>Super</td><td><code>super()</code></td><td>Call parent method</td><td><code>super().__init__()</code></td></tr>
+                    <tr><td>Private</td><td><code>__name</code></td><td>Hide data</td><td><code>self.__balance</code></td></tr>
+                    <tr><td>Protected</td><td><code>_name</code></td><td>Internal use</td><td><code>self._value</code></td></tr>
+                    <tr><td>Property</td><td><code>@property</code></td><td>Getter/setter</td><td><code>@property def x(self):</code></td></tr>
+                    <tr><td>Abstract</td><td><code>@abstractmethod</code></td><td>Force implementation</td><td><code>@abstractmethod def draw():</code></td></tr>
+                    <tr><td>Override</td><td>Same method name</td><td>Change behavior</td><td>Redefine in child</td></tr>
+                    <tr><td>Polymorphism</td><td>Duck typing</td><td>Many forms</td><td><code>for obj in objects: obj.speak()</code></td></tr>
+                </tbody>
+            </table>
+
+            <div class="info-box tip">
+                <div class="info-box-title">🎓 Interview Tips</div>
+                <ul>
+                    <li><strong>IS-A vs HAS-A:</strong> Inheritance (IS-A) vs Composition (HAS-A)</li>
+                    <li><strong>MRO:</strong> Method Resolution Order in multiple inheritance</li>
+                    <li><strong>Diamond Problem:</strong> Resolved by C3 Linearization in Python</li>
+                    <li><strong>Duck Typing:</strong> Python's dynamic approach to polymorphism</li>
+                    <li><strong>@property:</strong> Pythonic way to implement getters/setters</li>
+                </ul>
+            </div>
+        </section>
+<section id="final-quiz" class="sd-sec">
+            <h2><span class="icon">🏆</span> 9. Final Quiz — Master Level</h2>
+
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <h4>Question 1: What is the output of this code?</h4>
+                    <div class="code-block" style="margin: 1rem 0;">
+                        <pre><code>class A:
+    def show(self):
+        print("A")
+
+class B(A):
+    def show(self):
+        print("B")
+        super().show()
+
+b = B()
+b.show()</code></pre>
+                    </div>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, false)">A) Only "B"</li>
+                        <li onclick="checkAnswer(this, true)">B) "B" followed by "A"</li>
+                        <li onclick="checkAnswer(this, false)">C) Only "A"</li>
+                        <li onclick="checkAnswer(this, false)">D) Error</li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> <code>super().show()</code> calls the parent's <code>show()</code> method after printing "B", so both "B" and "A" are printed.
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 2: Can you instantiate an abstract class?</h4>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, false)">A) Yes, always</li>
+                        <li onclick="checkAnswer(this, false)">B) Yes, if it has no methods</li>
+                        <li onclick="checkAnswer(this, true)">C) No, never</li>
+                        <li onclick="checkAnswer(this, false)">D) Only with @abstractmethod</li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> Abstract classes with at least one abstract method cannot be instantiated directly. You must create a concrete subclass first.
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 3: What does name mangling do to <code>__balance</code>?</h4>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, true)">A) Renames it to <code>_ClassName__balance</code></li>
+                        <li onclick="checkAnswer(this, false)">B) Deletes the attribute</li>
+                        <li onclick="checkAnswer(this, false)">C) Makes it truly private</li>
+                        <li onclick="checkAnswer(this, false)">D) Nothing</li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> Python renames <code>__balance</code> to <code>_ClassName__balance</code> to prevent accidental access from outside the class.
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 4: Which OOP pillar does <code>@property</code> implement?</h4>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, false)">A) Inheritance</li>
+                        <li onclick="checkAnswer(this, true)">B) Encapsulation</li>
+                        <li onclick="checkAnswer(this, false)">C) Polymorphism</li>
+                        <li onclick="checkAnswer(this, false)">D) Abstraction</li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> <code>@property</code> controls access to private data, which is the core purpose of encapsulation.
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>Question 5: What is duck typing?</h4>
+                    <ul class="quiz-options">
+                        <li onclick="checkAnswer(this, true)">A) If it has the method, use it — regardless of class</li>
+                        <li onclick="checkAnswer(this, false)">B) Only ducks can use it</li>
+                        <li onclick="checkAnswer(this, false)">C) Type checking at compile time</li>
+                        <li onclick="checkAnswer(this, false)">D) Method overloading</li>
+                    </ul>
+                    <div class="explanation">
+                        <strong>Explanation:</strong> Duck typing means checking for method existence at runtime, not the object's type. "If it walks like a duck and quacks like a duck, it's a duck."
+                    </div>
+                </div>
+            </div>
+        </section>
+<footer>
+        <p class="footer-title">🐍 Python OOP Concepts</p>
+        <p>Low Level Design — Lesson 1</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+            Master OOP from scratch with practical examples
+        </p>
+    </footer>
+</div>
+</div>
+
+<script>
+
+function show(id){
+  document.querySelectorAll('.sd-sec').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.sd-ni').forEach(function(n){n.classList.remove('active');});
+  var el=document.getElementById(id); if(el) el.classList.add('active');
+  var ni=document.querySelector('.sd-ni[data-t="'+id+'"]'); if(ni) ni.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=760) closeSB();
+}
+var _hb=document.getElementById('sdhb'),_sb=document.getElementById('sdsb'),_ov=document.getElementById('sdov');
+function openSB(){_sb.classList.add('open');_ov.classList.add('open');}
+function closeSB(){_sb.classList.remove('open');_ov.classList.remove('open');}
+if(_hb){_hb.addEventListener('click',function(){_sb.classList.contains('open')?closeSB():openSB();});}
+if(_ov){_ov.addEventListener('click',closeSB);}
+function copyCode(btn){
+  var wrap=btn.closest('.code-block,.codewrap');
+  var code=wrap?wrap.querySelector('code,pre'):null;
+  if(!code){var p=btn.parentElement;while(p&&!code){code=p.querySelector('pre code,code,pre');p=p.parentElement;}}
+  var t=code?code.innerText:'';
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){var o=btn.textContent;btn.textContent='\u2713 Copied';btn.classList.add('done');setTimeout(function(){btn.textContent=o;btn.classList.remove('done');},1500);});}
+}
+document.querySelectorAll('.copy').forEach(function(b){if(!b.getAttribute('onclick'))b.addEventListener('click',function(){copyCode(b);});});
+function checkAnswer(element,isCorrect){
+  var parent=element.parentElement,siblings=parent.children;
+  for(var i=0;i<siblings.length;i++){siblings[i].classList.remove('correct','wrong');siblings[i].classList.add('disabled');}
+  if(isCorrect){element.classList.add('correct');}
+  else{element.classList.add('wrong');
+    for(var j=0;j<siblings.length;j++){var oc=siblings[j].getAttribute('onclick')||'';if(oc.indexOf('true')>=0)siblings[j].classList.add('correct');}}
+  var q=element.closest('.quiz-question');var ex=q?q.querySelector('.explanation'):null;if(ex)ex.style.display='block';
+}
+document.querySelectorAll('.sd-main a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var id=a.getAttribute('href').slice(1);var t=document.getElementById(id);
+    if(t&&t.classList.contains('sd-sec')){e.preventDefault();show(id);}
+  });
+});
+
+
+</script>
+</body>
+</html>

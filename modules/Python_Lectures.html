@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Mastery — Lecture Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-light: #334155;
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-2: #818cf8;
+    --success: #4ade80;
+    --warning: #facc15;
+    --danger: #f87171;
+    --code-bg: #020617;
+    --border: #334155;
+    --shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  /* Navigation */
+  nav {
+    position: fixed; top: 0; left: 0; width: 260px; height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto; padding: 1.5rem 1rem;
+    z-index: 1000; transition: transform 0.3s ease;
+  }
+  nav h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 1rem; display:flex; align-items:center; gap:0.5rem; }
+  nav ul { list-style: none; }
+  nav li { margin-bottom: 0.25rem; }
+  nav a {
+    display: block; padding: 0.4rem 0.8rem; border-radius: 0.4rem;
+    color: var(--text-muted); text-decoration: none; font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  nav a:hover, nav a.active { background: var(--surface-light); color: var(--text); }
+  .nav-toggle {
+    display: none; position: fixed; top: 1rem; left: 1rem; z-index: 1100;
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 0.6rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 1rem;
+  }
+  /* Main Content */
+  main { margin-left: 260px; padding: 2rem; max-width: 1000px; }
+  header.hero {
+    text-align: center; padding: 4rem 1rem; margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
+    border-radius: 1rem; border: 1px solid var(--border);
+  }
+  header.hero h1 {
+    font-size: 3rem; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;
+  }
+  header.hero p { color: var(--text-muted); font-size: 1.2rem; }
+  /* Sections & Cards */
+  section { margin-bottom: 3rem; }
+  .section-title {
+    font-size: 2rem; margin-bottom: 1rem; padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent); display: inline-block;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 1rem;
+    padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);
+  }
+  .card h3 { color: var(--accent); margin-bottom: 0.75rem; font-size: 1.3rem; }
+  .card h4 { color: var(--accent-2); margin: 1rem 0 0.5rem; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  /* Code Blocks */
+  .code-block { position: relative; margin: 1rem 0; }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 0.75rem;
+    padding: 1rem; overflow-x: auto; font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.9rem;
+  }
+  code { color: #e2e8f0; }
+  .copy-btn {
+    position: absolute; top: 0.5rem; right: 0.5rem; background: var(--surface-light);
+    border: 1px solid var(--border); color: var(--text-muted); padding: 0.3rem 0.6rem;
+    border-radius: 0.4rem; cursor: pointer; font-size: 0.75rem; transition: 0.2s;
+  }
+  .copy-btn:hover { color: var(--text); background: var(--border); }
+  /* Syntax Highlighting */
+  .k { color: #c678dd; } /* keyword */
+  .s { color: #98c379; } /* string */
+  .n { color: #e5c07b; } /* name/function */
+  .c { color: #5c6370; font-style: italic; } /* comment */
+  .o { color: #56b6c2; } /* operator */
+  .m { color: #d19a66; } /* number */
+  /* Diagrams */
+  .diagram { background: var(--code-bg); border-radius: 0.75rem; padding: 1rem; margin: 1rem 0; text-align: center; overflow-x: auto; }
+  .diagram svg { max-width: 100%; height: auto; }
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
+  th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--accent); background: rgba(56,189,248,0.05); }
+  tr:hover { background: rgba(255,255,255,0.03); }
+  /* Lists */
+  ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+  li { margin-bottom: 0.4rem; }
+  /* Practice Badge */
+  .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .badge-practice { background: rgba(250,204,21,0.15); color: var(--warning); border: 1px solid rgba(250,204,21,0.3); }
+  .badge-note { background: rgba(56,189,248,0.15); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav { transform: translateX(-100%); }
+    nav.open { transform: translateX(0); }
+    main { margin-left: 0; padding: 1rem; padding-top: 4rem; }
+    .nav-toggle { display: block; }
+    header.hero h1 { font-size: 2rem; }
+  }
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--surface-light); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+  /* Highlight Box */
+  .highlight-box { background: rgba(56,189,248,0.08); border-left: 4px solid var(--accent); padding: 1rem; border-radius: 0 0.5rem 0.5rem 0; margin: 1rem 0; }
+  .warn-box { background: rgba(250,204,21,0.08); border-left-color: var(--warning); }
+  .danger-box { background: rgba(248,113,113,0.08); border-left-color: var(--danger); }
+
+
+/* ===== palette retheme (added) ===== */
+:root{--bg:#0f1117;--surface:#1a1f2e;--surface-light:#252d3d;--text:#e8eaf0;--text-muted:#8892a4;--accent:#00a8ff;--accent-2:#9b6dff;--success:#00c96e;--warning:#f5a623;--danger:#e85d75;--code-bg:#0a0e16;--border:#252d3d;}
+
+
+/* ===== system-design shell (added) ===== */
+:root{--sd-bg:#0f1117;--sd-sb:#141820;--sd-card:#1a1f2e;--sd-card2:#1e2535;--sd-hov:#252d3d;
+--sd-txt:#e8eaf0;--sd-txt2:#8892a4;--sd-muted:#505a6e;--sd-bdr:#252d3d;--sd-bdr2:#2e3748;
+--sd-bl:#00a8ff;--sd-gr:#00c96e;--sd-or:#f5a623;--sd-pu:#9b6dff;--sd-pk:#e85d75;--sd-sw:280px;}
+html{scroll-behavior:smooth;}
+body{background:var(--sd-bg)!important;color:var(--sd-txt)!important;font-family:'DM Sans',sans-serif!important;overflow-x:hidden;margin:0!important;line-height:1.65;}
+.sd-main,.sd-main p,.sd-main li,.sd-main h1,.sd-main h2,.sd-main h3,.sd-main h4,.sd-main span,.sd-main strong,.sd-main em,.sd-main div{font-family:'DM Sans',sans-serif;}
+.sd-main pre,.sd-main code,.sd-main pre *,.sd-main code *{font-family:'DM Mono',monospace!important;}
+.sd-topbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;background:var(--sd-sb)!important;border-bottom:1px solid var(--sd-bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px 0 0;box-shadow:none;}
+.sd-brand{display:flex;align-items:center;width:var(--sd-sw);padding:0 20px;border-right:1px solid var(--sd-bdr);height:100%;box-sizing:border-box;}
+.sd-ico{width:34px;height:34px;border-radius:8px;background:var(--sd-bl);display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:11px;flex-shrink:0;}
+.sd-bt{font-weight:600;font-size:15px;color:var(--sd-txt);line-height:1.2;}
+.sd-bs{font-size:11px;color:var(--sd-muted);}
+.sd-meta{display:flex;align-items:center;gap:14px;}
+.sd-pill{background:rgba(0,168,255,.12);color:var(--sd-bl);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(0,168,255,.25);}
+.sd-tc{color:var(--sd-muted);font-size:12px;}
+.sd-layout{display:flex;padding-top:56px;min-height:100vh;}
+.sd-sidebar{width:var(--sd-sw);flex-shrink:0;background:var(--sd-sb)!important;border-right:1px solid var(--sd-bdr);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;z-index:90;padding:0 0 30px;margin:0;}
+.sd-sidebar::-webkit-scrollbar{width:4px;}
+.sd-sidebar::-webkit-scrollbar-thumb{background:var(--sd-bdr2);border-radius:2px;}
+.sd-sh{padding:16px 20px 7px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--sd-muted);text-transform:uppercase;}
+.sd-ni{display:flex;align-items:center;gap:9px;padding:8px 20px;cursor:pointer;font-size:13px;color:var(--sd-txt2);border-left:3px solid transparent;transition:all .15s;text-decoration:none;user-select:none;}
+.sd-ni:hover{background:var(--sd-hov);color:var(--sd-txt);}
+.sd-ni.active{color:var(--sd-bl);background:rgba(0,168,255,.08);border-left-color:var(--sd-bl);font-weight:500;}
+.sd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sd-nl{flex:1;}
+.sd-main{margin-left:var(--sd-sw);flex:1;padding:34px 46px 90px;max-width:940px;box-sizing:border-box;width:100%;}
+.sd-sec{display:none;}
+.sd-sec.active{display:block;animation:sdfu .32s ease both;}
+@keyframes sdfu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sd-hb{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px;}
+.sd-hb span{display:block;width:20px;height:2px;background:var(--sd-txt2);border-radius:1px;}
+.sd-ov{display:none;}
+/* harmonise reused hero + footer inside the new shell */
+.sd-main .hero,.sd-main header.hero,.sd-main section.hero{max-width:100%!important;margin:0 0 26px 0!important;min-height:auto!important;width:auto!important;border-radius:12px;}
+.sd-main footer{margin-top:34px;border-top:1px solid var(--sd-bdr);}
+@media(max-width:760px){
+ :root{--sd-sw:262px;}
+ .sd-brand{width:auto;border-right:none;}
+ .sd-main{margin-left:0;padding:22px 16px 60px;max-width:100%;}
+ .sd-sidebar{transform:translateX(-100%);transition:transform .25s;}
+ .sd-sidebar.open{transform:translateX(0);}
+ .sd-ov{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.55);z-index:89;}
+ .sd-ov.open{display:block;}
+ .sd-hb{display:flex;}
+}
+
+</style>
+</head>
+<body>
+
+<header class="sd-topbar">
+  <div class="sd-brand">
+    <div class="sd-ico">🐍</div>
+    <div><div class="sd-bt">Python Mastery</div><div class="sd-bs">Lecture Notes · 8 Lectures</div></div>
+  </div>
+  <div class="sd-meta">
+    <button class="sd-hb" id="sdhb" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="sd-tc">8 lectures · Basics→OOP</span>
+    <span class="sd-pill">Notes</span>
+  </div>
+</header>
+
+<div class="sd-ov" id="sdov"></div>
+<div class="sd-layout">
+<aside class="sd-sidebar" id="sdsb">
+<div class="sd-sh">Fundamentals</div>
+<a class="sd-ni" data-t="lec1" onclick="show('lec1')"><span class="sd-dot" style="background:var(--sd-gr)"></span><span class="sd-nl">Lecture 1 · Basics</span></a>
+<a class="sd-ni" data-t="lec2" onclick="show('lec2')"><span class="sd-dot" style="background:var(--sd-bl)"></span><span class="sd-nl">Lecture 2 · Strings &amp; Conditions</span></a>
+<div class="sd-sh">Data Structures</div>
+<a class="sd-ni" data-t="lec3" onclick="show('lec3')"><span class="sd-dot" style="background:var(--sd-or)"></span><span class="sd-nl">Lecture 3 · Lists &amp; Tuples</span></a>
+<a class="sd-ni" data-t="lec4" onclick="show('lec4')"><span class="sd-dot" style="background:var(--sd-pu)"></span><span class="sd-nl">Lecture 4 · Dictionary &amp; Set</span></a>
+<div class="sd-sh">Flow &amp; Reuse</div>
+<a class="sd-ni" data-t="lec5" onclick="show('lec5')"><span class="sd-dot" style="background:var(--sd-pk)"></span><span class="sd-nl">Lecture 5 · Loops</span></a>
+<a class="sd-ni" data-t="lec6" onclick="show('lec6')"><span class="sd-dot" style="background:var(--sd-gr)"></span><span class="sd-nl">Lecture 6 · Functions</span></a>
+<div class="sd-sh">Applied</div>
+<a class="sd-ni" data-t="lec7" onclick="show('lec7')"><span class="sd-dot" style="background:var(--sd-bl)"></span><span class="sd-nl">Lecture 7 · File I/O</span></a>
+<a class="sd-ni" data-t="lec8" onclick="show('lec8')"><span class="sd-dot" style="background:var(--sd-or)"></span><span class="sd-nl">Lecture 8 · OOP</span></a>
+</aside>
+<div class="sd-main" role="main">
+<header class="hero">
+    <h1>Python Mastery</h1>
+    <p>Complete visually-rich lecture notes from basics to OOP</p>
+  </header>
+<section id="lec1" class="sd-sec active">
+    <h2 class="section-title">Lecture 1: Python Basics</h2>
+
+    <div class="card">
+      <h3>What is Programming?</h3>
+      <p>Programming is the process of writing instructions for a computer. A <strong>Translator</strong> (Compiler or Interpreter) converts human-readable code into machine code.</p>
+      <div class="diagram">
+        <svg width="600" height="200" viewBox="0 0 600 200">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#38bdf8;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect x="20" y="60" width="140" height="80" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="90" y="105" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold">Machine</text>
+          <path d="M 170 100 L 240 100" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+          <rect x="250" y="50" width="160" height="100" rx="10" fill="#0f172a" stroke="url(#grad1)" stroke-width="3"/>
+          <text x="330" y="85" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="bold">Translator</text>
+          <text x="330" y="110" text-anchor="middle" fill="#94a3b8" font-size="12">Compiler / Interpreter</text>
+          <text x="330" y="130" text-anchor="middle" fill="#94a3b8" font-size="12">(Python uses Interpreter)</text>
+          <path d="M 420 100 L 490 100" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+          <rect x="500" y="60" width="80" height="80" rx="10" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
+          <text x="540" y="105" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold">Code</text>
+          <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/></marker></defs>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Why Python?</h3>
+      <ul>
+        <li>Simple & Easy to learn</li>
+        <li>Free & Open Source</li>
+        <li>High Level Language</li>
+        <li>Developed by <strong>Guido van Rossum</strong></li>
+        <li>Portable (cross-platform)</li>
+      </ul>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="c"># Our First Program</span>
+<span class="n">print</span>(<span class="s">"Hello World"</span>)</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Character Set</h3>
+      <table>
+        <tr><th>Category</th><th>Characters</th></tr>
+        <tr><td>Letters</td><td>A-Z, a-z</td></tr>
+        <tr><td>Digits</td><td>0-9</td></tr>
+        <tr><td>Special Symbols</td><td>+ - * / etc.</td></tr>
+        <tr><td>Whitespaces</td><td>Blank Space, tab, carriage return, newline, formfeed</td></tr>
+        <tr><td>Other</td><td>All ASCII and Unicode characters</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Variables & Memory</h3>
+      <p>A <strong>variable</strong> is a name given to a memory location in a program.</p>
+      <div class="diagram">
+        <svg width="600" height="220" viewBox="0 0 600 220">
+          <rect x="50" y="40" width="120" height="140" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="110" y="30" text-anchor="middle" fill="#38bdf8" font-size="14">Memory</text>
+          <rect x="70" y="60" width="80" height="40" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="110" y="85" text-anchor="middle" fill="#f8fafc" font-size="13">name</text>
+          <text x="110" y="115" text-anchor="middle" fill="#94a3b8" font-size="11">"Shradha"</text>
+
+          <rect x="70" y="120" width="80" height="40" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="110" y="145" text-anchor="middle" fill="#f8fafc" font-size="13">age</text>
+          <text x="110" y="175" text-anchor="middle" fill="#94a3b8" font-size="11">23</text>
+
+          <rect x="250" y="40" width="120" height="140" rx="8" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
+          <text x="310" y="30" text-anchor="middle" fill="#818cf8" font-size="14">Code</text>
+          <text x="310" y="80" text-anchor="middle" fill="#98c379" font-size="13">name = "Shradha"</text>
+          <text x="310" y="110" text-anchor="middle" fill="#d19a66" font-size="13">age = 23</text>
+          <text x="310" y="140" text-anchor="middle" fill="#56b6c2" font-size="13">price = 25.99</text>
+
+          <path d="M 180 80 L 240 80" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,5"/>
+          <path d="M 180 140 L 240 140" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,5"/>
+        </svg>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>name  <span class="o">=</span> <span class="s">"Shradha"</span>
+age   <span class="o">=</span> <span class="m">23</span>
+price <span class="o">=</span> <span class="m">25.99</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Rules for Identifiers</h3>
+      <ol>
+        <li>Can combine uppercase, lowercase, digits, and underscore (<code>_</code>)</li>
+        <li>Cannot start with a digit (e.g., <code>1variable</code> is invalid)</li>
+        <li>No special symbols like <code>!@#$%</code></li>
+        <li>Can be of any length</li>
+      </ol>
+      <div class="highlight-box">
+        <strong>Valid:</strong> <code>myVariable</code>, <code>variable_1</code>, <code>variable_for_print</code><br>
+        <strong>Invalid:</strong> <code>1variable</code>, <code>my@var</code>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Data Types</h3>
+      <div class="grid-2">
+        <div>
+          <table>
+            <tr><th>Type</th><th>Example</th></tr>
+            <tr><td>Integers</td><td><code>42</code></td></tr>
+            <tr><td>Float</td><td><code>3.14</code></td></tr>
+            <tr><td>String</td><td><code>"hello"</code></td></tr>
+            <tr><td>Boolean</td><td><code>True / False</code></td></tr>
+            <tr><td>None</td><td><code>None</code></td></tr>
+          </table>
+        </div>
+        <div class="diagram">
+          <svg width="280" height="200" viewBox="0 0 280 200">
+            <rect x="20" y="20" width="100" height="50" rx="8" fill="rgba(56,189,248,0.1)" stroke="#38bdf8" stroke-width="2"/>
+            <text x="70" y="50" text-anchor="middle" fill="#38bdf8" font-size="14">int</text>
+            <rect x="150" y="20" width="100" height="50" rx="8" fill="rgba(129,140,248,0.1)" stroke="#818cf8" stroke-width="2"/>
+            <text x="200" y="50" text-anchor="middle" fill="#818cf8" font-size="14">float</text>
+            <rect x="20" y="90" width="100" height="50" rx="8" fill="rgba(74,222,128,0.1)" stroke="#4ade80" stroke-width="2"/>
+            <text x="70" y="120" text-anchor="middle" fill="#4ade80" font-size="14">str</text>
+            <rect x="150" y="90" width="100" height="50" rx="8" fill="rgba(250,204,21,0.1)" stroke="#facc15" stroke-width="2"/>
+            <text x="200" y="120" text-anchor="middle" fill="#facc15" font-size="14">bool</text>
+            <rect x="85" y="160" width="100" height="30" rx="8" fill="rgba(248,113,113,0.1)" stroke="#f87171" stroke-width="2"/>
+            <text x="135" y="180" text-anchor="middle" fill="#f87171" font-size="14">NoneType</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Keywords</h3>
+      <p>Reserved words in Python. <span class="badge badge-note">Note</span> <code>False</code> must be uppercase.</p>
+    </div>
+
+    <div class="card">
+      <h3>Comments</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="c"># This is a single-line comment</span>
+
+<span class="s">"""</span>
+<span class="s">This is a</span>
+<span class="s">multi-line comment</span>
+<span class="s">"""</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Operators</h3>
+      <table>
+        <tr><th>Type</th><th>Operators</th></tr>
+        <tr><td>Arithmetic</td><td><code>+  -  *  /  %  **</code></td></tr>
+        <tr><td>Relational / Comparison</td><td><code>==  !=  &gt;  &lt;  &gt;=  &lt;=</code></td></tr>
+        <tr><td>Assignment</td><td><code>=  +=  -=  *=  /=  %=  **=</code></td></tr>
+        <tr><td>Logical</td><td><code>not  and  or</code></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Type Conversion vs Type Casting</h3>
+      <div class="grid-2">
+        <div>
+          <h4>Implicit (Conversion)</h4>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>a, b <span class="o">=</span> <span class="m">1</span>, <span class="m">2.0</span>
+sum_val <span class="o">=</span> a <span class="o">+</span> b  <span class="c"># 3.0 (auto-converted)</span></code></pre>
+          </div>
+        </div>
+        <div>
+          <h4>Explicit (Casting)</h4>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>a, b <span class="o">=</span> <span class="m">1</span>, <span class="s">"2"</span>
+c <span class="o">=</span> <span class="n">int</span>(b)
+sum_val <span class="o">=</span> a <span class="o">+</span> c  <span class="c"># 3</span></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="highlight-box danger-box">
+        <strong>Error:</strong> <code>a, b = 1, "2" ; sum = a + b</code> will raise a TypeError because you cannot add int and str directly.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Taking Input</h3>
+      <p><code>input()</code> always returns a <strong>string</strong>. Cast it for numbers.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>name <span class="o">=</span> <span class="n">input</span>(<span class="s">"Enter name: "</span>)          <span class="c"># str</span>
+age <span class="o">=</span> <span class="n">int</span>(<span class="n">input</span>(<span class="s">"Enter age: "</span>))      <span class="c"># int</span>
+price <span class="o">=</span> <span class="n">float</span>(<span class="n">input</span>(<span class="s">"Enter price: "</span>)) <span class="c"># float</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice Problems</h3>
+      <ol>
+        <li>Write a Program to input 2 numbers &amp; print their sum.</li>
+        <li>WAP to input side of a square &amp; print its area.</li>
+        <li>WAP to input 2 floating point numbers &amp; print their average.</li>
+        <li>WAP to input 2 int numbers, a and b. Print <code>True</code> if a &gt;= b, else <code>False</code>.</li>
+      </ol>
+    </div>
+  </section>
+<section id="lec2" class="sd-sec">
+    <h2 class="section-title">Lecture 2: Strings & Conditions</h2>
+
+    <div class="card">
+      <h3>Strings</h3>
+      <p>A data type that stores a sequence of characters.</p>
+      <h4>Basic Operations</h4>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="c"># Concatenation</span>
+<span class="n">print</span>(<span class="s">"hello"</span> <span class="o">+</span> <span class="s">"world"</span>)  <span class="c"># "helloworld"</span>
+
+<span class="c"># Length</span>
+<span class="n">print</span>(<span class="n">len</span>(<span class="s">"hello"</span>))      <span class="c"># 5</span></code></pre>
+      </div>
+
+      <h4>Indexing</h4>
+      <div class="diagram">
+        <svg width="600" height="220" viewBox="0 0 600 220">
+          <!-- Title -->
+          <text x="300" y="28" text-anchor="middle" fill="#f8fafc" font-size="18" font-weight="bold">String Indexing</text>
+
+          <!-- Characters -->
+          <text x="300" y="60" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="20" font-weight="bold">A    p    n    a    _    C    o    l    l    e    g    e</text>
+
+          <!-- Index numbers -->
+          <text x="300" y="90" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="16">0    1    2    3    4    5    6    7    8    9   10   11</text>
+
+          <!-- Example access -->
+          <rect x="50" y="110" width="500" height="32" rx="8" fill="rgba(250,204,21,0.08)" stroke="rgba(250,204,21,0.4)" stroke-width="1"/>
+          <text x="300" y="132" text-anchor="middle" fill="#facc15" font-family="monospace" font-size="14">str[0] = 'A'     str[1] = 'p'     str[11] = 'e'</text>
+
+          <!-- Warning box -->
+          <rect x="50" y="158" width="500" height="38" rx="8" fill="rgba(248,113,113,0.08)" stroke="#f87171" stroke-width="1.5"/>
+          <text x="300" y="183" text-anchor="middle" fill="#f87171" font-family="monospace" font-size="14" font-weight="bold">str[0] = 'B'   # NOT ALLOWED — Strings are immutable!</text>
+        </svg>
+      </div>
+
+      <h4>Slicing</h4>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>str_val <span class="o">=</span> <span class="s">"ApnaCollege"</span>
+<span class="n">print</span>(str_val[<span class="m">1</span>:<span class="m">4</span>])   <span class="c"># "pna" (end index excluded)</span>
+<span class="n">print</span>(str_val[:<span class="m">4</span>])    <span class="c"># "Apna" (same as [0:4])</span>
+<span class="n">print</span>(str_val[<span class="m">1</span>:])    <span class="c"># "pnaCollege" (same as [1:len])</span>
+<span class="n">print</span>(str_val[<span class="o">-</span><span class="m">3</span>:<span class="o">-</span><span class="m">1</span>]) <span class="c"># "ge" (negative indexing)</span></code></pre>
+      </div>
+
+      <h4>String Functions</h4>
+      <table>
+        <tr><th>Function</th><th>Description</th></tr>
+        <tr><td><code>str.endswith("er.")</code></td><td>Returns True if string ends with substring</td></tr>
+        <tr><td><code>str.capitalize()</code></td><td>Capitalizes 1st character</td></tr>
+        <tr><td><code>str.find(word)</code></td><td>Returns 1st index of 1st occurrence</td></tr>
+        <tr><td><code>str.replace(old, new)</code></td><td>Replaces all occurrences</td></tr>
+        <tr><td><code>str.count("am")</code></td><td>Counts occurrences of substring</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice: Strings</h3>
+      <p>WAP to input user's first name &amp; print its length.</p>
+    </div>
+
+    <div class="card">
+      <h3>Conditional Statements</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">if</span> condition:
+    statement1
+<span class="k">elif</span> condition:
+    statement2
+<span class="k">else</span>:
+    statementN</code></pre>
+      </div>
+
+      <h4>Grade Students</h4>
+      <div class="diagram">
+        <svg width="500" height="260" viewBox="0 0 500 260">
+          <rect x="150" y="20" width="200" height="40" rx="20" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="250" y="45" text-anchor="middle" fill="#f8fafc" font-size="14">marks >= 90</text>
+          <text x="250" y="75" text-anchor="middle" fill="#4ade80" font-size="13">Grade = "A"</text>
+          <path d="M 250 60 L 250 80" stroke="#94a3b8" stroke-width="1.5"/>
+
+          <rect x="150" y="90" width="200" height="40" rx="20" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="250" y="115" text-anchor="middle" fill="#f8fafc" font-size="14">90 > marks >= 80</text>
+          <text x="250" y="145" text-anchor="middle" fill="#facc15" font-size="13">Grade = "B"</text>
+          <path d="M 250 130 L 250 150" stroke="#94a3b8" stroke-width="1.5"/>
+
+          <rect x="150" y="160" width="200" height="40" rx="20" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="250" y="185" text-anchor="middle" fill="#f8fafc" font-size="14">80 > marks >= 70</text>
+          <text x="250" y="215" text-anchor="middle" fill="#f87171" font-size="13">Grade = "C"</text>
+          <path d="M 250 200 L 250 220" stroke="#94a3b8" stroke-width="1.5"/>
+
+          <rect x="150" y="230" width="200" height="25" rx="12" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
+          <text x="250" y="247" text-anchor="middle" fill="#f8fafc" font-size="13">else: Grade = "D"</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice: Conditions</h3>
+      <ol>
+        <li>WAP to check if a number entered by the user is odd or even.</li>
+        <li>WAP to find the greatest of 3 numbers entered by the user.</li>
+        <li>WAP to check if a number is a multiple of 7 or not.</li>
+      </ol>
+    </div>
+  </section>
+<section id="lec3" class="sd-sec">
+    <h2 class="section-title">Lecture 3: Lists & Tuples</h2>
+
+    <div class="card">
+      <h3>Lists in Python</h3>
+      <p>A built-in data type that stores a set of values. It can store elements of different types.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>marks <span class="o">=</span> [<span class="m">87</span>, <span class="m">64</span>, <span class="m">33</span>, <span class="m">95</span>, <span class="m">76</span>]
+student <span class="o">=</span> [<span class="s">"Karan"</span>, <span class="m">85</span>, <span class="s">"Delhi"</span>]
+student[<span class="m">0</span>] <span class="o">=</span> <span class="s">"Arjun"</span>  <span class="c"># Allowed (Mutable)</span>
+<span class="n">print</span>(<span class="n">len</span>(student))    <span class="c"># 3</span></code></pre>
+      </div>
+
+      <h4>List Slicing</h4>
+      <p>Same as string slicing.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>marks <span class="o">=</span> [<span class="m">87</span>, <span class="m">64</span>, <span class="m">33</span>, <span class="m">95</span>, <span class="m">76</span>]
+<span class="n">print</span>(marks[<span class="m">1</span>:<span class="m">4</span>])   <span class="c"># [64, 33, 95]</span>
+<span class="n">print</span>(marks[:<span class="m">4</span>])    <span class="c"># [87, 64, 33, 95]</span>
+<span class="n">print</span>(marks[<span class="m">1</span>:])    <span class="c"># [64, 33, 95, 76]</span>
+<span class="n">print</span>(marks[<span class="o">-</span><span class="m">3</span>:<span class="o">-</span><span class="m">1</span>]) <span class="c"># [33, 95]</span></code></pre>
+      </div>
+
+      <h4>List Methods</h4>
+      <table>
+        <tr><th>Method</th><th>Description</th><th>Example</th></tr>
+        <tr><td><code>list.append(4)</code></td><td>Adds element at end</td><td><code>[2,1,3] → [2,1,3,4]</code></td></tr>
+        <tr><td><code>list.sort()</code></td><td>Sorts ascending</td><td><code>[2,1,3] → [1,2,3]</code></td></tr>
+        <tr><td><code>list.sort(reverse=True)</code></td><td>Sorts descending</td><td><code>[1,2,3] → [3,2,1]</code></td></tr>
+        <tr><td><code>list.reverse()</code></td><td>Reverses list</td><td><code>[2,1,3] → [3,1,2]</code></td></tr>
+        <tr><td><code>list.insert(idx, el)</code></td><td>Inserts at index</td><td><code>[2,1,3] → [2,1,4,3]</code></td></tr>
+        <tr><td><code>list.remove(1)</code></td><td>Removes first occurrence</td><td><code>[2,1,3,1] → [2,3,1]</code></td></tr>
+        <tr><td><code>list.pop(idx)</code></td><td>Removes element at index</td><td><code>[2,1,3] → [2,3]</code></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Tuples in Python</h3>
+      <p>Immutable sequences. Once created, elements cannot be changed.</p>
+      <div class="diagram">
+        <svg width="500" height="180" viewBox="0 0 500 180">
+          <text x="250" y="25" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold">List vs Tuple</text>
+
+          <rect x="30" y="50" width="190" height="100" rx="10" fill="rgba(74,222,128,0.05)" stroke="#4ade80" stroke-width="2"/>
+          <text x="125" y="75" text-anchor="middle" fill="#4ade80" font-size="14" font-weight="bold">List (Mutable)</text>
+          <rect x="50" y="90" width="30" height="30" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="65" y="110" text-anchor="middle" fill="#f8fafc" font-size="12">1</text>
+          <rect x="85" y="90" width="30" height="30" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="100" y="110" text-anchor="middle" fill="#f8fafc" font-size="12">2</text>
+          <rect x="120" y="90" width="30" height="30" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="135" y="110" text-anchor="middle" fill="#f8fafc" font-size="12">3</text>
+          <text x="180" y="110" text-anchor="middle" fill="#4ade80" font-size="20">✓</text>
+          <text x="125" y="145" text-anchor="middle" fill="#94a3b8" font-size="11">Can change values</text>
+
+          <rect x="280" y="50" width="190" height="100" rx="10" fill="rgba(248,113,113,0.05)" stroke="#f87171" stroke-width="2"/>
+          <text x="375" y="75" text-anchor="middle" fill="#f87171" font-size="14" font-weight="bold">Tuple (Immutable)</text>
+          <rect x="300" y="90" width="30" height="30" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="315" y="110" text-anchor="middle" fill="#f8fafc" font-size="12">1</text>
+          <rect x="335" y="90" width="30" height="30" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="350" y="110" text-anchor="middle" fill="#f8fafc" font-size="12">2</text>
+          <rect x="370" y="90" width="30" height="30" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="385" y="110" text-anchor="middle" fill="#f8fafc" font-size="12">3</text>
+          <text x="430" y="110" text-anchor="middle" fill="#f87171" font-size="20">✗</text>
+          <text x="375" y="145" text-anchor="middle" fill="#94a3b8" font-size="11">Cannot change values</text>
+        </svg>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>tup <span class="o">=</span> (<span class="m">87</span>, <span class="m">64</span>, <span class="m">33</span>, <span class="m">95</span>, <span class="m">76</span>)
+tup[<span class="m">0</span>] <span class="o">=</span> <span class="m">43</span>  <span class="c"># NOT allowed in Python</span>
+
+<span class="c"># Empty & Single element tuples</span>
+tup1 <span class="o">=</span> ()
+tup2 <span class="o">=</span> (<span class="m">1</span>,)   <span class="c"># Note the comma!</span>
+tup3 <span class="o">=</span> (<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>)</code></pre>
+      </div>
+
+      <h4>Tuple Methods</h4>
+      <table>
+        <tr><th>Method</th><th>Description</th></tr>
+        <tr><td><code>tup.index(el)</code></td><td>Returns index of first occurrence</td></tr>
+        <tr><td><code>tup.count(el)</code></td><td>Counts total occurrences</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice Problems</h3>
+      <ol>
+        <li>WAP to ask the user to enter names of their 3 favorite movies &amp; store them in a list.</li>
+        <li>WAP to check if a list contains a palindrome of elements. (Hint: use <code>copy()</code> method)<br><code>[1,2,3,2,1]</code> or <code>[1,"abc","abc",1]</code></li>
+        <li>WAP to count the number of students with the "A" grade in the tuple: <code>["C","D","A","A","B","B","A"]</code></li>
+        <li>Store the above values in a list &amp; sort them from "A" to "D".</li>
+      </ol>
+    </div>
+  </section>
+<section id="lec4" class="sd-sec">
+    <h2 class="section-title">Lecture 4: Dictionary & Set</h2>
+
+    <div class="card">
+      <h3>Dictionary in Python</h3>
+      <p>Used to store data values in <strong>key:value</strong> pairs. They are unordered, mutable, and don't allow duplicate keys.</p>
+      <div class="diagram">
+        <svg width="500" height="200" viewBox="0 0 500 200">
+          <text x="250" y="25" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold">Dictionary Structure</text>
+          <rect x="80" y="50" width="100" height="40" rx="6" fill="#38bdf8" opacity="0.2" stroke="#38bdf8" stroke-width="2"/>
+          <text x="130" y="75" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="bold">Key</text>
+          <rect x="220" y="50" width="100" height="40" rx="6" fill="#818cf8" opacity="0.2" stroke="#818cf8" stroke-width="2"/>
+          <text x="270" y="75" text-anchor="middle" fill="#818cf8" font-size="14" font-weight="bold">Value</text>
+          <path d="M 185 70 L 215 70" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow2)"/>
+
+          <rect x="80" y="110" width="340" height="30" rx="5" fill="#0f172a" stroke="#334155"/>
+          <text x="100" y="130" fill="#38bdf8" font-family="monospace" font-size="13">"name"</text>
+          <text x="200" y="130" fill="#94a3b8" font-family="monospace" font-size="13">→</text>
+          <text x="250" y="130" fill="#818cf8" font-family="monospace" font-size="13">"shradha"</text>
+
+          <rect x="80" y="150" width="340" height="30" rx="5" fill="#0f172a" stroke="#334155"/>
+          <text x="100" y="170" fill="#38bdf8" font-family="monospace" font-size="13">"cgpa"</text>
+          <text x="200" y="170" fill="#94a3b8" font-family="monospace" font-size="13">→</text>
+          <text x="250" y="170" fill="#818cf8" font-family="monospace" font-size="13">8.5</text>
+          <defs><marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/></marker></defs>
+        </svg>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>dict <span class="o">=</span> {
+    <span class="s">"name"</span> : <span class="s">"shradha"</span>,
+    <span class="s">"cgpa"</span> : <span class="m">8.5</span>,
+    <span class="s">"marks"</span>: [<span class="m">98</span>, <span class="m">97</span>, <span class="m">95</span>]
+}
+
+<span class="n">print</span>(dict[<span class="s">"name"</span>])    <span class="c"># Access</span>
+dict[<span class="s">"key"</span>] <span class="o">=</span> <span class="s">"value"</span>  <span class="c"># Assign or Add new</span></code></pre>
+      </div>
+
+      <h4>Nested Dictionaries</h4>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>student <span class="o">=</span> {
+    <span class="s">"name"</span> : <span class="s">"shradha"</span>,
+    <span class="s">"score"</span>: {
+        <span class="s">"chem"</span>: <span class="m">98</span>,
+        <span class="s">"phy"</span> : <span class="m">97</span>,
+        <span class="s">"math"</span>: <span class="m">95</span>
+    }
+}
+
+<span class="n">print</span>(student[<span class="s">"score"</span>][<span class="s">"math"</span>])  <span class="c"># 95</span></code></pre>
+      </div>
+
+      <h4>Dictionary Methods</h4>
+      <table>
+        <tr><th>Method</th><th>Description</th></tr>
+        <tr><td><code>myDict.keys()</code></td><td>Returns all keys</td></tr>
+        <tr><td><code>myDict.values()</code></td><td>Returns all values</td></tr>
+        <tr><td><code>myDict.items()</code></td><td>Returns all (key, val) pairs as tuples</td></tr>
+        <tr><td><code>myDict.get("key")</code></td><td>Returns value for key (safe access)</td></tr>
+        <tr><td><code>myDict.update(newDict)</code></td><td>Inserts specified items</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Set in Python</h3>
+      <p>Collection of <strong>unordered</strong> items. Each element must be <strong>unique & immutable</strong>.</p>
+      <div class="diagram">
+        <svg width="500" height="160" viewBox="0 0 500 160">
+          <text x="250" y="25" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold">Set Uniqueness</text>
+          <text x="120" y="60" text-anchor="middle" fill="#94a3b8" font-size="13">Input</text>
+          <rect x="50" y="75" width="140" height="40" rx="20" fill="#0f172a" stroke="#facc15" stroke-width="2"/>
+          <text x="120" y="100" text-anchor="middle" fill="#facc15" font-family="monospace" font-size="14">{1, 2, 2, 2}</text>
+
+          <path d="M 200 95 L 260 95" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow3)"/>
+          <text x="230" y="85" text-anchor="middle" fill="#94a3b8" font-size="12">stores</text>
+
+          <text x="380" y="60" text-anchor="middle" fill="#94a3b8" font-size="13">Result</text>
+          <rect x="310" y="75" width="140" height="40" rx="20" fill="#0f172a" stroke="#4ade80" stroke-width="2"/>
+          <text x="380" y="100" text-anchor="middle" fill="#4ade80" font-family="monospace" font-size="14">{1, 2}</text>
+          <defs><marker id="arrow3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/></marker></defs>
+        </svg>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>nums <span class="o">=</span> {<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>, <span class="m">4</span>}
+set2 <span class="o">=</span> {<span class="m">1</span>, <span class="m">2</span>, <span class="m">2</span>, <span class="m">2</span>}  <span class="c"># resolves to {1, 2}</span>
+null_set <span class="o">=</span> <span class="n">set</span>()       <span class="c"># empty set syntax</span></code></pre>
+      </div>
+
+      <h4>Set Methods</h4>
+      <table>
+        <tr><th>Method</th><th>Description</th></tr>
+        <tr><td><code>set.add(el)</code></td><td>Adds an element</td></tr>
+        <tr><td><code>set.remove(el)</code></td><td>Removes the element</td></tr>
+        <tr><td><code>set.clear()</code></td><td>Empties the set</td></tr>
+        <tr><td><code>set.pop()</code></td><td>Removes a random value</td></tr>
+        <tr><td><code>set.union(set2)</code></td><td>Combines both sets (returns new)</td></tr>
+        <tr><td><code>set.intersection(set2)</code></td><td>Returns common elements</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice Problems</h3>
+      <ol>
+        <li>Store word meanings in a dictionary:<br>
+          <code>"table"</code>: <code>["a piece of furniture", "list of facts & figures"]</code><br>
+          <code>"cat"</code>: <code>["a small animal"]</code></li>
+        <li>You are given a list of subjects for students. Assume one classroom is required for 1 subject. How many classrooms are needed by all students?</li>
+        <li>WAP to enter marks of 3 subjects from the user and store them in a dictionary. Start with an empty dictionary &amp; add one by one. Use subject name as key &amp; marks as value.</li>
+        <li>Figure out a way to store <code>9</code> and <code>9.0</code> as separate values in the set. (Hint: use built-in data types)</li>
+      </ol>
+      <div class="highlight-box warn-box">
+        <strong>Hint for Q4:</strong> Store <code>9</code> as an int and <code>9.0</code> as a string <code>"9.0"</code> or inside a tuple <code>(9.0,)</code> to distinguish them.
+      </div>
+    </div>
+  </section>
+<section id="lec5" class="sd-sec">
+    <h2 class="section-title">Lecture 5: Loops</h2>
+
+    <div class="card">
+      <h3>While Loops</h3>
+      <p>Used to repeat instructions while a condition is true.</p>
+      <div class="diagram">
+        <svg width="400" height="320" viewBox="0 0 400 320">
+          <rect x="130" y="20" width="140" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="200" y="45" text-anchor="middle" fill="#f8fafc" font-size="14">Start</text>
+          <path d="M 200 60 L 200 80" stroke="#94a3b8" stroke-width="2"/>
+
+          <polygon points="200,80 250,120 200,160 150,120" fill="#1e293b" stroke="#facc15" stroke-width="2"/>
+          <text x="200" y="125" text-anchor="middle" fill="#facc15" font-size="13">Condition?</text>
+
+          <path d="M 200 160 L 200 180" stroke="#94a3b8" stroke-width="2"/>
+          <rect x="130" y="180" width="140" height="40" rx="5" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+          <text x="200" y="205" text-anchor="middle" fill="#4ade80" font-size="13">Do Work</text>
+
+          <path d="M 200 220 L 200 240 L 280 240 L 280 120 L 250 120" fill="none" stroke="#94a3b8" stroke-width="2"/>
+          <text x="240" y="235" fill="#94a3b8" font-size="12">True</text>
+
+          <path d="M 250 120 L 320 120" stroke="#94a3b8" stroke-width="2"/>
+          <text x="290" y="110" fill="#94a3b8" font-size="12">False</text>
+          <rect x="320" y="100" width="60" height="40" rx="5" fill="#1e293b" stroke="#f87171" stroke-width="2"/>
+          <text x="350" y="125" text-anchor="middle" fill="#f87171" font-size="13">End</text>
+        </svg>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="c"># Print hello 5 times</span>
+count <span class="o">=</span> <span class="m">1</span>
+<span class="k">while</span> count <span class="o"><=</span> <span class="m">5</span>:
+    <span class="n">print</span>(<span class="s">"hello"</span>)
+    count <span class="o">+=</span> <span class="m">1</span>
+
+<span class="c"># Print numbers 1 to 5</span>
+i <span class="o">=</span> <span class="m">1</span>
+<span class="k">while</span> i <span class="o"><=</span> <span class="m">5</span>:
+    <span class="n">print</span>(i)
+    i <span class="o">+=</span> <span class="m">1</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Break & Continue</h3>
+      <div class="grid-2">
+        <div>
+          <h4>Break</h4>
+          <p>Terminates the loop immediately when encountered.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code><span class="c"># Stop search when found</span>
+<span class="k">for</span> i <span class="k">in</span> <span class="n">range</span>(<span class="m">10</span>):
+    <span class="k">if</span> i <span class="o">==</span> <span class="m">5</span>:
+        <span class="k">break</span>
+    <span class="n">print</span>(i)</code></pre>
+          </div>
+        </div>
+        <div>
+          <h4>Continue</h4>
+          <p>Skips current iteration and moves to next.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code><span class="c"># Skip multiples of 3</span>
+<span class="k">for</span> i <span class="k">in</span> <span class="n">range</span>(<span class="m">10</span>):
+    <span class="k">if</span> i <span class="o">%</span> <span class="m">3</span> <span class="o">==</span> <span class="m">0</span>:
+        <span class="k">continue</span>
+    <span class="n">print</span>(i)</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>For Loops</h3>
+      <p>Used for sequential traversal: list, string, tuple.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">for</span> el <span class="k">in</span> list:
+    <span class="c"># some work</span>
+
+<span class="c"># For loop with else</span>
+<span class="k">for</span> el <span class="k">in</span> list:
+    <span class="n">print</span>(el)
+<span class="k">else</span>:
+    <span class="n">print</span>(<span class="s">"END"</span>)  <span class="c"># Runs when loop ends normally (not via break)</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Range Function</h3>
+      <p><code>range(start?, stop, step?)</code> — returns a sequence of numbers.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="n">range</span>(<span class="m">5</span>)        <span class="c"># 0, 1, 2, 3, 4</span>
+<span class="n">range</span>(<span class="m">1</span>, <span class="m">6</span>)     <span class="c"># 1, 2, 3, 4, 5</span>
+<span class="n">range</span>(<span class="m">1</span>, <span class="m">10</span>, <span class="m">2</span>) <span class="c"># 1, 3, 5, 7, 9</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Pass Statement</h3>
+      <p>A null statement that does nothing. Used as a placeholder.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">for</span> el <span class="k">in</span> <span class="n">range</span>(<span class="m">10</span>):
+    <span class="k">pass</span>  <span class="c"># placeholder for future code</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice Problems</h3>
+      <ol>
+        <li>Print numbers from 1 to 100.</li>
+        <li>Print numbers from 100 to 1.</li>
+        <li>Print the multiplication table of a number n.</li>
+        <li>Print elements of list <code>[1,4,9,16,25,36,49,64,81,100]</code> using a loop.</li>
+        <li>Search for a number x in the tuple <code>(1,4,9,16,25,36,49,64,81,100)</code> using loop.</li>
+        <li>WAP to find the sum of first n numbers (using while).</li>
+        <li>WAP to find the factorial of first n numbers (using for).</li>
+      </ol>
+    </div>
+  </section>
+<section id="lec6" class="sd-sec">
+    <h2 class="section-title">Lecture 6: Functions</h2>
+
+    <div class="card">
+      <h3>Defining Functions</h3>
+      <p>A block of statements that perform a specific task.</p>
+      <div class="diagram">
+        <svg width="600" height="220" viewBox="0 0 600 220">
+          <text x="300" y="25" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold">Function Anatomy</text>
+
+          <rect x="30" y="50" width="200" height="120" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="130" y="80" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="bold">Definition</text>
+          <text x="130" y="110" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="12">def sum(a, b):</text>
+          <text x="130" y="130" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="12">    s = a + b</text>
+          <text x="130" y="150" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="12">    return s</text>
+
+          <path d="M 240 110 L 280 110" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)"/>
+          <text x="260" y="100" fill="#94a3b8" font-size="12">call</text>
+
+          <rect x="290" y="50" width="120" height="120" rx="10" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+          <text x="350" y="80" text-anchor="middle" fill="#4ade80" font-size="14" font-weight="bold">Call</text>
+          <text x="350" y="110" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="12">sum(2, 3)</text>
+          <text x="350" y="140" text-anchor="middle" fill="#94a3b8" font-size="12">arguments</text>
+
+          <path d="M 420 110 L 460 110" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow4)"/>
+          <text x="440" y="100" fill="#94a3b8" font-size="12">return</text>
+
+          <rect x="470" y="50" width="100" height="120" rx="10" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
+          <text x="520" y="80" text-anchor="middle" fill="#818cf8" font-size="14" font-weight="bold">Result</text>
+          <text x="520" y="110" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="12">5</text>
+          <text x="520" y="140" text-anchor="middle" fill="#94a3b8" font-size="12">value</text>
+          <defs><marker id="arrow4" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/></marker></defs>
+        </svg>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">def</span> <span class="n">sum</span>(a, b):
+    s <span class="o">=</span> a <span class="o">+</span> b
+    <span class="k">return</span> s
+
+<span class="n">print</span>(<span class="n">sum</span>(<span class="m">2</span>, <span class="m">3</span>))  <span class="c"># 5</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Built-in vs User-defined Functions</h3>
+      <div class="grid-2">
+        <div>
+          <h4>Built-in</h4>
+          <ul>
+            <li><code>print()</code></li>
+            <li><code>len()</code></li>
+            <li><code>type()</code></li>
+            <li><code>range()</code></li>
+          </ul>
+        </div>
+        <div>
+          <h4>User-defined</h4>
+          <p>Functions created by the programmer using <code>def</code>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Default Parameters</h3>
+      <p>Assigning a default value to a parameter, used when no argument is passed.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">def</span> <span class="n">greet</span>(name<span class="o">=</span><span class="s">"Guest"</span>):
+    <span class="n">print</span>(<span class="s">"Hello,"</span>, name)
+
+<span class="n">greet</span>()          <span class="c"># Hello, Guest</span>
+<span class="n">greet</span>(<span class="s">"Alice"</span>)   <span class="c"># Hello, Alice</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice: Functions</h3>
+      <ol>
+        <li>WAF to print the length of a list. (list is the parameter)</li>
+        <li>WAF to print the elements of a list in a single line. (list is the parameter)</li>
+        <li>WAF to find the factorial of n. (n is the parameter)</li>
+        <li>WAF to convert USD to INR.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>Recursion</h3>
+      <p>When a function calls itself repeatedly. Must have a <strong>base case</strong> to stop.</p>
+      <div class="diagram">
+        <svg width="500" height="260" viewBox="0 0 500 260">
+          <text x="250" y="25" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold">Recursion Stack: fact(4)</text>
+          <rect x="180" y="40" width="140" height="35" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="250" y="62" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="13">fact(4) → 4*fact(3)</text>
+
+          <rect x="180" y="85" width="140" height="35" rx="5" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
+          <text x="250" y="107" text-anchor="middle" fill="#818cf8" font-family="monospace" font-size="13">fact(3) → 3*fact(2)</text>
+
+          <rect x="180" y="130" width="140" height="35" rx="5" fill="#1e293b" stroke="#facc15" stroke-width="2"/>
+          <text x="250" y="152" text-anchor="middle" fill="#facc15" font-family="monospace" font-size="13">fact(2) → 2*fact(1)</text>
+
+          <rect x="180" y="175" width="140" height="35" rx="5" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+          <text x="250" y="197" text-anchor="middle" fill="#4ade80" font-family="monospace" font-size="13">fact(1) → 1*fact(0)</text>
+
+          <rect x="180" y="220" width="140" height="25" rx="5" fill="#1e293b" stroke="#f87171" stroke-width="2"/>
+          <text x="250" y="237" text-anchor="middle" fill="#f87171" font-family="monospace" font-size="13">fact(0) → 1 (Base Case)</text>
+        </svg>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="c"># Print n to 1 backwards</span>
+<span class="k">def</span> <span class="n">show</span>(n):
+    <span class="k">if</span> n <span class="o">==</span> <span class="m">0</span>:
+        <span class="k">return</span>
+    <span class="n">print</span>(n)
+    <span class="n">show</span>(n<span class="o">-</span><span class="m">1</span>)
+
+<span class="c"># Factorial</span>
+<span class="k">def</span> <span class="n">fact</span>(n):
+    <span class="k">if</span> n <span class="o">==</span> <span class="m">0</span> <span class="k">or</span> n <span class="o">==</span> <span class="m">1</span>:
+        <span class="k">return</span> <span class="m">1</span>
+    <span class="k">return</span> n <span class="o">*</span> <span class="n">fact</span>(n<span class="o">-</span><span class="m">1</span>)</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice: Recursion</h3>
+      <ol>
+        <li>Write a recursive function to calculate the sum of first n natural numbers.</li>
+        <li>Write a recursive function to print all elements in a list. (Hint: use list &amp; index as parameters)</li>
+      </ol>
+    </div>
+  </section>
+<section id="lec7" class="sd-sec">
+    <h2 class="section-title">Lecture 7: File I/O</h2>
+
+    <div class="card">
+      <h3>File Types</h3>
+      <div class="grid-2">
+        <div>
+          <h4>Text Files</h4>
+          <p><code>.txt</code>, <code>.docx</code>, <code>.log</code> etc.</p>
+        </div>
+        <div>
+          <h4>Binary Files</h4>
+          <p><code>.mp4</code>, <code>.mov</code>, <code>.png</code>, <code>.jpeg</code> etc.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Open, Read & Close</h3>
+      <div class="diagram">
+        <svg width="600" height="140" viewBox="0 0 600 140">
+          <text x="300" y="25" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold">File Operation Flow</text>
+          <rect x="30" y="50" width="120" height="60" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="90" y="80" text-anchor="middle" fill="#38bdf8" font-size="14">Open File</text>
+          <text x="90" y="98" text-anchor="middle" fill="#94a3b8" font-size="11">f = open(...)</text>
+
+          <path d="M 155 80 L 205 80" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow5)"/>
+
+          <rect x="210" y="50" width="120" height="60" rx="8" fill="#1e293b" stroke="#facc15" stroke-width="2"/>
+          <text x="270" y="80" text-anchor="middle" fill="#facc15" font-size="14">Read / Write</text>
+          <text x="270" y="98" text-anchor="middle" fill="#94a3b8" font-size="11">f.read() / write()</text>
+
+          <path d="M 335 80 L 385 80" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow5)"/>
+
+          <rect x="390" y="50" width="120" height="60" rx="8" fill="#1e293b" stroke="#f87171" stroke-width="2"/>
+          <text x="450" y="80" text-anchor="middle" fill="#f87171" font-size="14">Close File</text>
+          <text x="450" y="98" text-anchor="middle" fill="#94a3b8" font-size="11">f.close()</text>
+          <defs><marker id="arrow5" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/></marker></defs>
+        </svg>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>f <span class="o">=</span> <span class="n">open</span>(<span class="s">"sample.txt"</span>, <span class="s">"r"</span>)  <span class="c"># r : read mode</span>
+data <span class="o">=</span> f.<span class="n">read</span>()
+f.<span class="n">close</span>()</code></pre>
+      </div>
+      <table>
+        <tr><th>Mode</th><th>Meaning</th></tr>
+        <tr><td><code>r</code></td><td>Read mode</td></tr>
+        <tr><td><code>w</code></td><td>Write mode (overwrites)</td></tr>
+        <tr><td><code>a</code></td><td>Append mode (adds to file)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Reading Methods</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>data <span class="o">=</span> f.<span class="n">read</span>()      <span class="c"># Reads entire file</span>
+data <span class="o">=</span> f.<span class="n">readline</span>()  <span class="c"># Reads one line at a time</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Writing to a File</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>f <span class="o">=</span> <span class="n">open</span>(<span class="s">"demo.txt"</span>, <span class="s">"w"</span>)
+f.<span class="n">write</span>(<span class="s">"this is a new line"</span>)  <span class="c"># Overwrites entire file</span>
+f.<span class="n">close</span>()
+
+f <span class="o">=</span> <span class="n">open</span>(<span class="s">"demo.txt"</span>, <span class="s">"a"</span>)
+f.<span class="n">write</span>(<span class="s">"this is a new line"</span>)  <span class="c"># Adds to the file</span>
+f.<span class="n">close</span>()</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>With Syntax (Recommended)</h3>
+      <p>Automatically closes the file after the block.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">with</span> <span class="n">open</span>(<span class="s">"demo.txt"</span>, <span class="s">"a"</span>) <span class="k">as</span> f:
+    data <span class="o">=</span> f.<span class="n">read</span>()</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Deleting a File</h3>
+      <p>Using the <code>os</code> module.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">import</span> os
+os.<span class="n">remove</span>(<span class="s">"filename"</span>)</code></pre>
+      </div>
+      <div class="highlight-box">
+        <strong>Module:</strong> A file written by another programmer that has functions we can use.
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice Problems</h3>
+      <ol>
+        <li>Create a new file <code>practice.txt</code> using python. Add the following data:<br>
+          <code>Hi everyone<br>we are learning File I/O<br>using Java.<br>I like programming in Java.</code></li>
+        <li>WAF that replaces all occurrences of "java" with "python" in the above file.</li>
+        <li>Search if the word "learning" exists in the file.</li>
+        <li>WAF to find in which line of the file does the word "learning" occur first. Print -1 if not found.</li>
+        <li>From a file containing numbers separated by comma, print the count of even numbers.</li>
+      </ol>
+    </div>
+  </section>
+<section id="lec8" class="sd-sec">
+    <h2 class="section-title">Lecture 8: OOP in Python</h2>
+
+    <div class="card">
+      <h3>What is OOP?</h3>
+      <p>To map with real world scenarios, we use <strong>objects</strong> in code. This is called Object Oriented Programming.</p>
+      <div class="diagram">
+        <svg width="500" height="220" viewBox="0 0 500 220">
+          <text x="250" y="25" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold">Class & Object</text>
+          <rect x="50" y="50" width="160" height="140" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5,5"/>
+          <text x="130" y="80" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="bold">Class (Blueprint)</text>
+          <rect x="70" y="100" width="120" height="25" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="130" y="116" text-anchor="middle" fill="#f8fafc" font-size="12">name = "karan"</text>
+          <rect x="70" y="135" width="120" height="25" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="130" y="151" text-anchor="middle" fill="#f8fafc" font-size="12">def hello()</text>
+
+          <path d="M 220 120 L 260 120" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow6)"/>
+          <text x="240" y="110" fill="#94a3b8" font-size="12">creates</text>
+
+          <rect x="270" y="50" width="180" height="140" rx="10" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+          <text x="360" y="80" text-anchor="middle" fill="#4ade80" font-size="14" font-weight="bold">Object (Instance)</text>
+          <rect x="290" y="100" width="140" height="25" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="360" y="116" text-anchor="middle" fill="#f8fafc" font-size="12">s1 = Student()</text>
+          <rect x="290" y="135" width="140" height="25" rx="4" fill="#0f172a" stroke="#334155"/>
+          <text x="360" y="151" text-anchor="middle" fill="#f8fafc" font-size="12">s1.name = "karan"</text>
+          <defs><marker id="arrow6" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/></marker></defs>
+        </svg>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">class</span> <span class="n">Student</span>:
+    name <span class="o">=</span> <span class="s">"karan kumar"</span>  <span class="c"># Class attribute</span>
+
+s1 <span class="o">=</span> <span class="n">Student</span>()
+<span class="n">print</span>(s1.name)</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>__init__ Function (Constructor)</h3>
+      <p>Always executed when an object is created. <code>self</code> refers to the current instance.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">class</span> <span class="n">Student</span>:
+    <span class="k">def</span> <span class="n">__init__</span>(<span class="k">self</span>, fullname):
+        <span class="k">self</span>.name <span class="o">=</span> fullname
+
+s1 <span class="o">=</span> <span class="n">Student</span>(<span class="s">"karan"</span>)
+<span class="n">print</span>(s1.name)  <span class="c"># karan</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Methods</h3>
+      <p>Functions that belong to an object.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">class</span> <span class="n">Student</span>:
+    <span class="k">def</span> <span class="n">__init__</span>(<span class="k">self</span>, fullname):
+        <span class="k">self</span>.name <span class="o">=</span> fullname
+
+    <span class="k">def</span> <span class="n">hello</span>(<span class="k">self</span>):
+        <span class="n">print</span>(<span class="s">"hello"</span>, <span class="k">self</span>.name)
+
+s1 <span class="o">=</span> <span class="n">Student</span>(<span class="s">"karan"</span>)
+s1.<span class="n">hello</span>()  <span class="c"># hello karan</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice: Student Class</h3>
+      <p>Create a Student class that takes name &amp; marks of 3 subjects as arguments in constructor. Then create a method to print the average.</p>
+    </div>
+
+    <div class="card">
+      <h3>Static Methods</h3>
+      <p>Methods that don't use the <code>self</code> parameter (work at class level). Use the <code>@staticmethod</code> decorator.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">class</span> <span class="n">Student</span>:
+    <span class="o">@staticmethod</span>
+    <span class="k">def</span> <span class="n">college</span>():
+        <span class="n">print</span>(<span class="s">"ABC College"</span>)
+
+<span class="c"># Decorators wrap another function to extend</span>
+<span class="c"># behaviour without permanently modifying it.</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Important Concepts</h3>
+      <div class="grid-2">
+        <div class="highlight-box">
+          <h4>Abstraction</h4>
+          <p>Hiding the implementation details of a class and only showing the essential features to the user.</p>
+        </div>
+        <div class="highlight-box warn-box">
+          <h4>Encapsulation</h4>
+          <p>Wrapping data and functions into a single unit (object).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-practice">Practice</span>
+      <h3>Practice: Account Class</h3>
+      <p>Create an Account class with 2 attributes — balance &amp; account no. Create methods for debit, credit &amp; printing the balance.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code><span class="k">class</span> <span class="n">Account</span>:
+    <span class="k">def</span> <span class="n">__init__</span>(<span class="k">self</span>, bal, acc_no):
+        <span class="k">self</span>.balance <span class="o">=</span> bal
+        <span class="k">self</span>.account_no <span class="o">=</span> acc_no
+
+    <span class="k">def</span> <span class="n">debit</span>(<span class="k">self</span>, amount):
+        <span class="k">self</span>.balance <span class="o">-=</span> amount
+
+    <span class="k">def</span> <span class="n">credit</span>(<span class="k">self</span>, amount):
+        <span class="k">self</span>.balance <span class="o">+=</span> amount
+
+    <span class="k">def</span> <span class="n">print_balance</span>(<span class="k">self</span>):
+        <span class="n">print</span>(<span class="s">"Balance ="</span>, <span class="k">self</span>.balance)</code></pre>
+      </div>
+    </div>
+  </section>
+<footer style="text-align:center; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: 3rem;">
+    <p>🎓 Python Mastery Notes | Compiled from all 8 Lectures</p>
+  </footer>
+</div>
+</div>
+
+<script>
+
+function show(id){
+  document.querySelectorAll('.sd-sec').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.sd-ni').forEach(function(n){n.classList.remove('active');});
+  var el=document.getElementById(id); if(el) el.classList.add('active');
+  var ni=document.querySelector('.sd-ni[data-t="'+id+'"]'); if(ni) ni.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=760) closeSB();
+}
+var _hb=document.getElementById('sdhb'),_sb=document.getElementById('sdsb'),_ov=document.getElementById('sdov');
+function openSB(){_sb.classList.add('open');_ov.classList.add('open');}
+function closeSB(){_sb.classList.remove('open');_ov.classList.remove('open');}
+if(_hb){_hb.addEventListener('click',function(){_sb.classList.contains('open')?closeSB():openSB();});}
+if(_ov){_ov.addEventListener('click',closeSB);}
+function copyCode(btn){
+  var wrap=btn.closest('.code-block,.codewrap');
+  var code=wrap?wrap.querySelector('code,pre'):null;
+  if(!code){var p=btn.parentElement;while(p&&!code){code=p.querySelector('pre code,code,pre');p=p.parentElement;}}
+  var t=code?code.innerText:'';
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){var o=btn.textContent;btn.textContent='\u2713 Copied';btn.classList.add('done');setTimeout(function(){btn.textContent=o;btn.classList.remove('done');},1500);});}
+}
+document.querySelectorAll('.copy').forEach(function(b){if(!b.getAttribute('onclick'))b.addEventListener('click',function(){copyCode(b);});});
+function checkAnswer(element,isCorrect){
+  var parent=element.parentElement,siblings=parent.children;
+  for(var i=0;i<siblings.length;i++){siblings[i].classList.remove('correct','wrong');siblings[i].classList.add('disabled');}
+  if(isCorrect){element.classList.add('correct');}
+  else{element.classList.add('wrong');
+    for(var j=0;j<siblings.length;j++){var oc=siblings[j].getAttribute('onclick')||'';if(oc.indexOf('true')>=0)siblings[j].classList.add('correct');}}
+  var q=element.closest('.quiz-question');var ex=q?q.querySelector('.explanation'):null;if(ex)ex.style.display='block';
+}
+document.querySelectorAll('.sd-main a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var id=a.getAttribute('href').slice(1);var t=document.getElementById(id);
+    if(t&&t.classList.contains('sd-sec')){e.preventDefault();show(id);}
+  });
+});
+
+
+</script>
+</body>
+</html>

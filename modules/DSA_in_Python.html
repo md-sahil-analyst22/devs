@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA in Python — Core Concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<style>
+:root{
+  --bg:#0f1117;--sb:#141820;--card:#1a1f2e;--card2:#1e2535;--hov:#252d3d;
+  --txt:#e8eaf0;--txt2:#8892a4;--muted:#505a6e;--bdr:#252d3d;--bdr2:#2e3748;
+  --gr:#00c96e;--bl:#00a8ff;--or:#f5a623;--pk:#e85d75;--pu:#9b6dff;
+  --sw:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;overflow-x:hidden}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;background:var(--sb);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 0}
+.tb-brand{display:flex;align-items:center;width:var(--sw);padding:0 20px;border-right:1px solid var(--bdr);height:100%}
+.b-ico{width:34px;height:34px;border-radius:8px;background:var(--bl);display:flex;align-items:center;justify-content:center;font-size:15px;margin-right:11px;flex-shrink:0}
+.b-txt{font-weight:600;font-size:15px}.b-sub{font-size:11px;color:var(--muted)}
+.tb-meta{display:flex;align-items:center;gap:14px}
+.pill-top{background:rgba(0,168,255,.12);color:var(--bl);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(0,168,255,.25)}
+.tc{color:var(--muted);font-size:12px}
+.layout{display:flex;padding-top:56px;min-height:100vh}
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--sb);border-right:1px solid var(--bdr);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--bdr2) transparent;padding-bottom:30px}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:2px}
+.sh{padding:16px 20px 7px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 20px;cursor:pointer;font-size:13px;color:var(--txt2);border-left:3px solid transparent;transition:all .15s;text-decoration:none;user-select:none}
+.ni:hover{background:var(--hov);color:var(--txt)}
+.ni.active{color:var(--bl);background:rgba(0,168,255,.08);border-left-color:var(--bl);font-weight:500}
+.ndot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nl{flex:1}
+.nbadge{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.bg{background:rgba(0,201,110,.15);color:var(--gr)}.bm{background:rgba(0,168,255,.15);color:var(--bl)}
+.ba{background:rgba(155,109,255,.15);color:var(--pu)}.bk{background:rgba(245,166,35,.15);color:var(--or)}
+.main{margin-left:var(--sw);flex:1;padding:38px 46px 90px;max-width:920px}
+.sec{display:none}.sec.active{display:block}
+.hero{margin-bottom:34px;padding-bottom:26px;border-bottom:1px solid var(--bdr)}
+.hlabel{display:inline-flex;align-items:center;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:6px;margin-bottom:12px}
+.htitle{font-size:27px;font-weight:600;color:var(--txt);line-height:1.25;margin-bottom:9px}
+.hdesc{font-size:15px;color:var(--txt2);line-height:1.7;max-width:680px}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:20px 22px;margin-bottom:15px}
+.ct{font-size:15px;font-weight:600;color:var(--txt);margin-bottom:5px}
+.cb{font-size:14px;color:var(--txt2);line-height:1.7}
+.cg{border-left:3px solid var(--gr);background:rgba(0,201,110,.05)}
+.cb2{border-left:3px solid var(--bl);background:rgba(0,168,255,.05)}
+.co{border-left:3px solid var(--or);background:rgba(245,166,35,.05)}
+.cp{border-left:3px solid var(--pu);background:rgba(155,109,255,.05)}
+.cpk{border-left:3px solid var(--pk);background:rgba(232,93,117,.05)}
+/* code blocks (Prism) */
+.code{background:#0a0e16;border:1px solid var(--bdr);border-radius:8px;margin:12px 0;overflow:hidden}
+.chead{display:flex;align-items:center;gap:6px;padding:8px 14px;background:#11151f;border-bottom:1px solid var(--bdr)}
+.cdot{width:9px;height:9px;border-radius:50%;background:#2e3748}
+.cdot:nth-child(1){background:#e85d75}.cdot:nth-child(2){background:#f5a623}.cdot:nth-child(3){background:#00c96e}
+.cname{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--muted);margin-left:6px}
+.ccopy{margin-left:auto;font-family:'DM Sans',sans-serif;font-size:11px;background:rgba(255,255,255,.05);border:1px solid var(--bdr);color:var(--txt2);border-radius:6px;padding:3px 10px;cursor:pointer;transition:.15s}
+.ccopy:hover{background:rgba(255,255,255,.1);color:var(--txt)}
+.ccopy.done{background:rgba(0,201,110,.15);color:var(--gr);border-color:rgba(0,201,110,.3)}
+.code pre{margin:0;padding:15px 18px;overflow-x:auto;background:transparent!important;font-size:12.5px;line-height:1.75}
+.code code{font-family:'DM Mono',monospace!important;font-size:12.5px;background:none!important;text-shadow:none!important;color:#e8eaf0}
+.code pre[class*="language-"]{background:transparent!important;text-shadow:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:#505a6e!important;font-style:italic}
+.token.punctuation{color:#8892a4!important}
+.token.keyword,.token.control{color:#9b6dff!important}
+.token.boolean,.token.number{color:#00a8ff!important}
+.token.string,.token.char,.token.triple-quoted-string,.token.attr-value{color:#00c96e!important}
+.token.builtin{color:#e85d75!important}
+.token.function{color:#e85d75!important}
+.token.class-name{color:#f5a623!important}
+.token.operator,.token.entity,.token.url{color:#00a8ff!important;background:none!important}
+.token.decorator{color:#f5a623!important}
+code.inline{font-family:'DM Mono',monospace;font-size:12px;background:rgba(255,255,255,.06);color:var(--bl);padding:1px 6px;border-radius:4px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:6px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+.mc{background:var(--card2);border:1px solid var(--bdr);border-radius:8px;padding:15px}
+.mt{font-size:13px;font-weight:600;margin-bottom:5px}
+.mb{font-size:12px;color:var(--txt2);line-height:1.55}
+.tw{overflow-x:auto;margin:12px 0;border:1px solid var(--bdr);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--card2)}
+th{text-align:left;padding:9px 14px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--bdr2)}
+td{padding:10px 14px;border-bottom:1px solid var(--bdr);color:var(--txt2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.tn{color:var(--txt);font-weight:500}
+.p{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.pg{background:rgba(0,201,110,.15);color:var(--gr)}.pb{background:rgba(0,168,255,.15);color:var(--bl)}
+.po{background:rgba(245,166,35,.15);color:var(--or)}.pp{background:rgba(155,109,255,.15);color:var(--pu)}
+.ppk{background:rgba(232,93,117,.15);color:var(--pk)}
+.cal{border-radius:8px;padding:13px 17px;margin:14px 0;font-size:13px;line-height:1.65}
+.calg{background:rgba(0,201,110,.08);border:1px solid rgba(0,201,110,.2);color:#7ddcaa}
+.calb{background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.2);color:#7dc8f0}
+.calo{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#f0c87a}
+.calp{background:rgba(155,109,255,.08);border:1px solid rgba(155,109,255,.2);color:#c4aafe}
+.calpk{background:rgba(232,93,117,.08);border:1px solid rgba(232,93,117,.2);color:#f0a0b0}
+.cal strong{color:inherit;font-weight:600}
+.dw{background:#0a0e16;border:1px solid var(--bdr);border-radius:10px;padding:20px 16px;margin:14px 0;overflow-x:auto}
+.dw svg{display:block;margin:0 auto}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:12px 0}
+.db{border-radius:8px;padding:13px 15px}
+.dob{background:rgba(0,201,110,.07);border:1px solid rgba(0,201,110,.2)}
+.dnb{background:rgba(232,93,117,.07);border:1px solid rgba(232,93,117,.2)}
+.dob h4{font-size:11px;font-weight:700;color:var(--gr);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.dnb h4{font-size:11px;font-weight:700;color:var(--pk);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.dob li,.dnb li{font-size:12px;color:var(--txt2);list-style:none;padding:3px 0 3px 15px;position:relative;line-height:1.5}
+.dob li::before{content:"✓";position:absolute;left:0;color:var(--gr);font-size:11px}
+.dnb li::before{content:"✗";position:absolute;left:0;color:var(--pk);font-size:11px}
+.rl{list-style:none;margin:8px 0}
+.rl li{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:13px;color:var(--txt2)}
+.rl li:last-child{border-bottom:none}
+.rl li::before{content:"→";color:var(--bl);font-weight:700;flex-shrink:0;margin-top:1px}
+.rl li strong{color:var(--txt);font-weight:600}
+.sb4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.sb3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.si{background:var(--card2);border:1px solid var(--bdr);border-radius:8px;padding:11px 13px;text-align:center}
+.sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.sv{font-size:14px;font-weight:600;font-family:'DM Mono',monospace}
+.tr{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.tg{font-size:11px;font-weight:500;padding:4px 11px;border-radius:20px;border:1px solid var(--bdr2);color:var(--txt2);background:var(--card2)}
+.div{height:1px;background:var(--bdr);margin:28px 0}
+h2{font-size:19px;font-weight:600;color:var(--txt);margin:26px 0 11px}
+h2:first-child{margin-top:0}
+h3{font-size:15px;font-weight:600;color:var(--txt);margin:20px 0 9px}
+p{font-size:14px;color:var(--txt2);line-height:1.7;margin-bottom:11px}
+.hb{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.hb span{display:block;width:20px;height:2px;background:var(--txt2);border-radius:1px}
+.ov{display:none}
+.sec.active .card,.sec.active .mc,.sec.active .hero,.sec.active .dw{animation:fu .3s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.main{padding:26px 22px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:265px}
+  .main{margin-left:0;padding:22px 16px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .25s;z-index:90}
+  .sidebar.open{transform:translateX(0)}
+  .ov{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.5);z-index:89}
+  .ov.open{display:block}
+  .hb{display:flex}
+  .tb-brand{width:auto;border-right:none}
+  .g2,.g3,.dd,.sb4,.sb3{grid-template-columns:1fr}
+}
+@media(max-width:480px){.htitle{font-size:22px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tb-brand">
+    <div class="b-ico">🧮</div>
+    <div><div class="b-txt">DSA in Python</div><div class="b-sub">Data Structures &amp; Algorithms</div></div>
+  </div>
+  <div class="tb-meta">
+    <button class="hb" id="hb" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="tc">14 topics · Foundations→Advanced</span>
+    <span class="pill-top">Study Guide</span>
+  </div>
+</header>
+
+<div class="ov" id="ov"></div>
+<div class="layout">
+
+<nav class="sidebar" id="sb">
+  <div class="sh">Foundations</div>
+  <a class="ni active" data-t="bigo" onclick="show('bigo')"><span class="ndot" style="background:var(--gr)"></span><span class="nl">Big-O &amp; Complexity</span><span class="nbadge bg">Beginner</span></a>
+  <a class="ni" data-t="arrays" onclick="show('arrays')"><span class="ndot" style="background:var(--bl)"></span><span class="nl">Arrays &amp; Lists</span><span class="nbadge bg">Beginner</span></a>
+  <div class="sh">Linear Structures</div>
+  <a class="ni" data-t="linked" onclick="show('linked')"><span class="ndot" style="background:var(--or)"></span><span class="nl">Linked Lists</span><span class="nbadge bm">Mid</span></a>
+  <a class="ni" data-t="stack" onclick="show('stack')"><span class="ndot" style="background:var(--gr)"></span><span class="nl">Stacks</span><span class="nbadge bg">Beginner</span></a>
+  <a class="ni" data-t="queue" onclick="show('queue')"><span class="ndot" style="background:var(--bl)"></span><span class="nl">Queues &amp; Deques</span><span class="nbadge bg">Beginner</span></a>
+  <a class="ni" data-t="hash" onclick="show('hash')"><span class="ndot" style="background:var(--pu)"></span><span class="nl">Hash Tables</span><span class="nbadge bm">Mid</span></a>
+  <div class="sh">Hierarchical</div>
+  <a class="ni" data-t="tree" onclick="show('tree')"><span class="ndot" style="background:var(--or)"></span><span class="nl">Trees &amp; BST</span><span class="nbadge bm">Mid</span></a>
+  <a class="ni" data-t="heap" onclick="show('heap')"><span class="ndot" style="background:var(--pk)"></span><span class="nl">Heaps &amp; Priority Queue</span><span class="nbadge ba">Adv</span></a>
+  <div class="sh">Graphs</div>
+  <a class="ni" data-t="graph" onclick="show('graph')"><span class="ndot" style="background:var(--pu)"></span><span class="nl">Graphs · BFS &amp; DFS</span><span class="nbadge ba">Adv</span></a>
+  <div class="sh">Algorithms</div>
+  <a class="ni" data-t="sorting" onclick="show('sorting')"><span class="ndot" style="background:var(--gr)"></span><span class="nl">Sorting</span><span class="nbadge bm">Mid</span></a>
+  <a class="ni" data-t="search" onclick="show('search')"><span class="ndot" style="background:var(--bl)"></span><span class="nl">Binary Search</span><span class="nbadge bm">Mid</span></a>
+  <a class="ni" data-t="recursion" onclick="show('recursion')"><span class="ndot" style="background:var(--or)"></span><span class="nl">Recursion</span><span class="nbadge bm">Mid</span></a>
+  <a class="ni" data-t="dp" onclick="show('dp')"><span class="ndot" style="background:var(--pk)"></span><span class="nl">Dynamic Programming</span><span class="nbadge ba">Adv</span></a>
+  <div class="sh">Reference</div>
+  <a class="ni" data-t="cheat" onclick="show('cheat')"><span class="ndot" style="background:var(--pu)"></span><span class="nl">Cheat Sheet</span><span class="nbadge bk">Recap</span></a>
+</nav>
+
+<main class="main">
+
+<!-- ══════ 1. BIG-O ══════ -->
+<section id="bigo" class="sec active">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(0,201,110,.1);color:var(--gr)">📊 Topic 1 · Foundation</div>
+    <div class="htitle">Big-O &amp; Complexity</div>
+    <div class="hdesc">Big-O describes how an algorithm's running time or memory grows as the input grows. It's the language you use to compare two solutions before you ever run them — the single most important mental model in DSA.</div>
+  </div>
+  <h2>Two things we measure</h2>
+  <div class="g2">
+    <div class="card cg"><div class="ct">⏱️ Time complexity</div><div class="cb">How the <strong>number of operations</strong> scales with input size <code class="inline">n</code>. We care about the dominant term as <code class="inline">n → ∞</code>.</div></div>
+    <div class="card cb2"><div class="ct">💾 Space complexity</div><div class="cb">How much <strong>extra memory</strong> an algorithm needs beyond the input. Recursion stacks and auxiliary arrays count here.</div></div>
+  </div>
+  <h2>The complexity ladder</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Notation</th><th>Name</th><th>Example</th><th>Rating</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">O(1)</td><td>Constant</td><td>Dict lookup, array index</td><td><span class="p pg">Excellent</span></td></tr>
+      <tr><td class="tn">O(log n)</td><td>Logarithmic</td><td>Binary search</td><td><span class="p pg">Great</span></td></tr>
+      <tr><td class="tn">O(n)</td><td>Linear</td><td>Scan a list once</td><td><span class="p pb">Good</span></td></tr>
+      <tr><td class="tn">O(n log n)</td><td>Linearithmic</td><td>Merge sort, Timsort</td><td><span class="p pb">Fair</span></td></tr>
+      <tr><td class="tn">O(n²)</td><td>Quadratic</td><td>Nested loops, bubble sort</td><td><span class="p po">Poor</span></td></tr>
+      <tr><td class="tn">O(2ⁿ)</td><td>Exponential</td><td>Naive recursive Fibonacci</td><td><span class="p ppk">Bad</span></td></tr>
+      <tr><td class="tn">O(n!)</td><td>Factorial</td><td>Generating all permutations</td><td><span class="p ppk">Terrible</span></td></tr>
+    </tbody>
+  </table></div>
+  <h2>How growth compares</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 240" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <line x1="50" y1="200" x2="590" y2="200" stroke="#2e3748" stroke-width="1"/>
+      <line x1="50" y1="20" x2="50" y2="200" stroke="#2e3748" stroke-width="1"/>
+      <text x="320" y="230" text-anchor="middle" fill="#505a6e" font-size="11">input size n →</text>
+      <text x="30" y="110" text-anchor="middle" fill="#505a6e" font-size="11" transform="rotate(-90 30 110)">operations →</text>
+      <path d="M50,195 L590,190" stroke="#00c96e" stroke-width="2" fill="none"/>
+      <text x="560" y="182" fill="#00c96e" font-size="11">O(1)</text>
+      <path d="M50,195 Q200,175 590,150" stroke="#00a8ff" stroke-width="2" fill="none"/>
+      <text x="560" y="145" fill="#00a8ff" font-size="11">O(log n)</text>
+      <path d="M50,195 L560,60" stroke="#f5a623" stroke-width="2" fill="none"/>
+      <text x="520" y="55" fill="#f5a623" font-size="11">O(n)</text>
+      <path d="M50,195 Q160,120 300,25" stroke="#e85d75" stroke-width="2" fill="none"/>
+      <text x="255" y="30" fill="#e85d75" font-size="11">O(n²)</text>
+      <path d="M50,195 Q95,120 120,25" stroke="#9b6dff" stroke-width="2" fill="none"/>
+      <text x="123" y="30" fill="#9b6dff" font-size="11">O(2ⁿ)</text>
+    </svg>
+  </div>
+  <div class="cal calo"><strong>Drop constants and lower-order terms.</strong> <code class="inline">O(2n + 5)</code> is just <code class="inline">O(n)</code>, and <code class="inline">O(n² + n)</code> is <code class="inline">O(n²)</code>. Big-O captures the <em>shape</em> of growth, not the exact operation count.</div>
+  <div class="cal calb"><strong>Best / average / worst.</strong> Big-O usually refers to the <em>worst case</em>. "Amortized" describes the average cost per operation over a sequence — e.g. Python's <code class="inline">list.append</code> is amortized O(1) even though occasional resizes cost O(n).</div>
+</section>
+
+<!-- ══════ 2. ARRAYS ══════ -->
+<section id="arrays" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(0,168,255,.1);color:var(--bl)">📦 Topic 2 · Foundation</div>
+    <div class="htitle">Arrays &amp; Python Lists</div>
+    <div class="hdesc">An array stores elements in one contiguous block of memory, so any element is reachable in O(1) by index. Python's built-in <code class="inline">list</code> is a <em>dynamic array</em>: it grows automatically and is the workhorse of everyday Python.</div>
+  </div>
+  <h2>What &amp; Why</h2>
+  <div class="g2">
+    <div class="card cg"><div class="ct">🎯 Contiguous memory</div><div class="cb">Elements sit back-to-back. Address of element <code class="inline">i</code> = base + i × size, so indexing is instant and cache-friendly.</div></div>
+    <div class="card cb2"><div class="ct">📈 Dynamic sizing</div><div class="cb">A Python list over-allocates spare slots. When it fills up it copies to a bigger block — making <code class="inline">append</code> amortized O(1).</div></div>
+  </div>
+  <h2>Operation costs</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Operation</th><th>Example</th><th>Complexity</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Index / update</td><td><code class="inline">a[i]</code></td><td><span class="p pg">O(1)</span></td></tr>
+      <tr><td class="tn">Append</td><td><code class="inline">a.append(x)</code></td><td><span class="p pg">O(1)*</span></td></tr>
+      <tr><td class="tn">Pop from end</td><td><code class="inline">a.pop()</code></td><td><span class="p pg">O(1)</span></td></tr>
+      <tr><td class="tn">Insert / delete at front</td><td><code class="inline">a.insert(0,x)</code></td><td><span class="p po">O(n)</span></td></tr>
+      <tr><td class="tn">Search (unsorted)</td><td><code class="inline">x in a</code></td><td><span class="p po">O(n)</span></td></tr>
+      <tr><td class="tn">Slice</td><td><code class="inline">a[i:j]</code></td><td><span class="p po">O(k)</span></td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:12px;color:var(--muted)">* amortized — occasional resize is O(n)</p>
+  <h2>In practice</h2>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">arrays.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">nums = [3, 1, 4, 1, 5, 9]
+
+nums[2]            # 4        → O(1) index
+nums.append(2)     # add to end → O(1) amortized
+nums.pop()         # remove last → O(1)
+nums.insert(0, 0)  # shift everything right → O(n)
+
+# List comprehension: build a new list in one pass
+squares = [x * x for x in nums if x &gt; 2]
+
+# Two-pointer pattern: reverse in place, O(n) time / O(1) space
+def reverse(a):
+    lo, hi = 0, len(a) - 1
+    while lo &lt; hi:
+        a[lo], a[hi] = a[hi], a[lo]
+        lo += 1
+        hi -= 1
+    return a</code></pre></div>
+  <div class="cal calb"><strong>Need fixed-type numeric arrays?</strong> Use <code class="inline">array</code> for compact typed storage, or <strong>NumPy</strong> for vectorised math. For O(1) inserts/removes at <em>both</em> ends, reach for <code class="inline">collections.deque</code> (next sections).</div>
+</section>
+
+<!-- ══════ 3. LINKED LISTS ══════ -->
+<section id="linked" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(245,166,35,.1);color:var(--or)">🔗 Topic 3 · Linear</div>
+    <div class="htitle">Linked Lists</div>
+    <div class="hdesc">A linked list chains together <em>nodes</em>, where each node holds a value and a reference to the next node. There's no contiguous block — so inserting or deleting at a known position is O(1), but you lose O(1) random access.</div>
+  </div>
+  <h2>Structure</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 120" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00a8ff"/></marker></defs>
+      <text x="40" y="55" fill="#505a6e" font-size="12">head</text>
+      <line x1="40" y1="62" x2="70" y2="62" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#ah)"/>
+      <g>
+        <rect x="75" y="45" width="90" height="40" rx="6" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+        <line x1="135" y1="45" x2="135" y2="85" stroke="#2e3748"/>
+        <text x="105" y="70" text-anchor="middle" fill="#e8eaf0" font-size="14" font-weight="600">3</text>
+        <text x="150" y="70" text-anchor="middle" fill="#505a6e" font-size="11">•</text>
+      </g>
+      <line x1="165" y1="65" x2="205" y2="65" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#ah)"/>
+      <g>
+        <rect x="210" y="45" width="90" height="40" rx="6" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+        <line x1="270" y1="45" x2="270" y2="85" stroke="#2e3748"/>
+        <text x="240" y="70" text-anchor="middle" fill="#e8eaf0" font-size="14" font-weight="600">7</text>
+        <text x="285" y="70" text-anchor="middle" fill="#505a6e" font-size="11">•</text>
+      </g>
+      <line x1="300" y1="65" x2="340" y2="65" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#ah)"/>
+      <g>
+        <rect x="345" y="45" width="90" height="40" rx="6" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+        <line x1="405" y1="45" x2="405" y2="85" stroke="#2e3748"/>
+        <text x="375" y="70" text-anchor="middle" fill="#e8eaf0" font-size="14" font-weight="600">9</text>
+        <text x="420" y="70" text-anchor="middle" fill="#505a6e" font-size="11">•</text>
+      </g>
+      <line x1="435" y1="65" x2="475" y2="65" stroke="#00a8ff" stroke-width="1.5" marker-end="url(#ah)"/>
+      <text x="505" y="70" text-anchor="middle" fill="#505a6e" font-size="12">None</text>
+    </svg>
+  </div>
+  <h2>Singly linked list in Python</h2>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">linked_list.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def push_front(self, val):        # O(1)
+        node = Node(val)
+        node.next = self.head
+        self.head = node
+
+    def traverse(self):               # O(n)
+        cur = self.head
+        while cur:
+            print(cur.val)
+            cur = cur.next
+
+    def reverse(self):                # O(n), classic interview question
+        prev, cur = None, self.head
+        while cur:
+            cur.next, prev, cur = prev, cur, cur.next
+        self.head = prev</code></pre></div>
+  <h2>Linked list vs array</h2>
+  <div class="dd">
+    <div class="db dob"><h4>Linked list wins</h4><ul>
+      <li>O(1) insert / delete at a known node</li>
+      <li>Grows without copying / resizing</li>
+      <li>Great for queues, LRU caches, adjacency lists</li>
+    </ul></div>
+    <div class="db dnb"><h4>Linked list loses</h4><ul>
+      <li>No O(1) random access — must walk from head</li>
+      <li>Extra memory per node (the pointer)</li>
+      <li>Poor cache locality vs contiguous arrays</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ══════ 4. STACKS ══════ -->
+<section id="stack" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(0,201,110,.1);color:var(--gr)">📚 Topic 4 · Linear</div>
+    <div class="htitle">Stacks — LIFO</div>
+    <div class="hdesc">A stack is <strong>Last-In, First-Out</strong>: the last item pushed is the first popped, like a stack of plates. In Python a plain list <em>is</em> a stack — <code class="inline">append</code> to push, <code class="inline">pop</code> to pop, both O(1).</div>
+  </div>
+  <h2>How it works</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <defs><marker id="as" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#f5a623"/></marker></defs>
+      <rect x="230" y="40" width="160" height="34" rx="5" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="310" y="62" text-anchor="middle" fill="#f5a623" font-size="13" font-weight="600">40  ← top</text>
+      <rect x="230" y="80" width="160" height="34" rx="5" fill="#1e2535" stroke="#2e3748" stroke-width="1.5"/>
+      <text x="310" y="102" text-anchor="middle" fill="#e8eaf0" font-size="13">30</text>
+      <rect x="230" y="120" width="160" height="34" rx="5" fill="#1e2535" stroke="#2e3748" stroke-width="1.5"/>
+      <text x="310" y="142" text-anchor="middle" fill="#e8eaf0" font-size="13">20</text>
+      <rect x="230" y="160" width="160" height="34" rx="5" fill="#1e2535" stroke="#2e3748" stroke-width="1.5"/>
+      <text x="310" y="182" text-anchor="middle" fill="#e8eaf0" font-size="13">10</text>
+      <line x1="470" y1="70" x2="400" y2="57" stroke="#f5a623" stroke-width="1.5" marker-end="url(#as)"/>
+      <text x="475" y="60" fill="#00c96e" font-size="12">push →</text>
+      <text x="475" y="80" fill="#e85d75" font-size="12">pop ←</text>
+      <line x1="400" y1="90" x2="470" y2="103" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="150" y="120" text-anchor="end" fill="#505a6e" font-size="12">both ends</text>
+    </svg>
+  </div>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">stack.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">stack = []
+stack.append(10)     # push → O(1)
+stack.append(20)
+top = stack[-1]      # peek → O(1)   (20)
+stack.pop()          # pop  → O(1)   (removes 20)
+
+# Classic use: check balanced brackets
+def is_balanced(s):
+    pairs = {')': '(', ']': '[', '}': '{'}
+    stack = []
+    for ch in s:
+        if ch in '([{':
+            stack.append(ch)
+        elif ch in pairs:
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+    return not stack
+
+is_balanced("({[]})")   # True
+is_balanced("(]")       # False</code></pre></div>
+  <div class="cal calg"><strong>Where stacks show up:</strong> undo/redo, browser back button, the function <em>call stack</em>, expression evaluation, and iterative DFS (depth-first search).</div>
+</section>
+
+<!-- ══════ 5. QUEUES ══════ -->
+<section id="queue" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(0,168,255,.1);color:var(--bl)">🎟️ Topic 5 · Linear</div>
+    <div class="htitle">Queues &amp; Deques — FIFO</div>
+    <div class="hdesc">A queue is <strong>First-In, First-Out</strong>: items leave in the order they arrived, like a line at a counter. Use <code class="inline">collections.deque</code> — it gives O(1) push/pop at <em>both</em> ends, unlike a list where <code class="inline">pop(0)</code> is O(n).</div>
+  </div>
+  <h2>How it works</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 130" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <text x="60" y="55" text-anchor="middle" fill="#00c96e" font-size="12">dequeue ←</text>
+      <text x="60" y="72" text-anchor="middle" fill="#505a6e" font-size="11">(front)</text>
+      <rect x="120" y="45" width="70" height="40" rx="6" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="155" y="70" text-anchor="middle" fill="#e8eaf0" font-size="14" font-weight="600">10</text>
+      <rect x="200" y="45" width="70" height="40" rx="6" fill="#1e2535" stroke="#2e3748" stroke-width="1.5"/>
+      <text x="235" y="70" text-anchor="middle" fill="#e8eaf0" font-size="14">20</text>
+      <rect x="280" y="45" width="70" height="40" rx="6" fill="#1e2535" stroke="#2e3748" stroke-width="1.5"/>
+      <text x="315" y="70" text-anchor="middle" fill="#e8eaf0" font-size="14">30</text>
+      <rect x="360" y="45" width="70" height="40" rx="6" fill="#1e2535" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="395" y="70" text-anchor="middle" fill="#e8eaf0" font-size="14">40</text>
+      <text x="510" y="55" text-anchor="middle" fill="#f5a623" font-size="12">← enqueue</text>
+      <text x="510" y="72" text-anchor="middle" fill="#505a6e" font-size="11">(back)</text>
+    </svg>
+  </div>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">queue.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">from collections import deque
+
+q = deque()
+q.append(10)        # enqueue (back)  → O(1)
+q.append(20)
+front = q.popleft() # dequeue (front) → O(1)   (10)
+
+# deque works as a stack too, and as a double-ended queue
+dq = deque([2, 3])
+dq.appendleft(1)    # → deque([1, 2, 3])
+dq.pop()            # remove from back → O(1)</code></pre></div>
+  <div class="tw"><table>
+    <thead><tr><th>Structure</th><th>Front ops</th><th>Back ops</th><th>Best for</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">list</td><td><span class="p po">O(n)</span></td><td><span class="p pg">O(1)</span></td><td>Stack</td></tr>
+      <tr><td class="tn">deque</td><td><span class="p pg">O(1)</span></td><td><span class="p pg">O(1)</span></td><td>Queue / stack / sliding window</td></tr>
+      <tr><td class="tn">queue.Queue</td><td><span class="p pg">O(1)</span></td><td><span class="p pg">O(1)</span></td><td>Thread-safe producer/consumer</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cal calb"><strong>Queues power BFS.</strong> Breadth-first search of a graph or tree processes nodes level by level using a FIFO queue — you'll see it in the Graphs section.</div>
+</section>
+
+<!-- ══════ 6. HASH TABLES ══════ -->
+<section id="hash" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(155,109,255,.1);color:var(--pu)">🔑 Topic 6 · Linear</div>
+    <div class="htitle">Hash Tables — dict &amp; set</div>
+    <div class="hdesc">A hash table maps keys to values by running each key through a <em>hash function</em> to pick a storage bucket, giving average O(1) lookup, insert, and delete. Python's <code class="inline">dict</code> and <code class="inline">set</code> are hash tables — arguably the most useful structures in the language.</div>
+  </div>
+  <h2>How hashing works</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 190" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <defs><marker id="ahh" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#9b6dff"/></marker></defs>
+      <rect x="20" y="70" width="110" height="40" rx="6" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="75" y="95" text-anchor="middle" fill="#e8eaf0" font-size="13" font-weight="600">"apple"</text>
+      <line x1="130" y1="90" x2="185" y2="90" stroke="#9b6dff" stroke-width="1.5" marker-end="url(#ahh)"/>
+      <rect x="190" y="65" width="100" height="50" rx="8" fill="#0f1117" stroke="#9b6dff" stroke-width="1.5"/>
+      <text x="240" y="88" text-anchor="middle" fill="#9b6dff" font-size="12" font-weight="600">hash()</text>
+      <text x="240" y="104" text-anchor="middle" fill="#505a6e" font-size="10">→ index 3</text>
+      <line x1="290" y1="90" x2="345" y2="90" stroke="#9b6dff" stroke-width="1.5" marker-end="url(#ahh)"/>
+      <g font-size="12">
+        <rect x="360" y="20" width="180" height="26" fill="#1e2535" stroke="#2e3748"/><text x="370" y="38" fill="#505a6e">0</text>
+        <rect x="360" y="46" width="180" height="26" fill="#1e2535" stroke="#2e3748"/><text x="370" y="64" fill="#505a6e">1</text>
+        <rect x="360" y="72" width="180" height="26" fill="#1e2535" stroke="#2e3748"/><text x="370" y="90" fill="#505a6e">2</text>
+        <rect x="360" y="98" width="180" height="26" fill="#252d3d" stroke="#00c96e"/><text x="370" y="116" fill="#505a6e">3</text><text x="410" y="116" fill="#e8eaf0" font-weight="600">apple → 5</text>
+        <rect x="360" y="124" width="180" height="26" fill="#1e2535" stroke="#2e3748"/><text x="370" y="142" fill="#505a6e">4</text>
+      </g>
+    </svg>
+  </div>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">hashing.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">prices = {"apple": 5, "banana": 3}
+prices["apple"]        # O(1) lookup
+prices["cherry"] = 8   # O(1) insert
+"banana" in prices     # O(1) membership test
+
+seen = set()           # a set = keys only, no values
+seen.add(4)
+4 in seen              # O(1)
+
+# Killer pattern: count things in one pass, O(n)
+from collections import Counter
+freq = Counter("mississippi")   # {'i':4,'s':4,'p':2,'m':1}
+
+# Two-sum: find a pair adding to target in O(n) using a dict
+def two_sum(nums, target):
+    seen = {}
+    for i, x in enumerate(nums):
+        if target - x in seen:
+            return [seen[target - x], i]
+        seen[x] = i</code></pre></div>
+  <div class="cal calp"><strong>Average O(1), worst O(n).</strong> If many keys collide into the same bucket, operations degrade toward linear. Good hash functions and resizing keep this rare. Keys must be <em>hashable</em> (immutable) — strings, numbers, and tuples work; lists don't.</div>
+</section>
+
+<!-- ══════ 7. TREES & BST ══════ -->
+<section id="tree" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(245,166,35,.1);color:var(--or)">🌳 Topic 7 · Hierarchical</div>
+    <div class="htitle">Trees &amp; Binary Search Trees</div>
+    <div class="hdesc">A tree is a hierarchy of nodes with one root and no cycles. A <strong>Binary Search Tree (BST)</strong> keeps things ordered: every left child is smaller than its parent, every right child larger — so search, insert, and delete run in O(log n) when the tree stays balanced.</div>
+  </div>
+  <h2>Anatomy of a BST</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <line x1="310" y1="45" x2="200" y2="105" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="310" y1="45" x2="420" y2="105" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="200" y1="125" x2="130" y2="170" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="200" y1="125" x2="270" y2="170" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="420" y1="125" x2="490" y2="170" stroke="#2e3748" stroke-width="1.5"/>
+      <circle cx="310" cy="35" r="22" fill="#1e2535" stroke="#f5a623" stroke-width="2"/><text x="310" y="41" text-anchor="middle" fill="#f5a623" font-size="14" font-weight="600">8</text>
+      <circle cx="200" cy="115" r="22" fill="#1e2535" stroke="#00a8ff" stroke-width="2"/><text x="200" y="121" text-anchor="middle" fill="#e8eaf0" font-size="14">3</text>
+      <circle cx="420" cy="115" r="22" fill="#1e2535" stroke="#00a8ff" stroke-width="2"/><text x="420" y="121" text-anchor="middle" fill="#e8eaf0" font-size="14">10</text>
+      <circle cx="130" cy="180" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="2"/><text x="130" y="186" text-anchor="middle" fill="#e8eaf0" font-size="13">1</text>
+      <circle cx="270" cy="180" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="2"/><text x="270" y="186" text-anchor="middle" fill="#e8eaf0" font-size="13">6</text>
+      <circle cx="490" cy="180" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="2"/><text x="490" y="186" text-anchor="middle" fill="#e8eaf0" font-size="13">14</text>
+      <text x="560" y="40" fill="#f5a623" font-size="11">root</text>
+      <text x="560" y="185" fill="#00c96e" font-size="11">leaves</text>
+    </svg>
+  </div>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">bst.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
+
+def insert(root, val):                # O(h) — h = height
+    if root is None:
+        return TreeNode(val)
+    if val &lt; root.val:
+        root.left = insert(root.left, val)
+    else:
+        root.right = insert(root.right, val)
+    return root
+
+def search(root, val):                # O(h)
+    while root and root.val != val:
+        root = root.left if val &lt; root.val else root.right
+    return root
+
+def inorder(root):                    # visits nodes in sorted order
+    if root:
+        inorder(root.left)
+        print(root.val)
+        inorder(root.right)</code></pre></div>
+  <h2>Traversals</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Traversal</th><th>Order</th><th>Common use</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Inorder</td><td>Left · Node · Right</td><td>Sorted output from a BST</td></tr>
+      <tr><td class="tn">Preorder</td><td>Node · Left · Right</td><td>Copy / serialize a tree</td></tr>
+      <tr><td class="tn">Postorder</td><td>Left · Right · Node</td><td>Delete / free a tree, evaluate expressions</td></tr>
+      <tr><td class="tn">Level-order</td><td>Breadth-first (queue)</td><td>Shortest path by depth</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cal calo"><strong>Balance matters.</strong> A BST is O(log n) only when balanced. Insert already-sorted data and it degenerates into a linked list — O(n). Self-balancing variants (AVL, Red-Black trees) guarantee O(log n); Python's <code class="inline">sortedcontainers</code> library provides these in practice.</div>
+</section>
+
+<!-- ══════ 8. HEAPS ══════ -->
+<section id="heap" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(232,93,117,.1);color:var(--pk)">⛰️ Topic 8 · Hierarchical</div>
+    <div class="htitle">Heaps &amp; Priority Queues</div>
+    <div class="hdesc">A heap is a complete binary tree where every parent is smaller (min-heap) or larger (max-heap) than its children. That single rule gives you the smallest/largest element in O(1) and insert/remove in O(log n) — the basis of a <strong>priority queue</strong>.</div>
+  </div>
+  <h2>Tree view &amp; array view</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 210" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <line x1="150" y1="45" x2="90" y2="100" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="150" y1="45" x2="210" y2="100" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="90" y1="120" x2="55" y2="165" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="90" y1="120" x2="125" y2="165" stroke="#2e3748" stroke-width="1.5"/>
+      <circle cx="150" cy="35" r="20" fill="#1e2535" stroke="#e85d75" stroke-width="2"/><text x="150" y="41" text-anchor="middle" fill="#e85d75" font-size="13" font-weight="600">1</text>
+      <circle cx="90" cy="110" r="20" fill="#1e2535" stroke="#00a8ff" stroke-width="2"/><text x="90" y="116" text-anchor="middle" fill="#e8eaf0" font-size="13">3</text>
+      <circle cx="210" cy="110" r="20" fill="#1e2535" stroke="#00a8ff" stroke-width="2"/><text x="210" y="116" text-anchor="middle" fill="#e8eaf0" font-size="13">6</text>
+      <circle cx="55" cy="175" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="2"/><text x="55" y="181" text-anchor="middle" fill="#e8eaf0" font-size="12">5</text>
+      <circle cx="125" cy="175" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="2"/><text x="125" y="181" text-anchor="middle" fill="#e8eaf0" font-size="12">9</text>
+      <text x="150" y="18" text-anchor="middle" fill="#e85d75" font-size="11">min at root</text>
+      <g font-family="DM Mono,monospace">
+        <text x="340" y="90" fill="#505a6e" font-size="11">stored as an array:</text>
+        <rect x="340" y="100" width="42" height="34" fill="#252d3d" stroke="#e85d75"/><text x="361" y="122" text-anchor="middle" fill="#e8eaf0" font-size="13">1</text>
+        <rect x="382" y="100" width="42" height="34" fill="#1e2535" stroke="#2e3748"/><text x="403" y="122" text-anchor="middle" fill="#e8eaf0" font-size="13">3</text>
+        <rect x="424" y="100" width="42" height="34" fill="#1e2535" stroke="#2e3748"/><text x="445" y="122" text-anchor="middle" fill="#e8eaf0" font-size="13">6</text>
+        <rect x="466" y="100" width="42" height="34" fill="#1e2535" stroke="#2e3748"/><text x="487" y="122" text-anchor="middle" fill="#e8eaf0" font-size="13">5</text>
+        <rect x="508" y="100" width="42" height="34" fill="#1e2535" stroke="#2e3748"/><text x="529" y="122" text-anchor="middle" fill="#e8eaf0" font-size="13">9</text>
+        <text x="361" y="150" text-anchor="middle" fill="#505a6e" font-size="10">0</text>
+        <text x="403" y="150" text-anchor="middle" fill="#505a6e" font-size="10">1</text>
+        <text x="445" y="150" text-anchor="middle" fill="#505a6e" font-size="10">2</text>
+        <text x="487" y="150" text-anchor="middle" fill="#505a6e" font-size="10">3</text>
+        <text x="529" y="150" text-anchor="middle" fill="#505a6e" font-size="10">4</text>
+        <text x="340" y="175" fill="#505a6e" font-size="10">children of i → 2i+1, 2i+2</text>
+      </g>
+    </svg>
+  </div>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">heap.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">import heapq
+
+h = []
+heapq.heappush(h, 5)      # O(log n)
+heapq.heappush(h, 1)
+heapq.heappush(h, 3)
+heapq.heappop(h)          # 1  → always the smallest, O(log n)
+h[0]                      # peek min → O(1)
+
+# Turn a list into a heap in place → O(n)
+nums = [5, 1, 8, 3, 2]
+heapq.heapify(nums)
+
+# k largest / smallest → O(n log k)
+heapq.nlargest(2, nums)   # [8, 5]
+
+# Max-heap trick: push negatives
+maxh = []
+heapq.heappush(maxh, -5)
+-heapq.heappop(maxh)      # 5</code></pre></div>
+  <div class="cal calpk"><strong>When to reach for a heap:</strong> "top-k" problems, merging k sorted lists, Dijkstra's shortest path, task scheduling by priority, and running medians. Any time you repeatedly need the current min/max, a heap beats re-sorting.</div>
+</section>
+
+<!-- ══════ 9. GRAPHS ══════ -->
+<section id="graph" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(155,109,255,.1);color:var(--pu)">🕸️ Topic 9 · Graphs</div>
+    <div class="htitle">Graphs — BFS &amp; DFS</div>
+    <div class="hdesc">A graph is a set of <em>vertices</em> connected by <em>edges</em> — think maps, social networks, or web links. The two fundamental traversals are <strong>BFS</strong> (breadth-first, uses a queue) and <strong>DFS</strong> (depth-first, uses recursion or a stack).</div>
+  </div>
+  <h2>Representing a graph</h2>
+  <div class="g2">
+    <div class="card cg"><div class="ct">📇 Adjacency list</div><div class="cb">A dict mapping each node to its neighbours. Space O(V+E). Best for <strong>sparse</strong> graphs — the usual choice.</div></div>
+    <div class="card cp"><div class="ct">🔲 Adjacency matrix</div><div class="cb">A V×V grid of 0/1. O(1) edge lookup but O(V²) space. Best for <strong>dense</strong> graphs.</div></div>
+  </div>
+  <div class="dw">
+    <svg viewBox="0 0 620 180" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif">
+      <line x1="120" y1="60" x2="240" y2="45" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="120" y1="60" x2="140" y2="140" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="240" y1="45" x2="140" y2="140" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="240" y1="45" x2="360" y2="120" stroke="#2e3748" stroke-width="1.5"/>
+      <line x1="140" y1="140" x2="360" y2="120" stroke="#2e3748" stroke-width="1.5"/>
+      <circle cx="120" cy="60" r="22" fill="#1e2535" stroke="#9b6dff" stroke-width="2"/><text x="120" y="66" text-anchor="middle" fill="#e8eaf0" font-size="14" font-weight="600">A</text>
+      <circle cx="240" cy="45" r="22" fill="#1e2535" stroke="#9b6dff" stroke-width="2"/><text x="240" y="51" text-anchor="middle" fill="#e8eaf0" font-size="14" font-weight="600">B</text>
+      <circle cx="140" cy="140" r="22" fill="#1e2535" stroke="#9b6dff" stroke-width="2"/><text x="140" y="146" text-anchor="middle" fill="#e8eaf0" font-size="14" font-weight="600">C</text>
+      <circle cx="360" cy="120" r="22" fill="#1e2535" stroke="#9b6dff" stroke-width="2"/><text x="360" y="126" text-anchor="middle" fill="#e8eaf0" font-size="14" font-weight="600">D</text>
+      <g font-family="DM Mono,monospace" font-size="12" fill="#8892a4">
+        <text x="440" y="55">A: [B, C]</text>
+        <text x="440" y="78">B: [A, C, D]</text>
+        <text x="440" y="101">C: [A, B, D]</text>
+        <text x="440" y="124">D: [B, C]</text>
+      </g>
+    </svg>
+  </div>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">graph.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">from collections import deque
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'C', 'D'],
+    'C': ['A', 'B', 'D'],
+    'D': ['B', 'C'],
+}
+
+def bfs(start):                       # level by level, uses a queue
+    visited = {start}
+    q = deque([start])
+    while q:
+        node = q.popleft()
+        print(node)
+        for nb in graph[node]:
+            if nb not in visited:
+                visited.add(nb)
+                q.append(nb)
+
+def dfs(node, visited=None):          # go deep first, uses recursion
+    if visited is None:
+        visited = set()
+    visited.add(node)
+    print(node)
+    for nb in graph[node]:
+        if nb not in visited:
+            dfs(nb, visited)</code></pre></div>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>BFS</th><th>DFS</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Structure</td><td>Queue (FIFO)</td><td>Stack / recursion</td></tr>
+      <tr><td class="tn">Finds</td><td>Shortest path (unweighted)</td><td>Any path, cycles, topological order</td></tr>
+      <tr><td class="tn">Memory</td><td>Wide levels can be large</td><td>O(depth)</td></tr>
+      <tr><td class="tn">Complexity</td><td colspan="2" style="text-align:center"><span class="p pb">O(V + E)</span> for both</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════ 10. SORTING ══════ -->
+<section id="sorting" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(0,201,110,.1);color:var(--gr)">🔀 Topic 10 · Algorithms</div>
+    <div class="htitle">Sorting Algorithms</div>
+    <div class="hdesc">Sorting arranges data in order and unlocks faster searching and grouping. You rarely write your own in production — Python's <code class="inline">sorted()</code> uses <strong>Timsort</strong> — but understanding the trade-offs is core interview material.</div>
+  </div>
+  <h2>The landscape</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Bubble</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td><span class="p pg">Yes</span></td></tr>
+      <tr><td class="tn">Selection</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td><span class="p ppk">No</span></td></tr>
+      <tr><td class="tn">Insertion</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td><span class="p pg">Yes</span></td></tr>
+      <tr><td class="tn">Merge</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td><span class="p pg">Yes</span></td></tr>
+      <tr><td class="tn">Quick</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td><span class="p ppk">No</span></td></tr>
+      <tr><td class="tn">Heap</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(1)</td><td><span class="p ppk">No</span></td></tr>
+      <tr><td class="tn">Timsort</td><td>O(n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td><span class="p pg">Yes</span></td></tr>
+    </tbody>
+  </table></div>
+  <h2>Two must-know sorts</h2>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">sorting.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">def merge_sort(a):                    # stable, guaranteed O(n log n)
+    if len(a) &lt;= 1:
+        return a
+    mid = len(a) // 2
+    left = merge_sort(a[:mid])
+    right = merge_sort(a[mid:])
+    merged, i, j = [], 0, 0
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] &lt;= right[j]:
+            merged.append(left[i]); i += 1
+        else:
+            merged.append(right[j]); j += 1
+    merged.extend(left[i:])
+    merged.extend(right[j:])
+    return merged
+
+def quick_sort(a):                    # fast in practice, O(n log n) avg
+    if len(a) &lt;= 1:
+        return a
+    pivot = a[len(a) // 2]
+    less = [x for x in a if x &lt; pivot]
+    equal = [x for x in a if x == pivot]
+    greater = [x for x in a if x &gt; pivot]
+    return quick_sort(less) + equal + quick_sort(greater)</code></pre></div>
+  <div class="cal calg"><strong>In real code, just use the built-ins.</strong> <code class="inline">sorted(data)</code> returns a new sorted list; <code class="inline">data.sort()</code> sorts in place. Sort by a key with <code class="inline">sorted(users, key=lambda u: u.age)</code>. Both are Timsort — stable and adaptive to partially-sorted input.</div>
+</section>
+
+<!-- ══════ 11. BINARY SEARCH ══════ -->
+<section id="search" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(0,168,255,.1);color:var(--bl)">🎯 Topic 11 · Algorithms</div>
+    <div class="htitle">Binary Search</div>
+    <div class="hdesc">Binary search finds a target in a <strong>sorted</strong> array by repeatedly halving the search range — O(log n) instead of O(n). A million elements take at most 20 comparisons. The catch: the data must already be sorted.</div>
+  </div>
+  <h2>Halving the range</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 150" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Mono,monospace">
+      <g font-size="13">
+        <rect x="40" y="40" width="52" height="38" fill="#1e2535" stroke="#2e3748"/><text x="66" y="64" text-anchor="middle" fill="#8892a4">1</text>
+        <rect x="92" y="40" width="52" height="38" fill="#1e2535" stroke="#2e3748"/><text x="118" y="64" text-anchor="middle" fill="#8892a4">3</text>
+        <rect x="144" y="40" width="52" height="38" fill="#1e2535" stroke="#2e3748"/><text x="170" y="64" text-anchor="middle" fill="#8892a4">5</text>
+        <rect x="196" y="40" width="52" height="38" fill="#252d3d" stroke="#f5a623" stroke-width="2"/><text x="222" y="64" text-anchor="middle" fill="#f5a623">7</text>
+        <rect x="248" y="40" width="52" height="38" fill="#252d3d" stroke="#00c96e" stroke-width="2"/><text x="274" y="64" text-anchor="middle" fill="#00c96e">9</text>
+        <rect x="300" y="40" width="52" height="38" fill="#252d3d" stroke="#00a8ff"/><text x="326" y="64" text-anchor="middle" fill="#e8eaf0">11</text>
+        <rect x="352" y="40" width="52" height="38" fill="#252d3d" stroke="#00a8ff"/><text x="378" y="64" text-anchor="middle" fill="#e8eaf0">13</text>
+        <rect x="404" y="40" width="52" height="38" fill="#252d3d" stroke="#00a8ff"/><text x="430" y="64" text-anchor="middle" fill="#e8eaf0">15</text>
+      </g>
+      <text x="66" y="102" text-anchor="middle" fill="#8892a4" font-size="11">lo</text>
+      <text x="274" y="102" text-anchor="middle" fill="#f5a623" font-size="11">mid</text>
+      <text x="430" y="102" text-anchor="middle" fill="#00a8ff" font-size="11">hi</text>
+      <text x="66" y="130" text-anchor="start" fill="#505a6e" font-size="11" font-family="DM Sans,sans-serif">target 9 &gt; mid 7 → discard the whole left half, search right</text>
+    </svg>
+  </div>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">binary_search.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">def binary_search(a, target):         # O(log n), a must be sorted
+    lo, hi = 0, len(a) - 1
+    while lo &lt;= hi:
+        mid = (lo + hi) // 2
+        if a[mid] == target:
+            return mid
+        elif a[mid] &lt; target:
+            lo = mid + 1              # target is in the right half
+        else:
+            hi = mid - 1             # target is in the left half
+    return -1                        # not found
+
+# The standard library already has it:
+import bisect
+a = [1, 3, 5, 7, 9]
+bisect.bisect_left(a, 5)   # 2  → leftmost insert position
+bisect.insort(a, 4)        # keep the list sorted while inserting</code></pre></div>
+  <div class="cal calo"><strong>Common pitfalls:</strong> the array <em>must</em> be sorted first; use <code class="inline">lo &lt;= hi</code> (not <code class="inline">&lt;</code>) so a single-element range is checked; and always move <code class="inline">lo</code>/<code class="inline">hi</code> past <code class="inline">mid</code> to avoid infinite loops.</div>
+</section>
+
+<!-- ══════ 12. RECURSION ══════ -->
+<section id="recursion" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(245,166,35,.1);color:var(--or)">🌀 Topic 12 · Algorithms</div>
+    <div class="htitle">Recursion</div>
+    <div class="hdesc">A recursive function solves a problem by calling itself on a smaller version of the same problem. Every recursion needs a <strong>base case</strong> (when to stop) and a <strong>recursive case</strong> (how to shrink the problem toward that base).</div>
+  </div>
+  <h2>The two ingredients</h2>
+  <div class="g2">
+    <div class="card cg"><div class="ct">🛑 Base case</div><div class="cb">The simplest input, answered directly with no further calls. Without it, recursion never stops — you hit a <code class="inline">RecursionError</code>.</div></div>
+    <div class="card co"><div class="ct">🔁 Recursive case</div><div class="cb">Break the problem into smaller pieces, call yourself on them, and combine the results. Each call must move <em>toward</em> the base case.</div></div>
+  </div>
+  <h2>Recursion tree — fib(4)</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 190" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <line x1="310" y1="35" x2="200" y2="80" stroke="#2e3748"/><line x1="310" y1="35" x2="420" y2="80" stroke="#2e3748"/>
+      <line x1="200" y1="95" x2="130" y2="140" stroke="#2e3748"/><line x1="200" y1="95" x2="270" y2="140" stroke="#2e3748"/>
+      <line x1="420" y1="95" x2="360" y2="140" stroke="#2e3748"/><line x1="420" y1="95" x2="480" y2="140" stroke="#2e3748"/>
+      <circle cx="310" cy="30" r="20" fill="#1e2535" stroke="#f5a623" stroke-width="2"/><text x="310" y="35" text-anchor="middle" fill="#f5a623">f(4)</text>
+      <circle cx="200" cy="88" r="20" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/><text x="200" y="93" text-anchor="middle" fill="#e8eaf0">f(3)</text>
+      <circle cx="420" cy="88" r="20" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/><text x="420" y="93" text-anchor="middle" fill="#e8eaf0">f(2)</text>
+      <circle cx="130" cy="148" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/><text x="130" y="153" text-anchor="middle" fill="#e8eaf0">f(2)</text>
+      <circle cx="270" cy="148" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/><text x="270" y="153" text-anchor="middle" fill="#e8eaf0">f(1)</text>
+      <circle cx="360" cy="148" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/><text x="360" y="153" text-anchor="middle" fill="#e8eaf0">f(1)</text>
+      <circle cx="480" cy="148" r="18" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/><text x="480" y="153" text-anchor="middle" fill="#e8eaf0">f(0)</text>
+      <text x="560" y="150" fill="#505a6e" font-size="11">base cases</text>
+    </svg>
+  </div>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">recursion.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python">def factorial(n):                     # 5! = 5 * 4 * 3 * 2 * 1
+    if n &lt;= 1:                        # base case
+        return 1
+    return n * factorial(n - 1)      # recursive case
+
+def fib(n):                           # naive: O(2ⁿ) — recomputes subtrees
+    if n &lt; 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+from functools import lru_cache
+@lru_cache(maxsize=None)              # cache results → drops to O(n)
+def fib_fast(n):
+    if n &lt; 2:
+        return n
+    return fib_fast(n - 1) + fib_fast(n - 2)</code></pre></div>
+  <div class="cal calo"><strong>Mind the stack.</strong> Each call adds a frame to the call stack; Python caps recursion depth near 1000 by default. Deep recursion may need an iterative rewrite. The naive <code class="inline">fib</code> above is the poster child for <em>why</em> Dynamic Programming exists — up next.</div>
+</section>
+
+<!-- ══════ 13. DP ══════ -->
+<section id="dp" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(232,93,117,.1);color:var(--pk)">🧩 Topic 13 · Algorithms</div>
+    <div class="htitle">Dynamic Programming</div>
+    <div class="hdesc">Dynamic Programming (DP) speeds up recursion by <strong>storing answers to subproblems</strong> so each is solved once. It applies when a problem has overlapping subproblems and optimal substructure — turning exponential solutions into polynomial ones.</div>
+  </div>
+  <h2>When DP applies</h2>
+  <div class="g2">
+    <div class="card cpk"><div class="ct">♻️ Overlapping subproblems</div><div class="cb">The same smaller problem is solved many times (like <code class="inline">fib(2)</code> appearing all over the recursion tree). Cache it once.</div></div>
+    <div class="card cp"><div class="ct">🏗️ Optimal substructure</div><div class="cb">The best answer is built from best answers to subproblems — so combining sub-solutions gives the global optimum.</div></div>
+  </div>
+  <h2>Two styles</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Approach</th><th>Direction</th><th>How</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Memoization</td><td>Top-down</td><td>Normal recursion + a cache (<code class="inline">@lru_cache</code>)</td></tr>
+      <tr><td class="tn">Tabulation</td><td>Bottom-up</td><td>Fill a table iteratively from base cases</td></tr>
+    </tbody>
+  </table></div>
+  <div class="code"><div class="chead"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="cname">dp.py</span><button class="ccopy" onclick="cp(this)">Copy</button></div>
+<pre><code class="language-python"># Tabulation: Fibonacci bottom-up, O(n) time / O(1) space
+def fib(n):
+    if n &lt; 2:
+        return n
+    prev, cur = 0, 1
+    for _ in range(2, n + 1):
+        prev, cur = cur, prev + cur
+    return cur
+
+# Climbing stairs: how many ways to climb n steps taking 1 or 2 at a time?
+def climb(n):
+    dp = [0] * (n + 1)
+    dp[0] = dp[1] = 1
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]   # reuse solved subproblems
+    return dp[n]
+
+# 0/1 Knapsack: max value within a weight capacity
+def knapsack(weights, values, cap):
+    dp = [0] * (cap + 1)
+    for w, v in zip(weights, values):
+        for c in range(cap, w - 1, -1):
+            dp[c] = max(dp[c], dp[c - w] + v)
+    return dp[cap]</code></pre></div>
+  <div class="cal calpk"><strong>The DP recipe:</strong> (1) define the subproblem in words, (2) write the recurrence relating it to smaller subproblems, (3) identify base cases, (4) decide memoization vs tabulation, (5) read the answer off the table. Classic problems: coin change, longest common subsequence, edit distance, grid paths.</div>
+</section>
+
+<!-- ══════ 14. CHEAT SHEET ══════ -->
+<section id="cheat" class="sec">
+  <div class="hero">
+    <div class="hlabel" style="background:rgba(155,109,255,.1);color:var(--pu)">📋 Topic 14 · Reference</div>
+    <div class="htitle">Cheat Sheet</div>
+    <div class="hdesc">Everything at a glance. Keep this open while you practice until the complexities feel automatic.</div>
+  </div>
+  <h2>Data structure complexities (average case)</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Structure</th><th>Access</th><th>Search</th><th>Insert</th><th>Delete</th><th>Space</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Array / list</td><td>O(1)</td><td>O(n)</td><td>O(n)</td><td>O(n)</td><td>O(n)</td></tr>
+      <tr><td class="tn">Linked list</td><td>O(n)</td><td>O(n)</td><td>O(1)</td><td>O(1)</td><td>O(n)</td></tr>
+      <tr><td class="tn">Stack / queue</td><td>O(n)</td><td>O(n)</td><td>O(1)</td><td>O(1)</td><td>O(n)</td></tr>
+      <tr><td class="tn">Hash table</td><td>—</td><td>O(1)</td><td>O(1)</td><td>O(1)</td><td>O(n)</td></tr>
+      <tr><td class="tn">BST (balanced)</td><td>O(log n)</td><td>O(log n)</td><td>O(log n)</td><td>O(log n)</td><td>O(n)</td></tr>
+      <tr><td class="tn">Heap</td><td>O(1) min</td><td>O(n)</td><td>O(log n)</td><td>O(log n)</td><td>O(n)</td></tr>
+    </tbody>
+  </table></div>
+  <h2>Python built-in → structure</h2>
+  <div class="sb3">
+    <div class="si"><div class="sl">Dynamic array</div><div class="sv">list</div></div>
+    <div class="si"><div class="sl">Hash map</div><div class="sv">dict</div></div>
+    <div class="si"><div class="sl">Hash set</div><div class="sv">set</div></div>
+    <div class="si"><div class="sl">Double-ended queue</div><div class="sv">deque</div></div>
+    <div class="si"><div class="sl">Min-heap</div><div class="sv">heapq</div></div>
+    <div class="si"><div class="sl">Counting</div><div class="sv">Counter</div></div>
+  </div>
+  <h2>Patterns worth memorising</h2>
+  <div class="tr">
+    <span class="tg">Two pointers</span><span class="tg">Sliding window</span><span class="tg">Fast &amp; slow pointers</span>
+    <span class="tg">Binary search on answer</span><span class="tg">BFS / DFS</span><span class="tg">Backtracking</span>
+    <span class="tg">Top-k with a heap</span><span class="tg">Prefix sums</span><span class="tg">Memoization</span>
+    <span class="tg">Hash map lookups</span><span class="tg">Monotonic stack</span><span class="tg">Union-Find</span>
+  </div>
+  <h2>Problem-solving checklist</h2>
+  <ul class="rl">
+    <li><strong>Clarify</strong> — inputs, outputs, constraints, and edge cases (empty, single element, duplicates).</li>
+    <li><strong>Brute force first</strong> — get any correct solution, then state its complexity.</li>
+    <li><strong>Spot the bottleneck</strong> — which step is slow, and which structure removes it?</li>
+    <li><strong>Trade space for time</strong> — a hash map or cache often turns O(n²) into O(n).</li>
+    <li><strong>Test</strong> — walk through your example by hand before claiming it works.</li>
+  </ul>
+  <div class="cal calb"><strong>Practice beats reading.</strong> Pick one pattern, solve 3–4 problems with it until it's second nature, then move on. Depth per pattern matters more than breadth.</div>
+</section>
+
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script>
+function show(id){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});
+  var el=document.getElementById(id); if(el) el.classList.add('active');
+  var ni=document.querySelector('.ni[data-t="'+id+'"]'); if(ni) ni.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700) closeSB();
+}
+var hb=document.getElementById('hb'),sb=document.getElementById('sb'),ov=document.getElementById('ov');
+function openSB(){sb.classList.add('open');ov.classList.add('open');}
+function closeSB(){sb.classList.remove('open');ov.classList.remove('open');}
+hb.addEventListener('click',function(){sb.classList.contains('open')?closeSB():openSB();});
+ov.addEventListener('click',closeSB);
+function cp(btn){
+  var code=btn.closest('.code').querySelector('code');
+  var t=code?code.innerText:'';
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){var o=btn.textContent;btn.textContent='✓ Copied';btn.classList.add('done');setTimeout(function(){btn.textContent=o;btn.classList.remove('done');},1500);});}
+}
+if(window.Prism){Prism.highlightAll();}
+</script>
+</body>
+</html>

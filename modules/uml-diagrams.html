@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UML Diagrams — Visual Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117;--sb:#141820;--card:#1a1f2e;--card2:#1e2535;--hov:#252d3d;
+  --txt:#e8eaf0;--txt2:#8892a4;--mu:#505a6e;--bd:#252d3d;--bd2:#2e3748;
+  --gr:#00c96e;--bl:#00a8ff;--or:#f5a623;--pk:#e85d75;--pu:#9b6dff;--sw:282px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;overflow-x:hidden}
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;background:var(--sb);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 0}
+.tb-left{display:flex;align-items:center;width:var(--sw);padding:0 20px;border-right:1px solid var(--bd);height:100%}
+.bicon{width:34px;height:34px;border-radius:8px;background:var(--gr);display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:11px;flex-shrink:0}
+.btxt{font-weight:600;font-size:15px}.bsub{font-size:11px;color:var(--mu)}
+.tb-right{display:flex;align-items:center;gap:14px}
+.tpill{background:rgba(0,201,110,.12);color:var(--gr);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(0,201,110,.25)}
+.tc{color:var(--mu);font-size:12px}
+/* LAYOUT */
+.layout{display:flex;padding-top:56px;min-height:100vh}
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--sb);border-right:1px solid var(--bd);position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--bd2) transparent}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+.sh{padding:16px 20px 7px;font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--mu);text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 20px;cursor:pointer;font-size:13px;color:var(--txt2);border-left:3px solid transparent;transition:all .15s;text-decoration:none;user-select:none}
+.ni:hover{background:var(--hov);color:var(--txt)}
+.ni.active{color:var(--gr);background:rgba(0,201,110,.08);border-left-color:var(--gr);font-weight:500}
+.ndot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nb{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.nbg{background:rgba(0,201,110,.15);color:var(--gr)}.nbm{background:rgba(0,168,255,.15);color:var(--bl)}
+.nba{background:rgba(155,109,255,.15);color:var(--pu)}.nbk{background:rgba(245,166,35,.15);color:var(--or)}
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;padding:38px 46px 80px;max-width:900px}
+.sec{display:none}.sec.active{display:block}
+/* HERO */
+.hero{margin-bottom:34px;padding-bottom:26px;border-bottom:1px solid var(--bd)}
+.hl{display:inline-flex;align-items:center;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:6px;margin-bottom:12px}
+.ht{font-size:27px;font-weight:600;color:var(--txt);line-height:1.25;margin-bottom:9px}
+.hd{font-size:15px;color:var(--txt2);line-height:1.7;max-width:670px}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:20px 22px;margin-bottom:15px}
+.ct{font-size:15px;font-weight:600;color:var(--txt);margin-bottom:5px}
+.cb{font-size:14px;color:var(--txt2);line-height:1.7}
+.cg{border-left:3px solid var(--gr);background:rgba(0,201,110,.05)}
+.cbl{border-left:3px solid var(--bl);background:rgba(0,168,255,.05)}
+.co{border-left:3px solid var(--or);background:rgba(245,166,35,.05)}
+.cp{border-left:3px solid var(--pu);background:rgba(155,109,255,.05)}
+.cpk{border-left:3px solid var(--pk);background:rgba(232,93,117,.05)}
+/* CODE */
+.code{background:#0a0e16;border:1px solid var(--bd);border-radius:8px;padding:16px 18px;margin:12px 0;font-family:'DM Mono',monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;white-space:pre}
+.kw{color:#9b6dff}.st{color:#00c96e}.cm{color:#505a6e}.dr{color:#00a8ff}.fn{color:#e85d75}.cl{color:#f5a623}
+code{font-family:'DM Mono',monospace;font-size:12px;background:rgba(255,255,255,.07);color:var(--gr);padding:1px 6px;border-radius:4px}
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mc{background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:15px}
+.mt{font-size:13px;font-weight:600;margin-bottom:5px}
+.mb{font-size:12px;color:var(--txt2);line-height:1.55}
+/* TABLE */
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--card2)}
+th{text-align:left;padding:9px 14px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);border-bottom:1px solid var(--bd2)}
+td{padding:10px 14px;border-bottom:1px solid var(--bd);color:var(--txt2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.tn{color:var(--txt);font-weight:500}
+/* PILLS */
+.p{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.pg{background:rgba(0,201,110,.15);color:var(--gr)}.pb{background:rgba(0,168,255,.15);color:var(--bl)}
+.po{background:rgba(245,166,35,.15);color:var(--or)}.pp{background:rgba(155,109,255,.15);color:var(--pu)}
+.ppk{background:rgba(232,93,117,.15);color:var(--pk)}
+/* CALLOUTS */
+.cal{border-radius:8px;padding:13px 17px;margin:12px 0;font-size:13px;line-height:1.65}
+.cag{background:rgba(0,201,110,.08);border:1px solid rgba(0,201,110,.2);color:#7ddcaa}
+.cab{background:rgba(0,168,255,.08);border:1px solid rgba(0,168,255,.2);color:#7dc8f0}
+.cao{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#f0c87a}
+.cap{background:rgba(155,109,255,.08);border:1px solid rgba(155,109,255,.2);color:#c4aafe}
+.capk{background:rgba(232,93,117,.08);border:1px solid rgba(232,93,117,.2);color:#f0a0b0}
+.cal strong{color:inherit;font-weight:600}
+/* STEPS */
+.step{display:flex;gap:13px;margin-bottom:16px}
+.snum{width:27px;height:27px;border-radius:50%;flex-shrink:0;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;color:#000}
+.stit{font-size:14px;font-weight:600;color:var(--txt);margin-bottom:4px}
+.sdesc{font-size:13px;color:var(--txt2);line-height:1.6}
+/* DIAGRAM */
+.dw{background:#0a0e16;border:1px solid var(--bd);border-radius:10px;padding:20px 16px;margin:14px 0;overflow-x:auto}
+.dw svg{display:block;margin:0 auto}
+/* LAYERS */
+.ls{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.lay{border-radius:6px;padding:11px 14px;border-left:4px solid;font-size:13px}
+.ln{font-weight:600;margin-bottom:2px}.ld{font-size:12px;color:var(--txt2)}
+/* DO/DONT */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:12px 0}
+.do{border-radius:8px;padding:13px 15px;background:rgba(0,201,110,.07);border:1px solid rgba(0,201,110,.2)}
+.dont{border-radius:8px;padding:13px 15px;background:rgba(232,93,117,.07);border:1px solid rgba(232,93,117,.2)}
+.do h4{font-size:11px;font-weight:700;color:var(--gr);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.dont h4{font-size:11px;font-weight:700;color:var(--pk);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.do li,.dont li{font-size:12px;color:var(--txt2);list-style:none;padding:3px 0 3px 13px;position:relative;line-height:1.5}
+.do li::before{content:"✓";position:absolute;left:0;color:var(--gr);font-size:11px}
+.dont li::before{content:"✗";position:absolute;left:0;color:var(--pk);font-size:11px}
+/* RULE LIST */
+.rl{list-style:none;margin:8px 0}
+.rl li{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px;color:var(--txt2)}
+.rl li:last-child{border-bottom:none}
+.rl li::before{content:"→";color:var(--gr);font-weight:700;flex-shrink:0;margin-top:1px}
+.rl li strong{color:var(--txt);font-weight:600}
+/* STAT BAR */
+.sb{display:grid;gap:8px;margin:13px 0}
+.sb3{grid-template-columns:repeat(3,1fr)}.sb4{grid-template-columns:repeat(4,1fr)}
+.si{background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:11px 13px;text-align:center}
+.sl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.sv{font-size:13px;font-weight:600}
+/* TAG ROW */
+.tr{display:flex;flex-wrap:wrap;gap:5px;margin:11px 0}
+.tg{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;border:1px solid}
+/* CAPACITY TABLE */
+.cap-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+.cap-table th{background:var(--card2);text-align:left;padding:9px 14px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);border-bottom:1px solid var(--bd2)}
+.cap-table td{padding:10px 14px;border-bottom:1px solid var(--bd);color:var(--txt2);font-family:'DM Mono',monospace;font-size:12px}
+.cap-table tr:last-child td{border-bottom:none}
+.cap-table tr:hover td{background:rgba(255,255,255,.02)}
+/* DIVIDER */
+.div{height:1px;background:var(--bd);margin:26px 0}
+h2{font-size:19px;font-weight:600;color:var(--txt);margin:26px 0 11px}
+h2:first-child{margin-top:0}
+h3{font-size:15px;font-weight:600;color:var(--txt);margin:20px 0 9px}
+p{font-size:14px;color:var(--txt2);line-height:1.7;margin-bottom:11px}
+/* HAMBURGER */
+.hb{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.hb span{display:block;width:20px;height:2px;background:var(--txt2);border-radius:1px}
+.ov{display:none}
+/* ANIMATION */
+.sec.active .card,.sec.active .mc{animation:fu .3s ease both}
+.sec.active .card:nth-child(2){animation-delay:.05s}
+.sec.active .card:nth-child(3){animation-delay:.1s}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* RESPONSIVE */
+@media(max-width:900px){.main{padding:26px 22px 60px;max-width:100%}}
+@media(max-width:700px){
+  :root{--sw:265px}
+  .main{margin-left:0;padding:22px 16px 60px}
+  .sidebar{transform:translateX(-100%);transition:transform .25s;z-index:90}
+  .sidebar.open{transform:translateX(0)}
+  .ov{display:none;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.5);z-index:89}
+  .ov.open{display:block}
+  .hb{display:flex}
+  .tb-left{width:auto;border-right:none}
+  .g2,.g3,.g4,.dd,.sb.sb3,.sb.sb4{grid-template-columns:1fr}
+}
+@media(max-width:480px){.ht{font-size:22px}}
+</style>
+<body>
+
+<header class="topbar">
+  <div class="tb-left">
+    <div class="bicon">◧</div>
+    <div><div class="btxt">UML Atlas</div><div class="bsub">One Source of Truth · 13 Topics</div></div>
+  </div>
+  <div class="tb-right">
+    <button class="hb" id="hbtn" aria-label="menu"><span></span><span></span><span></span></button>
+    <span class="tc">13 topics · zero → pro</span>
+    <span class="tpill">Study Guide</span>
+  </div>
+</header>
+
+<div class="ov" id="ov"></div>
+<div class="layout">
+
+<nav class="sidebar" id="sidebar">
+  <div class="sh">Foundations</div>
+  <a class="ni active" onclick="show('intro')"><span class="ndot" style="background:var(--bl)"></span>UML Overview<span class="nb nbm">Start</span></a>
+  <div class="sh">Structural</div>
+  <a class="ni" onclick="show('class')"><span class="ndot" style="background:var(--gr)"></span>Class Diagram<span class="nb nbg">Core</span></a>
+  <div class="sh">Behavioral</div>
+  <a class="ni" onclick="show('usecase')"><span class="ndot" style="background:var(--or)"></span>Use Case Diagram<span class="nb nbk">Easy</span></a>
+  <a class="ni" onclick="show('sequence')"><span class="ndot" style="background:var(--pk)"></span>Sequence Diagram<span class="nb nbg">Core</span></a>
+  <a class="ni" onclick="show('activity')"><span class="ndot" style="background:var(--pu)"></span>Activity Diagram<span class="nb nba">Mid</span></a>
+  <a class="ni" onclick="show('state')"><span class="ndot" style="background:var(--bl)"></span>State Machine<span class="nb nbm">Mid</span></a>
+  <div class="sh">Relationships</div>
+  <a class="ni" onclick="show('assoc')"><span class="ndot" style="background:var(--gr)"></span>Association<span class="nb nbg">Rel</span></a>
+  <a class="ni" onclick="show('agg')"><span class="ndot" style="background:var(--bl)"></span>Aggregation<span class="nb nbm">Rel</span></a>
+  <a class="ni" onclick="show('comp')"><span class="ndot" style="background:var(--or)"></span>Composition<span class="nb nbk">Rel</span></a>
+  <a class="ni" onclick="show('dep')"><span class="ndot" style="background:var(--pu)"></span>Dependency<span class="nb nba">Rel</span></a>
+  <a class="ni" onclick="show('real')"><span class="ndot" style="background:var(--pk)"></span>Realization<span class="nb nbg">Rel</span></a>
+  <div class="sh">Put It Together</div>
+  <a class="ni" onclick="show('casestudy')"><span class="ndot" style="background:var(--gr)"></span>Case Study · Library<span class="nb nba">Capstone</span></a>
+  <a class="ni" onclick="show('cheatsheet')"><span class="ndot" style="background:var(--or)"></span>Master Cheat Sheet<span class="nb nbk">Ref</span></a>
+</nav>
+
+<main class="main">
+
+<!-- ══════════════════════════════════════
+     1. UML OVERVIEW
+══════════════════════════════════════ -->
+<section id="sec-intro" class="sec active">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,168,255,.1);color:var(--bl)">◧ Topic 1 · Foundations</div>
+    <div class="ht">UML Overview</div>
+    <div class="hd">UML (Unified Modeling Language) is a standard visual notation for designing software before you build it. It gives every engineer a shared vocabulary — a box, an arrow, and a diamond mean the same thing to everyone. In interviews and design docs, it's how you communicate structure and behavior without writing a single line of code.</div>
+  </div>
+
+  <h2>Why UML Still Matters</h2>
+  <div class="card cbl">
+    <div class="ct">The Core Idea</div>
+    <div class="cb">Code shows <strong>how</strong> a system works line by line. UML shows <strong>what</strong> the pieces are and how they interact — at a glance. A single class diagram can capture what would take 500 lines of code to read. It's the blueprint you draw <em>before</em> the house, and the map you hand a new teammate on day one.</div>
+  </div>
+
+  <div class="sb sb4" style="margin:14px 0">
+    <div class="si"><div class="sl">Total Diagram Types</div><div class="sv" style="color:var(--bl)">14</div></div>
+    <div class="si"><div class="sl">You Need (LLD)</div><div class="sv" style="color:var(--gr)">~5</div></div>
+    <div class="si"><div class="sl">Two Families</div><div class="sv" style="color:var(--or)">Structural · Behavioral</div></div>
+    <div class="si"><div class="sl">Current Spec</div><div class="sv" style="color:var(--pu)">UML 2.x</div></div>
+  </div>
+
+  <h2>The Two Families of Diagrams</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs><marker id="uo1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#505a6e"/></marker></defs>
+      <!-- root -->
+      <rect x="235" y="12" width="150" height="38" rx="7" fill="#1e2535" stroke="#e8eaf0" stroke-width="1.5"/>
+      <text x="310" y="30" text-anchor="middle" fill="#e8eaf0" font-weight="600" font-size="13">UML 2.x</text>
+      <text x="310" y="44" text-anchor="middle" fill="#505a6e" font-size="10">14 diagram types</text>
+      <!-- branches -->
+      <line x1="310" y1="50" x2="150" y2="78" stroke="#505a6e" stroke-width="1" marker-end="url(#uo1)"/>
+      <line x1="310" y1="50" x2="470" y2="78" stroke="#505a6e" stroke-width="1" marker-end="url(#uo1)"/>
+      <rect x="70" y="80" width="160" height="34" rx="6" fill="#1e2535" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="150" y="97" text-anchor="middle" fill="#00a8ff" font-weight="600">STRUCTURAL</text>
+      <text x="150" y="109" text-anchor="middle" fill="#505a6e" font-size="10">the static "what exists"</text>
+      <rect x="390" y="80" width="160" height="34" rx="6" fill="#1e2535" stroke="#e85d75" stroke-width="1.5"/>
+      <text x="470" y="97" text-anchor="middle" fill="#e85d75" font-weight="600">BEHAVIORAL</text>
+      <text x="470" y="109" text-anchor="middle" fill="#505a6e" font-size="10">the dynamic "what happens"</text>
+      <!-- structural children -->
+      <rect x="35" y="135" width="120" height="26" rx="4" fill="rgba(0,201,110,.12)" stroke="#00c96e"/><text x="95" y="152" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="600">Class ★</text>
+      <rect x="35" y="167" width="120" height="24" rx="4" fill="#1e2535" stroke="#2e3748"/><text x="95" y="183" text-anchor="middle" fill="#505a6e" font-size="10">Object</text>
+      <rect x="35" y="197" width="120" height="24" rx="4" fill="#1e2535" stroke="#2e3748"/><text x="95" y="213" text-anchor="middle" fill="#505a6e" font-size="10">Component</text>
+      <rect x="35" y="227" width="120" height="24" rx="4" fill="#1e2535" stroke="#2e3748"/><text x="95" y="243" text-anchor="middle" fill="#505a6e" font-size="10">Deployment</text>
+      <rect x="35" y="257" width="120" height="24" rx="4" fill="#1e2535" stroke="#2e3748"/><text x="95" y="273" text-anchor="middle" fill="#505a6e" font-size="10">Package</text>
+      <line x1="150" y1="114" x2="95" y2="133" stroke="#505a6e" stroke-width="1" stroke-dasharray="2,2"/>
+      <!-- behavioral children -->
+      <rect x="235" y="135" width="150" height="26" rx="4" fill="rgba(245,166,35,.12)" stroke="#f5a623"/><text x="310" y="152" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="600">Use Case ★</text>
+      <rect x="235" y="167" width="150" height="26" rx="4" fill="rgba(232,93,117,.12)" stroke="#e85d75"/><text x="310" y="184" text-anchor="middle" fill="#e85d75" font-size="11" font-weight="600">Sequence ★</text>
+      <rect x="235" y="199" width="150" height="26" rx="4" fill="rgba(155,109,255,.12)" stroke="#9b6dff"/><text x="310" y="216" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">Activity ★</text>
+      <rect x="235" y="231" width="150" height="26" rx="4" fill="rgba(0,168,255,.12)" stroke="#00a8ff"/><text x="310" y="248" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="600">State Machine ★</text>
+      <rect x="435" y="135" width="150" height="24" rx="4" fill="#1e2535" stroke="#2e3748"/><text x="510" y="151" text-anchor="middle" fill="#505a6e" font-size="10">Communication</text>
+      <rect x="435" y="165" width="150" height="24" rx="4" fill="#1e2535" stroke="#2e3748"/><text x="510" y="181" text-anchor="middle" fill="#505a6e" font-size="10">Timing</text>
+      <rect x="435" y="195" width="150" height="24" rx="4" fill="#1e2535" stroke="#2e3748"/><text x="510" y="211" text-anchor="middle" fill="#505a6e" font-size="10">Interaction Overview</text>
+      <line x1="470" y1="114" x2="310" y2="133" stroke="#505a6e" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="470" y1="114" x2="510" y2="133" stroke="#505a6e" stroke-width="1" stroke-dasharray="2,2"/>
+      <text x="310" y="290" text-anchor="middle" fill="#505a6e" font-size="11">★ = the five diagrams covered in this guide — the ones that show up in interviews and design docs</text>
+    </svg>
+  </div>
+
+  <h2>Structural vs Behavioral — The Mental Model</h2>
+  <div class="g2">
+    <div class="mc"><div class="mt" style="color:var(--bl)">Structural = a photo</div><div class="mb">Freezes the system in time. What classes exist, what they contain, and how they connect. Nothing moves. Best example: the <strong>Class Diagram</strong>.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--pk)">Behavioral = a video</div><div class="mb">Shows the system in motion. Who talks to whom, in what order, and how state changes over time. Best examples: <strong>Sequence</strong> and <strong>State Machine</strong> diagrams.</div></div>
+  </div>
+
+  <h2>Which Diagram For Which Question</h2>
+  <div class="tw"><table>
+    <thead><tr><th>You want to answer…</th><th>Reach for</th><th>Family</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">What are the classes and how do they relate?</td><td><span class="p pg">Class Diagram</span></td><td>Structural</td></tr>
+      <tr><td class="tn">What can each user do with the system?</td><td><span class="p po">Use Case Diagram</span></td><td>Behavioral</td></tr>
+      <tr><td class="tn">In what order do objects call each other?</td><td><span class="p ppk">Sequence Diagram</span></td><td>Behavioral</td></tr>
+      <tr><td class="tn">What is the step-by-step workflow / logic?</td><td><span class="p pp">Activity Diagram</span></td><td>Behavioral</td></tr>
+      <tr><td class="tn">What states can one object be in?</td><td><span class="p pb">State Machine</span></td><td>Behavioral</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cal cab"><strong>Interview reality:</strong> you almost never need all 14. A strong LLD answer is usually one <em>class diagram</em> (structure) plus one <em>sequence diagram</em> (a key flow). Master those two first — the rest are situational.</div>
+
+  <h2>The Shapes You'll See Everywhere</h2>
+  <p>Before diving in, memorise this visual alphabet. Once you can name every shape and line on sight, you can read <em>any</em> UML diagram — even ones for diagram types this guide doesn't cover. Print this page; it's your decoder ring.</p>
+  <div class="dw">
+    <svg viewBox="0 0 620 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs>
+        <marker id="gl_open" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#8892a4" stroke-width="1.3"/></marker>
+        <marker id="gl_fill" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M0,0 L9,5 L0,10 Z" fill="#8892a4"/></marker>
+        <marker id="gl_tri" markerWidth="15" markerHeight="13" refX="12" refY="6" orient="auto"><path d="M1,1 L13,6 L1,12 Z" fill="#0a0e16" stroke="#8892a4" stroke-width="1.3"/></marker>
+      </defs>
+      <text x="12" y="18" fill="#00a8ff" font-size="11" font-weight="700">NODES / SHAPES</text>
+      <!-- class box -->
+      <rect x="15" y="30" width="76" height="44" rx="3" fill="#1e2535" stroke="#8892a4" stroke-width="1.2"/>
+      <line x1="15" y1="44" x2="91" y2="44" stroke="#8892a4" stroke-width="1"/><line x1="15" y1="60" x2="91" y2="60" stroke="#8892a4" stroke-width="1"/>
+      <text x="53" y="90" text-anchor="middle" fill="#8892a4" font-size="9.5">Class</text>
+      <!-- actor -->
+      <g stroke="#8892a4" stroke-width="1.4" fill="none"><circle cx="150" cy="38" r="7"/><line x1="150" y1="45" x2="150" y2="60"/><line x1="140" y1="51" x2="160" y2="51"/><line x1="150" y1="60" x2="142" y2="72"/><line x1="150" y1="60" x2="158" y2="72"/></g>
+      <text x="150" y="90" text-anchor="middle" fill="#8892a4" font-size="9.5">Actor</text>
+      <!-- use case oval -->
+      <ellipse cx="235" cy="52" rx="42" ry="20" fill="#1e2535" stroke="#8892a4" stroke-width="1.2"/>
+      <text x="235" y="55" text-anchor="middle" fill="#8892a4" font-size="9">Use Case</text>
+      <text x="235" y="90" text-anchor="middle" fill="#8892a4" font-size="9.5">Use Case / Oval</text>
+      <!-- state -->
+      <rect x="320" y="34" width="76" height="36" rx="14" fill="#1e2535" stroke="#8892a4" stroke-width="1.2"/>
+      <text x="358" y="56" text-anchor="middle" fill="#8892a4" font-size="9">State</text>
+      <text x="358" y="90" text-anchor="middle" fill="#8892a4" font-size="9.5">State / Action</text>
+      <!-- decision -->
+      <path d="M470,32 L494,52 L470,72 L446,52 Z" fill="#1e2535" stroke="#8892a4" stroke-width="1.2"/>
+      <text x="470" y="90" text-anchor="middle" fill="#8892a4" font-size="9.5">Decision</text>
+      <!-- init/final/fork -->
+      <circle cx="545" cy="40" r="7" fill="#8892a4"/><text x="545" y="60" text-anchor="middle" fill="#8892a4" font-size="8">initial</text>
+      <circle cx="580" cy="40" r="7" fill="none" stroke="#8892a4" stroke-width="1.3"/><circle cx="580" cy="40" r="3.5" fill="#8892a4"/><text x="580" y="60" text-anchor="middle" fill="#8892a4" font-size="8">final</text>
+      <rect x="533" y="68" width="60" height="5" rx="2" fill="#8892a4"/><text x="563" y="90" text-anchor="middle" fill="#8892a4" font-size="9.5">fork / join bar</text>
+      <!-- LINES -->
+      <text x="12" y="130" fill="#e85d75" font-size="11" font-weight="700">LINES / CONNECTORS</text>
+      <line x1="15" y1="150" x2="130" y2="150" stroke="#8892a4" stroke-width="1.4"/>
+      <text x="145" y="153" fill="#8892a4" font-size="10">solid line — association ("knows-a")</text>
+      <line x1="15" y1="176" x2="128" y2="176" stroke="#8892a4" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#gl_open)"/>
+      <text x="145" y="179" fill="#8892a4" font-size="10">dashed + open arrow — dependency ("uses-a")</text>
+      <line x1="45" y1="202" x2="130" y2="202" stroke="#8892a4" stroke-width="1.4"/>
+      <path d="M15,202 L30,195 L45,202 L30,209 Z" fill="#0a0e16" stroke="#8892a4" stroke-width="1.3"/>
+      <text x="145" y="205" fill="#8892a4" font-size="10">hollow diamond — aggregation (weak "has-a")</text>
+      <line x1="45" y1="228" x2="130" y2="228" stroke="#8892a4" stroke-width="1.4"/>
+      <path d="M15,228 L30,221 L45,228 L30,235 Z" fill="#8892a4" stroke="#8892a4" stroke-width="1.3"/>
+      <text x="145" y="231" fill="#8892a4" font-size="10">filled diamond — composition (strong "owns-a")</text>
+      <line x1="15" y1="254" x2="126" y2="254" stroke="#8892a4" stroke-width="1.4" marker-end="url(#gl_tri)"/>
+      <text x="145" y="257" fill="#8892a4" font-size="10">solid + hollow triangle — inheritance ("is-a")</text>
+      <line x1="15" y1="280" x2="126" y2="280" stroke="#8892a4" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#gl_tri)"/>
+      <text x="145" y="283" fill="#8892a4" font-size="10">dashed + hollow triangle — realization ("implements")</text>
+      <line x1="400" y1="150" x2="510" y2="150" stroke="#8892a4" stroke-width="1.4" marker-end="url(#gl_fill)"/>
+      <text x="400" y="140" fill="#8892a4" font-size="9.5">sync message (sequence)</text>
+      <line x1="400" y1="182" x2="510" y2="182" stroke="#8892a4" stroke-width="1.4" stroke-dasharray="4,3" marker-end="url(#gl_open)"/>
+      <text x="400" y="172" fill="#8892a4" font-size="9.5">return message (sequence)</text>
+      <line x1="400" y1="214" x2="510" y2="214" stroke="#8892a4" stroke-width="1" stroke-dasharray="4,4"/>
+      <text x="400" y="204" fill="#8892a4" font-size="9.5">lifeline (dashed vertical)</text>
+    </svg>
+  </div>
+  <div class="cal cag"><strong>Four connector families cover almost everything:</strong> a plain <em>line</em> (relationship exists), a <em>diamond</em> (whole/part — hollow=weak, filled=strong), a <em>triangle</em> (type hierarchy — solid=extends, dashed=implements), and an <em>arrow</em> (direction/flow — filled=call, open=return/dependency). Everything else is a label.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     2. CLASS DIAGRAM
+══════════════════════════════════════ -->
+<section id="sec-class" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,201,110,.1);color:var(--gr)">▣ Topic 2 · Structural</div>
+    <div class="ht">Class Diagram</div>
+    <div class="hd">The class diagram is the backbone of object-oriented design. It shows the classes in a system, what data and behavior each holds, and how they connect. If you learn one UML diagram deeply, make it this one — it's the direct blueprint for your code.</div>
+  </div>
+
+  <h2>Anatomy of a Class</h2>
+  <div class="card cg">
+    <div class="ct">Three Compartments, Top to Bottom</div>
+    <div class="cb">A class is a box split into three stacked sections: the <strong>name</strong> on top, the <strong>attributes</strong> (data) in the middle, and the <strong>operations</strong> (methods) at the bottom. A leading symbol marks each member's visibility.</div>
+  </div>
+  <div class="dw">
+    <svg viewBox="0 0 620 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <!-- class box -->
+      <rect x="150" y="20" width="230" height="200" rx="4" fill="#1e2535" stroke="#00c96e" stroke-width="1.5"/>
+      <!-- name compartment -->
+      <rect x="150" y="20" width="230" height="34" rx="4" fill="rgba(0,201,110,.12)" stroke="#00c96e" stroke-width="1.5"/>
+      <text x="265" y="41" text-anchor="middle" fill="#00c96e" font-weight="700" font-size="14">BankAccount</text>
+      <line x1="150" y1="54" x2="380" y2="54" stroke="#00c96e" stroke-width="1.5"/>
+      <!-- attributes -->
+      <text x="163" y="74" fill="#e8eaf0" font-family="DM Mono,monospace" font-size="11.5">- accountId : String</text>
+      <text x="163" y="93" fill="#e8eaf0" font-family="DM Mono,monospace" font-size="11.5">- balance : Decimal</text>
+      <text x="163" y="112" fill="#e8eaf0" font-family="DM Mono,monospace" font-size="11.5"># ownerName : String</text>
+      <text x="163" y="131" fill="#e8eaf0" font-family="DM Mono,monospace" font-size="11.5">+ currency : String</text>
+      <line x1="150" y1="145" x2="380" y2="145" stroke="#00c96e" stroke-width="1.5"/>
+      <!-- operations -->
+      <text x="163" y="165" fill="#00a8ff" font-family="DM Mono,monospace" font-size="11.5">+ deposit(amt : Decimal)</text>
+      <text x="163" y="184" fill="#00a8ff" font-family="DM Mono,monospace" font-size="11.5">+ withdraw(amt : Decimal)</text>
+      <text x="163" y="203" fill="#00a8ff" font-family="DM Mono,monospace" font-size="11.5">- validate() : Boolean</text>
+      <!-- labels -->
+      <text x="420" y="40" fill="#00c96e" font-size="11" font-weight="600">① Class name</text>
+      <text x="420" y="55" fill="#505a6e" font-size="10">bold, centered</text>
+      <text x="420" y="100" fill="#f5a623" font-size="11" font-weight="600">② Attributes</text>
+      <text x="420" y="115" fill="#505a6e" font-size="10">state / data fields</text>
+      <text x="420" y="175" fill="#00a8ff" font-size="11" font-weight="600">③ Operations</text>
+      <text x="420" y="190" fill="#505a6e" font-size="10">methods / behavior</text>
+      <!-- visibility legend -->
+      <text x="30" y="40" fill="#505a6e" font-size="10" font-weight="600">VISIBILITY</text>
+      <text x="30" y="60" fill="#00c96e" font-family="DM Mono,monospace" font-size="12">+ public</text>
+      <text x="30" y="80" fill="#e85d75" font-family="DM Mono,monospace" font-size="12">- private</text>
+      <text x="30" y="100" fill="#f5a623" font-family="DM Mono,monospace" font-size="12"># protected</text>
+      <text x="30" y="120" fill="#9b6dff" font-family="DM Mono,monospace" font-size="12">~ package</text>
+      <text x="30" y="220" fill="#505a6e" font-size="10">format:</text>
+      <text x="30" y="235" fill="#505a6e" font-family="DM Mono,monospace" font-size="9.5">name : Type</text>
+    </svg>
+  </div>
+
+  <div class="code"><span class="cm"># The class above, in Python</span>
+<span class="kw">class</span> <span class="cl">BankAccount</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, account_id, owner_name, currency):
+        self._account_id = account_id   <span class="cm"># - private</span>
+        self._balance = <span class="cl">0</span>              <span class="cm"># - private</span>
+        self._owner_name = owner_name   <span class="cm"># # protected (convention)</span>
+        self.currency = currency        <span class="cm"># + public</span>
+
+    <span class="kw">def</span> <span class="fn">deposit</span>(self, amt): ...        <span class="cm"># + public</span>
+    <span class="kw">def</span> <span class="fn">withdraw</span>(self, amt): ...       <span class="cm"># + public</span>
+    <span class="kw">def</span> <span class="fn">_validate</span>(self): ...          <span class="cm"># - private</span></div>
+
+  <h2>Special Class Types</h2>
+  <div class="g3">
+    <div class="mc"><div class="mt" style="color:var(--bl)">«interface»</div><div class="mb">A pure contract — method signatures, no implementation. Marked with the <code>&lt;&lt;interface&gt;&gt;</code> stereotype above the name. Classes <em>realize</em> it.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--or)">Abstract class</div><div class="mb">Cannot be instantiated on its own. Written in <em>italics</em> (or with <code>&lt;&lt;abstract&gt;&gt;</code>). Has some concrete and some abstract methods.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--pu)">«enumeration»</div><div class="mb">A fixed set of named values, e.g. <code>Status</code> = {ACTIVE, CLOSED}. Marked <code>&lt;&lt;enumeration&gt;&gt;</code>; values listed in the body.</div></div>
+  </div>
+
+  <h2>Relationships at a Glance</h2>
+  <p>Classes rarely stand alone — the lines between them carry as much meaning as the boxes. Each connector has a precise notation. This is the single most important cheat-sheet in UML; the five relationship sections in this guide each drill into one row.</p>
+  <div class="dw">
+    <svg viewBox="0 0 620 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs>
+        <marker id="cd_open" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M1,1 L10,5 L1,9" fill="none" stroke="#00a8ff" stroke-width="1.4"/></marker>
+        <marker id="cd_dep" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M1,1 L10,5 L1,9" fill="none" stroke="#9b6dff" stroke-width="1.4"/></marker>
+        <marker id="cd_tri" markerWidth="16" markerHeight="14" refX="13" refY="7" orient="auto"><path d="M1,1 L14,7 L1,13 Z" fill="#0a0e16" stroke="#e85d75" stroke-width="1.4"/></marker>
+        <marker id="cd_tri2" markerWidth="16" markerHeight="14" refX="13" refY="7" orient="auto"><path d="M1,1 L14,7 L1,13 Z" fill="#0a0e16" stroke="#7ddcaa" stroke-width="1.4"/></marker>
+      </defs>
+      <!-- rows: y positions -->
+      <!-- Association -->
+      <text x="10" y="30" fill="#00c96e" font-size="12" font-weight="600">Association</text>
+      <text x="10" y="44" fill="#505a6e" font-size="10">"knows-a"</text>
+      <line x1="150" y1="30" x2="300" y2="30" stroke="#00c96e" stroke-width="1.6"/>
+      <text x="360" y="27" fill="#8892a4" font-size="11">plain solid line — two classes are linked</text>
+      <text x="360" y="42" fill="#505a6e" font-size="10">Teacher —— Student</text>
+      <!-- Aggregation -->
+      <text x="10" y="82" fill="#00a8ff" font-size="12" font-weight="600">Aggregation</text>
+      <text x="10" y="96" fill="#505a6e" font-size="10">"has-a" (weak)</text>
+      <line x1="176" y1="82" x2="300" y2="82" stroke="#00a8ff" stroke-width="1.6"/>
+      <path d="M150,82 L163,76 L176,82 L163,88 Z" fill="#0a0e16" stroke="#00a8ff" stroke-width="1.4"/>
+      <text x="360" y="79" fill="#8892a4" font-size="11">hollow diamond at the whole — parts</text>
+      <text x="360" y="94" fill="#505a6e" font-size="10">outlive the whole (Team ◇— Player)</text>
+      <!-- Composition -->
+      <text x="10" y="134" fill="#f5a623" font-size="12" font-weight="600">Composition</text>
+      <text x="10" y="148" fill="#505a6e" font-size="10">"owns-a" (strong)</text>
+      <line x1="176" y1="134" x2="300" y2="134" stroke="#f5a623" stroke-width="1.6"/>
+      <path d="M150,134 L163,128 L176,134 L163,140 Z" fill="#f5a623" stroke="#f5a623" stroke-width="1.4"/>
+      <text x="360" y="131" fill="#8892a4" font-size="11">filled diamond — parts die with the</text>
+      <text x="360" y="146" fill="#505a6e" font-size="10">whole (House ◆— Room)</text>
+      <!-- Dependency -->
+      <text x="10" y="186" fill="#9b6dff" font-size="12" font-weight="600">Dependency</text>
+      <text x="10" y="200" fill="#505a6e" font-size="10">"uses-a"</text>
+      <line x1="150" y1="186" x2="298" y2="186" stroke="#9b6dff" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#cd_dep)"/>
+      <text x="360" y="183" fill="#8892a4" font-size="11">dashed line, open arrow — transient use</text>
+      <text x="360" y="198" fill="#505a6e" font-size="10">Order ⇢ PaymentGateway</text>
+      <!-- Generalization / Inheritance -->
+      <text x="10" y="238" fill="#e85d75" font-size="12" font-weight="600">Generalization</text>
+      <text x="10" y="252" fill="#505a6e" font-size="10">"is-a"</text>
+      <line x1="150" y1="238" x2="296" y2="238" stroke="#e85d75" stroke-width="1.6" marker-end="url(#cd_tri)"/>
+      <text x="360" y="235" fill="#8892a4" font-size="11">solid line, hollow triangle → parent</text>
+      <text x="360" y="250" fill="#505a6e" font-size="10">Dog —▷ Animal (inheritance)</text>
+      <!-- Realization -->
+      <text x="10" y="290" fill="#7ddcaa" font-size="12" font-weight="600">Realization</text>
+      <text x="10" y="304" fill="#505a6e" font-size="10">"implements"</text>
+      <line x1="150" y1="290" x2="296" y2="290" stroke="#7ddcaa" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#cd_tri2)"/>
+      <text x="360" y="287" fill="#8892a4" font-size="11">dashed line, hollow triangle → interface</text>
+      <text x="360" y="302" fill="#505a6e" font-size="10">CreditCard ⇠▷ «PaymentMethod»</text>
+    </svg>
+  </div>
+
+  <h2>Multiplicity — How Many?</h2>
+  <p>The numbers at each end of an association say how many objects participate. This is where a class diagram encodes real business rules.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Notation</th><th>Meaning</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td class="tn"><code>1</code></td><td>Exactly one</td><td>An Order has exactly 1 Customer</td></tr>
+      <tr><td class="tn"><code>0..1</code></td><td>Zero or one (optional)</td><td>A User may have 0..1 Avatar</td></tr>
+      <tr><td class="tn"><code>*</code> or <code>0..*</code></td><td>Zero or more</td><td>A Customer has 0..* Orders</td></tr>
+      <tr><td class="tn"><code>1..*</code></td><td>One or more (at least one)</td><td>An Order has 1..* LineItems</td></tr>
+      <tr><td class="tn"><code>2..5</code></td><td>A specific range</td><td>A Game has 2..5 Players</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cal cag"><strong>Reading tip:</strong> multiplicity is read from the <em>far</em> end. On the line <code>Customer 1 —— 0..* Order</code>, the <code>0..*</code> sits next to Order and means "one Customer has zero-to-many Orders." The <code>1</code> next to Customer means "each Order belongs to exactly one Customer."</div>
+
+  <div class="div"></div>
+  <h2>Full Worked Example — Online Bookstore</h2>
+  <p>Here is a complete class diagram that uses <em>every</em> relationship type at once. Trace each line and name the relationship — if you can read this diagram fully, you've mastered class diagrams. This is exactly the level of detail expected in an LLD interview.</p>
+  <div class="dw">
+    <svg viewBox="0 0 620 470" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="10">
+      <defs>
+        <marker id="bk_tri" markerWidth="15" markerHeight="13" refX="12" refY="6" orient="auto"><path d="M1,1 L13,6 L1,12 Z" fill="#0a0e16" stroke="#e85d75" stroke-width="1.3"/></marker>
+        <marker id="bk_tri2" markerWidth="15" markerHeight="13" refX="12" refY="6" orient="auto"><path d="M1,1 L13,6 L1,12 Z" fill="#0a0e16" stroke="#7ddcaa" stroke-width="1.3"/></marker>
+        <marker id="bk_open" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#9b6dff" stroke-width="1.3"/></marker>
+      </defs>
+      <!-- «abstract» User -->
+      <rect x="240" y="14" width="140" height="48" rx="3" fill="#1e2535" stroke="#f5a623" stroke-width="1.3"/>
+      <rect x="240" y="14" width="140" height="30" fill="rgba(245,166,35,.12)" stroke="#f5a623" stroke-width="1.3"/>
+      <text x="310" y="27" text-anchor="middle" fill="#f5a623" font-size="9" font-style="italic">«abstract»</text>
+      <text x="310" y="39" text-anchor="middle" fill="#f5a623" font-weight="700" font-size="11">User</text>
+      <text x="250" y="57" fill="#8892a4" font-family="DM Mono,monospace" font-size="9"># id · # name · # email</text>
+      <!-- Customer -->
+      <rect x="120" y="108" width="130" height="46" rx="3" fill="#1e2535" stroke="#00c96e" stroke-width="1.3"/>
+      <rect x="120" y="108" width="130" height="20" fill="rgba(0,201,110,.12)" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="185" y="122" text-anchor="middle" fill="#00c96e" font-weight="700" font-size="11">Customer</text>
+      <text x="130" y="141" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ placeOrder()</text>
+      <text x="130" y="151" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ browse()</text>
+      <!-- Admin -->
+      <rect x="380" y="108" width="120" height="46" rx="3" fill="#1e2535" stroke="#00c96e" stroke-width="1.3"/>
+      <rect x="380" y="108" width="120" height="20" fill="rgba(0,201,110,.12)" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="440" y="122" text-anchor="middle" fill="#00c96e" font-weight="700" font-size="11">Admin</text>
+      <text x="390" y="141" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ addBook()</text>
+      <text x="390" y="151" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ manageStock()</text>
+      <!-- inheritance lines -->
+      <line x1="185" y1="108" x2="285" y2="63" stroke="#e85d75" stroke-width="1.4" marker-end="url(#bk_tri)"/>
+      <line x1="440" y1="108" x2="340" y2="63" stroke="#e85d75" stroke-width="1.4" marker-end="url(#bk_tri)"/>
+      <text x="205" y="90" fill="#e85d75" font-size="8.5">is-a</text>
+      <text x="405" y="90" fill="#e85d75" font-size="8.5">is-a</text>
+      <!-- ShoppingCart -->
+      <rect x="15" y="200" width="120" height="42" rx="3" fill="#1e2535" stroke="#00a8ff" stroke-width="1.3"/>
+      <rect x="15" y="200" width="120" height="20" fill="rgba(0,168,255,.12)" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="75" y="214" text-anchor="middle" fill="#00a8ff" font-weight="700" font-size="10">ShoppingCart</text>
+      <text x="25" y="233" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ addItem()</text>
+      <!-- Customer composes cart (filled diamond at Customer) -->
+      <line x1="112" y1="152" x2="75" y2="198" stroke="#f5a623" stroke-width="1.4"/>
+      <path d="M120,140 L128,150 L120,160 L112,150 Z" fill="#f5a623" stroke="#f5a623" stroke-width="1"/>
+      <text x="55" y="182" fill="#f5a623" font-size="8">composition ◆</text>
+      <!-- Order -->
+      <rect x="150" y="215" width="130" height="56" rx="3" fill="#1e2535" stroke="#9b6dff" stroke-width="1.3"/>
+      <rect x="150" y="215" width="130" height="20" fill="rgba(155,109,255,.12)" stroke="#9b6dff" stroke-width="1.3"/>
+      <text x="215" y="229" text-anchor="middle" fill="#9b6dff" font-weight="700" font-size="11">Order</text>
+      <text x="160" y="248" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ total : Decimal</text>
+      <text x="160" y="260" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ status : Status</text>
+      <!-- Customer 1 -- 0..* Order (association) -->
+      <line x1="185" y1="154" x2="200" y2="213" stroke="#00c96e" stroke-width="1.4"/>
+      <text x="150" y="180" fill="#505a6e" font-size="8">1</text>
+      <text x="205" y="205" fill="#505a6e" font-size="8">0..*</text>
+      <text x="120" y="196" fill="#00c96e" font-size="8">places ▸</text>
+      <!-- OrderItem -->
+      <rect x="150" y="330" width="130" height="46" rx="3" fill="#1e2535" stroke="#00a8ff" stroke-width="1.3"/>
+      <rect x="150" y="330" width="130" height="20" fill="rgba(0,168,255,.12)" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="215" y="344" text-anchor="middle" fill="#00a8ff" font-weight="700" font-size="10">OrderItem</text>
+      <text x="160" y="363" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ qty : int</text>
+      <!-- Order composes OrderItem (filled diamond at Order) -->
+      <line x1="215" y1="271" x2="215" y2="328" stroke="#f5a623" stroke-width="1.4"/>
+      <path d="M215,271 L208,281 L215,291 L222,281 Z" fill="#f5a623" stroke="#f5a623"/>
+      <text x="222" y="300" fill="#505a6e" font-size="8">1</text>
+      <text x="222" y="322" fill="#505a6e" font-size="8">1..*</text>
+      <text x="230" y="285" fill="#f5a623" font-size="8">owns ◆</text>
+      <!-- Book -->
+      <rect x="360" y="330" width="130" height="56" rx="3" fill="#1e2535" stroke="#00c96e" stroke-width="1.3"/>
+      <rect x="360" y="330" width="130" height="20" fill="rgba(0,201,110,.12)" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="425" y="344" text-anchor="middle" fill="#00c96e" font-weight="700" font-size="11">Book</text>
+      <text x="370" y="363" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ title · + isbn</text>
+      <text x="370" y="374" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ price : Decimal</text>
+      <!-- OrderItem --> Book (association) -->
+      <line x1="280" y1="353" x2="358" y2="356" stroke="#00c96e" stroke-width="1.4"/>
+      <text x="290" y="348" fill="#505a6e" font-size="8">*</text>
+      <text x="345" y="348" fill="#505a6e" font-size="8">1</text>
+      <text x="300" y="370" fill="#00c96e" font-size="8">refers to ▸</text>
+      <!-- «interface» PaymentMethod -->
+      <rect x="330" y="215" width="150" height="44" rx="3" fill="#1e2535" stroke="#e85d75" stroke-width="1.3"/>
+      <rect x="330" y="215" width="150" height="28" fill="rgba(232,93,117,.12)" stroke="#e85d75" stroke-width="1.3"/>
+      <text x="405" y="227" text-anchor="middle" fill="#e85d75" font-size="9" font-style="italic">«interface»</text>
+      <text x="405" y="238" text-anchor="middle" fill="#e85d75" font-weight="700" font-size="10">PaymentMethod</text>
+      <text x="340" y="254" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ pay(amt) : bool</text>
+      <!-- Order ..> PaymentMethod (dependency) -->
+      <line x1="280" y1="240" x2="328" y2="240" stroke="#9b6dff" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#bk_open)"/>
+      <text x="285" y="234" fill="#9b6dff" font-size="8">«use»</text>
+      <!-- CreditCard realizes PaymentMethod -->
+      <rect x="500" y="215" width="105" height="40" rx="3" fill="#1e2535" stroke="#7ddcaa" stroke-width="1.3"/>
+      <rect x="500" y="215" width="105" height="20" fill="rgba(0,201,110,.10)" stroke="#7ddcaa" stroke-width="1.3"/>
+      <text x="552" y="229" text-anchor="middle" fill="#7ddcaa" font-weight="700" font-size="9.5">CreditCard</text>
+      <text x="510" y="248" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ pay(amt)</text>
+      <line x1="500" y1="237" x2="482" y2="237" stroke="#7ddcaa" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#bk_tri2)"/>
+      <text x="512" y="270" fill="#7ddcaa" font-size="8">realizes ⇠▷</text>
+      <!-- Catalog aggregates Book (hollow diamond) -->
+      <rect x="500" y="330" width="105" height="42" rx="3" fill="#1e2535" stroke="#00a8ff" stroke-width="1.3"/>
+      <rect x="500" y="330" width="105" height="20" fill="rgba(0,168,255,.12)" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="552" y="344" text-anchor="middle" fill="#00a8ff" font-weight="700" font-size="10">Catalog</text>
+      <text x="510" y="363" fill="#8892a4" font-family="DM Mono,monospace" font-size="9">+ search()</text>
+      <line x1="490" y1="356" x2="498" y2="352" stroke="#00a8ff" stroke-width="1.4"/>
+      <path d="M490,356 L479,350 L490,344 L501,350 Z" fill="#0a0e16" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="497" y="382" fill="#00a8ff" font-size="8">aggregates ◇</text>
+      <!-- legend footer -->
+      <text x="310" y="410" text-anchor="middle" fill="#505a6e" font-size="9.5">Customer/Admin —▷ User (inheritance) · Customer ◆— Cart &amp; Order ◆— OrderItem (composition)</text>
+      <text x="310" y="425" text-anchor="middle" fill="#505a6e" font-size="9.5">OrderItem — Book &amp; Customer — Order (association) · Order ⇢ PaymentMethod (dependency)</text>
+      <text x="310" y="440" text-anchor="middle" fill="#505a6e" font-size="9.5">CreditCard ⇠▷ PaymentMethod (realization) · Catalog ◇— Book (aggregation)</text>
+      <text x="310" y="458" text-anchor="middle" fill="#7ddcaa" font-size="10" font-weight="600">All six relationships in one diagram ✓</text>
+    </svg>
+  </div>
+
+  <h2>Reading the Bookstore Diagram, Line by Line</h2>
+  <ul class="rl">
+    <li><strong>Customer &amp; Admin —▷ User</strong> — both inherit the abstract <code>User</code> (shared id/name/email). Solid line, hollow triangle. "A Customer <em>is-a</em> User."</li>
+    <li><strong>Customer ◆— ShoppingCart</strong> — composition. The cart is created with the customer and dies with them. Filled diamond.</li>
+    <li><strong>Customer —— Order</strong> — association with <code>1 : 0..*</code>. A customer places many orders; each order belongs to one customer. Orders survive independently.</li>
+    <li><strong>Order ◆— OrderItem</strong> — composition <code>1 : 1..*</code>. Line items only exist inside their order. Delete the order → items gone.</li>
+    <li><strong>OrderItem —— Book</strong> — association. An item points to the book it sells, but the book lives in the catalog on its own.</li>
+    <li><strong>Order ⇢ PaymentMethod</strong> — dependency. The order <em>uses</em> a payment method to <code>pay()</code>, but doesn't own it. Dashed arrow.</li>
+    <li><strong>CreditCard ⇠▷ PaymentMethod</strong> — realization. CreditCard implements the payment contract. Dashed line, hollow triangle.</li>
+    <li><strong>Catalog ◇— Book</strong> — aggregation. The catalog groups books, but books exist even if the catalog object is discarded. Hollow diamond.</li>
+  </ul>
+  <div class="cal cap"><strong>How to build one from scratch:</strong> (1) list the nouns → candidate classes. (2) list what each does → methods. (3) list what each holds → attributes. (4) draw the lines: ask "is-a?" (inheritance), "owns/part-of?" (composition/aggregation), "just uses?" (dependency), "same contract?" (realization). (5) add multiplicity. That five-step recipe turns any prose spec into a class diagram.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     3. USE CASE DIAGRAM
+══════════════════════════════════════ -->
+<section id="sec-usecase" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(245,166,35,.1);color:var(--or)">◎ Topic 3 · Behavioral</div>
+    <div class="ht">Use Case Diagram</div>
+    <div class="hd">A use case diagram is the highest-level, least technical UML diagram. It answers one question: <em>who uses the system, and what can they do with it?</em> No internal logic, no classes — just actors, goals, and the boundary of the system. It's the diagram you show a product manager.</div>
+  </div>
+
+  <h2>The Four Building Blocks</h2>
+  <div class="g4">
+    <div class="mc"><div class="mt" style="color:var(--bl)">Actor</div><div class="mb">A role that interacts with the system — a stick figure. Can be a person or an external system.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--gr)">Use Case</div><div class="mb">A goal the actor achieves — an oval. Named as a verb phrase: "Place Order".</div></div>
+    <div class="mc"><div class="mt" style="color:var(--or)">System Boundary</div><div class="mb">A rectangle around the use cases. Everything inside is your system; actors sit outside.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--pu)">Relationships</div><div class="mb">Lines linking actors to use cases, plus <code>«include»</code> and <code>«extend»</code>.</div></div>
+  </div>
+
+  <h2>Example — Voice AI Support Platform</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs><marker id="uc1" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#9b6dff" stroke-width="1.3"/></marker></defs>
+      <!-- system boundary -->
+      <rect x="180" y="20" width="270" height="285" rx="10" fill="none" stroke="#f5a623" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="315" y="40" text-anchor="middle" fill="#f5a623" font-size="12" font-weight="600">Voice AI Platform</text>
+      <!-- left actor: Caller -->
+      <g stroke="#00a8ff" stroke-width="1.8" fill="none">
+        <circle cx="60" cy="90" r="11"/><line x1="60" y1="101" x2="60" y2="135"/>
+        <line x1="42" y1="113" x2="78" y2="113"/><line x1="60" y1="135" x2="45" y2="158"/><line x1="60" y1="135" x2="75" y2="158"/>
+      </g>
+      <text x="60" y="176" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="600">Caller</text>
+      <!-- right actor: Agent -->
+      <g stroke="#00c96e" stroke-width="1.8" fill="none">
+        <circle cx="565" cy="220" r="11"/><line x1="565" y1="231" x2="565" y2="265"/>
+        <line x1="547" y1="243" x2="583" y2="243"/><line x1="565" y1="265" x2="550" y2="288"/><line x1="565" y1="265" x2="580" y2="288"/>
+      </g>
+      <text x="565" y="306" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="600">Human Agent</text>
+      <!-- system actor: LLM -->
+      <rect x="520" y="70" width="90" height="34" rx="5" fill="#1e2535" stroke="#e85d75"/>
+      <text x="565" y="85" text-anchor="middle" fill="#e85d75" font-size="10" font-weight="600">«system»</text>
+      <text x="565" y="98" text-anchor="middle" fill="#e85d75" font-size="10">LLM Service</text>
+      <!-- use cases -->
+      <ellipse cx="290" cy="80" rx="78" ry="24" fill="rgba(0,201,110,.1)" stroke="#00c96e" stroke-width="1.4"/>
+      <text x="290" y="84" text-anchor="middle" fill="#00c96e" font-size="11">Place a Call</text>
+      <ellipse cx="315" cy="150" rx="88" ry="24" fill="rgba(0,201,110,.1)" stroke="#00c96e" stroke-width="1.4"/>
+      <text x="315" y="154" text-anchor="middle" fill="#00c96e" font-size="11">Ask a Question</text>
+      <ellipse cx="300" cy="220" rx="80" ry="24" fill="rgba(0,168,255,.1)" stroke="#00a8ff" stroke-width="1.4"/>
+      <text x="300" y="224" text-anchor="middle" fill="#00a8ff" font-size="11">Transcribe Speech</text>
+      <ellipse cx="315" cy="278" rx="90" ry="22" fill="rgba(232,93,117,.1)" stroke="#e85d75" stroke-width="1.4"/>
+      <text x="315" y="282" text-anchor="middle" fill="#e85d75" font-size="11">Escalate to Human</text>
+      <!-- actor-usecase links -->
+      <line x1="71" y1="100" x2="215" y2="82" stroke="#8892a4" stroke-width="1.2"/>
+      <line x1="71" y1="120" x2="230" y2="148" stroke="#8892a4" stroke-width="1.2"/>
+      <line x1="405" y1="220" x2="556" y2="218" stroke="#8892a4" stroke-width="1.2"/>
+      <line x1="522" y1="90" x2="400" y2="145" stroke="#8892a4" stroke-width="1.2"/>
+      <!-- include: Ask a Question includes Transcribe -->
+      <line x1="313" y1="174" x2="302" y2="195" stroke="#9b6dff" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#uc1)"/>
+      <text x="345" y="188" fill="#9b6dff" font-size="9">«include»</text>
+      <!-- extend: Escalate extends Ask a Question -->
+      <line x1="315" y1="256" x2="315" y2="176" stroke="#f5a623" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#uc1)"/>
+      <text x="322" y="216" fill="#f5a623" font-size="9">«extend»</text>
+    </svg>
+  </div>
+
+  <h2>Include vs Extend — The One That Trips Everyone Up</h2>
+  <div class="g2">
+    <div class="mc"><div class="mt" style="color:var(--pu)">«include» — always happens</div><div class="mb">The base use case <em>always</em> pulls in the included one. "Ask a Question" always includes "Transcribe Speech" — you can't do the first without the second. Arrow points <strong>to the included</strong> use case. Use it to factor out shared steps.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--or)">«extend» — sometimes happens</div><div class="mb">The extending use case runs <em>only under a condition</em>. "Escalate to Human" extends "Ask a Question" — it happens only if the AI can't answer. Arrow points <strong>to the base</strong> use case. Use it for optional / exceptional behavior.</div></div>
+  </div>
+  <div class="cal cao"><strong>Memory hook:</strong> <em>include</em> = mandatory sub-step (like calling a helper function every time). <em>extend</em> = optional add-on (like an <code>if</code> branch that fires only when a condition is met). The arrows point in opposite directions — include→child, extend→parent.</div>
+
+  <div class="dd">
+    <div class="do"><h4>Do</h4><ul>
+      <li>Name use cases as user goals ("Reset Password")</li>
+      <li>Keep it to one clear system boundary</li>
+      <li>Model external systems as actors too</li>
+      <li>Use it early, to align on scope with non-engineers</li>
+    </ul></div>
+    <div class="dont"><h4>Don't</h4><ul>
+      <li>Put implementation detail inside ovals</li>
+      <li>Turn it into a flowchart (that's an activity diagram)</li>
+      <li>Over-use include/extend — most links are plain</li>
+      <li>Model every tiny CRUD action as a use case</li>
+    </ul></div>
+  </div>
+
+  <div class="div"></div>
+  <h2>Second Example — ATM Machine</h2>
+  <p>The classic interview warm-up. Notice how <strong>every transaction includes "Authenticate"</strong> (you can't do anything without your PIN), and "Print Receipt" <strong>extends</strong> the transactions (optional, only if you tap "yes").</p>
+  <div class="dw">
+    <svg viewBox="0 0 620 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="atm1" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#9b6dff" stroke-width="1.3"/></marker></defs>
+      <!-- boundary -->
+      <rect x="170" y="15" width="290" height="290" rx="10" fill="none" stroke="#f5a623" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="315" y="34" text-anchor="middle" fill="#f5a623" font-size="12" font-weight="600">ATM System</text>
+      <!-- Customer actor -->
+      <g stroke="#00a8ff" stroke-width="1.8" fill="none">
+        <circle cx="55" cy="120" r="11"/><line x1="55" y1="131" x2="55" y2="163"/><line x1="38" y1="143" x2="72" y2="143"/><line x1="55" y1="163" x2="41" y2="185"/><line x1="55" y1="163" x2="69" y2="185"/>
+      </g>
+      <text x="55" y="203" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="600">Customer</text>
+      <!-- Bank system actor -->
+      <rect x="518" y="130" width="92" height="36" rx="5" fill="#1e2535" stroke="#00c96e"/>
+      <text x="564" y="146" text-anchor="middle" fill="#00c96e" font-size="10" font-weight="600">«system»</text>
+      <text x="564" y="159" text-anchor="middle" fill="#00c96e" font-size="10">Bank Server</text>
+      <!-- use cases -->
+      <ellipse cx="240" cy="60" rx="55" ry="20" fill="rgba(232,93,117,.1)" stroke="#e85d75" stroke-width="1.3"/>
+      <text x="240" y="64" text-anchor="middle" fill="#e85d75" font-size="10">Authenticate</text>
+      <ellipse cx="300" cy="115" rx="58" ry="20" fill="rgba(0,201,110,.1)" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="300" y="119" text-anchor="middle" fill="#00c96e" font-size="10">Withdraw Cash</text>
+      <ellipse cx="300" cy="165" rx="58" ry="20" fill="rgba(0,201,110,.1)" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="300" y="169" text-anchor="middle" fill="#00c96e" font-size="10">Check Balance</text>
+      <ellipse cx="300" cy="215" rx="58" ry="20" fill="rgba(0,201,110,.1)" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="300" y="219" text-anchor="middle" fill="#00c96e" font-size="10">Deposit Cash</text>
+      <ellipse cx="300" cy="272" rx="60" ry="20" fill="rgba(245,166,35,.1)" stroke="#f5a623" stroke-width="1.3"/>
+      <text x="300" y="276" text-anchor="middle" fill="#f5a623" font-size="10">Print Receipt</text>
+      <!-- customer links -->
+      <line x1="66" y1="120" x2="243" y2="115" stroke="#8892a4" stroke-width="1.1"/>
+      <line x1="66" y1="130" x2="243" y2="165" stroke="#8892a4" stroke-width="1.1"/>
+      <line x1="66" y1="140" x2="243" y2="212" stroke="#8892a4" stroke-width="1.1"/>
+      <!-- bank links -->
+      <line x1="358" y1="112" x2="516" y2="140" stroke="#8892a4" stroke-width="1.1"/>
+      <line x1="295" y1="80" x2="516" y2="145" stroke="#8892a4" stroke-width="1.1"/>
+      <!-- includes: each txn includes Authenticate -->
+      <line x1="290" y1="98" x2="255" y2="78" stroke="#9b6dff" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#atm1)"/>
+      <text x="330" y="90" fill="#9b6dff" font-size="8.5">«include»</text>
+      <line x1="285" y1="150" x2="245" y2="80" stroke="#9b6dff" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#atm1)"/>
+      <line x1="278" y1="200" x2="235" y2="80" stroke="#9b6dff" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#atm1)"/>
+      <!-- extend: print receipt extends withdraw -->
+      <line x1="300" y1="252" x2="300" y2="135" stroke="#f5a623" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#atm1)"/>
+      <text x="306" y="245" fill="#f5a623" font-size="8.5">«extend»</text>
+    </svg>
+  </div>
+  <div class="cal cab"><strong>Why this layout works:</strong> the three transactions each fan an <code>«include»</code> arrow up to Authenticate — modelling "always required first." Print Receipt sits below with an <code>«extend»</code> arrow pointing up — modelling "optional add-on." One glance tells you the whole access-control story without a single line of code.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     4. SEQUENCE DIAGRAM
+══════════════════════════════════════ -->
+<section id="sec-sequence" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(232,93,117,.1);color:var(--pk)">⇄ Topic 4 · Behavioral</div>
+    <div class="ht">Sequence Diagram</div>
+    <div class="hd">A sequence diagram shows <em>how objects collaborate over time</em> — who sends which message to whom, and in what order. Time flows top to bottom. It's the sharpest tool for documenting a single important flow: a login, a checkout, or a voice-call pipeline.</div>
+  </div>
+
+  <h2>The Notation</h2>
+  <div class="g4">
+    <div class="mc"><div class="mt" style="color:var(--bl)">Lifeline</div><div class="mb">A vertical dashed line dropping from each participant. Represents that object existing through time.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--gr)">Activation Bar</div><div class="mb">A thin rectangle on the lifeline — the object is actively doing work / holds the call stack.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--or)">Sync Message →</div><div class="mb">Solid line, <strong>filled</strong> arrowhead. Caller waits for the reply (a normal method call).</div></div>
+    <div class="mc"><div class="mt" style="color:var(--pu)">Return ⇠</div><div class="mb">Dashed line, open arrowhead. The result coming back to the caller.</div></div>
+  </div>
+
+  <h2>Example — LiveKit Voice Call Pipeline</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 380" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs>
+        <marker id="sq_sync" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#00c96e"/></marker>
+        <marker id="sq_ret" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M1,0 L9,4 L1,8" fill="none" stroke="#9b6dff" stroke-width="1.2"/></marker>
+        <marker id="sq_asy" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M1,0 L9,4 L1,8" fill="none" stroke="#00a8ff" stroke-width="1.2"/></marker>
+      </defs>
+      <!-- participant headers -->
+      <g font-size="10" font-weight="600">
+        <rect x="20" y="12" width="80" height="30" rx="5" fill="#1e2535" stroke="#00a8ff"/><text x="60" y="31" text-anchor="middle" fill="#00a8ff">Caller</text>
+        <rect x="150" y="12" width="80" height="30" rx="5" fill="#1e2535" stroke="#e85d75"/><text x="190" y="31" text-anchor="middle" fill="#e85d75">LiveKit</text>
+        <rect x="280" y="12" width="80" height="30" rx="5" fill="#1e2535" stroke="#f5a623"/><text x="320" y="31" text-anchor="middle" fill="#f5a623">STT</text>
+        <rect x="410" y="12" width="80" height="30" rx="5" fill="#1e2535" stroke="#9b6dff"/><text x="450" y="31" text-anchor="middle" fill="#9b6dff">LLM</text>
+        <rect x="530" y="12" width="70" height="30" rx="5" fill="#1e2535" stroke="#00c96e"/><text x="565" y="31" text-anchor="middle" fill="#00c96e">TTS</text>
+      </g>
+      <!-- lifelines -->
+      <g stroke="#2e3748" stroke-width="1" stroke-dasharray="4,4">
+        <line x1="60" y1="42" x2="60" y2="365"/><line x1="190" y1="42" x2="190" y2="365"/>
+        <line x1="320" y1="42" x2="320" y2="365"/><line x1="450" y1="42" x2="450" y2="365"/><line x1="565" y1="42" x2="565" y2="365"/>
+      </g>
+      <!-- activation bars -->
+      <rect x="55" y="60" width="10" height="290" fill="rgba(0,168,255,.18)" stroke="#00a8ff" stroke-width="0.7"/>
+      <rect x="185" y="70" width="10" height="270" fill="rgba(232,93,117,.18)" stroke="#e85d75" stroke-width="0.7"/>
+      <rect x="315" y="100" width="10" height="60" fill="rgba(245,166,35,.18)" stroke="#f5a623" stroke-width="0.7"/>
+      <rect x="445" y="190" width="10" height="70" fill="rgba(155,109,255,.18)" stroke="#9b6dff" stroke-width="0.7"/>
+      <rect x="560" y="280" width="10" height="50" fill="rgba(0,201,110,.18)" stroke="#00c96e" stroke-width="0.7"/>
+      <!-- messages -->
+      <line x1="65" y1="70" x2="185" y2="70" stroke="#00c96e" stroke-width="1.3" marker-end="url(#sq_sync)"/>
+      <text x="125" y="65" text-anchor="middle" fill="#8892a4" font-size="9.5">speaks (audio)</text>
+      <line x1="195" y1="100" x2="315" y2="100" stroke="#00a8ff" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#sq_asy)"/>
+      <text x="255" y="95" text-anchor="middle" fill="#8892a4" font-size="9.5">stream frames</text>
+      <line x1="315" y1="155" x2="195" y2="155" stroke="#9b6dff" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#sq_ret)"/>
+      <text x="255" y="150" text-anchor="middle" fill="#8892a4" font-size="9.5">transcript text</text>
+      <line x1="195" y1="190" x2="445" y2="190" stroke="#00c96e" stroke-width="1.3" marker-end="url(#sq_sync)"/>
+      <text x="320" y="185" text-anchor="middle" fill="#8892a4" font-size="9.5">prompt + context (RAG)</text>
+      <line x1="445" y1="255" x2="195" y2="255" stroke="#9b6dff" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#sq_ret)"/>
+      <text x="320" y="250" text-anchor="middle" fill="#8892a4" font-size="9.5">answer text</text>
+      <line x1="195" y1="285" x2="560" y2="285" stroke="#00c96e" stroke-width="1.3" marker-end="url(#sq_sync)"/>
+      <text x="375" y="280" text-anchor="middle" fill="#8892a4" font-size="9.5">synthesize speech</text>
+      <line x1="560" y1="325" x2="65" y2="325" stroke="#9b6dff" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#sq_ret)"/>
+      <text x="300" y="320" text-anchor="middle" fill="#8892a4" font-size="9.5">audio reply streamed back to caller</text>
+      <text x="310" y="358" text-anchor="middle" fill="#505a6e" font-size="10">Time flows downward · solid+filled = call · dashed = return/async</text>
+    </svg>
+  </div>
+
+  <h2>Message Types</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Message</th><th>Line style</th><th>When to use</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Synchronous</td><td><span class="p pg">Solid + filled arrow</span></td><td>Caller blocks and waits for a return</td></tr>
+      <tr><td class="tn">Asynchronous</td><td><span class="p pb">Solid + open arrow</span></td><td>Fire-and-forget; caller keeps going</td></tr>
+      <tr><td class="tn">Return</td><td><span class="p pp">Dashed + open arrow</span></td><td>The reply travelling back</td></tr>
+      <tr><td class="tn">Self-message</td><td><span class="p po">Loop back to same lifeline</span></td><td>Object calls its own method</td></tr>
+      <tr><td class="tn">Create / Destroy</td><td><span class="p ppk">«create» / ✗ at lifeline end</span></td><td>Object born or terminated mid-flow</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cal capk"><strong>Combined fragments:</strong> to show conditions and repetition, wrap messages in a labelled box: <code>alt</code> (if/else), <code>opt</code> (optional), <code>loop</code> (repeat), <code>par</code> (parallel). E.g. a <code>loop</code> box around the STT frames captures "stream chunks until the caller stops speaking."</div>
+
+  <div class="div"></div>
+  <h2>Second Example — User Login with an <code>alt</code> Fragment</h2>
+  <p>This is <em>the</em> pattern interviewers look for: showing the <strong>happy path and the error path</strong> in one diagram using an <code>alt</code> (alternative) box. The dashed line inside the box splits the two guarded branches.</p>
+  <div class="dw">
+    <svg viewBox="0 0 620 340" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs>
+        <marker id="lg_sync" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#00c96e"/></marker>
+        <marker id="lg_ret" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M1,0 L9,4 L1,8" fill="none" stroke="#9b6dff" stroke-width="1.2"/></marker>
+        <marker id="lg_err" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M1,0 L9,4 L1,8" fill="none" stroke="#e85d75" stroke-width="1.2"/></marker>
+      </defs>
+      <!-- participants -->
+      <g font-size="10" font-weight="600">
+        <rect x="40" y="12" width="90" height="30" rx="5" fill="#1e2535" stroke="#00a8ff"/><text x="85" y="31" text-anchor="middle" fill="#00a8ff">User</text>
+        <rect x="245" y="12" width="120" height="30" rx="5" fill="#1e2535" stroke="#9b6dff"/><text x="305" y="31" text-anchor="middle" fill="#9b6dff">AuthController</text>
+        <rect x="480" y="12" width="100" height="30" rx="5" fill="#1e2535" stroke="#f5a623"/><text x="530" y="31" text-anchor="middle" fill="#f5a623">UserDB</text>
+      </g>
+      <g stroke="#2e3748" stroke-width="1" stroke-dasharray="4,4">
+        <line x1="85" y1="42" x2="85" y2="325"/><line x1="305" y1="42" x2="305" y2="325"/><line x1="530" y1="42" x2="530" y2="325"/>
+      </g>
+      <!-- activations -->
+      <rect x="80" y="60" width="10" height="250" fill="rgba(0,168,255,.18)" stroke="#00a8ff" stroke-width="0.7"/>
+      <rect x="300" y="70" width="10" height="220" fill="rgba(155,109,255,.18)" stroke="#9b6dff" stroke-width="0.7"/>
+      <rect x="525" y="100" width="10" height="50" fill="rgba(245,166,35,.18)" stroke="#f5a623" stroke-width="0.7"/>
+      <!-- messages -->
+      <line x1="90" y1="70" x2="300" y2="70" stroke="#00c96e" stroke-width="1.3" marker-end="url(#lg_sync)"/>
+      <text x="195" y="65" text-anchor="middle" fill="#8892a4" font-size="9.5">POST /login (email, pwd)</text>
+      <line x1="310" y1="100" x2="525" y2="100" stroke="#00c96e" stroke-width="1.3" marker-end="url(#lg_sync)"/>
+      <text x="418" y="95" text-anchor="middle" fill="#8892a4" font-size="9.5">findByEmail(email)</text>
+      <line x1="525" y1="145" x2="310" y2="145" stroke="#9b6dff" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#lg_ret)"/>
+      <text x="418" y="140" text-anchor="middle" fill="#8892a4" font-size="9.5">user record</text>
+      <!-- alt fragment box -->
+      <rect x="55" y="160" width="500" height="140" rx="4" fill="none" stroke="#e85d75" stroke-width="1.2"/>
+      <path d="M55,160 h48 v14 l-8,8 h-40 z" fill="#1e2535" stroke="#e85d75" stroke-width="1.2"/>
+      <text x="70" y="175" fill="#e85d75" font-size="10" font-weight="700">alt</text>
+      <line x1="55" y1="230" x2="555" y2="230" stroke="#e85d75" stroke-width="0.8" stroke-dasharray="5,4"/>
+      <!-- branch 1 -->
+      <text x="115" y="188" fill="#00c96e" font-size="9">[ password valid ]</text>
+      <line x1="310" y1="205" x2="90" y2="205" stroke="#9b6dff" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#lg_ret)"/>
+      <text x="200" y="200" text-anchor="middle" fill="#8892a4" font-size="9.5">200 OK + JWT token ✓</text>
+      <!-- branch 2 -->
+      <text x="115" y="252" fill="#e85d75" font-size="9">[ else — invalid ]</text>
+      <line x1="310" y1="270" x2="90" y2="270" stroke="#e85d75" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#lg_err)"/>
+      <text x="200" y="265" text-anchor="middle" fill="#8892a4" font-size="9.5">401 Unauthorized ✗</text>
+      <text x="310" y="322" text-anchor="middle" fill="#505a6e" font-size="9.5">The alt box shows both outcomes — the guard in [brackets] decides which branch runs</text>
+    </svg>
+  </div>
+  <div class="g2">
+    <div class="mc"><div class="mt" style="color:var(--gr)">The happy path</div><div class="mb">Guard <code>[password valid]</code> → controller returns <code>200 OK</code> with a JWT. This is the top compartment of the alt box.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--pk)">The error path</div><div class="mb">Guard <code>[else]</code> → controller returns <code>401 Unauthorized</code>. The bottom compartment, split by the dashed divider.</div></div>
+  </div>
+  <div class="cal cag"><strong>Fragment quick-reference:</strong> <code>alt</code> = if/else (mutually exclusive branches) · <code>opt</code> = a single optional block (runs or doesn't) · <code>loop</code> = repeat while a condition holds · <code>par</code> = branches run in parallel · <code>ref</code> = "see this other sequence diagram." Master <code>alt</code> and <code>loop</code> first — they cover 90% of real diagrams.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     5. ACTIVITY DIAGRAM
+══════════════════════════════════════ -->
+<section id="sec-activity" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(155,109,255,.1);color:var(--pu)">⑃ Topic 5 · Behavioral</div>
+    <div class="ht">Activity Diagram</div>
+    <div class="hd">An activity diagram is UML's flowchart. It models a <em>workflow or algorithm</em> as a sequence of actions, with branching, looping, and parallel paths. Where a sequence diagram shows <em>who</em> talks to <em>whom</em>, an activity diagram shows the <em>logic and flow</em> of a single process.</div>
+  </div>
+
+  <h2>The Notation</h2>
+  <div class="g4">
+    <div class="mc"><div class="mt" style="color:var(--gr)">● Initial Node</div><div class="mb">A solid filled circle. Where the flow begins. Exactly one per diagram.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--bl)">▢ Action</div><div class="mb">A rounded rectangle — a single step of work: "Validate Input", "Charge Card".</div></div>
+    <div class="mc"><div class="mt" style="color:var(--or)">◆ Decision / Merge</div><div class="mb">A diamond. One incoming, multiple guarded outgoing paths — the branch point.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--pk)">▬ Fork / Join</div><div class="mb">A thick bar. Splits flow into parallel paths (fork) or waits and rejoins them (join).</div></div>
+  </div>
+
+  <h2>Example — RAG Chatbot Query Flow</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 400" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="ac1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L7,4 L0,8 Z" fill="#8892a4"/></marker></defs>
+      <!-- initial -->
+      <circle cx="120" cy="30" r="9" fill="#00c96e"/>
+      <line x1="120" y1="39" x2="120" y2="55" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <!-- action: receive query -->
+      <rect x="60" y="58" width="120" height="34" rx="17" fill="#1e2535" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="120" y="79" text-anchor="middle" fill="#00a8ff">Receive user query</text>
+      <line x1="120" y1="92" x2="120" y2="108" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <!-- fork bar -->
+      <rect x="55" y="110" width="130" height="6" rx="2" fill="#e85d75"/>
+      <text x="215" y="116" fill="#e85d75" font-size="9">fork (parallel)</text>
+      <line x1="90" y1="116" x2="90" y2="135" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <line x1="150" y1="116" x2="150" y2="135" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <!-- two parallel actions -->
+      <rect x="25" y="138" width="115" height="32" rx="16" fill="#1e2535" stroke="#f5a623" stroke-width="1.3"/>
+      <text x="82" y="158" text-anchor="middle" fill="#f5a623" font-size="10">Embed query</text>
+      <rect x="150" y="138" width="120" height="32" rx="16" fill="#1e2535" stroke="#f5a623" stroke-width="1.3"/>
+      <text x="210" y="158" text-anchor="middle" fill="#f5a623" font-size="10">Load chat history</text>
+      <line x1="82" y1="170" x2="90" y2="188" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <line x1="210" y1="170" x2="150" y2="188" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <!-- join bar -->
+      <rect x="55" y="190" width="130" height="6" rx="2" fill="#e85d75"/>
+      <text x="215" y="196" fill="#e85d75" font-size="9">join (wait for both)</text>
+      <line x1="120" y1="196" x2="120" y2="212" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <!-- vector search -->
+      <rect x="55" y="215" width="130" height="32" rx="16" fill="#1e2535" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="120" y="235" text-anchor="middle" fill="#00a8ff" font-size="10">Vector search (top-k)</text>
+      <line x1="120" y1="247" x2="120" y2="263" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <!-- decision -->
+      <path d="M120,263 L165,293 L120,323 L75,293 Z" fill="#1e2535" stroke="#f5a623" stroke-width="1.4"/>
+      <text x="120" y="290" text-anchor="middle" fill="#f5a623" font-size="9.5">relevant</text>
+      <text x="120" y="301" text-anchor="middle" fill="#f5a623" font-size="9.5">docs found?</text>
+      <!-- yes path -->
+      <line x1="165" y1="293" x2="300" y2="293" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <text x="220" y="288" fill="#00c96e" font-size="9">[yes]</text>
+      <rect x="300" y="277" width="130" height="32" rx="16" fill="#1e2535" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="365" y="297" text-anchor="middle" fill="#00c96e" font-size="10">Build grounded prompt</text>
+      <!-- no path -->
+      <line x1="120" y1="323" x2="120" y2="345" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <text x="128" y="338" fill="#e85d75" font-size="9">[no]</text>
+      <rect x="55" y="347" width="130" height="30" rx="15" fill="#1e2535" stroke="#e85d75" stroke-width="1.3"/>
+      <text x="120" y="366" text-anchor="middle" fill="#e85d75" font-size="10">Fallback answer</text>
+      <!-- merge to generate -->
+      <line x1="365" y1="309" x2="365" y2="330" stroke="#8892a4" stroke-width="1.2"/>
+      <line x1="365" y1="330" x2="470" y2="330" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <rect x="470" y="314" width="120" height="32" rx="16" fill="#1e2535" stroke="#9b6dff" stroke-width="1.3"/>
+      <text x="530" y="334" text-anchor="middle" fill="#9b6dff" font-size="10">Generate reply</text>
+      <!-- final -->
+      <line x1="530" y1="346" x2="530" y2="365" stroke="#8892a4" stroke-width="1.2" marker-end="url(#ac1)"/>
+      <circle cx="530" cy="378" r="9" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
+      <circle cx="530" cy="378" r="4.5" fill="#e8eaf0"/>
+    </svg>
+  </div>
+
+  <h2>Sequence vs Activity — Don't Confuse Them</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Aspect</th><th>Sequence Diagram</th><th>Activity Diagram</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Focus</td><td>Objects exchanging messages</td><td>Flow of actions / logic</td></tr>
+      <tr><td class="tn">Axis</td><td><span class="p pb">Time (top→bottom)</span></td><td><span class="p pp">Control flow (any direction)</span></td></tr>
+      <tr><td class="tn">Parallelism</td><td>par fragment</td><td><span class="p pg">Fork / join bars (native)</span></td></tr>
+      <tr><td class="tn">Best for</td><td>One interaction, who-calls-whom</td><td>Business process, algorithm, branching</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cal cap"><strong>Swimlanes:</strong> split an activity diagram into vertical or horizontal lanes, one per actor or component, to show <em>who does what</em>. E.g. lanes for "Client", "API", and "Vector DB" make ownership of each action obvious in the flow above.</div>
+
+  <div class="div"></div>
+  <h2>Second Example — Order Fulfillment with Swimlanes</h2>
+  <p>Swimlanes answer the question a plain flowchart can't: <strong>who is responsible for each step?</strong> Each vertical lane owns the actions inside it. Watch the flow cross lanes as responsibility hands off from Customer → System → Warehouse.</p>
+  <div class="dw">
+    <svg viewBox="0 0 620 400" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="10">
+      <defs><marker id="sw1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L7,4 L0,8 Z" fill="#8892a4"/></marker></defs>
+      <!-- lanes -->
+      <rect x="10" y="10" width="200" height="380" fill="rgba(0,168,255,.04)" stroke="#2e3748"/>
+      <rect x="210" y="10" width="200" height="380" fill="rgba(155,109,255,.04)" stroke="#2e3748"/>
+      <rect x="410" y="10" width="200" height="380" fill="rgba(0,201,110,.04)" stroke="#2e3748"/>
+      <text x="110" y="28" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="700">Customer</text>
+      <text x="310" y="28" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="700">System</text>
+      <text x="510" y="28" text-anchor="middle" fill="#00c96e" font-size="11" font-weight="700">Warehouse</text>
+      <line x1="10" y1="36" x2="610" y2="36" stroke="#2e3748"/>
+      <!-- initial (customer) -->
+      <circle cx="60" cy="55" r="8" fill="#00c96e"/>
+      <line x1="60" y1="63" x2="60" y2="76" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <!-- place order -->
+      <rect x="20" y="78" width="130" height="30" rx="15" fill="#1e2535" stroke="#00a8ff" stroke-width="1.2"/>
+      <text x="85" y="97" text-anchor="middle" fill="#00a8ff">Place order</text>
+      <!-- hand off to system: validate payment -->
+      <line x1="150" y1="93" x2="228" y2="93" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <rect x="230" y="78" width="150" height="30" rx="15" fill="#1e2535" stroke="#9b6dff" stroke-width="1.2"/>
+      <text x="305" y="97" text-anchor="middle" fill="#9b6dff">Validate payment</text>
+      <!-- decision -->
+      <path d="M305,115 L340,143 L305,171 L270,143 Z" fill="#1e2535" stroke="#f5a623" stroke-width="1.3"/>
+      <text x="305" y="140" text-anchor="middle" fill="#f5a623" font-size="8.5">payment</text>
+      <text x="305" y="150" text-anchor="middle" fill="#f5a623" font-size="8.5">ok?</text>
+      <line x1="305" y1="108" x2="305" y2="114" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <!-- no -> notify failure (system) then end -->
+      <line x1="270" y1="143" x2="235" y2="143" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <text x="248" y="138" fill="#e85d75" font-size="8">[no]</text>
+      <rect x="222" y="185" width="145" height="28" rx="14" fill="#1e2535" stroke="#e85d75" stroke-width="1.2"/>
+      <text x="294" y="203" text-anchor="middle" fill="#e85d75" font-size="9.5">Notify order failed</text>
+      <line x1="235" y1="143" x2="235" y2="183" stroke="#8892a4" stroke-width="1.1"/>
+      <line x1="235" y1="183" x2="270" y2="187" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <!-- yes -> warehouse pick -->
+      <line x1="340" y1="143" x2="430" y2="143" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <text x="360" y="138" fill="#00c96e" font-size="8">[yes]</text>
+      <rect x="432" y="128" width="150" height="30" rx="15" fill="#1e2535" stroke="#00c96e" stroke-width="1.2"/>
+      <text x="507" y="147" text-anchor="middle" fill="#00c96e">Pick &amp; pack items</text>
+      <line x1="507" y1="158" x2="507" y2="176" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <rect x="432" y="178" width="150" height="30" rx="15" fill="#1e2535" stroke="#00c96e" stroke-width="1.2"/>
+      <text x="507" y="197" text-anchor="middle" fill="#00c96e">Dispatch shipment</text>
+      <!-- back to system: mark shipped -->
+      <line x1="432" y1="193" x2="382" y2="235" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <rect x="230" y="235" width="150" height="30" rx="15" fill="#1e2535" stroke="#9b6dff" stroke-width="1.2"/>
+      <text x="305" y="254" text-anchor="middle" fill="#9b6dff">Mark as shipped</text>
+      <!-- notify customer -->
+      <line x1="230" y1="250" x2="152" y2="290" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <rect x="20" y="290" width="130" height="30" rx="15" fill="#1e2535" stroke="#00a8ff" stroke-width="1.2"/>
+      <text x="85" y="309" text-anchor="middle" fill="#00a8ff">Receive tracking</text>
+      <!-- final customer -->
+      <line x1="85" y1="320" x2="85" y2="340" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <circle cx="85" cy="355" r="8" fill="none" stroke="#e8eaf0" stroke-width="1.4"/><circle cx="85" cy="355" r="4" fill="#e8eaf0"/>
+      <!-- final failure -->
+      <line x1="294" y1="213" x2="294" y2="300" stroke="#8892a4" stroke-width="1.1" marker-end="url(#sw1)"/>
+      <circle cx="294" cy="312" r="8" fill="none" stroke="#e8eaf0" stroke-width="1.4"/><circle cx="294" cy="312" r="4" fill="#e8eaf0"/>
+    </svg>
+  </div>
+  <div class="cal cao"><strong>Reading swimlanes:</strong> follow the arrows — every time the flow crosses a lane boundary, responsibility has changed hands. Here the order is <em>placed</em> by the Customer, <em>validated &amp; tracked</em> by the System, and <em>physically fulfilled</em> by the Warehouse. It's the clearest way to document a cross-team process.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     6. STATE MACHINE DIAGRAM
+══════════════════════════════════════ -->
+<section id="sec-state" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,168,255,.1);color:var(--bl)">◉ Topic 6 · Behavioral</div>
+    <div class="ht">State Machine Diagram</div>
+    <div class="hd">A state machine (or statechart) models the <em>lifecycle of a single object</em>: every state it can be in, and the events that move it between them. Use it whenever an object's behavior depends on its current state — a call, an order, a connection, a document in review.</div>
+  </div>
+
+  <h2>The Notation</h2>
+  <div class="g4">
+    <div class="mc"><div class="mt" style="color:var(--gr)">● Initial</div><div class="mb">Filled circle — the starting state when the object is created.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--bl)">▢ State</div><div class="mb">Rounded rectangle — a named condition the object rests in.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--or)">→ Transition</div><div class="mb">Arrow labelled <code>event [guard] / action</code>. Moves object to a new state.</div></div>
+    <div class="mc"><div class="mt" style="color:var(--pk)">◉ Final</div><div class="mb">Circle-in-ring — the object's lifecycle ends here.</div></div>
+  </div>
+
+  <h2>Example — Voice Call Lifecycle</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="11">
+      <defs><marker id="st1" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#8892a4"/></marker></defs>
+      <!-- initial -->
+      <circle cx="40" cy="70" r="8" fill="#00c96e"/>
+      <line x1="48" y1="70" x2="78" y2="70" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <!-- Idle -->
+      <rect x="80" y="52" width="100" height="36" rx="10" fill="#1e2535" stroke="#00a8ff" stroke-width="1.4"/>
+      <text x="130" y="74" text-anchor="middle" fill="#00a8ff" font-weight="600">Idle</text>
+      <!-- Ringing -->
+      <rect x="245" y="52" width="100" height="36" rx="10" fill="#1e2535" stroke="#f5a623" stroke-width="1.4"/>
+      <text x="295" y="74" text-anchor="middle" fill="#f5a623" font-weight="600">Ringing</text>
+      <line x1="180" y1="70" x2="243" y2="70" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <text x="212" y="64" text-anchor="middle" fill="#8892a4" font-size="9">dial()</text>
+      <!-- Connected -->
+      <rect x="420" y="52" width="110" height="36" rx="10" fill="#1e2535" stroke="#00c96e" stroke-width="1.4"/>
+      <text x="475" y="74" text-anchor="middle" fill="#00c96e" font-weight="600">Connected</text>
+      <line x1="345" y1="70" x2="418" y2="70" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <text x="382" y="64" text-anchor="middle" fill="#8892a4" font-size="9">answer()</text>
+      <!-- OnHold -->
+      <rect x="420" y="150" width="110" height="36" rx="10" fill="#1e2535" stroke="#9b6dff" stroke-width="1.4"/>
+      <text x="475" y="172" text-anchor="middle" fill="#9b6dff" font-weight="600">On Hold</text>
+      <line x1="475" y1="88" x2="475" y2="148" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <text x="483" y="120" fill="#8892a4" font-size="9">hold()</text>
+      <line x1="458" y1="150" x2="458" y2="90" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <text x="405" y="120" fill="#8892a4" font-size="9">resume()</text>
+      <!-- guard example: transcribing self loop -->
+      <path d="M530,60 C580,45 580,95 532,80" fill="none" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <text x="560" y="112" text-anchor="middle" fill="#505a6e" font-size="8.5">speech [vad=active]</text>
+      <text x="560" y="123" text-anchor="middle" fill="#505a6e" font-size="8.5">/ transcribe</text>
+      <!-- Ended -->
+      <rect x="245" y="210" width="110" height="36" rx="10" fill="#1e2535" stroke="#e85d75" stroke-width="1.4"/>
+      <text x="300" y="232" text-anchor="middle" fill="#e85d75" font-weight="600">Ended</text>
+      <!-- transitions to Ended -->
+      <line x1="450" y1="88" x2="345" y2="212" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <text x="415" y="150" fill="#8892a4" font-size="9">hangup()</text>
+      <line x1="295" y1="88" x2="295" y2="208" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <text x="303" y="150" fill="#8892a4" font-size="9">timeout [no answer]</text>
+      <line x1="130" y1="88" x2="255" y2="210" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <text x="150" y="160" fill="#8892a4" font-size="9">reject()</text>
+      <!-- final -->
+      <line x1="300" y1="246" x2="300" y2="266" stroke="#8892a4" stroke-width="1.2" marker-end="url(#st1)"/>
+      <circle cx="300" cy="278" r="8" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
+      <circle cx="300" cy="278" r="4" fill="#e8eaf0"/>
+    </svg>
+  </div>
+
+  <h2>Reading a Transition Label</h2>
+  <div class="card cbl">
+    <div class="ct">event [guard] / action</div>
+    <div class="cb">Every transition can carry three parts. The <strong>event</strong> triggers it (<code>hold()</code>). The optional <strong>guard</strong> in brackets must be true for it to fire (<code>[balance &gt; 0]</code>). The optional <strong>action</strong> after the slash runs during the transition (<code>/ transcribe</code>). Only <code>event</code> is required.</div>
+  </div>
+  <div class="code"><span class="cm"># The state machine above, as a simple enum + guard in Python</span>
+<span class="kw">class</span> <span class="cl">CallState</span>(Enum):
+    IDLE = <span class="cl">1</span>; RINGING = <span class="cl">2</span>; CONNECTED = <span class="cl">3</span>
+    ON_HOLD = <span class="cl">4</span>; ENDED = <span class="cl">5</span>
+
+<span class="kw">def</span> <span class="fn">answer</span>(self):
+    <span class="kw">if</span> self.state == CallState.RINGING:   <span class="cm"># guard on current state</span>
+        self.state = CallState.CONNECTED  <span class="cm"># transition</span>
+    <span class="kw">else</span>:
+        <span class="kw">raise</span> InvalidTransition(self.state)</div>
+  <div class="cal cab"><strong>Composite &amp; history states:</strong> a state can nest a whole sub-machine inside it (a <em>composite state</em>). A <em>history state</em> (H) remembers which sub-state you were in when you left, so <code>resume()</code> returns you exactly where you paused — handy for the On-Hold → Connected path.</div>
+
+  <div class="div"></div>
+  <h2>Second Example — E-commerce Order Lifecycle</h2>
+  <p>Every order-management system is a state machine at heart. This one shows a clean <strong>linear happy path</strong> (Pending → Paid → Shipped → Delivered) plus <strong>branch-off states</strong> for cancellation and refunds — the real-world messiness.</p>
+  <div class="dw">
+    <svg viewBox="0 0 620 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="10">
+      <defs><marker id="ol1" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#8892a4"/></marker></defs>
+      <!-- initial -->
+      <circle cx="30" cy="70" r="8" fill="#00c96e"/>
+      <line x1="38" y1="70" x2="58" y2="70" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <!-- Pending -->
+      <rect x="60" y="52" width="90" height="36" rx="12" fill="#1e2535" stroke="#f5a623" stroke-width="1.3"/>
+      <text x="105" y="74" text-anchor="middle" fill="#f5a623" font-weight="600">Pending</text>
+      <!-- Paid -->
+      <rect x="200" y="52" width="90" height="36" rx="12" fill="#1e2535" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="245" y="74" text-anchor="middle" fill="#00a8ff" font-weight="600">Paid</text>
+      <line x1="150" y1="70" x2="198" y2="70" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <text x="174" y="64" text-anchor="middle" fill="#8892a4" font-size="8.5">pay()</text>
+      <!-- Shipped -->
+      <rect x="340" y="52" width="90" height="36" rx="12" fill="#1e2535" stroke="#9b6dff" stroke-width="1.3"/>
+      <text x="385" y="74" text-anchor="middle" fill="#9b6dff" font-weight="600">Shipped</text>
+      <line x1="290" y1="70" x2="338" y2="70" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <text x="314" y="64" text-anchor="middle" fill="#8892a4" font-size="8.5">ship()</text>
+      <!-- Delivered -->
+      <rect x="480" y="52" width="100" height="36" rx="12" fill="#1e2535" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="530" y="74" text-anchor="middle" fill="#00c96e" font-weight="600">Delivered</text>
+      <line x1="430" y1="70" x2="478" y2="70" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <text x="454" y="64" text-anchor="middle" fill="#8892a4" font-size="8.5">deliver()</text>
+      <!-- Cancelled (from Pending or Paid) -->
+      <rect x="120" y="170" width="100" height="36" rx="12" fill="#1e2535" stroke="#e85d75" stroke-width="1.3"/>
+      <text x="170" y="192" text-anchor="middle" fill="#e85d75" font-weight="600">Cancelled</text>
+      <line x1="105" y1="88" x2="150" y2="168" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <text x="98" y="130" fill="#8892a4" font-size="8">cancel()</text>
+      <line x1="240" y1="88" x2="195" y2="168" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <text x="228" y="130" fill="#8892a4" font-size="8">cancel() [not shipped]</text>
+      <!-- Refunded (from Cancelled or Delivered) -->
+      <rect x="380" y="170" width="100" height="36" rx="12" fill="#1e2535" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="430" y="192" text-anchor="middle" fill="#00a8ff" font-weight="600">Refunded</text>
+      <line x1="220" y1="188" x2="378" y2="188" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <text x="290" y="182" fill="#8892a4" font-size="8">refund() [was paid]</text>
+      <line x1="510" y1="88" x2="455" y2="168" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <text x="470" y="130" fill="#8892a4" font-size="8">return()</text>
+      <!-- finals -->
+      <line x1="530" y1="88" x2="530" y2="230" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <circle cx="530" cy="245" r="8" fill="none" stroke="#e8eaf0" stroke-width="1.4"/><circle cx="530" cy="245" r="4" fill="#e8eaf0"/>
+      <line x1="170" y1="206" x2="170" y2="230" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <circle cx="170" cy="245" r="8" fill="none" stroke="#e8eaf0" stroke-width="1.4"/><circle cx="170" cy="245" r="4" fill="#e8eaf0"/>
+      <line x1="430" y1="206" x2="430" y2="230" stroke="#8892a4" stroke-width="1.1" marker-end="url(#ol1)"/>
+      <circle cx="430" cy="245" r="8" fill="none" stroke="#e8eaf0" stroke-width="1.4"/><circle cx="430" cy="245" r="4" fill="#e8eaf0"/>
+    </svg>
+  </div>
+  <div class="cal cap"><strong>The guard earns its keep here:</strong> <code>cancel() [not shipped]</code> — an order can only be cancelled <em>before</em> it ships. That single bracketed condition is a whole business rule captured visually. Without the guard, the diagram would wrongly allow cancelling a delivered order. This is why state machines beat prose specs: illegal transitions simply aren't drawn.</div>
+</section>
+<!-- ══════════════════════════════════════
+     7. ASSOCIATION
+══════════════════════════════════════ -->
+<section id="sec-assoc" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,201,110,.1);color:var(--gr)">— Topic 7 · Relationships</div>
+    <div class="ht">Association</div>
+    <div class="hd">Association is the most general relationship: two classes are simply <em>connected</em> — one knows about the other and can use it. No ownership, no lifecycle dependency. It's drawn as a plain solid line, optionally with multiplicity, a name, and a navigation arrow.</div>
+  </div>
+
+  <h2>The Notation</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 190" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs><marker id="as_nav" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M1,1 L10,5 L1,9" fill="none" stroke="#00c96e" stroke-width="1.4"/></marker></defs>
+      <!-- Teacher -->
+      <rect x="60" y="60" width="150" height="60" rx="4" fill="#1e2535" stroke="#00c96e" stroke-width="1.4"/>
+      <rect x="60" y="60" width="150" height="26" rx="4" fill="rgba(0,201,110,.12)" stroke="#00c96e" stroke-width="1.4"/>
+      <text x="135" y="78" text-anchor="middle" fill="#00c96e" font-weight="700">Teacher</text>
+      <text x="72" y="104" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ name : String</text>
+      <!-- Student -->
+      <rect x="410" y="60" width="150" height="60" rx="4" fill="#1e2535" stroke="#00a8ff" stroke-width="1.4"/>
+      <rect x="410" y="60" width="150" height="26" rx="4" fill="rgba(0,168,255,.12)" stroke="#00a8ff" stroke-width="1.4"/>
+      <text x="485" y="78" text-anchor="middle" fill="#00a8ff" font-weight="700">Student</text>
+      <text x="422" y="104" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ id : String</text>
+      <!-- line -->
+      <line x1="210" y1="90" x2="408" y2="90" stroke="#00c96e" stroke-width="1.6" marker-end="url(#as_nav)"/>
+      <text x="310" y="80" text-anchor="middle" fill="#8892a4" font-size="11">teaches ▸</text>
+      <text x="230" y="107" fill="#505a6e" font-size="11">1</text>
+      <text x="388" y="107" fill="#505a6e" font-size="11">1..*</text>
+      <text x="310" y="150" text-anchor="middle" fill="#505a6e" font-size="11">One Teacher teaches one-or-more Students — a plain link, no ownership</text>
+      <text x="310" y="167" text-anchor="middle" fill="#505a6e" font-size="10">The open arrow means navigability: Teacher can reach Student, but not necessarily vice-versa</text>
+    </svg>
+  </div>
+
+  <div class="card cg">
+    <div class="ct">Key traits</div>
+    <div class="cb"><strong>"knows-a"</strong> · both objects have independent lifecycles · can be one-way (navigable) or two-way (bidirectional) · often carries multiplicity. It's the default when there's a link but no clear whole/part or ownership.</div>
+  </div>
+
+  <div class="code"><span class="cm"># Association: Teacher holds a reference to Students it did not create</span>
+<span class="kw">class</span> <span class="cl">Student</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, id): self.id = id
+
+<span class="kw">class</span> <span class="cl">Teacher</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name):
+        self.name = name
+        self.students = []          <span class="cm"># just references — created elsewhere</span>
+
+    <span class="kw">def</span> <span class="fn">assign</span>(self, student):     <span class="cm"># link an existing Student</span>
+        self.students.append(student)
+
+<span class="cm"># both live on their own; deleting the teacher doesn't delete students</span></div>
+
+  <div class="cal cag"><strong>Rule of thumb:</strong> if you can say <em>"A is related to B"</em> but not clearly <em>"A owns B"</em> or <em>"A is part of B"</em>, it's a plain association. It's the safe default — reach for aggregation or composition only when ownership is real.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     8. AGGREGATION
+══════════════════════════════════════ -->
+<section id="sec-agg" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,168,255,.1);color:var(--bl)">◇ Topic 8 · Relationships</div>
+    <div class="ht">Aggregation</div>
+    <div class="hd">Aggregation is a special "whole–part" association where the whole <em>has</em> parts, but the parts can exist independently of it. Think of it as <strong>weak ownership</strong>. Drawn with a <em>hollow diamond</em> on the whole's end.</div>
+  </div>
+
+  <h2>The Notation</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 195" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <!-- Team -->
+      <rect x="60" y="60" width="150" height="56" rx="4" fill="#1e2535" stroke="#00a8ff" stroke-width="1.4"/>
+      <rect x="60" y="60" width="150" height="26" rx="4" fill="rgba(0,168,255,.12)" stroke="#00a8ff" stroke-width="1.4"/>
+      <text x="135" y="78" text-anchor="middle" fill="#00a8ff" font-weight="700">Team</text>
+      <text x="72" y="104" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ name : String</text>
+      <!-- Player -->
+      <rect x="410" y="60" width="150" height="56" rx="4" fill="#1e2535" stroke="#00c96e" stroke-width="1.4"/>
+      <rect x="410" y="60" width="150" height="26" rx="4" fill="rgba(0,201,110,.12)" stroke="#00c96e" stroke-width="1.4"/>
+      <text x="485" y="78" text-anchor="middle" fill="#00c96e" font-weight="700">Player</text>
+      <text x="422" y="104" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ name : String</text>
+      <!-- line with hollow diamond at Team end -->
+      <line x1="236" y1="88" x2="408" y2="88" stroke="#00a8ff" stroke-width="1.6"/>
+      <path d="M210,88 L223,81 L236,88 L223,95 Z" fill="#0a0e16" stroke="#00a8ff" stroke-width="1.5"/>
+      <text x="250" y="82" fill="#505a6e" font-size="11">1</text>
+      <text x="388" y="82" fill="#505a6e" font-size="11">*</text>
+      <text x="322" y="145" text-anchor="middle" fill="#505a6e" font-size="11">A Team has many Players — but a Player still exists after the Team disbands</text>
+      <text x="322" y="163" text-anchor="middle" fill="#00a8ff" font-size="11" font-weight="600">Hollow diamond sits on the WHOLE (Team) — points away from the part</text>
+    </svg>
+  </div>
+
+  <div class="card cbl">
+    <div class="ct">Key traits</div>
+    <div class="cb"><strong>"has-a" (weak)</strong> · shared/independent lifecycle — the part outlives the whole · the same part can belong to several wholes · deleting the whole does <em>not</em> delete the parts. Real example: a <code>Playlist</code> aggregates <code>Song</code>s — delete the playlist and the songs remain in the library.</div>
+  </div>
+
+  <div class="code"><span class="cm"># Aggregation: Team receives players it did NOT create and does not own</span>
+<span class="kw">class</span> <span class="cl">Player</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name): self.name = name
+
+<span class="kw">class</span> <span class="cl">Team</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, players):
+        self.name = name
+        self.players = players       <span class="cm"># passed in from outside</span>
+
+<span class="cm"># players live independently of the team</span>
+messi = <span class="fn">Player</span>(<span class="st">"Messi"</span>)
+team = <span class="fn">Team</span>(<span class="st">"Inter Miami"</span>, [messi])
+<span class="kw">del</span> team                            <span class="cm"># messi still exists ✓</span></div>
+
+  <div class="cal cab"><strong>Aggregation vs Association:</strong> aggregation is just an association with an added whole/part semantic. In practice many teams treat the two interchangeably in code — the hollow diamond mainly documents <em>intent</em>: "this is a container of independently-owned parts."</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     9. COMPOSITION
+══════════════════════════════════════ -->
+<section id="sec-comp" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(245,166,35,.1);color:var(--or)">◆ Topic 9 · Relationships</div>
+    <div class="ht">Composition</div>
+    <div class="hd">Composition is the <strong>strong</strong> whole–part relationship: the part cannot exist without the whole, and dies with it. The whole is responsible for creating and destroying its parts. Drawn with a <em>filled diamond</em> on the whole's end.</div>
+  </div>
+
+  <h2>The Notation</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 195" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <!-- House -->
+      <rect x="60" y="60" width="150" height="56" rx="4" fill="#1e2535" stroke="#f5a623" stroke-width="1.4"/>
+      <rect x="60" y="60" width="150" height="26" rx="4" fill="rgba(245,166,35,.12)" stroke="#f5a623" stroke-width="1.4"/>
+      <text x="135" y="78" text-anchor="middle" fill="#f5a623" font-weight="700">House</text>
+      <text x="72" y="104" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ address : String</text>
+      <!-- Room -->
+      <rect x="410" y="60" width="150" height="56" rx="4" fill="#1e2535" stroke="#e85d75" stroke-width="1.4"/>
+      <rect x="410" y="60" width="150" height="26" rx="4" fill="rgba(232,93,117,.12)" stroke="#e85d75" stroke-width="1.4"/>
+      <text x="485" y="78" text-anchor="middle" fill="#e85d75" font-weight="700">Room</text>
+      <text x="422" y="104" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ area : Float</text>
+      <!-- line with FILLED diamond at House end -->
+      <line x1="236" y1="88" x2="408" y2="88" stroke="#f5a623" stroke-width="1.6"/>
+      <path d="M210,88 L223,81 L236,88 L223,95 Z" fill="#f5a623" stroke="#f5a623" stroke-width="1.5"/>
+      <text x="250" y="82" fill="#505a6e" font-size="11">1</text>
+      <text x="388" y="82" fill="#505a6e" font-size="11">1..*</text>
+      <text x="322" y="145" text-anchor="middle" fill="#505a6e" font-size="11">A House owns its Rooms — demolish the House and the Rooms cease to exist</text>
+      <text x="322" y="163" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="600">Filled diamond sits on the WHOLE (House) — strong lifecycle ownership</text>
+    </svg>
+  </div>
+
+  <div class="card co">
+    <div class="ct">Key traits</div>
+    <div class="cb"><strong>"owns-a" (strong)</strong> · coincident lifecycle — the part is created and destroyed <em>by</em> the whole · a part belongs to exactly one whole (not shared) · deleting the whole deletes the parts. Real example: an <code>Order</code> composes <code>OrderLine</code>s — the lines have no meaning outside their order.</div>
+  </div>
+
+  <div class="code"><span class="cm"># Composition: House CREATES its own Rooms — they can't outlive it</span>
+<span class="kw">class</span> <span class="cl">Room</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, area): self.area = area
+
+<span class="kw">class</span> <span class="cl">House</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, address):
+        self.address = address
+        self.rooms = [<span class="fn">Room</span>(<span class="cl">20</span>), <span class="fn">Room</span>(<span class="cl">15</span>)]  <span class="cm"># created INSIDE ✓</span>
+
+<span class="cm"># no external reference to the rooms —</span>
+<span class="cm"># when the House is garbage-collected, its Rooms go with it</span></div>
+
+  <div class="cal cao"><strong>Aggregation vs Composition — the one-line test:</strong> "If I destroy the whole, do the parts survive?" <em>Yes</em> → aggregation (hollow ◇). <em>No, they die too</em> → composition (filled ◆). House/Room = composition. Team/Player = aggregation.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     10. DEPENDENCY
+══════════════════════════════════════ -->
+<section id="sec-dep" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(155,109,255,.1);color:var(--pu)">⇢ Topic 10 · Relationships</div>
+    <div class="ht">Dependency</div>
+    <div class="hd">Dependency is the <em>weakest</em> relationship: one class <em>uses</em> another temporarily — as a method parameter, a local variable, or a return type — without holding a lasting reference. If the used class changes, the user may break. Drawn as a <em>dashed arrow</em> with an open head.</div>
+  </div>
+
+  <h2>The Notation</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 195" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs><marker id="dp_arr" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M1,1 L10,5 L1,9" fill="none" stroke="#9b6dff" stroke-width="1.5"/></marker></defs>
+      <!-- OrderService -->
+      <rect x="50" y="60" width="160" height="56" rx="4" fill="#1e2535" stroke="#9b6dff" stroke-width="1.4"/>
+      <rect x="50" y="60" width="160" height="26" rx="4" fill="rgba(155,109,255,.12)" stroke="#9b6dff" stroke-width="1.4"/>
+      <text x="130" y="78" text-anchor="middle" fill="#9b6dff" font-weight="700">OrderService</text>
+      <text x="62" y="104" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ checkout(pg)</text>
+      <!-- PaymentGateway -->
+      <rect x="410" y="60" width="160" height="56" rx="4" fill="#1e2535" stroke="#f5a623" stroke-width="1.4"/>
+      <rect x="410" y="60" width="160" height="26" rx="4" fill="rgba(245,166,35,.12)" stroke="#f5a623" stroke-width="1.4"/>
+      <text x="490" y="78" text-anchor="middle" fill="#f5a623" font-weight="700">PaymentGateway</text>
+      <text x="422" y="104" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ charge(amt)</text>
+      <!-- dashed dependency arrow -->
+      <line x1="210" y1="88" x2="406" y2="88" stroke="#9b6dff" stroke-width="1.6" stroke-dasharray="7,4" marker-end="url(#dp_arr)"/>
+      <text x="310" y="80" text-anchor="middle" fill="#9b6dff" font-size="11">«use»</text>
+      <text x="310" y="145" text-anchor="middle" fill="#505a6e" font-size="11">OrderService uses a PaymentGateway only inside checkout() — no stored field</text>
+      <text x="310" y="163" text-anchor="middle" fill="#9b6dff" font-size="11" font-weight="600">Dashed line + open arrow → points to the class being used</text>
+    </svg>
+  </div>
+
+  <div class="card cp">
+    <div class="ct">Key traits</div>
+    <div class="cb"><strong>"uses-a"</strong> · transient, no ownership, no stored reference · the dependency exists only for the duration of a call · the most common trigger is a method <em>parameter</em>, <em>local variable</em>, or <em>return type</em>. It's the relationship that says "a change here <em>might</em> ripple over there."</div>
+  </div>
+
+  <div class="code"><span class="cm"># Dependency: PaymentGateway appears ONLY as a parameter — not a field</span>
+<span class="kw">class</span> <span class="cl">OrderService</span>:
+    <span class="kw">def</span> <span class="fn">checkout</span>(self, gateway: PaymentGateway, amount):
+        <span class="cm"># uses it right here, then forgets it</span>
+        <span class="kw">return</span> gateway.<span class="fn">charge</span>(amount)
+
+<span class="cm"># contrast with association, where gateway would be</span>
+<span class="cm"># stored as self.gateway and kept for the object's whole life</span></div>
+
+  <div class="cal cap"><strong>Dependency vs Association:</strong> both mean "A uses B", but the <em>lifetime of the reference</em> differs. Association = a stored field kept long-term (solid line). Dependency = a fleeting, method-local use (dashed line). If it's a constructor/field, it's association; if it's just a parameter, it's dependency.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     11. REALIZATION
+══════════════════════════════════════ -->
+<section id="sec-real" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(232,93,117,.1);color:var(--pk)">⇠▷ Topic 11 · Relationships</div>
+    <div class="ht">Realization</div>
+    <div class="hd">Realization connects an <em>interface</em> (a contract) to the class that <em>implements</em> it. The interface promises <em>what</em> methods exist; the class delivers the <em>how</em>. Drawn as a <em>dashed line with a hollow triangle</em> pointing to the interface.</div>
+  </div>
+
+  <h2>The Notation</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="12">
+      <defs><marker id="rl_tri" markerWidth="17" markerHeight="15" refX="14" refY="7" orient="auto"><path d="M1,1 L15,7 L1,14 Z" fill="#0a0e16" stroke="#e85d75" stroke-width="1.4"/></marker></defs>
+      <!-- Interface -->
+      <rect x="220" y="18" width="180" height="66" rx="4" fill="#1e2535" stroke="#e85d75" stroke-width="1.4"/>
+      <rect x="220" y="18" width="180" height="40" rx="4" fill="rgba(232,93,117,.12)" stroke="#e85d75" stroke-width="1.4"/>
+      <text x="310" y="35" text-anchor="middle" fill="#e85d75" font-size="10" font-style="italic">«interface»</text>
+      <text x="310" y="50" text-anchor="middle" fill="#e85d75" font-weight="700">PaymentMethod</text>
+      <text x="232" y="76" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ pay(amount) : bool</text>
+      <!-- Two implementers -->
+      <rect x="70" y="165" width="170" height="60" rx="4" fill="#1e2535" stroke="#00c96e" stroke-width="1.4"/>
+      <rect x="70" y="165" width="170" height="26" rx="4" fill="rgba(0,201,110,.12)" stroke="#00c96e" stroke-width="1.4"/>
+      <text x="155" y="183" text-anchor="middle" fill="#00c96e" font-weight="700">CreditCard</text>
+      <text x="82" y="209" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ pay(amount) : bool</text>
+      <rect x="380" y="165" width="170" height="60" rx="4" fill="#1e2535" stroke="#00a8ff" stroke-width="1.4"/>
+      <rect x="380" y="165" width="170" height="26" rx="4" fill="rgba(0,168,255,.12)" stroke="#00a8ff" stroke-width="1.4"/>
+      <text x="465" y="183" text-anchor="middle" fill="#00a8ff" font-weight="700">UPIWallet</text>
+      <text x="392" y="209" fill="#8892a4" font-family="DM Mono,monospace" font-size="10">+ pay(amount) : bool</text>
+      <!-- dashed realization lines with hollow triangle -->
+      <line x1="155" y1="163" x2="270" y2="86" stroke="#e85d75" stroke-width="1.6" stroke-dasharray="7,4" marker-end="url(#rl_tri)"/>
+      <line x1="465" y1="163" x2="352" y2="86" stroke="#e85d75" stroke-width="1.6" stroke-dasharray="7,4" marker-end="url(#rl_tri)"/>
+      <text x="310" y="242" text-anchor="middle" fill="#e85d75" font-size="11" font-weight="600">Dashed line + hollow triangle → points to the interface being realized</text>
+    </svg>
+  </div>
+
+  <div class="card cpk">
+    <div class="ct">Key traits</div>
+    <div class="cb"><strong>"implements"</strong> · the class provides concrete bodies for every method the interface declares · one interface can be realized by many unrelated classes · it's the backbone of <em>polymorphism</em> — code can depend on <code>PaymentMethod</code> and work with any implementer. This is exactly how you'd model swappable STT/TTS providers behind one interface.</div>
+  </div>
+
+  <div class="code"><span class="cm"># Realization: both classes fulfil the PaymentMethod contract</span>
+<span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
+
+<span class="kw">class</span> <span class="cl">PaymentMethod</span>(ABC):          <span class="cm"># «interface»</span>
+    <span class="dr">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">pay</span>(self, amount) -> bool: ...
+
+<span class="kw">class</span> <span class="cl">CreditCard</span>(PaymentMethod):    <span class="cm"># realizes it</span>
+    <span class="kw">def</span> <span class="fn">pay</span>(self, amount): <span class="kw">return</span> charge_card(amount)
+
+<span class="kw">class</span> <span class="cl">UPIWallet</span>(PaymentMethod):     <span class="cm"># realizes it too</span>
+    <span class="kw">def</span> <span class="fn">pay</span>(self, amount): <span class="kw">return</span> upi_collect(amount)</div>
+
+  <h2>Realization vs Generalization</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Aspect</th><th>Realization (implements)</th><th>Generalization (extends)</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Line style</td><td><span class="p ppk">Dashed + hollow triangle</span></td><td><span class="p pg">Solid + hollow triangle</span></td></tr>
+      <tr><td class="tn">Connects</td><td>Class → Interface</td><td>Subclass → Superclass</td></tr>
+      <tr><td class="tn">Inherits</td><td>Only the contract (signatures)</td><td>Contract + implementation + state</td></tr>
+      <tr><td class="tn">Keyword</td><td><code>implements</code> / ABC</td><td><code>extends</code> / subclass</td></tr>
+      <tr><td class="tn">Meaning</td><td>"fulfils a contract"</td><td>"is a kind of"</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cal capk"><strong>The only visual difference</strong> between realization and inheritance is <em>solid vs dashed</em> — both use the hollow triangle. Dashed → implementing an interface. Solid → extending a class. Get this one right and your class diagrams instantly read correctly.</div>
+
+  <div class="div"></div>
+  <h2>All Six Relationships — Final Comparison</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Relationship</th><th>Notation</th><th>Semantic</th><th>Lifecycle coupling</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Dependency</td><td>Dashed line, open arrow</td><td>uses-a</td><td><span class="p pg">None (weakest)</span></td></tr>
+      <tr><td class="tn">Association</td><td>Solid line</td><td>knows-a</td><td><span class="p pg">Independent</span></td></tr>
+      <tr><td class="tn">Aggregation</td><td>Solid + hollow diamond</td><td>has-a (weak)</td><td><span class="p pb">Part outlives whole</span></td></tr>
+      <tr><td class="tn">Composition</td><td>Solid + filled diamond</td><td>owns-a (strong)</td><td><span class="p po">Part dies with whole</span></td></tr>
+      <tr><td class="tn">Generalization</td><td>Solid + hollow triangle</td><td>is-a</td><td><span class="p ppk">Inheritance</span></td></tr>
+      <tr><td class="tn">Realization</td><td>Dashed + hollow triangle</td><td>implements</td><td><span class="p ppk">Contract only</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="cal cag"><strong>Strength spectrum (weak → strong):</strong> Dependency → Association → Aggregation → Composition. And a separate axis for type hierarchy: Realization (interface) and Generalization (class). Memorise the four connector shapes — line, diamond, triangle, and dashed-vs-solid — and you can read any class diagram on sight.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     12. CASE STUDY — LIBRARY
+══════════════════════════════════════ -->
+<section id="sec-casestudy" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(0,201,110,.1);color:var(--gr)">★ Topic 12 · Capstone</div>
+    <div class="ht">Case Study — Library Management System</div>
+    <div class="hd">This is where it all clicks. We model <em>one system</em> — a library — through four different diagrams. Each answers a different question, and together they form a complete design. This is exactly how you'd approach a "Design a Library" LLD interview: use-case for scope, class for structure, sequence for a key flow, state for a lifecycle.</div>
+  </div>
+
+  <div class="ls">
+    <div class="lay" style="border-color:var(--or);background:rgba(245,166,35,.05)"><div class="ln" style="color:var(--or)">① Use Case → "What can users do?"</div><div class="ld">Defines scope: members search, borrow, return, reserve; librarians manage the collection.</div></div>
+    <div class="lay" style="border-color:var(--gr);background:rgba(0,201,110,.05)"><div class="ln" style="color:var(--gr)">② Class → "What are the pieces?"</div><div class="ld">The static structure: Member, Book, BookItem, Loan, Librarian and how they relate.</div></div>
+    <div class="lay" style="border-color:var(--pk);background:rgba(232,93,117,.05)"><div class="ln" style="color:var(--pk)">③ Sequence → "How does borrowing work?"</div><div class="ld">The dynamic flow of the single most important operation, message by message.</div></div>
+    <div class="lay" style="border-color:var(--bl);background:rgba(0,168,255,.05)"><div class="ln" style="color:var(--bl)">④ State → "What can happen to a copy?"</div><div class="ld">The lifecycle of one BookItem: Available → Reserved → Loaned → Overdue.</div></div>
+  </div>
+
+  <h2>① Use Case — Scope of the System</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="10">
+      <rect x="160" y="12" width="300" height="266" rx="10" fill="none" stroke="#f5a623" stroke-width="1.4" stroke-dasharray="4,3"/>
+      <text x="310" y="30" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="600">Library System</text>
+      <!-- Member -->
+      <g stroke="#00a8ff" stroke-width="1.7" fill="none"><circle cx="50" cy="90" r="10"/><line x1="50" y1="100" x2="50" y2="128"/><line x1="35" y1="111" x2="65" y2="111"/><line x1="50" y1="128" x2="38" y2="148"/><line x1="50" y1="128" x2="62" y2="148"/></g>
+      <text x="50" y="165" text-anchor="middle" fill="#00a8ff" font-weight="600">Member</text>
+      <!-- Librarian -->
+      <g stroke="#00c96e" stroke-width="1.7" fill="none"><circle cx="575" cy="180" r="10"/><line x1="575" y1="190" x2="575" y2="218"/><line x1="560" y1="201" x2="590" y2="201"/><line x1="575" y1="218" x2="563" y2="238"/><line x1="575" y1="218" x2="587" y2="238"/></g>
+      <text x="575" y="255" text-anchor="middle" fill="#00c96e" font-weight="600">Librarian</text>
+      <!-- member use cases -->
+      <ellipse cx="270" cy="55" rx="55" ry="18" fill="rgba(0,168,255,.1)" stroke="#00a8ff" stroke-width="1.2"/><text x="270" y="59" text-anchor="middle" fill="#00a8ff">Search Catalog</text>
+      <ellipse cx="270" cy="100" rx="55" ry="18" fill="rgba(0,168,255,.1)" stroke="#00a8ff" stroke-width="1.2"/><text x="270" y="104" text-anchor="middle" fill="#00a8ff">Borrow Book</text>
+      <ellipse cx="270" cy="145" rx="55" ry="18" fill="rgba(0,168,255,.1)" stroke="#00a8ff" stroke-width="1.2"/><text x="270" y="149" text-anchor="middle" fill="#00a8ff">Return Book</text>
+      <ellipse cx="270" cy="190" rx="55" ry="18" fill="rgba(0,168,255,.1)" stroke="#00a8ff" stroke-width="1.2"/><text x="270" y="194" text-anchor="middle" fill="#00a8ff">Reserve Book</text>
+      <!-- librarian use cases -->
+      <ellipse cx="400" cy="90" rx="52" ry="18" fill="rgba(0,201,110,.1)" stroke="#00c96e" stroke-width="1.2"/><text x="400" y="94" text-anchor="middle" fill="#00c96e">Add Book</text>
+      <ellipse cx="400" cy="135" rx="52" ry="18" fill="rgba(0,201,110,.1)" stroke="#00c96e" stroke-width="1.2"/><text x="400" y="139" text-anchor="middle" fill="#00c96e">Remove Book</text>
+      <ellipse cx="400" cy="230" rx="60" ry="18" fill="rgba(0,201,110,.1)" stroke="#00c96e" stroke-width="1.2"/><text x="400" y="234" text-anchor="middle" fill="#00c96e">Manage Members</text>
+      <!-- links -->
+      <g stroke="#8892a4" stroke-width="1"><line x1="60" y1="90" x2="215" y2="58"/><line x1="60" y1="98" x2="215" y2="100"/><line x1="60" y1="108" x2="215" y2="143"/><line x1="60" y1="115" x2="215" y2="187"/>
+      <line x1="452" y1="90" x2="565" y2="175"/><line x1="452" y1="135" x2="565" y2="178"/><line x1="460" y1="228" x2="565" y2="192"/></g>
+    </svg>
+  </div>
+
+  <h2>② Class — Static Structure</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="10">
+      <defs><marker id="lc_open" markerWidth="11" markerHeight="11" refX="8" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#9b6dff" stroke-width="1.3"/></marker></defs>
+      <!-- Member -->
+      <rect x="20" y="40" width="120" height="52" rx="3" fill="#1e2535" stroke="#00a8ff" stroke-width="1.3"/>
+      <rect x="20" y="40" width="120" height="20" fill="rgba(0,168,255,.12)" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="80" y="54" text-anchor="middle" fill="#00a8ff" font-weight="700" font-size="10">Member</text>
+      <text x="28" y="72" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ memberId</text>
+      <text x="28" y="84" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ borrow()</text>
+      <!-- Loan -->
+      <rect x="240" y="40" width="120" height="52" rx="3" fill="#1e2535" stroke="#9b6dff" stroke-width="1.3"/>
+      <rect x="240" y="40" width="120" height="20" fill="rgba(155,109,255,.12)" stroke="#9b6dff" stroke-width="1.3"/>
+      <text x="300" y="54" text-anchor="middle" fill="#9b6dff" font-weight="700" font-size="10">Loan</text>
+      <text x="248" y="72" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ dueDate</text>
+      <text x="248" y="84" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ isOverdue()</text>
+      <!-- Member 1 - 0..* Loan -->
+      <line x1="140" y1="66" x2="238" y2="66" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="150" y="60" fill="#505a6e" font-size="8">1</text><text x="222" y="60" fill="#505a6e" font-size="8">0..*</text>
+      <text x="160" y="82" fill="#00c96e" font-size="8">holds ▸</text>
+      <!-- BookItem -->
+      <rect x="240" y="150" width="120" height="52" rx="3" fill="#1e2535" stroke="#f5a623" stroke-width="1.3"/>
+      <rect x="240" y="150" width="120" height="20" fill="rgba(245,166,35,.12)" stroke="#f5a623" stroke-width="1.3"/>
+      <text x="300" y="164" text-anchor="middle" fill="#f5a623" font-weight="700" font-size="10">BookItem</text>
+      <text x="248" y="182" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ barcode</text>
+      <text x="248" y="194" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ status</text>
+      <!-- Loan *-1 BookItem -->
+      <line x1="300" y1="92" x2="300" y2="148" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="306" y="105" fill="#505a6e" font-size="8">*</text><text x="306" y="142" fill="#505a6e" font-size="8">1</text>
+      <text x="310" y="125" fill="#00c96e" font-size="8">for ▸</text>
+      <!-- Book -->
+      <rect x="460" y="150" width="130" height="52" rx="3" fill="#1e2535" stroke="#00c96e" stroke-width="1.3"/>
+      <rect x="460" y="150" width="130" height="20" fill="rgba(0,201,110,.12)" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="525" y="164" text-anchor="middle" fill="#00c96e" font-weight="700" font-size="10">Book</text>
+      <text x="468" y="182" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ title · + isbn</text>
+      <text x="468" y="194" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ author</text>
+      <!-- BookItem *-1 Book (aggregation: each copy is of a book) -->
+      <line x1="384" y1="176" x2="458" y2="176" stroke="#00a8ff" stroke-width="1.3"/>
+      <path d="M360,176 L372,170 L384,176 L372,182 Z" fill="#0a0e16" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="395" y="170" fill="#505a6e" font-size="8">*</text><text x="448" y="170" fill="#505a6e" font-size="8">1</text>
+      <text x="392" y="192" fill="#00a8ff" font-size="8">copy of ◇</text>
+      <!-- Librarian -->
+      <rect x="20" y="150" width="120" height="52" rx="3" fill="#1e2535" stroke="#e85d75" stroke-width="1.3"/>
+      <rect x="20" y="150" width="120" height="20" fill="rgba(232,93,117,.12)" stroke="#e85d75" stroke-width="1.3"/>
+      <text x="80" y="164" text-anchor="middle" fill="#e85d75" font-weight="700" font-size="10">Librarian</text>
+      <text x="28" y="182" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ issueLoan()</text>
+      <text x="28" y="194" fill="#8892a4" font-family="DM Mono,monospace" font-size="8.5">+ addBook()</text>
+      <!-- Librarian ..> Loan (dependency) -->
+      <line x1="90" y1="150" x2="240" y2="80" stroke="#9b6dff" stroke-width="1.2" stroke-dasharray="6,4" marker-end="url(#lc_open)"/>
+      <text x="120" y="120" fill="#9b6dff" font-size="8">«create»</text>
+      <text x="310" y="240" text-anchor="middle" fill="#505a6e" font-size="9">Member holds Loans (assoc) · Loan is for a BookItem (assoc) · BookItem is a copy of a Book (aggregation ◇)</text>
+      <text x="310" y="255" text-anchor="middle" fill="#505a6e" font-size="9">Librarian creates Loans (dependency ⇢) — note: Book vs BookItem is the key modelling insight</text>
+    </svg>
+  </div>
+  <div class="cal cag"><strong>The key insight noobs miss:</strong> <code>Book</code> is the <em>title</em> ("The Hobbit"), <code>BookItem</code> is a <em>physical copy</em> on a shelf (barcode 00417). A library owns many copies of one book. You <em>borrow a BookItem, not a Book</em>. Splitting these two is what separates a junior design from a senior one.</div>
+
+  <h2>③ Sequence — Borrowing a Book</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="10">
+      <defs>
+        <marker id="ls_s" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#00c96e"/></marker>
+        <marker id="ls_r" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M1,0 L9,4 L1,8" fill="none" stroke="#9b6dff" stroke-width="1.2"/></marker>
+      </defs>
+      <g font-size="9.5" font-weight="600">
+        <rect x="30" y="12" width="80" height="28" rx="5" fill="#1e2535" stroke="#00a8ff"/><text x="70" y="30" text-anchor="middle" fill="#00a8ff">Member</text>
+        <rect x="200" y="12" width="100" height="28" rx="5" fill="#1e2535" stroke="#9b6dff"/><text x="250" y="30" text-anchor="middle" fill="#9b6dff">LoanService</text>
+        <rect x="380" y="12" width="90" height="28" rx="5" fill="#1e2535" stroke="#f5a623"/><text x="425" y="30" text-anchor="middle" fill="#f5a623">BookItem</text>
+        <rect x="520" y="12" width="80" height="28" rx="5" fill="#1e2535" stroke="#e85d75"/><text x="560" y="30" text-anchor="middle" fill="#e85d75">LoanDB</text>
+      </g>
+      <g stroke="#2e3748" stroke-width="1" stroke-dasharray="4,4">
+        <line x1="70" y1="40" x2="70" y2="288"/><line x1="250" y1="40" x2="250" y2="288"/><line x1="425" y1="40" x2="425" y2="288"/><line x1="560" y1="40" x2="560" y2="288"/>
+      </g>
+      <rect x="65" y="58" width="10" height="210" fill="rgba(0,168,255,.18)" stroke="#00a8ff" stroke-width="0.6"/>
+      <rect x="245" y="68" width="10" height="185" fill="rgba(155,109,255,.18)" stroke="#9b6dff" stroke-width="0.6"/>
+      <!-- messages -->
+      <line x1="75" y1="68" x2="245" y2="68" stroke="#00c96e" stroke-width="1.2" marker-end="url(#ls_s)"/>
+      <text x="160" y="63" text-anchor="middle" fill="#8892a4" font-size="9">borrow(barcode)</text>
+      <line x1="255" y1="95" x2="423" y2="95" stroke="#00c96e" stroke-width="1.2" marker-end="url(#ls_s)"/>
+      <text x="338" y="90" text-anchor="middle" fill="#8892a4" font-size="9">checkStatus()</text>
+      <line x1="423" y1="120" x2="255" y2="120" stroke="#9b6dff" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#ls_r)"/>
+      <text x="338" y="115" text-anchor="middle" fill="#8892a4" font-size="9">AVAILABLE</text>
+      <!-- opt fragment -->
+      <rect x="120" y="135" width="470" height="110" rx="4" fill="none" stroke="#00c96e" stroke-width="1.1"/>
+      <path d="M120,135 h44 v12 l-7,7 h-37 z" fill="#1e2535" stroke="#00c96e" stroke-width="1.1"/>
+      <text x="132" y="149" fill="#00c96e" font-size="9" font-weight="700">opt</text>
+      <text x="175" y="148" fill="#00c96e" font-size="8.5">[ item available ]</text>
+      <rect x="420" y="160" width="10" height="18" fill="rgba(245,166,35,.18)" stroke="#f5a623" stroke-width="0.6"/>
+      <line x1="255" y1="168" x2="418" y2="168" stroke="#00c96e" stroke-width="1.2" marker-end="url(#ls_s)"/>
+      <text x="338" y="163" text-anchor="middle" fill="#8892a4" font-size="9">markLoaned()</text>
+      <line x1="255" y1="200" x2="558" y2="200" stroke="#00c96e" stroke-width="1.2" marker-end="url(#ls_s)"/>
+      <text x="400" y="195" text-anchor="middle" fill="#8892a4" font-size="9">insert Loan(dueDate = +14d)</text>
+      <line x1="558" y1="228" x2="255" y2="228" stroke="#9b6dff" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#ls_r)"/>
+      <text x="400" y="223" text-anchor="middle" fill="#8892a4" font-size="9">loanId</text>
+      <!-- final return -->
+      <line x1="245" y1="262" x2="75" y2="262" stroke="#9b6dff" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#ls_r)"/>
+      <text x="160" y="257" text-anchor="middle" fill="#8892a4" font-size="9">receipt + due date</text>
+    </svg>
+  </div>
+  <div class="cal cab"><strong>Notice the <code>opt</code> fragment:</strong> the loan is only created <em>if</em> the item is available. If it's already loaned, none of the boxed messages fire and the member gets a "not available" reply instead. That single box captures the whole conditional without cluttering the main flow.</div>
+
+  <h2>④ State — Lifecycle of a BookItem</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="10">
+      <defs><marker id="lst1" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#8892a4"/></marker></defs>
+      <circle cx="30" cy="90" r="8" fill="#00c96e"/>
+      <line x1="38" y1="90" x2="62" y2="90" stroke="#8892a4" stroke-width="1.1" marker-end="url(#lst1)"/>
+      <!-- Available -->
+      <rect x="65" y="70" width="100" height="40" rx="14" fill="#1e2535" stroke="#00c96e" stroke-width="1.3"/>
+      <text x="115" y="94" text-anchor="middle" fill="#00c96e" font-weight="600">Available</text>
+      <!-- Reserved -->
+      <rect x="240" y="15" width="100" height="38" rx="14" fill="#1e2535" stroke="#00a8ff" stroke-width="1.3"/>
+      <text x="290" y="39" text-anchor="middle" fill="#00a8ff" font-weight="600">Reserved</text>
+      <line x1="150" y1="72" x2="248" y2="45" stroke="#8892a4" stroke-width="1.1" marker-end="url(#lst1)"/>
+      <text x="175" y="50" fill="#8892a4" font-size="8">reserve()</text>
+      <!-- Loaned -->
+      <rect x="240" y="130" width="100" height="40" rx="14" fill="#1e2535" stroke="#9b6dff" stroke-width="1.3"/>
+      <text x="290" y="154" text-anchor="middle" fill="#9b6dff" font-weight="600">Loaned</text>
+      <line x1="150" y1="105" x2="248" y2="135" stroke="#8892a4" stroke-width="1.1" marker-end="url(#lst1)"/>
+      <text x="165" y="130" fill="#8892a4" font-size="8">borrow()</text>
+      <line x1="290" y1="53" x2="290" y2="128" stroke="#8892a4" stroke-width="1.1" marker-end="url(#lst1)"/>
+      <text x="296" y="95" fill="#8892a4" font-size="8">collect()</text>
+      <!-- Overdue -->
+      <rect x="430" y="130" width="100" height="40" rx="14" fill="#1e2535" stroke="#e85d75" stroke-width="1.3"/>
+      <text x="480" y="154" text-anchor="middle" fill="#e85d75" font-weight="600">Overdue</text>
+      <line x1="340" y1="150" x2="428" y2="150" stroke="#8892a4" stroke-width="1.1" marker-end="url(#lst1)"/>
+      <text x="352" y="145" fill="#8892a4" font-size="8">dueDate passed</text>
+      <!-- return to Available -->
+      <line x1="290" y1="130" x2="130" y2="112" stroke="#8892a4" stroke-width="1.1" marker-end="url(#lst1)"/>
+      <text x="180" y="128" fill="#8892a4" font-size="8">return()</text>
+      <path d="M480,130 C480,60 200,55 130,80" fill="none" stroke="#8892a4" stroke-width="1.1" marker-end="url(#lst1)"/>
+      <text x="360" y="72" fill="#8892a4" font-size="8">return() [pay fine]</text>
+    </svg>
+  </div>
+  <div class="cal cap"><strong>Four diagrams, one system:</strong> the use case set the <em>scope</em>, the class diagram gave the <em>structure</em>, the sequence traced one <em>flow</em>, and the state machine captured a <em>lifecycle</em>. In a real design doc you'd lead with the class diagram and add whichever behavioral diagram best explains the tricky part. You now have the complete toolkit.</div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     13. MASTER CHEAT SHEET
+══════════════════════════════════════ -->
+<section id="sec-cheatsheet" class="sec">
+  <div class="hero">
+    <div class="hl" style="background:rgba(245,166,35,.1);color:var(--or)">⚡ Topic 13 · Reference</div>
+    <div class="ht">Master Cheat Sheet</div>
+    <div class="hd">One page to rule them all. Bookmark this section — it's the fast lookup for "which diagram do I need?", every notation, and the recipe for modelling any system from a blank page. If you only revise one screen before an interview, make it this one.</div>
+  </div>
+
+  <h2>Which Diagram Should I Draw?</h2>
+  <div class="dw">
+    <svg viewBox="0 0 620 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="10">
+      <defs><marker id="cs1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L7,4 L0,8 Z" fill="#8892a4"/></marker></defs>
+      <rect x="220" y="12" width="180" height="34" rx="6" fill="#1e2535" stroke="#e8eaf0" stroke-width="1.3"/>
+      <text x="310" y="33" text-anchor="middle" fill="#e8eaf0" font-weight="600">What do you need to show?</text>
+      <!-- branches -->
+      <line x1="310" y1="46" x2="90" y2="72" stroke="#8892a4" stroke-width="1" marker-end="url(#cs1)"/>
+      <line x1="310" y1="46" x2="310" y2="72" stroke="#8892a4" stroke-width="1" marker-end="url(#cs1)"/>
+      <line x1="310" y1="46" x2="530" y2="72" stroke="#8892a4" stroke-width="1" marker-end="url(#cs1)"/>
+      <rect x="20" y="74" width="150" height="30" rx="5" fill="rgba(0,201,110,.1)" stroke="#00c96e"/><text x="95" y="93" text-anchor="middle" fill="#00c96e" font-size="9.5">the STRUCTURE</text>
+      <rect x="235" y="74" width="150" height="30" rx="5" fill="rgba(245,166,35,.1)" stroke="#f5a623"/><text x="310" y="93" text-anchor="middle" fill="#f5a623" font-size="9.5">who USES it</text>
+      <rect x="455" y="74" width="150" height="30" rx="5" fill="rgba(232,93,117,.1)" stroke="#e85d75"/><text x="530" y="93" text-anchor="middle" fill="#e85d75" font-size="9.5">the BEHAVIOR</text>
+      <!-- leaves -->
+      <line x1="95" y1="104" x2="95" y2="126" stroke="#8892a4" stroke-width="1" marker-end="url(#cs1)"/>
+      <rect x="25" y="128" width="140" height="28" rx="5" fill="#1e2535" stroke="#00c96e"/><text x="95" y="146" text-anchor="middle" fill="#00c96e" font-size="9">→ Class Diagram</text>
+      <line x1="310" y1="104" x2="310" y2="126" stroke="#8892a4" stroke-width="1" marker-end="url(#cs1)"/>
+      <rect x="240" y="128" width="140" height="28" rx="5" fill="#1e2535" stroke="#f5a623"/><text x="310" y="146" text-anchor="middle" fill="#f5a623" font-size="9">→ Use Case Diagram</text>
+      <line x1="530" y1="104" x2="470" y2="126" stroke="#8892a4" stroke-width="1"/>
+      <line x1="530" y1="104" x2="590" y2="126" stroke="#8892a4" stroke-width="1"/>
+      <text x="530" y="120" text-anchor="middle" fill="#505a6e" font-size="8">which kind?</text>
+      <rect x="405" y="128" width="128" height="28" rx="5" fill="#1e2535" stroke="#e85d75"/><text x="469" y="146" text-anchor="middle" fill="#e85d75" font-size="8.5">objects talking → Sequence</text>
+      <rect x="405" y="162" width="128" height="26" rx="5" fill="#1e2535" stroke="#9b6dff"/><text x="469" y="179" text-anchor="middle" fill="#9b6dff" font-size="8.5">a workflow → Activity</text>
+      <rect x="405" y="194" width="128" height="26" rx="5" fill="#1e2535" stroke="#00a8ff"/><text x="469" y="211" text-anchor="middle" fill="#00a8ff" font-size="8.5">one object's states → State</text>
+      <line x1="469" y1="156" x2="469" y2="160" stroke="#8892a4" stroke-width="1"/>
+      <line x1="533" y1="140" x2="545" y2="140" stroke="#8892a4" stroke-width="1"/><line x1="545" y1="140" x2="545" y2="207" stroke="#8892a4" stroke-width="1"/>
+      <line x1="545" y1="175" x2="533" y2="175" stroke="#8892a4" stroke-width="1" marker-end="url(#cs1)"/>
+      <line x1="545" y1="207" x2="533" y2="207" stroke="#8892a4" stroke-width="1" marker-end="url(#cs1)"/>
+      <line x1="545" y1="140" x2="533" y2="140" stroke="#8892a4" stroke-width="1" marker-end="url(#cs1)"/>
+      <text x="310" y="240" text-anchor="middle" fill="#505a6e" font-size="9">Rule of thumb: start with Class + one behavioral diagram for the trickiest flow</text>
+    </svg>
+  </div>
+
+  <h2>All Five Diagrams — At a Glance</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Diagram</th><th>Answers</th><th>Key shapes</th><th>Family</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Class</td><td>What classes exist &amp; how they relate</td><td>3-part boxes, diamonds, triangles</td><td><span class="p pg">Structural</span></td></tr>
+      <tr><td class="tn">Use Case</td><td>Who uses the system, for what</td><td>Stick figures, ovals, boundary</td><td><span class="p po">Behavioral</span></td></tr>
+      <tr><td class="tn">Sequence</td><td>Order of messages between objects</td><td>Lifelines, activation bars, arrows</td><td><span class="p ppk">Behavioral</span></td></tr>
+      <tr><td class="tn">Activity</td><td>Steps &amp; branches of a workflow</td><td>Rounded actions, diamonds, bars</td><td><span class="p pp">Behavioral</span></td></tr>
+      <tr><td class="tn">State Machine</td><td>States of one object &amp; transitions</td><td>Rounded states, labelled arrows</td><td><span class="p pb">Behavioral</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>All Six Relationships — Notation Recap</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Name</th><th>Line</th><th>End symbol</th><th>Means</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Dependency</td><td>Dashed</td><td>Open arrow →</td><td><span class="p pp">uses (transient)</span></td></tr>
+      <tr><td class="tn">Association</td><td>Solid</td><td>None / open arrow</td><td><span class="p pg">knows / linked</span></td></tr>
+      <tr><td class="tn">Aggregation</td><td>Solid</td><td>Hollow diamond ◇</td><td><span class="p pb">has-a (weak)</span></td></tr>
+      <tr><td class="tn">Composition</td><td>Solid</td><td>Filled diamond ◆</td><td><span class="p po">owns-a (strong)</span></td></tr>
+      <tr><td class="tn">Generalization</td><td>Solid</td><td>Hollow triangle ▷</td><td><span class="p ppk">is-a (extends)</span></td></tr>
+      <tr><td class="tn">Realization</td><td>Dashed</td><td>Hollow triangle ▷</td><td><span class="p ppk">implements</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>The 5-Step Recipe to Model Any System</h2>
+  <div class="step">
+    <div class="snum" style="background:var(--gr)">1</div>
+    <div><div class="stit">Find the nouns → classes</div><div class="sdesc">Read the spec. Underline every noun: "A <strong>customer</strong> places an <strong>order</strong> for <strong>books</strong>." Those become candidate classes. Drop duplicates and vague ones.</div></div>
+  </div>
+  <div class="step">
+    <div class="snum" style="background:var(--bl)">2</div>
+    <div><div class="stit">Find the verbs → methods</div><div class="sdesc">"Customer <strong>places</strong> an order", "order <strong>calculates</strong> total." Verbs attach to the class doing the action: <code>Customer.placeOrder()</code>, <code>Order.calculateTotal()</code>.</div></div>
+  </div>
+  <div class="step">
+    <div class="snum" style="background:var(--or)">3</div>
+    <div><div class="stit">Add the data → attributes</div><div class="sdesc">What does each class need to remember? <code>Order</code> needs <code>total</code>, <code>status</code>, <code>createdAt</code>. Keep it to what the behavior actually uses.</div></div>
+  </div>
+  <div class="step">
+    <div class="snum" style="background:var(--pu)">4</div>
+    <div><div class="stit">Draw the lines → relationships</div><div class="sdesc">For each pair ask, in order: "is-a?" (inheritance) → "part-of that dies with it?" (composition) → "part-of that survives?" (aggregation) → "same contract?" (realization) → "just uses briefly?" (dependency) → else plain association. Add multiplicity.</div></div>
+  </div>
+  <div class="step">
+    <div class="snum" style="background:var(--pk)">5</div>
+    <div><div class="stit">Model the tricky behavior</div><div class="sdesc">Pick the one flow that's hard to explain in words and draw a <strong>sequence</strong> diagram. If an object has a complex lifecycle, add a <strong>state</strong> diagram. Stop there — don't over-document.</div></div>
+  </div>
+
+  <h2>Common Mistakes to Avoid</h2>
+  <div class="dd">
+    <div class="do"><h4>Do</h4><ul>
+      <li>Start with Class + one Sequence — that's 80% of value</li>
+      <li>Use the filled/hollow diamond deliberately (ownership matters)</li>
+      <li>Add multiplicity — it encodes real business rules</li>
+      <li>Name use cases and methods as verbs</li>
+      <li>Keep diagrams focused — one question each</li>
+    </ul></div>
+    <div class="dont"><h4>Don't</h4><ul>
+      <li>Confuse dashed (implements/uses) with solid (extends/knows)</li>
+      <li>Model every getter/setter — show intent, not noise</li>
+      <li>Turn a class diagram into an ER database schema</li>
+      <li>Draw all 14 diagram types "to be thorough"</li>
+      <li>Forget the arrow <em>direction</em> — it carries meaning</li>
+    </ul></div>
+  </div>
+
+  <div class="cal cag"><strong>You're now fluent.</strong> You can read any UML diagram, pick the right one for a problem, and model a system from a blank page. The four shapes — line, diamond, triangle, arrow — plus the five diagram types are the entire language. Everything else is practice. Go design something.</div>
+</section>
+
+</main>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=700) closeSB();
+}
+const hbtn=document.getElementById('hbtn');
+const sidebar=document.getElementById('sidebar');
+const ov=document.getElementById('ov');
+function openSB(){sidebar.classList.add('open');ov.classList.add('open')}
+function closeSB(){sidebar.classList.remove('open');ov.classList.remove('open')}
+hbtn.addEventListener('click',()=>sidebar.classList.contains('open')?closeSB():openSB());
+ov.addEventListener('click',closeSB);
+</script>
+</body>
+</html>
