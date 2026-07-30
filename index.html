@@ -394,6 +394,7 @@ footer code { font-family: 'JetBrains Mono', monospace; font-size: 11px; backgro
       <button class="ftab" data-cat="architecture">Architecture</button>
       <button class="ftab" data-cat="agile">Agile</button>
       <button class="ftab" data-cat="system_design">System Design</button>
+      <button class="ftab" data-cat="python_ood">Python &amp; OOD &amp; LLD</button>
     </div>
     <div class="filter-right">
       <span class="rslt" id="rslt"></span>
@@ -694,6 +695,77 @@ const GUIDES = [
     level:    'Mid',
     color: '#64748b', color2: '#94a3b8', updated: '2026',
   },
+  /* ── PYTHON & OOD & LLD ────────────────────────────── */
+  {
+    id:       'python-lectures',
+    file:     'modules/Python_Lectures.html',
+    icon:     '🐍',
+    title:    'Python Mastery — Lecture Notes',
+    subtitle: 'Basics · Strings · Lists · Dicts · Loops · Functions · OOP',
+    desc:     'Complete Python lecture series from fundamentals to OOP. Covers Python basics, strings & conditions, lists & tuples, dictionaries & sets, loops, functions, file I/O, and object-oriented programming — all with interactive code examples and quizzes.',
+    category: 'python_ood',
+    tags:     ['Python', 'Basics', 'Strings', 'Lists', 'Tuples', 'Dictionary', 'Set', 'Loops', 'Functions', 'File I/O', 'OOP'],
+    topics:   ['Python basics', 'Strings & conditions', 'Lists & tuples', 'Dicts & sets', 'Loops', 'Functions', 'File I/O', 'OOP intro'],
+    modules:  8, concepts: 120,
+    level:    'Beginner → Mid',
+    color: '#3b82f6', color2: '#06b6d4', updated: '2026',
+  },
+  {
+    id:       'python-oop',
+    file:     'modules/Python_OOP_Tutorial.html',
+    icon:     '🎯',
+    title:    'Python OOP Tutorial',
+    subtitle: 'Classes · Inheritance · Polymorphism · Encapsulation · Abstraction',
+    desc:     'Deep dive into Object-Oriented Programming in Python. Classes & objects, inheritance hierarchies, polymorphism, encapsulation with access modifiers, abstraction with ABCs, and interactive quizzes to reinforce the four pillars of OOP.',
+    category: 'python_ood',
+    tags:     ['Python', 'OOP', 'Classes', 'Inheritance', 'Polymorphism', 'Encapsulation', 'Abstraction', 'SOLID', 'Design Patterns'],
+    topics:   ['Classes & objects', 'Inheritance', 'Polymorphism', 'Encapsulation', 'Abstraction', 'OOP pillars summary'],
+    modules:  9, concepts: 80,
+    level:    'Beginner → Mid',
+    color: '#8b5cf6', color2: '#ec4899', updated: '2026',
+  },
+  {
+    id:       'python-decorators',
+    file:     'modules/Python_Decorators_Tutorial.html',
+    icon:     '🎀',
+    title:    'Python Decorators Tutorial',
+    subtitle: 'Closures · @wraps · Class Decorators · Stacking · Built-ins',
+    desc:     'Everything about Python decorators from first principles. Functions as first-class objects, closures, building decorators by hand, @ syntax sugar, preserving metadata with @wraps, parameterized decorators, class-based decorators, stacking order, and real-world patterns like @staticmethod, @classmethod, and @property.',
+    category: 'python_ood',
+    tags:     ['Python', 'Decorators', 'Closures', '@wraps', 'Metaclass', 'functools', 'Design Patterns', 'First-class Functions'],
+    topics:   ['First-class functions', 'Closures', 'Building decorators', '@ syntax', '@wraps metadata', 'Parameterized decorators', 'Class-based decorators', 'Stacking & built-ins'],
+    modules:  12, concepts: 60,
+    level:    'Mid → Advanced',
+    color: '#f472b6', color2: '#c084fc', updated: '2026',
+  },
+  {
+    id:       'dsa-python',
+    file:     'modules/DSA_in_Python.html',
+    icon:     '🧮',
+    title:    'DSA in Python',
+    subtitle: 'Big-O · Arrays · Linked Lists · Stacks · Queues · Trees · Graphs',
+    desc:     'Core data structures and algorithms implemented in Python. Big-O notation and complexity analysis, arrays, linked lists, stacks, queues, hash maps, trees, graphs, and common algorithmic patterns — with visual explanations and Python implementations.',
+    category: 'python_ood',
+    tags:     ['DSA', 'Data Structures', 'Algorithms', 'Big-O', 'Arrays', 'Linked List', 'Stack', 'Queue', 'Hash Map', 'Tree', 'Graph', 'Python'],
+    topics:   ['Big-O notation', 'Arrays & lists', 'Linked lists', 'Stacks & queues', 'Hash maps', 'Trees', 'Graphs'],
+    modules:  27, concepts: 100,
+    level:    'Beginner → Mid',
+    color: '#14b8a6', color2: '#22d3ee', updated: '2026',
+  },
+  {
+    id:       'uml-diagrams',
+    file:     'modules/uml-diagrams.html',
+    icon:     '📐',
+    title:    'UML Diagrams — Visual Reference',
+    subtitle: 'Class · Sequence · Activity · State · Use Case · Component',
+    desc:     'Complete UML diagram reference for object-oriented design. Class diagrams with relationships and multiplicity, sequence diagrams for interaction flows, activity diagrams for workflows, state machine diagrams, use case diagrams, component and deployment diagrams — with SVG visuals and a capstone case study.',
+    category: 'python_ood',
+    tags:     ['UML', 'Class Diagram', 'Sequence Diagram', 'Activity Diagram', 'State Machine', 'Use Case', 'OOD', 'LLD', 'Design', 'Component Diagram'],
+    topics:   ['Class diagrams', 'Relationships & multiplicity', 'Sequence diagrams', 'Activity diagrams', 'State machines', 'Use case diagrams', 'Capstone case study'],
+    modules:  43, concepts: 150,
+    level:    'Beginner → Adv',
+    color: '#fbbf24', color2: '#f97316', updated: '2026',
+  },
 ];
 
 /* ══════════════════════════════════════════════════════════
@@ -707,6 +779,7 @@ const CATS = {
   architecture: { label: 'Architecture & System Design', icon: '🏗️' },
   agile:        { label: 'Agile & Project Management',   icon: '🔄' },
   system_design:{ label: 'System Design',                icon: '🖥️' },
+  python_ood:   { label: 'Python & OOD & LLD',            icon: '🐍' },
 };
 
 /* ══════════════════════════════════════════════════════════
